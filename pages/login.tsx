@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import Layout from '../components/Layout'
+import { SUPERADMIN_CREDENTIALS } from '../config/auth'
 
 export default function Login() {
   const [username, setUsername] = useState('')
@@ -10,9 +11,7 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Hier würden wir normalerweise eine API-Anfrage senden
-    // Für dieses Beispiel simulieren wir eine erfolgreiche Anmeldung
-    if (username === 'admin' && password === 'password') {
+    if (username === SUPERADMIN_CREDENTIALS.username && password === SUPERADMIN_CREDENTIALS.password) {
       router.push('/dashboard')
     } else {
       setError('Ungültige Anmeldeinformationen')
