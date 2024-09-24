@@ -1,6 +1,9 @@
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 const Navbar = () => {
+  const router = useRouter()
+
   return (
     <nav className="bg-blue-600 text-white p-4">
       <div className="container mx-auto flex justify-between items-center">
@@ -14,9 +17,11 @@ const Navbar = () => {
           <Link href="/spielplan" className="hover:underline">
             Spielplan
           </Link>
-          <Link href="/login" className="hover:underline">
-            Login
-          </Link>
+          {router.pathname !== '/login' && (
+            <Link href="/login" className="hover:underline">
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </nav>
