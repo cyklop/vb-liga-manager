@@ -32,17 +32,6 @@ model User {
   leadingTeam  Team?   @relation("TeamLeader")
 }
 
-model User {
-  id           Int     @id @default(autoincrement())
-  email        String  @unique
-  password     String
-  name         String
-  isAdmin      Boolean @default(false)
-  isSuperAdmin Boolean @default(false)
-  teamId       Int?
-  team         Team?   @relation(fields: [teamId], references: [id])
-}
-
 model League {
   id    Int    @id @default(autoincrement())
   name  String @unique
