@@ -30,7 +30,8 @@ export default function Login() {
       if (response.ok) {
         // Hier können Sie den Benutzer in den globalen Zustand setzen, z.B. mit Context API oder Redux
         console.log('Logged in user:', data)
-        router.push('/dashboard')
+        // Verwenden Sie replace statt push, um eine Weiterleitung zu erzwingen
+        router.replace('/dashboard')
       } else {
         setError(data.message || 'Ein Fehler ist aufgetreten')
       }
@@ -39,6 +40,22 @@ export default function Login() {
       setError('Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.')
     }
   }
+
+  // Fügen Sie useEffect hinzu, um den Zustand zu überprüfen und bei Bedarf umzuleiten
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const response = await fetch('/api/user');
+        if (response.ok) {
+          router.replace('/dashboard');
+        }
+      } catch (error) {
+        console.error('Error checking login status:', error);
+      }
+    };
+
+    checkLoginStatus();
+  }, [router]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
