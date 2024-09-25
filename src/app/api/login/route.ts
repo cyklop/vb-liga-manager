@@ -8,7 +8,17 @@ export async function POST(request: Request) {
   const { email, password } = await request.json()
 
   try {
-    const user = await prisma.user.findUnique({ where: { email } })
+    const user = await prisma.user.findUnique({ 
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        password: true,
+        name: true,
+        isAdmin: true,
+        isSuperAdmin: true,
+      }
+    })
 
     if (!user) {
       return NextResponse.json({ message: 'Ungültige Anmeldeinformationen' }, { status: 400 })
@@ -21,14 +31,9 @@ export async function POST(request: Request) {
     }
 
     // Hier würden Sie normalerweise eine Session erstellen oder ein JWT Token generieren
-    // Für dieses Beispiel senden wir einfach die Benutzerinformationen zurück
-    return NextResponse.json({
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      isAdmin: user.isAdmin,
-      isSuperAdmin: user.isSuperAdmin,
-    })
+    // Für dieses Beispiel senden wir die Benutzerinformationen zurück, ohne das Passwort
+    const { password: _, ...userWithoutPassword } = user
+    return NextResponse.json(userWithoutPassword)
   } catch (error) {
     console.error('Login error:', error)
     return NextResponse.json({ message: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.' }, { status: 500 })
