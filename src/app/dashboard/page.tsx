@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Navigation from '../../components/Navigation'
-import UserProfileForm from '../../components/UserProfileForm'
+import Navigation from '../../../components/Navigation'
+import UserProfileForm from '../../../components/UserProfileForm'
 
 interface User {
   id: number
