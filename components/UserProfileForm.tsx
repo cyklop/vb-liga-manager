@@ -20,10 +20,25 @@ interface UserProfileFormProps {
 const UserProfileForm: React.FC<UserProfileFormProps> = ({ user, onUpdate }) => {
   const [name, setName] = useState(user.name)
   const [email, setEmail] = useState(user.email)
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [error, setError] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onUpdate({ name, email })
+    setError('')
+
+    if (password && password !== confirmPassword) {
+      setError('Die Passwörter stimmen nicht überein.')
+      return
+    }
+
+    const updatedUser: Partial<User> = { name, email }
+    if (password) {
+      updatedUser.password = password
+    }
+
+    onUpdate(updatedUser)
   }
 
   return (
@@ -52,6 +67,31 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ user, onUpdate }) => 
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
         />
       </div>
+      <div>
+        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          Neues Passwort (leer lassen, wenn keine Änderung gewünscht)
+        </label>
+        <input
+          type="password"
+          id="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+        />
+      </div>
+      <div>
+        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+          Passwort bestätigen
+        </label>
+        <input
+          type="password"
+          id="confirmPassword"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+        />
+      </div>
+      {error && <div className="text-red-500">{error}</div>}
       <div>
         <button
           type="submit"

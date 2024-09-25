@@ -20,24 +20,25 @@ export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
-    // Hier würden Sie normalerweise den Benutzer aus dem globalen Zustand oder einer API abrufen
-    // Für dieses Beispiel verwenden wir Mochdaten
-    setUser({
-      id: 1,
-      email: 'benutzer@example.com',
-      name: 'Max Mustermann',
-      isAdmin: false,
-      isSuperAdmin: false,
-      team: {
-        id: 1,
-        name: 'Team A'
-      }
-    })
+    // Hier würden Sie den Benutzer aus einer API abrufen
+    fetchUser()
   }, [])
+
+  const fetchUser = async () => {
+    try {
+      const response = await fetch('/api/users/me')
+      if (response.ok) {
+        const userData = await response.json()
+        setUser(userData)
+      }
+    } catch (error) {
+      console.error('Fehler beim Abrufen des Benutzerprofils', error)
+    }
+  }
 
   const handleProfileUpdate = async (updatedUser: Partial<User>) => {
     try {
-      const response = await fetch(`/api/users/${user?.id}`, {
+      const response = await fetch('/api/users/me', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedUser),
@@ -56,7 +57,7 @@ export default function Dashboard() {
       <Navigation />
       <header className="bg-white shadow">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900">Mein Konto</h1>
         </div>
       </header>
       <main>
