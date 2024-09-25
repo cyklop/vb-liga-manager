@@ -42,7 +42,7 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <Card color="transparent" shadow={false}>
+      <Card color="transparent" shadow={false} placeholder={undefined}>
         <Typography variant="h4" color="blue-gray">
           Anmelden
         </Typography>
