@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Navigation from '../../../components/Navigation'
+import Navigation from '../../../components/Navbar'
 import { useRouter } from 'next/navigation'
 
 interface User {
