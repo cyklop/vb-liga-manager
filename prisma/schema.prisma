@@ -17,7 +17,7 @@ model Team {
   league          League?   @relation(fields: [leagueId], references: [id])
   users           User[]
   teamLeader      User?     @relation("TeamLeader", fields: [teamLeaderId], references: [id])
-  teamLeaderId    Int?
+  teamLeaderId    Int?      @unique
 }
 
 model User {
