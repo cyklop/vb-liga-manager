@@ -6,9 +6,7 @@ interface DeleteConfirmationProps {
   message: string
 }
 
-const DeleteConfirmation: React.FC<Delete
-
-ConfirmationProps> = ({ onConfirm, onCancel, message }) => {
+const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({ onConfirm, onCancel, message }) => {
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
       <div className="bg-white p-5 rounded-lg shadow-lg">
