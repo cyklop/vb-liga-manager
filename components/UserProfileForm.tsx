@@ -49,7 +49,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ user, onUpdate }) => 
   };
 
   return (
-    <Card color="transparent" shadow={false} placeholder={undefined}>
+    <Card color="transparent" shadow={false}>
       <Typography variant="h4" color="blue-gray">
         Profil aktualisieren
       </Typography>
