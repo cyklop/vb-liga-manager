@@ -11,6 +11,7 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError('') // Reset error message
     try {
       const response = await fetch('/api/login', {
         method: 'POST',
