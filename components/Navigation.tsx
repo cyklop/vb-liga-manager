@@ -11,6 +11,7 @@ import {
   MenuList,
   MenuItem,
   Avatar,
+  Button,
 } from "@material-tailwind/react";
 import {
   ChevronDownIcon,
@@ -146,7 +147,7 @@ export default function Navigation() {
             <BellIcon className="h-4 w-4" />
           </IconButton>
           <Link href="/dashboard" passHref>
-            <Button variant="gradient" size="sm" fullWidth>
+            <Button variant="gradient" size="sm" fullWidth className="normal-case">
               Mein Konto
             </Button>
           </Link>
