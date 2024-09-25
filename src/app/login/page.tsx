@@ -46,7 +46,7 @@ export default function Login() {
         <Typography variant="h4" color="blue-gray" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
           Anmelden
         </Typography>
-        <Typography color="gray" className="mt-1 font-normal">
+        <Typography color="gray" className="mt-1 font-normal" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
           Geben Sie Ihre Anmeldedaten ein, um sich anzumelden.
         </Typography>
         <form onSubmit={handleSubmit} className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
@@ -56,6 +56,10 @@ export default function Login() {
               label="E-Mail" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder={undefined}
+              onPointerEnterCapture={() => {}}
+              onPointerLeaveCapture={() => {}}
+              crossOrigin={undefined}
             />
             <Input
               type="password"
@@ -63,6 +67,10 @@ export default function Login() {
               label="Passwort"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder={undefined}
+              onPointerEnterCapture={() => {}}
+              onPointerLeaveCapture={() => {}}
+              crossOrigin={undefined}
             />
           </div>
           <Checkbox
@@ -71,18 +79,25 @@ export default function Login() {
                 variant="small"
                 color="gray"
                 className="flex items-center font-normal"
+                placeholder={undefined}
+                onPointerEnterCapture={() => {}}
+                onPointerLeaveCapture={() => {}}
               >
                 Angemeldet bleiben
               </Typography>
             }
             containerProps={{ className: "-ml-2.5" }}
+            placeholder={undefined}
+            onPointerEnterCapture={() => {}}
+            onPointerLeaveCapture={() => {}}
+            crossOrigin={undefined}
           />
           {error && (
             <Typography color="red" className="mt-2 text-center text-sm" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
               {error}
             </Typography>
           )}
-          <Button className="mt-6" fullWidth type="submit">
+          <Button className="mt-6" fullWidth type="submit" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
             Anmelden
           </Button>
           <Typography color="gray" className="mt-4 text-center font-normal" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
