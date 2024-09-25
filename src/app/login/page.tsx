@@ -17,12 +17,13 @@ export default function Login() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       })
+      const data = await response.json()
       if (response.ok) {
-        const data = await response.json()
         // Hier können Sie den Benutzer in den globalen Zustand setzen, z.B. mit Context API oder Redux
+        console.log('Logged in user:', data)
         router.push('/dashboard')
       } else {
-        setError('Ungültige Anmeldeinformationen')
+        setError(data.message || 'Ein Fehler ist aufgetreten')
       }
     } catch (error) {
       setError('Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.')
