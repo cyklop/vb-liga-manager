@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Navigation from '../../../components/Navbar'
-import DeleteConfirmation from '../../../components/DeleteConfirmation'
+import Navigation from '../../../../components/Navbar'
+import Modal from '../../../../components/Modal'
+import DeleteConfirmation from '../../../../components/DeleteConfirmation'
 
 interface User {
   id: number
@@ -21,9 +22,10 @@ interface Team {
   name: string
 }
 
-export default function Users() {
+export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([])
   const [teams, setTeams] = useState<Team[]>([])
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [newUser, setNewUser] = useState({ email: '', name: '', password: '', isAdmin: false, teamId: '' })
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [userToDelete, setUserToDelete] = useState<User | null>(null)
@@ -57,6 +59,7 @@ export default function Users() {
       })
       if (response.ok) {
         setNewUser({ email: '', name: '', password: '', isAdmin: false, teamId: '' })
+        setIsModalOpen(false)
         fetchUsers()
       }
     } catch (error) {
@@ -72,7 +75,7 @@ export default function Users() {
   const confirmDelete = async () => {
     if (userToDelete) {
       try {
-        const response = await fetch(`/api/users?id=${userToDelete.id}`, {
+        const response = await fetch(`/api/users/${userToDelete.id}`, {
           method: 'DELETE',
         })
         if (response.ok) {
@@ -87,119 +90,102 @@ export default function Users() {
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <>
       <Navigation />
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-gray-900">Benutzer verwalten</h1>
-        </div>
-      </header>
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <h2 className="text-lg leading-6 font-medium text-gray-900 mb-4">Benutzer hinzufügen</h2>
-            <form onSubmit={handleAddUser} className="space-y-4">
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">E-Mail</label>
-                <input
-                  type="email"
-                  id="email"
-                  value={newUser.email}
-                  onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-                <input
-                  type="text"
-                  id="name"
-                  value={newUser.name}
-                  onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">Passwort</label>
-                <input
-                  type="password"
-                  id="password"
-                  value={newUser.password}
-                  onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="team" className="block text-sm font-medium text-gray-700">Team</label>
-                <select
-                  id="team"
-                  value={newUser.teamId}
-                  onChange={(e) => setNewUser({ ...newUser, teamId: e.target.value })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option value="">Kein Team</option>
-                  {teams.map((team) => (
-                    <option key={team.id} value={team.id}>{team.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="isAdmin"
-                  checked={newUser.isAdmin}
-                  onChange={(e) => setNewUser({ ...newUser, isAdmin: e.target.checked })}
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                />
-                <label htmlFor="isAdmin" className="ml-2 block text-sm text-gray-900">
-                  Admin
-                </label>
-              </div>
-              <button type="submit" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Benutzer hinzufügen
-              </button>
-            </form>
-          </div>
-        </div>
-
-        <div className="mt-8 bg-white shadow overflow-hidden sm:rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <h2 className="text-lg leading-6 font-medium text-gray-900 mb-4">Benutzerliste</h2>
-            <ul className="divide-y divide-gray-200">
-              {users.map((user) => (
-                <li key={user.id} className="py-4 flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="ml-3">
-                      <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                      <p className="text-sm text-gray-500">{user.email}</p>
-                      {user.team && <p className="text-sm text-gray-500">Team: {user.team.name}</p>}
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${user.isAdmin ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                      {user.isAdmin ? 'Admin' : 'Benutzer'}
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-2xl font-bold mb-4">Benutzer verwalten</h1>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
+        >
+          Neuen Benutzer hinzufügen
+        </button>
+        <ul className="bg-white shadow overflow-hidden sm:rounded-md">
+          {users.map((user) => (
+            <li key={user.id} className="border-b border-gray-200 last:border-b-0">
+              <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
+                <div>
+                  <p className="text-sm font-medium text-indigo-600 truncate">{user.name}</p>
+                  <p className="text-sm text-gray-500">{user.email}</p>
+                  {user.team && <p className="text-sm text-gray-500">Team: {user.team.name}</p>}
+                </div>
+                <div className="flex items-center">
+                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${user.isAdmin ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                    {user.isAdmin ? 'Admin' : 'Benutzer'}
+                  </span>
+                  {user.isSuperAdmin && (
+                    <span className="ml-2 px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800">
+                      Superadmin
                     </span>
-                    {user.isSuperAdmin && (
-                      <span className="ml-2 px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800">
-                        Superadmin
-                      </span>
-                    )}
-                    <button
-                      onClick={() => handleDeleteUser(user)}
-                      className="ml-2 inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                    >
-                      Löschen
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                  )}
+                  <button
+                    onClick={() => handleDeleteUser(user)}
+                    className="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-xs"
+                  >
+                    Löschen
+                  </button>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Neuen Benutzer hinzufügen">
+        <form onSubmit={handleAddUser} className="space-y-4">
+          <input
+            type="email"
+            value={newUser.email}
+            onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+            placeholder="E-Mail"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+            required
+          />
+          <input
+            type="text"
+            value={newUser.name}
+            onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+            placeholder="Name"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+            required
+          />
+          <input
+            type="password"
+            value={newUser.password}
+            onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+            placeholder="Passwort"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+            required
+          />
+          <select
+            value={newUser.teamId}
+            onChange={(e) => setNewUser({ ...newUser, teamId: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+          >
+            <option value="">Kein Team</option>
+            {teams.map((team) => (
+              <option key={team.id} value={team.id}>{team.name}</option>
+            ))}
+          </select>
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="isAdmin"
+              checked={newUser.isAdmin}
+              onChange={(e) => setNewUser({ ...newUser, isAdmin: e.target.checked })}
+              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+            />
+            <label htmlFor="isAdmin" className="ml-2 block text-sm text-gray-900">
+              Admin
+            </label>
           </div>
-        </div>
-      </main>
+          <button
+            type="submit"
+            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Hinzufügen
+          </button>
+        </form>
+      </Modal>
       {showDeleteConfirmation && (
         <DeleteConfirmation
           onConfirm={confirmDelete}
@@ -207,6 +193,6 @@ export default function Users() {
           message={`Möchten Sie den Benutzer ${userToDelete?.name} wirklich löschen?`}
         />
       )}
-    </div>
+    </>
   )
 }

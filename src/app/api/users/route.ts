@@ -15,7 +15,7 @@ export async function POST(request: Request) {
         name,
         password: hashedPassword,
         isAdmin,
-        teamId: teamId || undefined,
+        teamId: teamId ? parseInt(teamId) : undefined,
       },
     })
     return NextResponse.json(user, { status: 201 })
