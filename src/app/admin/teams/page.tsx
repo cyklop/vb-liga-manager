@@ -5,19 +5,30 @@ import Navigation from '../../../../components/Navbar'
 import Modal from '../../../../components/Modal'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 
-interface Team {
+interface User {
   id: number
   name: string
 }
 
+interface Team {
+  id: number
+  name: string
+  location: string
+  hallAddress: string
+  trainingTimes: string
+  teamLeader?: User
+}
+
 export default function TeamsPage() {
   const [teams, setTeams] = useState<Team[]>([])
+  const [users, setUsers] = useState<User[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [newTeamName, setNewTeamName] = useState('')
+  const [newTeam, setNewTeam] = useState<Partial<Team>>({})
   const [editingTeam, setEditingTeam] = useState<Team | null>(null)
 
   useEffect(() => {
     fetchTeams()
+    fetchUsers()
   }, [])
 
   const fetchTeams = async () => {
@@ -32,16 +43,28 @@ export default function TeamsPage() {
     }
   }
 
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('/api/users')
+      if (response.ok) {
+        const data = await response.json()
+        setUsers(data)
+      }
+    } catch (error) {
+      console.error('Fehler beim Abrufen der Benutzer', error)
+    }
+  }
+
   const handleAddTeam = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
       const response = await fetch('/api/teams', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newTeamName }),
+        body: JSON.stringify(newTeam),
       })
       if (response.ok) {
-        setNewTeamName('')
+        setNewTeam({})
         setIsModalOpen(false)
         fetchTeams()
       }
@@ -58,10 +81,10 @@ export default function TeamsPage() {
       const response = await fetch(`/api/teams/${editingTeam.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newTeamName }),
+        body: JSON.stringify(newTeam),
       })
       if (response.ok) {
-        setNewTeamName('')
+        setNewTeam({})
         setIsModalOpen(false)
         setEditingTeam(null)
         fetchTeams()
@@ -92,7 +115,7 @@ export default function TeamsPage() {
         <button
           onClick={() => {
             setEditingTeam(null)
-            setNewTeamName('')
+            setNewTeam({})
             setIsModalOpen(true)
           }}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
@@ -103,12 +126,18 @@ export default function TeamsPage() {
           {teams.map((team) => (
             <li key={team.id} className="border-b border-gray-200 last:border-b-0">
               <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
-                <p className="text-sm font-medium text-indigo-600 truncate">{team.name}</p>
+                <div>
+                  <p className="text-sm font-medium text-indigo-600 truncate">{team.name}</p>
+                  <p className="text-sm text-gray-500">{team.location}</p>
+                  <p className="text-sm text-gray-500">{team.hallAddress}</p>
+                  <p className="text-sm text-gray-500">Trainingszeiten: {team.trainingTimes}</p>
+                  {team.teamLeader && <p className="text-sm text-gray-500">Spielleiter: {team.teamLeader.name}</p>}
+                </div>
                 <div>
                   <button
                     onClick={() => {
                       setEditingTeam(team)
-                      setNewTeamName(team.name)
+                      setNewTeam(team)
                       setIsModalOpen(true)
                     }}
                     className="mr-2 text-indigo-600 hover:text-indigo-900"
@@ -131,11 +160,42 @@ export default function TeamsPage() {
         <form onSubmit={editingTeam ? handleEditTeam : handleAddTeam}>
           <input
             type="text"
-            value={newTeamName}
-            onChange={(e) => setNewTeamName(e.target.value)}
+            value={newTeam.name || ''}
+            onChange={(e) => setNewTeam({...newTeam, name: e.target.value})}
             placeholder="Mannschaftsname"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-2"
           />
+          <input
+            type="text"
+            value={newTeam.location || ''}
+            onChange={(e) => setNewTeam({...newTeam, location: e.target.value})}
+            placeholder="Ort"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-2"
+          />
+          <input
+            type="text"
+            value={newTeam.hallAddress || ''}
+            onChange={(e) => setNewTeam({...newTeam, hallAddress: e.target.value})}
+            placeholder="Adresse der Halle"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-2"
+          />
+          <input
+            type="text"
+            value={newTeam.trainingTimes || ''}
+            onChange={(e) => setNewTeam({...newTeam, trainingTimes: e.target.value})}
+            placeholder="Trainingszeiten"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-2"
+          />
+          <select
+            value={newTeam.teamLeader?.id || ''}
+            onChange={(e) => setNewTeam({...newTeam, teamLeader: { id: parseInt(e.target.value), name: '' }})}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-2"
+          >
+            <option value="">Spielleiter auswählen</option>
+            {users.map((user) => (
+              <option key={user.id} value={user.id}>{user.name}</option>
+            ))}
+          </select>
           <button
             type="submit"
             className="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

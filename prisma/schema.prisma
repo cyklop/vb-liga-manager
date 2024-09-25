@@ -8,11 +8,28 @@ datasource db {
 }
 
 model Team {
-  id      Int    @id @default(autoincrement())
-  name    String @unique
-  users   User[]
-  leagueId Int?
-  league   League? @relation(fields: [leagueId], references: [id])
+  id              Int       @id @default(autoincrement())
+  name            String    @unique
+  location        String?
+  hallAddress     String?
+  trainingTimes   String?
+  leagueId        Int?
+  league          League?   @relation(fields: [leagueId], references: [id])
+  users           User[]
+  teamLeader      User?     @relation("TeamLeader", fields: [teamLeaderId], references: [id])
+  teamLeaderId    Int?
+}
+
+model User {
+  id           Int     @id @default(autoincrement())
+  email        String  @unique
+  password     String
+  name         String
+  isAdmin      Boolean @default(false)
+  isSuperAdmin Boolean @default(false)
+  teamId       Int?
+  team         Team?   @relation(fields: [teamId], references: [id])
+  leadingTeam  Team?   @relation("TeamLeader")
 }
 
 model User {

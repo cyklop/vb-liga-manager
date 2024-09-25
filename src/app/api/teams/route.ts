@@ -5,7 +5,16 @@ const prisma = new PrismaClient()
 
 export async function GET() {
   try {
-    const teams = await prisma.team.findMany()
+    const teams = await prisma.team.findMany({
+      include: {
+        teamLeader: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    })
     return NextResponse.json(teams)
   } catch (error) {
     console.error('Error fetching teams:', error)
@@ -16,11 +25,25 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { name } = await request.json()
+  const { name, location, hallAddress, trainingTimes, teamLeaderId } = await request.json()
 
   try {
     const team = await prisma.team.create({
-      data: { name },
+      data: {
+        name,
+        location,
+        hallAddress,
+        trainingTimes,
+        teamLeaderId: teamLeaderId ? parseInt(teamLeaderId) : undefined,
+      },
+      include: {
+        teamLeader: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     })
     return NextResponse.json(team, { status: 201 })
   } catch (error) {
