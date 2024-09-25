@@ -78,3 +78,50 @@ export default function Teams() {
     </>
   )
 }
+'use client'
+
+import { useState, useEffect } from 'react'
+import Navigation from '../../../components/Navbar'
+
+interface Team {
+  id: number
+  name: string
+}
+
+export default function TeamsPage() {
+  const [teams, setTeams] = useState<Team[]>([])
+
+  useEffect(() => {
+    fetchTeams()
+  }, [])
+
+  const fetchTeams = async () => {
+    try {
+      const response = await fetch('/api/teams')
+      if (response.ok) {
+        const data = await response.json()
+        setTeams(data)
+      }
+    } catch (error) {
+      console.error('Fehler beim Abrufen der Teams', error)
+    }
+  }
+
+  return (
+    <>
+      <Navigation />
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-2xl font-bold mb-4">Teams</h1>
+        <ul className="bg-white shadow overflow-hidden sm:rounded-md">
+          {teams.map((team) => (
+            <li key={team.id} className="border-b border-gray-200 last:border-b-0">
+              <div className="px-4 py-4 sm:px-6">
+                <p className="text-sm font-medium text-indigo-600 truncate">{team.name}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
+  )
+}
