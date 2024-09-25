@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Navigation from '../../../../components/Navbar'
 import Modal from '../../../../components/Modal'
 import DeleteConfirmation from '../../../../components/DeleteConfirmation'
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 
 interface User {
   id: number
@@ -26,9 +27,10 @@ export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([])
   const [teams, setTeams] = useState<Team[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [newUser, setNewUser] = useState({ email: '', name: '', password: '', isAdmin: false, teamId: '' })
+  const [newUser, setNewUser] = useState({ id: 0, email: '', name: '', password: '', isAdmin: false, teamId: '' })
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [userToDelete, setUserToDelete] = useState<User | null>(null)
+  const [isEditing, setIsEditing] = useState(false)
 
   useEffect(() => {
     fetchUsers()
@@ -58,12 +60,33 @@ export default function UsersPage() {
         body: JSON.stringify(newUser),
       })
       if (response.ok) {
-        setNewUser({ email: '', name: '', password: '', isAdmin: false, teamId: '' })
+        setNewUser({ id: 0, email: '', name: '', password: '', isAdmin: false, teamId: '' })
         setIsModalOpen(false)
         fetchUsers()
       }
     } catch (error) {
       console.error('Fehler beim Hinzufügen des Benutzers', error)
+    }
+  }
+
+  const handleEditUser = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      const response = await fetch(`/api/users/${newUser.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newUser),
+      })
+      if (response.ok) {
+        setNewUser({ id: 0, email: '', name: '', password: '', isAdmin: false, teamId: '' })
+        setIsModalOpen(false)
+        setIsEditing(false)
+        fetchUsers()
+      }
+    } catch (error) {
+      console.error('Fehler beim Bearbeiten des Benutzers', error)
     }
   }
 
@@ -95,7 +118,11 @@ export default function UsersPage() {
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-4">Benutzer verwalten</h1>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setNewUser({ id: 0, email: '', name: '', password: '', isAdmin: false, teamId: '' })
+            setIsEditing(false)
+            setIsModalOpen(true)
+          }}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
         >
           Neuen Benutzer hinzufügen
@@ -119,10 +146,20 @@ export default function UsersPage() {
                     </span>
                   )}
                   <button
-                    onClick={() => handleDeleteUser(user)}
-                    className="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-xs"
+                    onClick={() => {
+                      setNewUser({ ...user, password: '' })
+                      setIsEditing(true)
+                      setIsModalOpen(true)
+                    }}
+                    className="ml-2 text-indigo-600 hover:text-indigo-900"
                   >
-                    Löschen
+                    <PencilIcon className="h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteUser(user)}
+                    className="ml-2 text-red-600 hover:text-red-900"
+                  >
+                    <TrashIcon className="h-5 w-5" />
                   </button>
                 </div>
               </div>
@@ -130,8 +167,8 @@ export default function UsersPage() {
           ))}
         </ul>
       </div>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Neuen Benutzer hinzufügen">
-        <form onSubmit={handleAddUser} className="space-y-4">
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={isEditing ? "Benutzer bearbeiten" : "Neuen Benutzer hinzufügen"}>
+        <form onSubmit={isEditing ? handleEditUser : handleAddUser} className="space-y-4">
           <input
             type="email"
             value={newUser.email}
@@ -152,9 +189,9 @@ export default function UsersPage() {
             type="password"
             value={newUser.password}
             onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-            placeholder="Passwort"
+            placeholder={isEditing ? "Neues Passwort (leer lassen für keine Änderung)" : "Passwort"}
             className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
-            required
+            required={!isEditing}
           />
           <select
             value={newUser.teamId}
@@ -182,7 +219,7 @@ export default function UsersPage() {
             type="submit"
             className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
-            Hinzufügen
+            {isEditing ? "Aktualisieren" : "Hinzufügen"}
           </button>
         </form>
       </Modal>
