@@ -26,6 +26,7 @@ export default function Login() {
         setError(data.message || 'Ein Fehler ist aufgetreten')
       }
     } catch (error) {
+      console.error('Login error:', error)
       setError('Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.')
     }
   }

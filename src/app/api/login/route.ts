@@ -32,5 +32,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Login error:', error)
     return NextResponse.json({ message: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.' }, { status: 500 })
+  } finally {
+    await prisma.$disconnect()
   }
 }
