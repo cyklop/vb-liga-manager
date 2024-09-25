@@ -42,8 +42,8 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <Card color="transparent" shadow={false} placeholder={undefined}>
-        <Typography variant="h4" color="blue-gray">
+      <Card color="transparent" shadow={false} placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
+        <Typography variant="h4" color="blue-gray" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
           Anmelden
         </Typography>
         <Typography color="gray" className="mt-1 font-normal">
@@ -78,14 +78,14 @@ export default function Login() {
             containerProps={{ className: "-ml-2.5" }}
           />
           {error && (
-            <Typography color="red" className="mt-2 text-center text-sm">
+            <Typography color="red" className="mt-2 text-center text-sm" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
               {error}
             </Typography>
           )}
           <Button className="mt-6" fullWidth type="submit">
             Anmelden
           </Button>
-          <Typography color="gray" className="mt-4 text-center font-normal">
+          <Typography color="gray" className="mt-4 text-center font-normal" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
             Passwort vergessen?{" "}
             <a href="#" className="font-medium text-blue-500 transition-colors hover:text-blue-700">
               Zurücksetzen
