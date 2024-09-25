@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Navigation from '../../../../components/Navbar'
 import Modal from '../../../../components/Modal'
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 
 interface League {
   id: number
@@ -13,6 +14,7 @@ export default function LeaguesPage() {
   const [leagues, setLeagues] = useState<League[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [newLeagueName, setNewLeagueName] = useState('')
+  const [editingLeague, setEditingLeague] = useState<League | null>(null)
 
   useEffect(() => {
     fetchLeagues()
@@ -48,6 +50,27 @@ export default function LeaguesPage() {
     }
   }
 
+  const handleEditLeague = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!editingLeague) return
+
+    try {
+      const response = await fetch(`/api/leagues/${editingLeague.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newLeagueName }),
+      })
+      if (response.ok) {
+        setNewLeagueName('')
+        setIsModalOpen(false)
+        setEditingLeague(null)
+        fetchLeagues()
+      }
+    } catch (error) {
+      console.error('Fehler beim Bearbeiten der Liga', error)
+    }
+  }
+
   const handleDeleteLeague = async (id: number) => {
     try {
       const response = await fetch(`/api/leagues/${id}`, {
@@ -67,7 +90,11 @@ export default function LeaguesPage() {
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-4">Ligen verwalten</h1>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setEditingLeague(null)
+            setNewLeagueName('')
+            setIsModalOpen(true)
+          }}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
         >
           Neue Liga hinzufügen
@@ -77,19 +104,31 @@ export default function LeaguesPage() {
             <li key={league.id} className="border-b border-gray-200 last:border-b-0">
               <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
                 <p className="text-sm font-medium text-indigo-600 truncate">{league.name}</p>
-                <button
-                  onClick={() => handleDeleteLeague(league.id)}
-                  className="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-xs"
-                >
-                  Löschen
-                </button>
+                <div>
+                  <button
+                    onClick={() => {
+                      setEditingLeague(league)
+                      setNewLeagueName(league.name)
+                      setIsModalOpen(true)
+                    }}
+                    className="mr-2 text-indigo-600 hover:text-indigo-900"
+                  >
+                    <PencilIcon className="h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteLeague(league.id)}
+                    className="text-red-600 hover:text-red-900"
+                  >
+                    <TrashIcon className="h-5 w-5" />
+                  </button>
+                </div>
               </div>
             </li>
           ))}
         </ul>
       </div>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Neue Liga hinzufügen">
-        <form onSubmit={handleAddLeague}>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingLeague ? "Liga bearbeiten" : "Neue Liga hinzufügen"}>
+        <form onSubmit={editingLeague ? handleEditLeague : handleAddLeague}>
           <input
             type="text"
             value={newLeagueName}
@@ -101,7 +140,7 @@ export default function LeaguesPage() {
             type="submit"
             className="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
-            Hinzufügen
+            {editingLeague ? "Aktualisieren" : "Hinzufügen"}
           </button>
         </form>
       </Modal>

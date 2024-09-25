@@ -18,3 +18,21 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     await prisma.$disconnect()
   }
 }
+
+export async function PUT(request: Request, { params }: { params: { id: string } }) {
+  const id = parseInt(params.id)
+  const { name } = await request.json()
+
+  try {
+    const updatedLeague = await prisma.league.update({
+      where: { id },
+      data: { name },
+    })
+    return NextResponse.json(updatedLeague)
+  } catch (error) {
+    console.error('Error updating league:', error)
+    return NextResponse.json({ message: 'Fehler beim Aktualisieren der Liga' }, { status: 500 })
+  } finally {
+    await prisma.$disconnect()
+  }
+}
