@@ -15,9 +15,16 @@ interface User {
 }
 
 const navigation = [
+  { name: 'Dashboard', href: '/dashboard' },
   { name: 'Tabelle', href: '/tabelle' },
   { name: 'Spielplan', href: '/spielplan' },
-  { name: 'Dashboard', href: '/dashboard' },
+  { name: 'Mein Konto', href: '/account' },
+]
+
+const adminNavigation = [
+  { name: 'Mannschaften', href: '/admin/teams' },
+  { name: 'Benutzer', href: '/admin/users' },
+  { name: 'Ligen', href: '/admin/leagues' },
 ]
 
 function classNames(...classes: string[]) {
