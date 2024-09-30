@@ -8,12 +8,18 @@ import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 interface League {
   id: number
   name: string
+  numberOfTeams: number
+  hasReturnMatches: boolean
 }
 
 export default function LeaguesPage() {
   const [leagues, setLeagues] = useState<League[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [newLeagueName, setNewLeagueName] = useState('')
+  const [newLeague, setNewLeague] = useState({
+    name: '',
+    numberOfTeams: 0,
+    hasReturnMatches: false
+  })
   const [editingLeague, setEditingLeague] = useState<League | null>(null)
 
   useEffect(() => {
@@ -38,10 +44,14 @@ export default function LeaguesPage() {
       const response = await fetch('/api/leagues', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newLeagueName }),
+        body: JSON.stringify(newLeague),
       })
       if (response.ok) {
-        setNewLeagueName('')
+        setNewLeague({
+          name: '',
+          numberOfTeams: 0,
+          hasReturnMatches: false
+        })
         setIsModalOpen(false)
         fetchLeagues()
       }
@@ -58,10 +68,14 @@ export default function LeaguesPage() {
       const response = await fetch(`/api/leagues/${editingLeague.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newLeagueName }),
+        body: JSON.stringify(newLeague),
       })
       if (response.ok) {
-        setNewLeagueName('')
+        setNewLeague({
+          name: '',
+          numberOfTeams: 0,
+          hasReturnMatches: false
+        })
         setIsModalOpen(false)
         setEditingLeague(null)
         fetchLeagues()
@@ -131,14 +145,30 @@ export default function LeaguesPage() {
         <form onSubmit={editingLeague ? handleEditLeague : handleAddLeague}>
           <input
             type="text"
-            value={newLeagueName}
-            onChange={(e) => setNewLeagueName(e.target.value)}
+            value={newLeague.name}
+            onChange={(e) => setNewLeague({...newLeague, name: e.target.value})}
             placeholder="Liganame"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-4"
           />
+          <input
+            type="number"
+            value={newLeague.numberOfTeams}
+            onChange={(e) => setNewLeague({...newLeague, numberOfTeams: parseInt(e.target.value)})}
+            placeholder="Anzahl der Mannschaften"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-4"
+          />
+          <div className="flex items-center mb-4">
+            <input
+              type="checkbox"
+              checked={newLeague.hasReturnMatches}
+              onChange={(e) => setNewLeague({...newLeague, hasReturnMatches: e.target.checked})}
+              className="mr-2"
+            />
+            <label>Hin- und Rückrunde</label>
+          </div>
           <button
             type="submit"
-            className="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             {editingLeague ? "Aktualisieren" : "Hinzufügen"}
           </button>

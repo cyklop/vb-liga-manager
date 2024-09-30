@@ -16,11 +16,15 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { name } = await request.json()
+  const { name, numberOfTeams, hasReturnMatches } = await request.json()
 
   try {
     const league = await prisma.league.create({
-      data: { name },
+      data: { 
+        name,
+        numberOfTeams,
+        hasReturnMatches
+      },
     })
     return NextResponse.json(league, { status: 201 })
   } catch (error) {
