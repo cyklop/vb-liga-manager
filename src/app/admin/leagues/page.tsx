@@ -106,7 +106,11 @@ export default function LeaguesPage() {
         <button
           onClick={() => {
             setEditingLeague(null)
-            setNewLeagueName('')
+            setNewLeague({
+              name: '',
+              numberOfTeams: 0,
+              hasReturnMatches: false
+            })
             setIsModalOpen(true)
           }}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
@@ -122,7 +126,11 @@ export default function LeaguesPage() {
                   <button
                     onClick={() => {
                       setEditingLeague(league)
-                      setNewLeagueName(league.name)
+                      setNewLeague({
+                        name: league.name,
+                        numberOfTeams: league.numberOfTeams,
+                        hasReturnMatches: league.hasReturnMatches
+                      })
                       setIsModalOpen(true)
                     }}
                     className="mr-2 text-indigo-600 hover:text-indigo-900"
