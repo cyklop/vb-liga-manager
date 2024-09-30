@@ -15,6 +15,8 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [resetEmail, setResetEmail] = useState('')
+  const [resetMessage, setResetMessage] = useState('')
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -124,6 +126,39 @@ export default function Login() {
             </a>
           </Typography>
         </form>
+        <div className="mt-4">
+          <h2 className="text-lg font-semibold mb-2">Passwort zurücksetzen</h2>
+          <input
+            type="email"
+            value={resetEmail}
+            onChange={(e) => setResetEmail(e.target.value)}
+            placeholder="E-Mail-Adresse"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-2"
+          />
+          <button
+            onClick={async (e) => {
+              e.preventDefault()
+              try {
+                const response = await fetch('/api/reset-password', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ email: resetEmail }),
+                })
+                const data = await response.json()
+                if (response.ok) {
+                  setResetMessage(data.message)
+                } else {
+                  setError(data.message)
+                }
+              } catch (error) {
+                setError('Fehler beim Zurücksetzen des Passworts')
+              }
+            }}
+            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          >
+            Passwort zurücksetzen
+          </button>
+        </div>
       </Card>
     </div>
   )

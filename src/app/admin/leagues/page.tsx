@@ -158,13 +158,18 @@ export default function LeaguesPage() {
             placeholder="Liganame"
             className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-4"
           />
-          <input
-            type="number"
-            value={newLeague.numberOfTeams}
-            onChange={(e) => setNewLeague({...newLeague, numberOfTeams: parseInt(e.target.value)})}
-            placeholder="Anzahl der Mannschaften"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-4"
-          />
+          <div className="mb-4">
+            <label htmlFor="numberOfTeams" className="block text-sm font-medium text-gray-700 mb-1">
+              Anzahl der Mannschaften
+            </label>
+            <input
+              id="numberOfTeams"
+              type="number"
+              value={newLeague.numberOfTeams}
+              onChange={(e) => setNewLeague({...newLeague, numberOfTeams: parseInt(e.target.value)})}
+              className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+            />
+          </div>
           <div className="flex items-center mb-4">
             <input
               type="checkbox"
