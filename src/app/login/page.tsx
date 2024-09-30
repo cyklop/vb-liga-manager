@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { LockClosedIcon } from '@heroicons/react/20/solid'
+import Link from 'next/link'
 import {
   Card,
   Input,
@@ -121,10 +122,35 @@ export default function Login() {
           </Button>
           <Typography color="gray" className="mt-4 text-center font-normal" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
             Passwort vergessen?{" "}
-            <a href="#" className="font-medium text-blue-500 transition-colors hover:text-blue-700">
+            <button
+              onClick={async (e) => {
+                e.preventDefault()
+                try {
+                  const response = await fetch('/api/reset-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: resetEmail }),
+                  })
+                  const data = await response.json()
+                  if (response.ok) {
+                    setResetMessage(data.message)
+                  } else {
+                    setError(data.message)
+                  }
+                } catch (error) {
+                  setError('Fehler beim Zurücksetzen des Passworts')
+                }
+              }}
+              className="font-medium text-blue-500 transition-colors hover:text-blue-700"
+            >
               Zurücksetzen
-            </a>
+            </button>
           </Typography>
+          {resetMessage && (
+            <Typography color="green" className="mt-2 text-center text-sm" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
+              {resetMessage}
+            </Typography>
+          )}
         </form>
         <div className="mt-4">
           <h2 className="text-lg font-semibold mb-2">Passwort zurücksetzen</h2>
