@@ -2,6 +2,9 @@
   "name": "volleyball-liga-manager",
   "version": "1.0.0",
   "description": "Verwaltungssystem für Volleyball Ligen",
+  "engines": {
+    "node": ">=18.17.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
