@@ -5,25 +5,34 @@ import Navigation from '../../../../components/Navbar'
 import Modal from '../../../../components/Modal'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 
+interface Team {
+  id: number
+  name: string
+}
+
 interface League {
   id: number
   name: string
   numberOfTeams: number
   hasReturnMatches: boolean
+  teams: Team[]
 }
 
 export default function LeaguesPage() {
   const [leagues, setLeagues] = useState<League[]>([])
+  const [teams, setTeams] = useState<Team[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [newLeague, setNewLeague] = useState({
     name: '',
     numberOfTeams: 0,
-    hasReturnMatches: false
+    hasReturnMatches: false,
+    teamIds: [] as number[]
   })
   const [editingLeague, setEditingLeague] = useState<League | null>(null)
 
   useEffect(() => {
     fetchLeagues()
+    fetchTeams()
   }, [])
 
   const fetchLeagues = async () => {
@@ -38,6 +47,18 @@ export default function LeaguesPage() {
     }
   }
 
+  const fetchTeams = async () => {
+    try {
+      const response = await fetch('/api/teams')
+      if (response.ok) {
+        const data = await response.json()
+        setTeams(data)
+      }
+    } catch (error) {
+      console.error('Fehler beim Abrufen der Teams', error)
+    }
+  }
+
   const handleAddLeague = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
@@ -46,14 +67,19 @@ export default function LeaguesPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newLeague),
       })
+      
       if (response.ok) {
         setNewLeague({
           name: '',
           numberOfTeams: 0,
-          hasReturnMatches: false
+          hasReturnMatches: false,
+          teamIds: []
         })
         setIsModalOpen(false)
         fetchLeagues()
+      } else {
+        const errorData = await response.json()
+        alert(errorData.message)
       }
     } catch (error) {
       console.error('Fehler beim Hinzufügen der Liga', error)
@@ -70,15 +96,20 @@ export default function LeaguesPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newLeague),
       })
+      
       if (response.ok) {
         setNewLeague({
           name: '',
           numberOfTeams: 0,
-          hasReturnMatches: false
+          hasReturnMatches: false,
+          teamIds: []
         })
         setIsModalOpen(false)
         setEditingLeague(null)
         fetchLeagues()
+      } else {
+        const errorData = await response.json()
+        alert(errorData.message)
       }
     } catch (error) {
       console.error('Fehler beim Bearbeiten der Liga', error)
@@ -109,7 +140,8 @@ export default function LeaguesPage() {
             setNewLeague({
               name: '',
               numberOfTeams: 0,
-              hasReturnMatches: false
+              hasReturnMatches: false,
+              teamIds: []
             })
             setIsModalOpen(true)
           }}
@@ -121,7 +153,12 @@ export default function LeaguesPage() {
           {leagues.map((league) => (
             <li key={league.id} className="border-b border-gray-200 last:border-b-0">
               <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
-                <p className="text-sm font-medium text-indigo-600 truncate">{league.name}</p>
+                <div>
+                  <p className="text-sm font-medium text-indigo-600 truncate">{league.name}</p>
+                  <p className="text-xs text-gray-500">
+                    {league.teams.length} / {league.numberOfTeams} Teams: {league.teams.map(team => team.name).join(', ')}
+                  </p>
+                </div>
                 <div>
                   <button
                     onClick={() => {
@@ -129,7 +166,8 @@ export default function LeaguesPage() {
                       setNewLeague({
                         name: league.name,
                         numberOfTeams: league.numberOfTeams,
-                        hasReturnMatches: league.hasReturnMatches
+                        hasReturnMatches: league.hasReturnMatches,
+                        teamIds: league.teams.map(team => team.id)
                       })
                       setIsModalOpen(true)
                     }}
@@ -178,6 +216,45 @@ export default function LeaguesPage() {
               className="mr-2"
             />
             <label>Hin- und Rückrunde</label>
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Teams zuordnen (max. {newLeague.numberOfTeams})
+            </label>
+            <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-md p-2">
+              {teams.map(team => (
+                <div key={team.id} className="flex items-center mb-2">
+                  <input
+                    type="checkbox"
+                    id={`team-${team.id}`}
+                    checked={newLeague.teamIds.includes(team.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        if (newLeague.teamIds.length < newLeague.numberOfTeams) {
+                          setNewLeague({
+                            ...newLeague, 
+                            teamIds: [...newLeague.teamIds, team.id]
+                          })
+                        } else {
+                          alert(`Es können maximal ${newLeague.numberOfTeams} Teams zugewiesen werden`)
+                        }
+                      } else {
+                        setNewLeague({
+                          ...newLeague, 
+                          teamIds: newLeague.teamIds.filter(id => id !== team.id)
+                        })
+                      }
+                    }}
+                    className="mr-2"
+                  />
+                  <label htmlFor={`team-${team.id}`}>{team.name}</label>
+                </div>
+              ))}
+            </div>
+            <p className="text-sm text-gray-500 mt-1">
+              {newLeague.teamIds.length} von {newLeague.numberOfTeams} Teams ausgewählt
+            </p>
           </div>
           <button
             type="submit"
