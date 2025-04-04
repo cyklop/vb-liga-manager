@@ -48,6 +48,8 @@ export default function LeaguesPage() {
     teamIds: [] as number[]
   })
   const [editingLeague, setEditingLeague] = useState<League | null>(null)
+  const [editingFixture, setEditingFixture] = useState<Fixture | null>(null)
+  const [isFixtureModalOpen, setIsFixtureModalOpen] = useState(false)
 
   useEffect(() => {
     fetchLeagues()
@@ -149,6 +151,60 @@ export default function LeaguesPage() {
     }
   }
 
+  // --- Fixture Editing Functions ---
+
+  const handleEditFixtureClick = (fixture: Fixture) => {
+    setEditingFixture({
+      ...fixture,
+      // Ensure date is in YYYY-MM-DD format for input type="date"
+      fixtureDate: fixture.fixtureDate ? new Date(fixture.fixtureDate).toISOString().split('T')[0] : null
+    });
+    setIsFixtureModalOpen(true);
+  };
+
+  const handleUpdateFixture = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingFixture) return;
+
+    try {
+      const response = await fetch(`/api/fixtures/${editingFixture.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        // Send only the necessary fields, ensure scores are numbers or null
+        body: JSON.stringify({
+          homeTeamId: editingFixture.homeTeamId,
+          awayTeamId: editingFixture.awayTeamId,
+          fixtureDate: editingFixture.fixtureDate || null, // Send null if empty
+          homeScore: editingFixture.homeScore !== null && editingFixture.homeScore !== undefined && String(editingFixture.homeScore).trim() !== '' ? Number(editingFixture.homeScore) : null,
+          awayScore: editingFixture.awayScore !== null && editingFixture.awayScore !== undefined && String(editingFixture.awayScore).trim() !== '' ? Number(editingFixture.awayScore) : null,
+        }),
+      });
+
+      if (response.ok) {
+        setIsFixtureModalOpen(false);
+        setEditingFixture(null);
+        // Refetch leagues to show updated fixture, keeping the current league selected
+        fetchLeagues(selectedLeagueId); 
+      } else {
+        const errorData = await response.json();
+        alert(`Fehler beim Aktualisieren der Spielpaarung: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error('Fehler beim Aktualisieren der Spielpaarung:', error);
+      alert('Ein Netzwerkfehler ist aufgetreten.');
+    }
+  };
+
+  const handleFixtureInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    if (!editingFixture) return;
+    const { name, value } = e.target;
+    setEditingFixture({
+      ...editingFixture,
+      [name]: value,
+    });
+  };
+
+  // --- League CRUD Functions ---
 
   const handleAddLeague = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -300,14 +356,29 @@ export default function LeaguesPage() {
                         // Sort by the 'order' field for display
                         .sort((a, b) => a.order - b.order)
                         .map((fixture) => (
-                          <li key={fixture.id} className="flex justify-between items-center text-xs p-2 border rounded">
-                            <span>{fixture.order}. {fixture.homeTeam?.name || 'N/A'} vs {fixture.awayTeam?.name || 'N/A'}</span>
-                            {/* TODO: Add editing and reordering controls here */}
-                            <span>
+                          <li key={fixture.id} className="flex justify-between items-center text-xs p-2 border rounded hover:bg-gray-100">
+                            {/* Fixture Details */}
+                            <div className="flex-grow">
+                              <span>{fixture.order}. {fixture.homeTeam?.name || 'N/A'} vs {fixture.awayTeam?.name || 'N/A'}</span>
+                              <span className="ml-4 text-gray-500">
+                                {fixture.fixtureDate ? new Date(fixture.fixtureDate).toLocaleDateString('de-DE') : 'Datum N/A'}
+                              </span>
+                            </div>
+                            {/* Score */}
+                            <span className="mx-4 font-medium">
                               {fixture.homeScore !== null && fixture.awayScore !== null
                                 ? `${fixture.homeScore} : ${fixture.awayScore}`
-                                : 'N/A'}
+                                : '- : -'}
                             </span>
+                            {/* Edit Button */}
+                            <button
+                              onClick={() => handleEditFixtureClick(fixture)}
+                              className="text-indigo-600 hover:text-indigo-900"
+                              title="Spielpaarung bearbeiten"
+                            >
+                              <PencilIcon className="h-4 w-4" />
+                            </button>
+                            {/* TODO: Add reordering controls here */}
                           </li>
                       ))}
                     </ul>
@@ -397,6 +468,93 @@ export default function LeaguesPage() {
             {editingLeague ? "Aktualisieren" : "Hinzufügen"}
           </button>
         </form>
+      </Modal>
+
+      {/* Modal for Editing Fixture */}
+      <Modal isOpen={isFixtureModalOpen} onClose={() => setIsFixtureModalOpen(false)} title="Spielpaarung bearbeiten">
+        {editingFixture && (
+          <form onSubmit={handleUpdateFixture} className="space-y-4">
+            {/* Home Team Select */}
+            <div>
+              <label htmlFor="homeTeamId" className="block text-sm font-medium text-gray-700">Heimteam</label>
+              <select
+                id="homeTeamId"
+                name="homeTeamId"
+                value={editingFixture.homeTeamId}
+                onChange={handleFixtureInputChange}
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              >
+                {teams.map(team => (
+                  <option key={team.id} value={team.id}>{team.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Away Team Select */}
+            <div>
+              <label htmlFor="awayTeamId" className="block text-sm font-medium text-gray-700">Auswärtsteam</label>
+              <select
+                id="awayTeamId"
+                name="awayTeamId"
+                value={editingFixture.awayTeamId}
+                onChange={handleFixtureInputChange}
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              >
+                {teams.map(team => (
+                  <option key={team.id} value={team.id}>{team.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Fixture Date */}
+            <div>
+              <label htmlFor="fixtureDate" className="block text-sm font-medium text-gray-700">Datum</label>
+              <input
+                type="date"
+                id="fixtureDate"
+                name="fixtureDate"
+                value={editingFixture.fixtureDate || ''}
+                onChange={handleFixtureInputChange}
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              />
+            </div>
+
+            {/* Scores */}
+            <div className="flex space-x-4">
+              <div className="flex-1">
+                <label htmlFor="homeScore" className="block text-sm font-medium text-gray-700">Ergebnis Heim</label>
+                <input
+                  type="number"
+                  id="homeScore"
+                  name="homeScore"
+                  value={editingFixture.homeScore ?? ''} // Use ?? to handle null/undefined for empty input
+                  onChange={handleFixtureInputChange}
+                  placeholder="Heim"
+                  className="mt-1 block w-full pl-3 pr-3 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                />
+              </div>
+              <div className="flex-1">
+                <label htmlFor="awayScore" className="block text-sm font-medium text-gray-700">Ergebnis Auswärts</label>
+                <input
+                  type="number"
+                  id="awayScore"
+                  name="awayScore"
+                  value={editingFixture.awayScore ?? ''} // Use ?? to handle null/undefined for empty input
+                  onChange={handleFixtureInputChange}
+                  placeholder="Auswärts"
+                  className="mt-1 block w-full pl-3 pr-3 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Spielpaarung aktualisieren
+            </button>
+          </form>
+        )}
       </Modal>
     </>
   )
