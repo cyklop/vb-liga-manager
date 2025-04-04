@@ -134,6 +134,7 @@ export default function LeaguesPage() {
          console.warn(`Fixtures for league ${leagueId} not found in fetched data. Ensure API includes them.`);
       }
       setSelectedLeagueId(leagueId)
+      setIsOrderChanged(false) // Reset order change flag when showing/switching league
 
       // Example for Option 2 (fetching on demand - not needed currently):
       // try {
