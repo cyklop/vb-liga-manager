@@ -334,14 +334,14 @@ export default function LeaguesPage() {
     try {
       const response = await fetch(`/api/leagues/${id}`, {
         method: 'DELETE',
-      }); // Added semicolon
+      })
       if (response.ok) {
-        fetchLeagues(); // Added semicolon
+        fetchLeagues()
       }
     } catch (error) {
-      console.error('Fehler beim Löschen der Liga', error); // Added semicolon
+      console.error('Fehler beim Löschen der Liga', error)
     }
-  }; // Added semicolon
+  }
 
   return (
     <>
