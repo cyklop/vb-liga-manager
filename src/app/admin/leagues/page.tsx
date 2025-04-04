@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Navigation from '../../../../components/Navbar'
 import Modal from '../../../../components/Modal'
-import { PencilIcon, TrashIcon, CalendarDaysIcon, ArrowsUpDownIcon } from '@heroicons/react/24/outline'
+import { PencilIcon, TrashIcon, CalendarDaysIcon, ArrowsUpDownIcon, ArrowUpIcon, ArrowDownIcon, CheckIcon } from '@heroicons/react/24/outline'
 
 interface Team {
   id: number
@@ -50,6 +50,7 @@ export default function LeaguesPage() {
   const [editingLeague, setEditingLeague] = useState<League | null>(null)
   const [editingFixture, setEditingFixture] = useState<Fixture | null>(null)
   const [isFixtureModalOpen, setIsFixtureModalOpen] = useState(false)
+  const [isOrderChanged, setIsOrderChanged] = useState(false) // Track if fixture order has changed
 
   useEffect(() => {
     fetchLeagues()
@@ -118,6 +119,7 @@ export default function LeaguesPage() {
       // Hide if already selected
       setSelectedLeagueId(null)
       setSelectedLeagueFixtures([])
+      setIsOrderChanged(false) // Reset order change flag when hiding
     } else {
       // Fetch fixtures for the selected league
       // Fixtures should now be included in the main league fetch due to API changes
@@ -203,6 +205,70 @@ export default function LeaguesPage() {
       [name]: value,
     });
   };
+
+  // --- Fixture Reordering Functions ---
+
+  const moveFixture = useCallback((index: number, direction: 'up' | 'down') => {
+    setSelectedLeagueFixtures(prevFixtures => {
+      const newFixtures = [...prevFixtures];
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+
+      if (targetIndex < 0 || targetIndex >= newFixtures.length) {
+        return newFixtures; // Cannot move outside bounds
+      }
+
+      // Swap fixtures in the array
+      [newFixtures[index], newFixtures[targetIndex]] = [newFixtures[targetIndex], newFixtures[index]];
+
+      // Update the order property based on the new position
+      // Note: This assumes order is sequential initially. If not, a different approach might be needed.
+      // For simplicity, we just swap the existing order numbers. A better approach might re-assign all order numbers.
+      const tempOrder = newFixtures[index].order;
+      newFixtures[index].order = newFixtures[targetIndex].order;
+      newFixtures[targetIndex].order = tempOrder;
+
+
+      setIsOrderChanged(true); // Mark order as changed
+      return newFixtures;
+    });
+  }, []);
+
+  const moveFixtureUp = useCallback((index: number) => {
+    moveFixture(index, 'up');
+  }, [moveFixture]);
+
+  const moveFixtureDown = useCallback((index: number) => {
+    moveFixture(index, 'down');
+  }, [moveFixture]);
+
+  const handleSaveFixtureOrder = async () => {
+    if (!selectedLeagueId || !isOrderChanged) return;
+
+    // Create an array of fixture IDs in the new order
+    const orderedFixtureIds = selectedLeagueFixtures.map(fixture => fixture.id);
+
+    try {
+      const response = await fetch(`/api/leagues/${selectedLeagueId}/fixtures/reorder`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderedFixtureIds }),
+      });
+
+      if (response.ok) {
+        setIsOrderChanged(false); // Reset flag after successful save
+        alert('Spielplanreihenfolge erfolgreich gespeichert!');
+        // Optionally refetch to confirm, though local state should be correct
+        // fetchLeagues(selectedLeagueId); 
+      } else {
+        const errorData = await response.json();
+        alert(`Fehler beim Speichern der Reihenfolge: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error('Fehler beim Speichern der Spielplanreihenfolge:', error);
+      alert('Ein Netzwerkfehler ist aufgetreten.');
+    }
+  };
+
 
   // --- League CRUD Functions ---
 
@@ -370,18 +436,47 @@ export default function LeaguesPage() {
                                 ? `${fixture.homeScore} : ${fixture.awayScore}`
                                 : '- : -'}
                             </span>
-                            {/* Edit Button */}
-                            <button
-                              onClick={() => handleEditFixtureClick(fixture)}
-                              className="text-indigo-600 hover:text-indigo-900"
-                              title="Spielpaarung bearbeiten"
-                            >
-                              <PencilIcon className="h-4 w-4" />
-                            </button>
-                            {/* TODO: Add reordering controls here */}
+                            {/* Action Buttons Container */}
+                            <div className="flex items-center space-x-1 ml-2">
+                              {/* Edit Button */}
+                              <button
+                                onClick={() => handleEditFixtureClick(fixture)}
+                                className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded"
+                                title="Spielpaarung bearbeiten"
+                              >
+                                <PencilIcon className="h-4 w-4" />
+                              </button>
+                              {/* Reorder Buttons */}
+                              <button
+                                onClick={() => moveFixtureUp(index)}
+                                disabled={index === 0} // Disable if first item
+                                className={`p-1 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded ${index === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                title="Nach oben verschieben"
+                              >
+                                <ArrowUpIcon className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => moveFixtureDown(index)}
+                                disabled={index === selectedLeagueFixtures.length - 1} // Disable if last item
+                                className={`p-1 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded ${index === selectedLeagueFixtures.length - 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                title="Nach unten verschieben"
+                              >
+                                <ArrowDownIcon className="h-4 w-4" />
+                              </button>
+                            </div>
                           </li>
                       ))}
                     </ul>
+                    {/* Save Order Button */}
+                    {isOrderChanged && (
+                       <button
+                         onClick={handleSaveFixtureOrder}
+                         className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-sm flex items-center"
+                       >
+                         <CheckIcon className="h-4 w-4 mr-1" />
+                         Reihenfolge speichern
+                       </button>
+                    )}
                   ) : (
                     <p className="text-xs text-gray-500">Kein Spielplan für diese Liga vorhanden oder generiert.</p>
                   )}
