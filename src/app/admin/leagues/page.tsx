@@ -83,12 +83,31 @@ export default function LeaguesPage() {
     }
   }
 
-  // Placeholder for fixture generation logic
   const handleGenerateFixtures = async (leagueId: number) => {
-    // TODO: Implement API call to POST /api/leagues/{leagueId}/generate-fixtures
-    alert(`Spielplan für Liga ${leagueId} generieren (noch nicht implementiert)`)
-    // After successful generation, refetch leagues or just the fixtures for this league
-    // fetchLeagues(leagueId);
+    try {
+      // Show a confirmation dialog before generating
+      const confirmation = confirm(`Möchten Sie den Spielplan für Liga ${leagueId} wirklich generieren? Bestehende Spielpläne für diese Liga werden überschrieben.`);
+      if (!confirmation) {
+        return; // Stop if user cancels
+      }
+
+      const response = await fetch(`/api/leagues/${leagueId}/generate-fixtures`, {
+        method: 'POST',
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(data.message || 'Spielplan erfolgreich generiert!');
+        // Refetch leagues and select the current one to show new fixtures
+        fetchLeagues(leagueId); 
+      } else {
+        alert(`Fehler: ${data.message || 'Unbekannter Fehler'}`);
+      }
+    } catch (error) {
+      console.error('Fehler beim Generieren des Spielplans:', error);
+      alert('Ein Netzwerkfehler ist aufgetreten.');
+    }
   }
 
   // Function to fetch and display fixtures for a selected league
@@ -99,12 +118,20 @@ export default function LeaguesPage() {
       setSelectedLeagueFixtures([])
     } else {
       // Fetch fixtures for the selected league
-      // Option 1: Assume fixtures are already included in the main league fetch
+      // Fixtures should now be included in the main league fetch due to API changes
       const league = leagues.find(l => l.id === leagueId)
-      setSelectedLeagueFixtures(league?.fixtures || []) // Use existing data if available
+      if (league && league.fixtures) {
+         // Sort fixtures by order before setting state
+         const sortedFixtures = [...league.fixtures].sort((a, b) => a.order - b.order);
+         setSelectedLeagueFixtures(sortedFixtures);
+      } else {
+         // If fixtures are somehow not loaded, show empty
+         setSelectedLeagueFixtures([]); 
+         console.warn(`Fixtures for league ${leagueId} not found in fetched data. Ensure API includes them.`);
+      }
       setSelectedLeagueId(leagueId)
 
-      // Option 2: Fetch fixtures on demand (if not included in main fetch)
+      // Example for Option 2 (fetching on demand - not needed currently):
       // try {
       //   const response = await fetch(`/api/leagues/${leagueId}/fixtures`); // Needs new API endpoint
       //   if (response.ok) {
