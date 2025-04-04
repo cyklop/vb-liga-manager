@@ -3,11 +3,27 @@
 import { useState, useEffect } from 'react'
 import Navigation from '../../../../components/Navbar'
 import Modal from '../../../../components/Modal'
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { PencilIcon, TrashIcon, CalendarDaysIcon, ArrowsUpDownIcon } from '@heroicons/react/24/outline'
 
 interface Team {
   id: number
   name: string
+}
+
+// Define Fixture interface based on Prisma model
+interface Fixture {
+  id: number
+  leagueId: number
+  round?: number | null
+  matchday?: number | null
+  homeTeamId: number
+  homeTeam: Team // Assuming we fetch team names with fixtures
+  awayTeamId: number
+  awayTeam: Team // Assuming we fetch team names with fixtures
+  fixtureDate?: string | null // Use string for date input compatibility
+  homeScore?: number | null
+  awayScore?: number | null
+  order: number
 }
 
 interface League {
@@ -16,10 +32,13 @@ interface League {
   numberOfTeams: number
   hasReturnMatches: boolean
   teams: Team[]
+  fixtures?: Fixture[] // Add fixtures relation
 }
 
 export default function LeaguesPage() {
   const [leagues, setLeagues] = useState<League[]>([])
+  const [selectedLeagueFixtures, setSelectedLeagueFixtures] = useState<Fixture[]>([])
+  const [selectedLeagueId, setSelectedLeagueId] = useState<number | null>(null)
   const [teams, setTeams] = useState<Team[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [newLeague, setNewLeague] = useState({
@@ -35,12 +54,17 @@ export default function LeaguesPage() {
     fetchTeams()
   }, [])
 
-  const fetchLeagues = async () => {
+  const fetchLeagues = async (selectLeagueId: number | null = null) => {
     try {
-      const response = await fetch('/api/leagues')
+      const response = await fetch('/api/leagues') // This endpoint might need to include fixtures now
       if (response.ok) {
-        const data = await response.json()
+        const data: League[] = await response.json()
         setLeagues(data)
+        // If a league was selected previously, refresh its fixtures
+        if (selectLeagueId) {
+          const selected = data.find(l => l.id === selectLeagueId)
+          setSelectedLeagueFixtures(selected?.fixtures || [])
+        }
       }
     } catch (error) {
       console.error('Fehler beim Abrufen der Ligen', error)
@@ -58,6 +82,46 @@ export default function LeaguesPage() {
       console.error('Fehler beim Abrufen der Teams', error)
     }
   }
+
+  // Placeholder for fixture generation logic
+  const handleGenerateFixtures = async (leagueId: number) => {
+    // TODO: Implement API call to POST /api/leagues/{leagueId}/generate-fixtures
+    alert(`Spielplan für Liga ${leagueId} generieren (noch nicht implementiert)`)
+    // After successful generation, refetch leagues or just the fixtures for this league
+    // fetchLeagues(leagueId);
+  }
+
+  // Function to fetch and display fixtures for a selected league
+  const handleShowFixtures = async (leagueId: number) => {
+    if (selectedLeagueId === leagueId) {
+      // Hide if already selected
+      setSelectedLeagueId(null)
+      setSelectedLeagueFixtures([])
+    } else {
+      // Fetch fixtures for the selected league
+      // Option 1: Assume fixtures are already included in the main league fetch
+      const league = leagues.find(l => l.id === leagueId)
+      setSelectedLeagueFixtures(league?.fixtures || []) // Use existing data if available
+      setSelectedLeagueId(leagueId)
+
+      // Option 2: Fetch fixtures on demand (if not included in main fetch)
+      // try {
+      //   const response = await fetch(`/api/leagues/${leagueId}/fixtures`); // Needs new API endpoint
+      //   if (response.ok) {
+      //     const data = await response.json();
+      //     setSelectedLeagueFixtures(data);
+      //     setSelectedLeagueId(leagueId);
+      //   } else {
+      //     console.error('Fehler beim Abrufen der Spielpaarungen');
+      //     setSelectedLeagueFixtures([]);
+      //     setSelectedLeagueId(leagueId); // Still select the league to show potentially empty state
+      //   }
+      // } catch (error) {
+      //   console.error('Fehler beim Abrufen der Spielpaarungen', error);
+      // }
+    }
+  }
+
 
   const handleAddLeague = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -181,8 +245,51 @@ export default function LeaguesPage() {
                   >
                     <TrashIcon className="h-5 w-5" />
                   </button>
+                  {/* Button to generate fixtures */}
+                  <button
+                    onClick={() => handleGenerateFixtures(league.id)}
+                    className="ml-2 text-green-600 hover:text-green-900"
+                    title="Spielplan generieren"
+                  >
+                    <CalendarDaysIcon className="h-5 w-5" />
+                  </button>
+                   {/* Button to show/hide fixtures */}
+                  <button
+                    onClick={() => handleShowFixtures(league.id)}
+                    className="ml-2 text-blue-600 hover:text-blue-900"
+                    title="Spielplan anzeigen/verbergen"
+                  >
+                    <ArrowsUpDownIcon className="h-5 w-5" />
+                  </button>
                 </div>
               </div>
+              {/* Display Fixtures if this league is selected */}
+              {selectedLeagueId === league.id && (
+                <div className="px-4 py-4 sm:px-6 border-t border-gray-200 bg-gray-50">
+                  <h3 className="text-sm font-medium text-gray-700 mb-2">Spielplan</h3>
+                  {selectedLeagueFixtures.length > 0 ? (
+                    <ul className="space-y-2">
+                      {selectedLeagueFixtures
+                        // Sort by the 'order' field for display
+                        .sort((a, b) => a.order - b.order)
+                        .map((fixture) => (
+                          <li key={fixture.id} className="flex justify-between items-center text-xs p-2 border rounded">
+                            <span>{fixture.order}. {fixture.homeTeam?.name || 'N/A'} vs {fixture.awayTeam?.name || 'N/A'}</span>
+                            {/* TODO: Add editing and reordering controls here */}
+                            <span>
+                              {fixture.homeScore !== null && fixture.awayScore !== null
+                                ? `${fixture.homeScore} : ${fixture.awayScore}`
+                                : 'N/A'}
+                            </span>
+                          </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-xs text-gray-500">Kein Spielplan für diese Liga vorhanden oder generiert.</p>
+                  )}
+                  {/* TODO: Add controls for manual fixture creation and reordering */}
+                </div>
+              )}
             </li>
           ))}
         </ul>

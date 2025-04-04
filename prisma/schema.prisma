@@ -31,12 +31,36 @@ model User {
   teamId       Int?
   team         Team?   @relation(fields: [teamId], references: [id])
   leadingTeam  Team?   @relation("TeamLeader")
+
+  homeFixtures Fixture[] @relation("HomeTeam")
+  awayFixtures Fixture[] @relation("AwayTeam")
 }
 
 model League {
-  id                Int    @id @default(autoincrement())
-  name              String @unique
+  id                Int       @id @default(autoincrement())
+  name              String    @unique
   numberOfTeams     Int
   hasReturnMatches  Boolean
   teams             Team[]
+  fixtures          Fixture[]
+}
+
+model Fixture {
+  id           Int       @id @default(autoincrement())
+  leagueId     Int
+  league       League    @relation(fields: [leagueId], references: [id], onDelete: Cascade) // Cascade delete fixtures if league is deleted
+  round        Int?      // Optional round number
+  matchday     Int?      // Optional matchday number
+  homeTeamId   Int
+  homeTeam     Team      @relation("HomeTeam", fields: [homeTeamId], references: [id], onDelete: Cascade) // Prevent fixture if team is deleted? Or set null? Cascade for now.
+  awayTeamId   Int
+  awayTeam     Team      @relation("AwayTeam", fields: [awayTeamId], references: [id], onDelete: Cascade)
+  fixtureDate  DateTime? // Optional date and time of the fixture
+  homeScore    Int?      // Optional score
+  awayScore    Int?      // Optional score
+  order        Int       // For manual sorting
+
+  @@index([leagueId])
+  @@index([homeTeamId])
+  @@index([awayTeamId])
 }
