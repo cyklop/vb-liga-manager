@@ -19,6 +19,9 @@ model Team {
   users           User[]
   teamLeader      User?     @relation("TeamLeader", fields: [teamLeaderId], references: [id])
   teamLeaderId    Int?      @unique
+
+  homeFixtures Fixture[] @relation("HomeTeam") // Relation for fixtures where this team is home
+  awayFixtures Fixture[] @relation("AwayTeam") // Relation for fixtures where this team is away
 }
 
 model User {
@@ -31,9 +34,6 @@ model User {
   teamId       Int?
   team         Team?   @relation(fields: [teamId], references: [id])
   leadingTeam  Team?   @relation("TeamLeader")
-
-  homeFixtures Fixture[] @relation("HomeTeam")
-  awayFixtures Fixture[] @relation("AwayTeam")
 }
 
 model League {
