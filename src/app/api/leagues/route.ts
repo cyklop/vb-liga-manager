@@ -7,7 +7,20 @@ export async function GET() {
   try {
     const leagues = await prisma.league.findMany({
       include: {
-        teams: true
+        teams: true, // Keep assigned teams
+        fixtures: {   // Include fixtures
+          orderBy: {
+            order: 'asc' // Order fixtures by the manual order field
+          },
+          include: {
+            homeTeam: { // Include home team details
+              select: { id: true, name: true } 
+            },
+            awayTeam: { // Include away team details
+              select: { id: true, name: true }
+            }
+          }
+        }
       }
     })
     return NextResponse.json(leagues)
