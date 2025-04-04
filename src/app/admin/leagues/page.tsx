@@ -422,7 +422,7 @@ export default function LeaguesPage() {
                       {selectedLeagueFixtures
                         // Sort by the 'order' field for display
                         .sort((a, b) => a.order - b.order)
-                        .map((fixture) => (
+                        .map((fixture, index) => ( // Add index here
                           <li key={fixture.id} className="flex justify-between items-center text-xs p-2 border rounded hover:bg-gray-100">
                             {/* Fixture Details */}
                             <div className="flex-grow">
@@ -449,7 +449,7 @@ export default function LeaguesPage() {
                               </button>
                               {/* Reorder Buttons */}
                               <button
-                                onClick={() => moveFixtureUp(index)}
+                                onClick={() => moveFixtureUp(index)} // Pass index
                                 disabled={index === 0} // Disable if first item
                                 className={`p-1 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded ${index === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 title="Nach oben verschieben"
@@ -457,7 +457,7 @@ export default function LeaguesPage() {
                                 <ArrowUpIcon className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => moveFixtureDown(index)}
+                                onClick={() => moveFixtureDown(index)} // Pass index
                                 disabled={index === selectedLeagueFixtures.length - 1} // Disable if last item
                                 className={`p-1 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded ${index === selectedLeagueFixtures.length - 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 title="Nach unten verschieben"
