@@ -11,13 +11,18 @@ declare global {
   var prisma: PrismaClient | undefined
 }
 
-export const prisma =
-  global.prisma ||
-  new PrismaClient({
+// Erstelle eine einzige Instanz des Prisma Clients
+const prismaClientSingleton = () => {
+  return new PrismaClient({
     // Optional: Enable logging in development
     // log: ['query', 'info', 'warn', 'error'],
   })
+}
 
-if (process.env.NODE_ENV !== 'production') global.prisma = prisma
+// Verwende die globale Variable, um die Instanz zu speichern
+export const prisma = globalThis.prisma ?? prismaClientSingleton()
+
+// In Entwicklungsumgebungen speichern wir die Instanz im globalen Objekt
+if (process.env.NODE_ENV !== 'production') globalThis.prisma = prisma
 
 export default prisma
