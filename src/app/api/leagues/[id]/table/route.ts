@@ -26,6 +26,11 @@ export async function GET(request: Request, { params }: { params: { id: string }
   if (isNaN(leagueId)) {
     return NextResponse.json({ message: 'Ungültige Liga-ID' }, { status: 400 });
   }
+  
+  // Get query parameters
+  const url = new URL(request.url);
+  const matchdayParam = url.searchParams.get('matchday');
+  const matchday = matchdayParam ? parseInt(matchdayParam) : undefined;
 
   try {
     // Get the league with its teams and point rules
@@ -40,8 +45,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
       return NextResponse.json({ message: 'Liga nicht gefunden' }, { status: 404 });
     }
 
-    // Get all fixtures for this league
-    const fixtures = await prisma.fixture.findMany({
+    // Build the query for fixtures
+    const fixtureQuery: any = {
       where: {
         leagueId,
         // Only include fixtures with results
@@ -54,7 +59,15 @@ export async function GET(request: Request, { params }: { params: { id: string }
         homeTeam: { select: { id: true, name: true } },
         awayTeam: { select: { id: true, name: true } },
       },
-    });
+    };
+    
+    // Add matchday filter if specified
+    if (matchday !== undefined) {
+      fixtureQuery.where.AND.push({ matchday: { lte: matchday } });
+    }
+    
+    // Get fixtures based on the query
+    const fixtures = await prisma.fixture.findMany(fixtureQuery);
 
     // Initialize table entries for all teams
     const tableEntries: Record<number, TableEntry> = {};

@@ -40,6 +40,9 @@ export default function TablePage() {
   const [activeLeagueId, setActiveLeagueId] = useState<number | null>(null);
   const [tableData, setTableData] = useState<TableEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [matchdays, setMatchdays] = useState<number[]>([]);
+  const [selectedMatchday, setSelectedMatchday] = useState<number | null>(null);
+  const [showSortInfo, setShowSortInfo] = useState(false);
 
   useEffect(() => {
     // Fetch leagues and active league
@@ -76,16 +79,21 @@ export default function TablePage() {
   }, []);
 
   useEffect(() => {
-    // Fetch table data when activeLeagueId changes
+    // Fetch table data and matchdays when activeLeagueId changes
     if (activeLeagueId) {
-      fetchTableData(activeLeagueId);
+      fetchTableData(activeLeagueId, selectedMatchday || undefined);
+      fetchMatchdays(activeLeagueId);
     }
   }, [activeLeagueId]);
 
-  const fetchTableData = async (leagueId: number) => {
+  const fetchTableData = async (leagueId: number, matchday?: number) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/leagues/${leagueId}/table`);
+      const url = matchday 
+        ? `/api/leagues/${leagueId}/table?matchday=${matchday}` 
+        : `/api/leagues/${leagueId}/table`;
+      
+      const response = await fetch(url);
       if (response.ok) {
         const data = await response.json();
         setTableData(data);
@@ -97,9 +105,32 @@ export default function TablePage() {
     }
   };
 
+  const fetchMatchdays = async (leagueId: number) => {
+    try {
+      const response = await fetch(`/api/leagues/${leagueId}/matchdays`);
+      if (response.ok) {
+        const data = await response.json();
+        setMatchdays(data.matchdays);
+      }
+    } catch (error) {
+      console.error('Error fetching matchdays:', error);
+    }
+  };
+
+  const handleMatchdayChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    const matchday = value ? parseInt(value) : null;
+    setSelectedMatchday(matchday);
+    
+    if (activeLeagueId) {
+      fetchTableData(activeLeagueId, matchday || undefined);
+    }
+  };
+
   const handleLeagueChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newLeagueId = parseInt(e.target.value);
     setActiveLeagueId(newLeagueId);
+    setSelectedMatchday(null); // Reset selected matchday when changing league
     
     // Update the active league in the backend
     try {
@@ -136,17 +167,21 @@ export default function TablePage() {
           </select>
         </div>
 
-        <div className="mb-4 text-sm text-gray-600 bg-gray-100 p-3 rounded-md">
-          <p className="font-medium mb-1">Sortierreihenfolge:</p>
-          <ol className="list-decimal list-inside">
-            <li>Punkte</li>
-            <li>Satzdifferenz</li>
-            <li>Satzquotient</li>
-            <li>Direkter Vergleich</li>
-            <li>Balldifferenz</li>
-            <li>Ballquotient</li>
-            <li>Anzahl der Siege</li>
-          </ol>
+        <div className="mb-6 flex items-center">
+          <label htmlFor="matchdaySelect" className="block text-sm font-medium text-gray-700 mr-2">
+            Spieltag:
+          </label>
+          <select
+            id="matchdaySelect"
+            value={selectedMatchday || ''}
+            onChange={handleMatchdayChange}
+            className="block w-40 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+          >
+            <option value="">Alle Spieltage</option>
+            {matchdays.map(matchday => (
+              <option key={matchday} value={matchday}>{`Spieltag ${matchday}`}</option>
+            ))}
+          </select>
         </div>
         
         {isLoading ? (
@@ -233,6 +268,39 @@ export default function TablePage() {
             {activeLeagueId ? 'Keine Tabellendaten verfügbar.' : 'Bitte wählen Sie eine Liga aus.'}
           </div>
         )}
+
+        {/* Sortierreihenfolge als aufklappbarer Infoblock */}
+        <div className="mt-8">
+          <button 
+            onClick={() => setShowSortInfo(!showSortInfo)}
+            className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-left text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50"
+          >
+            <span>Informationen zur Sortierreihenfolge</span>
+            <svg 
+              className={`w-5 h-5 transform ${showSortInfo ? 'rotate-180' : ''}`} 
+              xmlns="http://www.w3.org/2000/svg" 
+              viewBox="0 0 20 20" 
+              fill="currentColor"
+            >
+              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </button>
+          
+          {showSortInfo && (
+            <div className="mt-2 p-4 text-sm text-gray-600 bg-gray-50 rounded-md border border-gray-200">
+              <p className="font-medium mb-2">Die Tabelle wird nach folgenden Kriterien sortiert:</p>
+              <ol className="list-decimal list-inside space-y-1">
+                <li>Punkte</li>
+                <li>Satzdifferenz</li>
+                <li>Satzquotient</li>
+                <li>Direkter Vergleich</li>
+                <li>Balldifferenz</li>
+                <li>Ballquotient</li>
+                <li>Anzahl der Siege</li>
+              </ol>
+            </div>
+          )}
+        </div>
       </div>
     </>
   );
