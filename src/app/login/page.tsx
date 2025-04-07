@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { LockClosedIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import Modal from '../../../components/Modal'
+import { signIn } from 'next-auth/react'
 import {
   Card,
   Input,
@@ -21,8 +22,6 @@ export default function Login() {
   const [resetMessage, setResetMessage] = useState('')
   const [isResetModalOpen, setIsResetModalOpen] = useState(false)
   const router = useRouter()
-
-  import { signIn } from 'next-auth/react'
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
