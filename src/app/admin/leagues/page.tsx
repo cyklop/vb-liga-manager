@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Navigation from '../../../../components/Navbar';
 import Modal from '../../../../components/Modal';
-import { PencilIcon, TrashIcon, CalendarDaysIcon, ArrowsUpDownIcon, ArrowUpIcon, ArrowDownIcon, LockClosedIcon, LockOpenIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, CalendarDaysIcon, ArrowsUpDownIcon, ArrowUpIcon, ArrowDownIcon, LockClosedIcon, LockOpenIcon, CheckIcon } from '@heroicons/react/24/outline';
 import { Bars3Icon as GripVerticalIcon } from '@heroicons/react/24/outline'; // Verwende Bars3Icon als Ersatz für GripVerticalIcon
 // Import dnd-kit components
 import {
