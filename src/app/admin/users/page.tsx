@@ -60,7 +60,7 @@ export default function UsersPage() {
         body: JSON.stringify(newUser),
       })
       if (response.ok) {
-        setNewUser({ id: 0, email: '', name: '', password: '', isAdmin: false, teamId: '' })
+        setNewUser({ id: 0, email: '', name: '', password: '', isAdmin: false, teamIds: [] })
         setIsModalOpen(false)
         fetchUsers()
       }
@@ -80,7 +80,7 @@ export default function UsersPage() {
         body: JSON.stringify(newUser),
       })
       if (response.ok) {
-        setNewUser({ id: 0, email: '', name: '', password: '', isAdmin: false, teamId: '' })
+        setNewUser({ id: 0, email: '', name: '', password: '', isAdmin: false, teamIds: [] })
         setIsModalOpen(false)
         setIsEditing(false)
         fetchUsers()
@@ -207,7 +207,7 @@ export default function UsersPage() {
                   <input
                     type="checkbox"
                     id={`team-${team.id}`}
-                    checked={newUser.teamIds.includes(team.id)}
+                    checked={newUser.teamIds?.includes(team.id) || false}
                     onChange={(e) => {
                       if (e.target.checked) {
                         setNewUser({ 
