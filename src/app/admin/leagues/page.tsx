@@ -60,6 +60,8 @@ interface League {
   hasReturnMatches: boolean
   teams: Team[]
   fixtures?: Fixture[]
+  isActive: boolean
+  createdAt: string
   // Add point rules
   pointsWin30: number
   pointsWin31: number
@@ -80,6 +82,7 @@ export default function LeaguesPage() {
     numberOfTeams: 0,
     hasReturnMatches: false,
     teamIds: [] as number[],
+    isActive: true,
     // Add default point rules for new league form
     pointsWin30: 3,
     pointsWin31: 3,
@@ -143,6 +146,15 @@ export default function LeaguesPage() {
 
   // --- Fixture Generation ---
   const handleGenerateFixtures = async (leagueId: number) => {
+    // Finde die Liga in der lokalen State-Variable
+    const league = leagues.find(l => l.id === leagueId);
+    
+    // Prüfe, ob die Liga aktiv ist
+    if (!league || !league.isActive) {
+      alert('Spielpläne können nur für aktive Ligen generiert werden.');
+      return;
+    }
+    
     const confirmation = confirm(`Möchten Sie den Spielplan für Liga ${leagueId} wirklich generieren? Bestehende Spielpläne für diese Liga werden überschrieben.`);
     if (!confirmation) return;
 
@@ -181,7 +193,13 @@ export default function LeaguesPage() {
   };
 
   // --- Fixture Editing ---
-  const handleEditFixtureClick = (fixture: Fixture) => {
+  const handleEditFixtureClick = (fixture: Fixture, league: League) => {
+    // Prüfe, ob die Liga aktiv ist
+    if (!league.isActive) {
+      alert('Spielpaarungen können nur für aktive Ligen bearbeitet werden.');
+      return;
+    }
+    
     setEditingFixture({
       ...fixture,
       fixtureDate: fixture.fixtureDate ? new Date(fixture.fixtureDate).toISOString().split('T')[0] : null,
@@ -321,6 +339,7 @@ export default function LeaguesPage() {
           numberOfTeams: 0, 
           hasReturnMatches: false, 
           teamIds: [],
+          isActive: true,
           pointsWin30: 3,
           pointsWin31: 3,
           pointsWin32: 2,
@@ -439,9 +458,17 @@ export default function LeaguesPage() {
               {/* League Header */}
               <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
                 <div>
-                  <p className="text-sm font-medium text-indigo-600 truncate">{league.name}</p>
+                  <div className="flex items-center">
+                    <p className="text-sm font-medium text-indigo-600 truncate">{league.name}</p>
+                    <span className={`ml-2 px-2 py-0.5 text-xs font-medium rounded-full ${league.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                      {league.isActive ? 'Aktiv' : 'Inaktiv'}
+                    </span>
+                  </div>
                   <p className="text-xs text-gray-500">
                     {league.teams.length} / {league.numberOfTeams} Teams: {league.teams.map(team => team.name).join(', ') || 'Keine Teams zugewiesen'}
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    Erstellt am: {new Date(league.createdAt).toLocaleDateString('de-DE')}
                   </p>
                 </div>
                 {/* Action Buttons */}
@@ -454,6 +481,7 @@ export default function LeaguesPage() {
                         numberOfTeams: league.numberOfTeams,
                         hasReturnMatches: league.hasReturnMatches,
                         teamIds: league.teams.map(team => team.id),
+                        isActive: league.isActive,
                         // Load existing point rules when editing
                         pointsWin30: league.pointsWin30,
                         pointsWin31: league.pointsWin31,
@@ -495,8 +523,9 @@ export default function LeaguesPage() {
                   </button>
                   <button
                     onClick={() => handleGenerateFixtures(league.id)}
-                    className="p-1 text-green-600 hover:text-green-900 hover:bg-green-100 rounded"
-                    title="Spielplan generieren"
+                    className={`p-1 ${league.isActive ? 'text-green-600 hover:text-green-900 hover:bg-green-100' : 'text-gray-400 cursor-not-allowed'} rounded`}
+                    title={league.isActive ? "Spielplan generieren" : "Liga ist inaktiv"}
+                    disabled={!league.isActive}
                   >
                     <CalendarDaysIcon className="h-5 w-5" />
                   </button>
@@ -544,7 +573,8 @@ export default function LeaguesPage() {
                             <SortableFixtureItem 
                               key={fixture.id} 
                               fixture={fixture} 
-                              onEditClick={handleEditFixtureClick} 
+                              onEditClick={(fixture) => handleEditFixtureClick(fixture, league)} 
+                              isLeagueActive={league.isActive}
                             />
                           ))}
                         </ul>
@@ -599,6 +629,18 @@ export default function LeaguesPage() {
               className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
             />
             <label htmlFor="hasReturnMatches" className="ml-2 block text-sm text-gray-900">Hin- und Rückrunde</label>
+          </div>
+          
+          {/* Active Status Checkbox */}
+          <div className="flex items-center">
+            <input
+              id="isActive"
+              type="checkbox"
+              checked={newLeague.isActive}
+              onChange={(e) => setNewLeague({...newLeague, isActive: e.target.checked})}
+              className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+            />
+            <label htmlFor="isActive" className="ml-2 block text-sm text-gray-900">Liga ist aktiv</label>
           </div>
 
           {/* Point Rules Section */}
@@ -833,9 +875,10 @@ export default function LeaguesPage() {
 interface SortableFixtureItemProps {
   fixture: Fixture;
   onEditClick: (fixture: Fixture) => void;
+  isLeagueActive: boolean;
 }
 
-function SortableFixtureItem({ fixture, onEditClick }: SortableFixtureItemProps) {
+function SortableFixtureItem({ fixture, onEditClick, isLeagueActive }: SortableFixtureItemProps) {
   const {
     attributes,
     listeners,
@@ -893,8 +936,9 @@ function SortableFixtureItem({ fixture, onEditClick }: SortableFixtureItemProps)
       <div className="flex items-center space-x-1 ml-2">
         <button
           onClick={() => onEditClick(fixture)}
-          className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded"
-          title="Spielpaarung bearbeiten"
+          className={`p-1 ${isLeagueActive ? 'text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100' : 'text-gray-400 cursor-not-allowed'} rounded`}
+          title={isLeagueActive ? "Spielpaarung bearbeiten" : "Liga ist inaktiv"}
+          disabled={!isLeagueActive}
         >
           <PencilIcon className="h-4 w-4" />
         </button>

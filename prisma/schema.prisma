@@ -43,6 +43,8 @@ model League {
   hasReturnMatches  Boolean
   teams             Team[]
   fixtures          Fixture[]
+  isActive          Boolean   @default(true) // Flag to mark league as active/inactive
+  createdAt         DateTime  @default(now()) // Track creation date
 
   // Point rules for the league
   pointsWin30       Int       @default(3) // Points for winning 3:0
