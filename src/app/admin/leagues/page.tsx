@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Navigation from '../../../../components/Navbar';
 import Modal from '../../../../components/Modal';
-import { PencilIcon, TrashIcon, CalendarDaysIcon, ArrowsUpDownIcon, ArrowUpIcon, ArrowDownIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, CalendarDaysIcon, ArrowsUpDownIcon, ArrowUpIcon, ArrowDownIcon, LockClosedIcon, LockOpenIcon } from '@heroicons/react/24/outline';
 import { Bars3Icon as GripVerticalIcon } from '@heroicons/react/24/outline'; // Verwende Bars3Icon als Ersatz für GripVerticalIcon
 // Import dnd-kit components
 import {
@@ -151,7 +151,7 @@ export default function LeaguesPage() {
     
     // Prüfe, ob die Liga aktiv ist
     if (!league || !league.isActive) {
-      alert('Spielpläne können nur für aktive Ligen generiert werden.');
+      alert('Spielpläne können nur für aktive Ligen generiert werden. Abgeschlossene Ligen müssen zuerst wieder aktiviert werden.');
       return;
     }
     
@@ -196,7 +196,7 @@ export default function LeaguesPage() {
   const handleEditFixtureClick = (fixture: Fixture, league: League) => {
     // Prüfe, ob die Liga aktiv ist
     if (!league.isActive) {
-      alert('Spielpaarungen können nur für aktive Ligen bearbeitet werden.');
+      alert('Spielpaarungen können nur für aktive Ligen bearbeitet werden. Abgeschlossene Ligen müssen zuerst wieder aktiviert werden.');
       return;
     }
     
@@ -461,7 +461,7 @@ export default function LeaguesPage() {
                   <div className="flex items-center">
                     <p className="text-sm font-medium text-indigo-600 truncate">{league.name}</p>
                     <span className={`ml-2 px-2 py-0.5 text-xs font-medium rounded-full ${league.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {league.isActive ? 'Aktiv' : 'Inaktiv'}
+                      {league.isActive ? 'Aktiv' : 'Abgeschlossen'}
                     </span>
                   </div>
                   <p className="text-xs text-gray-500">
@@ -503,28 +503,31 @@ export default function LeaguesPage() {
                     <TrashIcon className="h-5 w-5" />
                   </button>
                   <button
-                    onClick={async () => {
-                      try {
-                        await fetch('/api/leagues/active', {
-                          method: 'PUT',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ leagueId: league.id }),
-                        });
-                        alert(`Liga "${league.name}" wurde als aktive Liga gesetzt.`);
-                      } catch (error) {
-                        console.error('Fehler beim Setzen der aktiven Liga:', error);
-                        alert('Fehler beim Setzen der aktiven Liga.');
-                      }
+                    onClick={() => {
+                      setEditingLeague(league);
+                      setNewLeague({
+                        ...newLeague,
+                        name: league.name,
+                        numberOfTeams: league.numberOfTeams,
+                        hasReturnMatches: league.hasReturnMatches,
+                        teamIds: league.teams.map(team => team.id),
+                        isActive: !league.isActive, // Umkehren des aktuellen Status
+                        pointsWin30: league.pointsWin30,
+                        pointsWin31: league.pointsWin31,
+                        pointsWin32: league.pointsWin32,
+                        pointsLoss32: league.pointsLoss32,
+                      });
+                      setIsModalOpen(true);
                     }}
-                    className="p-1 text-green-600 hover:text-green-900 hover:bg-green-100 rounded"
-                    title="Als aktive Liga setzen"
+                    className={`p-1 ${league.isActive ? 'text-amber-600 hover:text-amber-900' : 'text-green-600 hover:text-green-900'} hover:bg-gray-100 rounded`}
+                    title={league.isActive ? "Liga abschließen" : "Liga wieder aktivieren"}
                   >
-                    <CheckIcon className="h-5 w-5" />
+                    {league.isActive ? <LockClosedIcon className="h-5 w-5" /> : <LockOpenIcon className="h-5 w-5" />}
                   </button>
                   <button
                     onClick={() => handleGenerateFixtures(league.id)}
                     className={`p-1 ${league.isActive ? 'text-green-600 hover:text-green-900 hover:bg-green-100' : 'text-gray-400 cursor-not-allowed'} rounded`}
-                    title={league.isActive ? "Spielplan generieren" : "Liga ist inaktiv"}
+                    title={league.isActive ? "Spielplan generieren" : "Liga ist abgeschlossen"}
                     disabled={!league.isActive}
                   >
                     <CalendarDaysIcon className="h-5 w-5" />
