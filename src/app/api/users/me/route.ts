@@ -1,11 +1,18 @@
 import { NextResponse } from 'next/server'
 import prisma from '../../../../../lib/prisma' // Import the singleton instance
 import bcrypt from 'bcryptjs'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '../../auth/[...nextauth]/route'
 
 export async function GET(request: Request) {
-  // Hier würden Sie den Benutzer aus der Session oder einem JWT Token identifizieren
-  // Für dieses Beispiel verwenden wir eine Mockmethode
-  const userId = 1 // Ersetzen Sie dies durch die tatsächliche Benutzer-ID aus der Authentifizierung
+  // Benutzer aus der Session identifizieren
+  const session = await getServerSession(authOptions)
+  
+  if (!session || !session.user?.id) {
+    return NextResponse.json({ message: 'Nicht authentifiziert' }, { status: 401 })
+  }
+  
+  const userId = parseInt(session.user.id)
 
   try {
     const user = await prisma.user.findUnique({
@@ -38,9 +45,14 @@ export async function GET(request: Request) {
 }
 
 export async function PUT(request: Request) {
-  // Hier würden Sie den Benutzer aus der Session oder einem JWT Token identifizieren
-  // Für dieses Beispiel verwenden wir eine Mockmethode
-  const userId = 1 // Ersetzen Sie dies durch die tatsächliche Benutzer-ID aus der Authentifizierung
+  // Benutzer aus der Session identifizieren
+  const session = await getServerSession(authOptions)
+  
+  if (!session || !session.user?.id) {
+    return NextResponse.json({ message: 'Nicht authentifiziert' }, { status: 401 })
+  }
+  
+  const userId = parseInt(session.user.id)
 
   const { name, email, password } = await request.json()
 
