@@ -9,7 +9,8 @@ import {
   UserIcon, 
   UsersIcon, 
   UserGroupIcon, 
-  TrophyIcon 
+  TrophyIcon,
+  BuildingOfficeIcon
 } from '@heroicons/react/24/outline'
 
 interface User {
@@ -22,6 +23,7 @@ interface User {
 const navigation = [
   { name: 'Tabelle', href: '/table', icon: TableCellsIcon },
   { name: 'Spielplan', href: '/fixtures', icon: CalendarIcon },
+  { name: 'Meine Mannschaft', href: '/team', icon: BuildingOfficeIcon },
   { name: 'Mein Konto', href: '/account', icon: UserIcon },
 ]
 
@@ -63,7 +65,7 @@ export default function Dashboard() {
           <div className="px-4 py-6 sm:px-0">
             <h2 className="text-2xl font-bold mb-6">Willkommen, {user?.name}!</h2>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
@@ -79,7 +81,7 @@ export default function Dashboard() {
             {user?.isAdmin && (
               <>
                 <h3 className="text-xl font-semibold mt-10 mb-6">Admin-Bereich</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                   {adminNavigation.map((item) => (
                     <Link
                       key={item.name}
