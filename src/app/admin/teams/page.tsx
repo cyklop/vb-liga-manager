@@ -23,7 +23,16 @@ export default function TeamsPage() {
   const [teams, setTeams] = useState<Team[]>([])
   const [users, setUsers] = useState<User[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [newTeam, setNewTeam] = useState<Partial<Team>>({})
+  // Use a separate state for form data, including teamLeaderId
+  interface TeamFormData {
+    id?: number;
+    name?: string;
+    location?: string;
+    hallAddress?: string;
+    trainingTimes?: string;
+    teamLeaderId?: string; // Use string for select compatibility
+  }
+  const [formData, setFormData] = useState<TeamFormData>({})
   const [editingTeam, setEditingTeam] = useState<Team | null>(null)
 
   useEffect(() => {
@@ -61,10 +70,14 @@ export default function TeamsPage() {
       const response = await fetch('/api/teams', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newTeam),
+        // Send data from formData, converting teamLeaderId to number
+        body: JSON.stringify({
+          ...formData,
+          teamLeaderId: formData.teamLeaderId ? parseInt(formData.teamLeaderId) : null
+        }),
       })
       if (response.ok) {
-        setNewTeam({})
+        setFormData({}) // Reset form data state
         setIsModalOpen(false)
         fetchTeams()
       }
@@ -81,10 +94,14 @@ export default function TeamsPage() {
       const response = await fetch(`/api/teams/${editingTeam.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newTeam),
+        // Send data from formData, converting teamLeaderId to number
+        body: JSON.stringify({
+          ...formData,
+          teamLeaderId: formData.teamLeaderId ? parseInt(formData.teamLeaderId) : null
+        }),
       })
       if (response.ok) {
-        setNewTeam({})
+        setFormData({}) // Reset form data state
         setIsModalOpen(false)
         setEditingTeam(null)
         fetchTeams()
@@ -115,7 +132,7 @@ export default function TeamsPage() {
         <button
           onClick={() => {
             setEditingTeam(null)
-            setNewTeam({})
+            setFormData({}) // Reset form data for adding new team
             setIsModalOpen(true)
           }}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
@@ -137,8 +154,17 @@ export default function TeamsPage() {
                   <button
                     onClick={() => {
                       setEditingTeam(team)
-                      setNewTeam(team)
-                      setIsModalOpen(true)
+                      // Populate formData from the selected team for editing
+                      setFormData({
+                        id: team.id,
+                        name: team.name || '',
+                        location: team.location || '',
+                        hallAddress: team.hallAddress || '',
+                        trainingTimes: team.trainingTimes || '',
+                        teamLeaderId: team.teamLeader?.id?.toString() || '' // Set teamLeaderId as string
+                      })
+                      setIsModalOpen(false) // Close modal first if already open from another edit
+                      setTimeout(() => setIsModalOpen(true), 0) // Then open with new data
                     }}
                     className="mr-2 text-indigo-600 hover:text-indigo-900"
                   >
@@ -156,42 +182,45 @@ export default function TeamsPage() {
           ))}
         </ul>
       </div>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingTeam ? "Mannschaft bearbeiten" : "Neue Mannschaft hinzufügen"}>
+      <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setFormData({}); setEditingTeam(null); }} title={editingTeam ? "Mannschaft bearbeiten" : "Neue Mannschaft hinzufügen"}>
         <form onSubmit={editingTeam ? handleEditTeam : handleAddTeam}>
+          {/* Bind inputs to formData state */}
           <input
             type="text"
-            value={newTeam.name || ''}
-            onChange={(e) => setNewTeam({...newTeam, name: e.target.value})}
+            value={formData.name || ''}
+            onChange={(e) => setFormData({...formData, name: e.target.value})}
             placeholder="Mannschaftsname"
             className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-2"
+            required // Add required attribute if name is mandatory
           />
           <input
             type="text"
-            value={newTeam.location || ''}
-            onChange={(e) => setNewTeam({...newTeam, location: e.target.value})}
+            value={formData.location || ''}
+            onChange={(e) => setFormData({...formData, location: e.target.value})}
             placeholder="Ort"
             className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-2"
           />
           <input
             type="text"
-            value={newTeam.hallAddress || ''}
-            onChange={(e) => setNewTeam({...newTeam, hallAddress: e.target.value})}
+            value={formData.hallAddress || ''}
+            onChange={(e) => setFormData({...formData, hallAddress: e.target.value})}
             placeholder="Adresse der Halle"
             className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-2"
           />
           <input
             type="text"
-            value={newTeam.trainingTimes || ''}
-            onChange={(e) => setNewTeam({...newTeam, trainingTimes: e.target.value})}
+            value={formData.trainingTimes || ''}
+            onChange={(e) => setFormData({...formData, trainingTimes: e.target.value})}
             placeholder="Trainingszeiten"
             className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-2"
           />
+          {/* Bind select to formData.teamLeaderId */}
           <select
-            value={newTeam.teamLeader?.id || ''}
-            onChange={(e) => setNewTeam({...newTeam, teamLeader: { id: parseInt(e.target.value), name: '' }})}
+            value={formData.teamLeaderId || ''}
+            onChange={(e) => setFormData({...formData, teamLeaderId: e.target.value})}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-2"
           >
-            <option value="">Spielleiter auswählen</option>
+            <option value="">Spielleiter auswählen (optional)</option>
             {users.map((user) => (
               <option key={user.id} value={user.id}>{user.name}</option>
             ))}
