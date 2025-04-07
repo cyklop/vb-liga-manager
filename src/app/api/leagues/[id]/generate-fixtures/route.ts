@@ -20,56 +20,127 @@ function generateRoundRobinFixtures(teams: { id: number }[], hasReturnMatches: b
   const rounds = numTeamsWithDummy - 1; // Number of rounds in a single cycle
   const matchesPerRound = numTeamsWithDummy / 2; // Number of matches per round
   
-  // Track home/away balance for each team
-  const teamHomeGames: Record<number, number> = {};
-  const teamAwayGames: Record<number, number> = {};
+  // Create a map to track the last fixture for each team (home or away)
+  const lastFixtureWasHome: Record<number, boolean> = {};
   
-  // Initialize counters
-  localTeams.forEach(team => {
-    if (team.id !== -1) { // Skip dummy team
-      teamHomeGames[team.id] = 0;
-      teamAwayGames[team.id] = 0;
-    }
+  // Initialize with undefined (no previous fixtures)
+  teams.forEach(team => {
+    lastFixtureWasHome[team.id] = undefined;
   });
-
-  // Generate fixtures for the first cycle (each team plays against every other team once)
+  
+  // Generate fixtures using the circle method (Berger tables)
+  // This is a standard algorithm for round-robin tournaments
+  
+  // Create a copy of teams for rotation
+  const rotatingTeams = localTeams.slice(1);
+  const fixedTeam = localTeams[0];
+  
+  // Generate fixtures for each round
   for (let round = 0; round < rounds; round++) {
     const roundFixtures: any[] = [];
     
-    for (let match = 0; match < matchesPerRound; match++) {
-      const homeIndex = (round + match) % (numTeamsWithDummy - 1);
-      let awayIndex = (numTeamsWithDummy - 1 - match + round) % (numTeamsWithDummy - 1);
-
-      // Last team stays fixed, the others rotate around it
-      if (match === 0) {
-        awayIndex = numTeamsWithDummy - 1;
+    // Match the fixed team with the first rotating team
+    if (fixedTeam.id !== -1 && rotatingTeams[0].id !== -1) {
+      // Determine home/away based on alternating pattern for each team
+      let homeTeamId, awayTeamId;
+      
+      // For the first match of each team, assign randomly
+      // For subsequent matches, alternate home/away
+      if (lastFixtureWasHome[fixedTeam.id] === undefined) {
+        // First match for fixed team - make it home for even rounds, away for odd
+        if (round % 2 === 0) {
+          homeTeamId = fixedTeam.id;
+          awayTeamId = rotatingTeams[0].id;
+        } else {
+          homeTeamId = rotatingTeams[0].id;
+          awayTeamId = fixedTeam.id;
+        }
+      } else {
+        // Alternate based on last fixture
+        if (lastFixtureWasHome[fixedTeam.id]) {
+          homeTeamId = rotatingTeams[0].id;
+          awayTeamId = fixedTeam.id;
+        } else {
+          homeTeamId = fixedTeam.id;
+          awayTeamId = rotatingTeams[0].id;
+        }
       }
-
-      const homeTeam = localTeams[homeIndex];
-      const awayTeam = localTeams[awayIndex];
-
-      // Skip matches involving the dummy team
-      if (homeTeam.id !== -1 && awayTeam.id !== -1) {
-        // Determine if we should swap home/away to balance
-        let finalHomeTeamId = homeTeam.id;
-        let finalAwayTeamId = awayTeam.id;
+      
+      // Update the last fixture status
+      lastFixtureWasHome[homeTeamId] = true;
+      lastFixtureWasHome[awayTeamId] = false;
+      
+      roundFixtures.push({
+        homeTeamId,
+        awayTeamId,
+        round: round + 1,
+        matchday: round + 1,
+        fixtureDate: null,
+        homeScore: null,
+        awayScore: null,
+        homeSets: null,
+        awaySets: null,
+        homePoints: null,
+        awayPoints: null,
+        homeMatchPoints: null,
+        awayMatchPoints: null,
+      });
+    }
+    
+    // Match the remaining teams
+    for (let i = 0; i < rotatingTeams.length / 2 - 1; i++) {
+      const team1 = rotatingTeams[i + 1];
+      const team2 = rotatingTeams[rotatingTeams.length - 1 - i];
+      
+      if (team1.id !== -1 && team2.id !== -1) {
+        // Determine home/away based on alternating pattern
+        let homeTeamId, awayTeamId;
         
-        // If round is even, keep original home/away
-        // If round is odd, swap home/away to ensure alternating
-        if (round % 2 === 1) {
-          finalHomeTeamId = awayTeam.id;
-          finalAwayTeamId = homeTeam.id;
+        // For the first match of each team, assign based on round parity
+        if (lastFixtureWasHome[team1.id] === undefined || lastFixtureWasHome[team2.id] === undefined) {
+          if (round % 2 === 0) {
+            homeTeamId = team1.id;
+            awayTeamId = team2.id;
+          } else {
+            homeTeamId = team2.id;
+            awayTeamId = team1.id;
+          }
+        } else {
+          // If both teams had the same last fixture type (both home or both away)
+          // Prioritize the team with fewer home games
+          if (lastFixtureWasHome[team1.id] === lastFixtureWasHome[team2.id]) {
+            // Count current home games for each team
+            const team1HomeCount = fixtures.filter(f => f.homeTeamId === team1.id).length;
+            const team2HomeCount = fixtures.filter(f => f.homeTeamId === team2.id).length;
+            
+            if (team1HomeCount <= team2HomeCount) {
+              homeTeamId = team1.id;
+              awayTeamId = team2.id;
+            } else {
+              homeTeamId = team2.id;
+              awayTeamId = team1.id;
+            }
+          } else {
+            // If one was home and one was away, alternate for both
+            if (lastFixtureWasHome[team1.id]) {
+              homeTeamId = team2.id;
+              awayTeamId = team1.id;
+            } else {
+              homeTeamId = team1.id;
+              awayTeamId = team2.id;
+            }
+          }
         }
         
-        // Update home/away counters
-        teamHomeGames[finalHomeTeamId]++;
-        teamAwayGames[finalAwayTeamId]++;
+        // Update the last fixture status
+        lastFixtureWasHome[homeTeamId] = true;
+        lastFixtureWasHome[awayTeamId] = false;
         
         roundFixtures.push({
-          homeTeamId: finalHomeTeamId,
-          awayTeamId: finalAwayTeamId,
-          round: round + 1, // Rounds are 1-based
-          matchday: round + 1, // Each round is a matchday
+          homeTeamId,
+          awayTeamId,
+          round: round + 1,
+          matchday: round + 1,
           fixtureDate: null,
           homeScore: null,
           awayScore: null,
@@ -85,6 +156,9 @@ function generateRoundRobinFixtures(teams: { id: number }[], hasReturnMatches: b
     
     // Add all fixtures for this round
     fixtures.push(...roundFixtures);
+    
+    // Rotate teams for the next round (first team stays fixed)
+    rotatingTeams.push(rotatingTeams.shift());
   }
 
   // Add return matches if required
@@ -104,6 +178,123 @@ function generateRoundRobinFixtures(teams: { id: number }[], hasReturnMatches: b
     });
     
     fixtures.push(...returnFixtures);
+  }
+  
+  // Post-process to ensure alternating home/away for each team
+  const fixturesByTeam: Record<number, any[]> = {};
+  
+  // Group fixtures by team
+  teams.forEach(team => {
+    fixturesByTeam[team.id] = [];
+  });
+  
+  fixtures.forEach(fixture => {
+    fixturesByTeam[fixture.homeTeamId].push({
+      ...fixture,
+      isHome: true,
+      index: fixtures.indexOf(fixture)
+    });
+    
+    fixturesByTeam[fixture.awayTeamId].push({
+      ...fixture,
+      isHome: false,
+      index: fixtures.indexOf(fixture)
+    });
+  });
+  
+  // Sort fixtures for each team by round
+  Object.keys(fixturesByTeam).forEach(teamId => {
+    fixturesByTeam[Number(teamId)].sort((a, b) => a.round - b.round);
+  });
+  
+  // Check for consecutive home or away games and fix if possible
+  let madeChanges = true;
+  let iterations = 0;
+  const maxIterations = 10; // Prevent infinite loops
+  
+  while (madeChanges && iterations < maxIterations) {
+    madeChanges = false;
+    iterations++;
+    
+    // Check each team's schedule for consecutive home/away games
+    Object.keys(fixturesByTeam).forEach(teamIdStr => {
+      const teamId = Number(teamIdStr);
+      const teamFixtures = fixturesByTeam[teamId];
+      
+      for (let i = 1; i < teamFixtures.length; i++) {
+        // If two consecutive fixtures have the same home/away status
+        if (teamFixtures[i].isHome === teamFixtures[i-1].isHome) {
+          // Find a fixture to swap with
+          const currentFixture = teamFixtures[i];
+          const targetHomeAway = !currentFixture.isHome;
+          
+          // Look for a fixture where this team has the opposite home/away status
+          // and the other team also has consecutive same-type fixtures
+          for (const otherTeamIdStr of Object.keys(fixturesByTeam)) {
+            const otherTeamId = Number(otherTeamIdStr);
+            if (otherTeamId === teamId) continue;
+            
+            const otherTeamFixtures = fixturesByTeam[otherTeamId];
+            
+            for (let j = 1; j < otherTeamFixtures.length; j++) {
+              if (otherTeamFixtures[j].isHome === otherTeamFixtures[j-1].isHome &&
+                  otherTeamFixtures[j].isHome === targetHomeAway) {
+                
+                // Found a candidate for swapping
+                const otherFixture = otherTeamFixtures[j];
+                
+                // Check if these fixtures don't involve the same teams
+                if (currentFixture.homeTeamId !== otherFixture.homeTeamId &&
+                    currentFixture.homeTeamId !== otherFixture.awayTeamId &&
+                    currentFixture.awayTeamId !== otherFixture.homeTeamId &&
+                    currentFixture.awayTeamId !== otherFixture.awayTeamId) {
+                  
+                  // Swap the fixtures
+                  const temp = fixtures[currentFixture.index];
+                  fixtures[currentFixture.index] = fixtures[otherFixture.index];
+                  fixtures[otherFixture.index] = temp;
+                  
+                  // Rebuild the team fixtures map
+                  teams.forEach(team => {
+                    fixturesByTeam[team.id] = [];
+                  });
+                  
+                  fixtures.forEach((fixture, idx) => {
+                    fixturesByTeam[fixture.homeTeamId].push({
+                      ...fixture,
+                      isHome: true,
+                      index: idx
+                    });
+                    
+                    fixturesByTeam[fixture.awayTeamId].push({
+                      ...fixture,
+                      isHome: false,
+                      index: idx
+                    });
+                  });
+                  
+                  // Sort fixtures for each team by round
+                  Object.keys(fixturesByTeam).forEach(id => {
+                    fixturesByTeam[Number(id)].sort((a, b) => a.round - b.round);
+                  });
+                  
+                  madeChanges = true;
+                  break;
+                }
+              }
+              
+              if (madeChanges) break;
+            }
+            
+            if (madeChanges) break;
+          }
+          
+          if (madeChanges) break;
+        }
+      }
+      
+      if (madeChanges) return; // Exit the forEach if changes were made
+    });
   }
 
   // Verify that each team has a balanced schedule
