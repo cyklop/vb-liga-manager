@@ -201,10 +201,20 @@ export default function LeaguesPage() {
   const handleFixtureInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     if (!editingFixture) return;
     const { name, value } = e.target;
-    setEditingFixture({
-      ...editingFixture,
-      [name]: value,
-    });
+
+    // Handle number conversion for score fields
+    if (name === 'homeScore' || name === 'awayScore') {
+      const scoreValue = value.trim() === '' ? null : Number(value);
+      setEditingFixture({
+        ...editingFixture,
+        [name]: scoreValue,
+      });
+    } else {
+      setEditingFixture({
+        ...editingFixture,
+        [name]: value,
+      });
+    }
   };
 
   // --- Fixture Reordering Functions ---
