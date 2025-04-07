@@ -3,8 +3,8 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-  // Finde die Liga "Volleyball Hobbyliga 2024/25"
-  const league = await prisma.league.findFirst({
+  // Finde oder erstelle die Liga "Volleyball Hobbyliga 2024/25"
+  let league = await prisma.league.findFirst({
     where: {
       name: {
         contains: "Volleyball Hobbyliga 2024/25"
@@ -13,8 +13,18 @@ async function main() {
   });
 
   if (!league) {
-    console.error("Liga 'Volleyball Hobbyliga 2024/25' nicht gefunden");
-    return;
+    console.log("Liga 'Volleyball Hobbyliga 2024/25' wird erstellt...");
+    league = await prisma.league.create({
+      data: {
+        name: "Volleyball Hobbyliga 2024/25",
+        numberOfTeams: 7,
+        hasReturnMatches: true,
+        pointsWin30: 3,
+        pointsWin31: 3,
+        pointsWin32: 2,
+        pointsLoss32: 1
+      }
+    });
   }
 
   console.log(`Liga gefunden: ${league.name} (ID: ${league.id})`);
