@@ -18,7 +18,17 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   const id = parseInt(params.id)
-  const { name, numberOfTeams, hasReturnMatches, teamIds } = await request.json()
+  const { 
+    name, 
+    numberOfTeams, 
+    hasReturnMatches, 
+    teamIds,
+    // Add point rules
+    pointsWin30, 
+    pointsWin31, 
+    pointsWin32, 
+    pointsLoss32 
+  } = await request.json()
 
   try {
     // Überprüfen, ob die Anzahl der ausgewählten Teams die maximale Anzahl überschreitet
@@ -38,10 +48,15 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     // Liga aktualisieren und neue Team-Verbindungen erstellen
     const updatedLeague = await prisma.league.update({
       where: { id },
-      data: { 
+      data: {
         name,
         numberOfTeams,
         hasReturnMatches,
+        // Update point rules - ensure they are numbers or use defaults/existing
+        pointsWin30: pointsWin30 !== undefined ? Number(pointsWin30) : undefined,
+        pointsWin31: pointsWin31 !== undefined ? Number(pointsWin31) : undefined,
+        pointsWin32: pointsWin32 !== undefined ? Number(pointsWin32) : undefined,
+        pointsLoss32: pointsLoss32 !== undefined ? Number(pointsLoss32) : undefined,
         ...(teamIds && teamIds.length > 0 && {
           teams: {
             connect: teamIds.map((teamId: number) => ({ id: teamId }))

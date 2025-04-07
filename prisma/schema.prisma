@@ -43,6 +43,13 @@ model League {
   hasReturnMatches  Boolean
   teams             Team[]
   fixtures          Fixture[]
+
+  // Point rules for the league
+  pointsWin30       Int       @default(3) // Points for winning 3:0
+  pointsWin31       Int       @default(3) // Points for winning 3:1
+  pointsWin32       Int       @default(2) // Points for winning 3:2
+  pointsLoss32      Int       @default(1) // Points for losing 2:3
+  // pointsLoss31 and pointsLoss30 are implicitly 0
 }
 
 model Fixture {
@@ -56,8 +63,19 @@ model Fixture {
   awayTeamId   Int
   awayTeam     Team      @relation("AwayTeam", fields: [awayTeamId], references: [id], onDelete: Cascade)
   fixtureDate  DateTime? // Optional date and time of the fixture
-  homeScore    Int?      // Optional score
-  awayScore    Int?      // Optional score
+  homeScore    Int?      // DEPRECATED - Will be replaced by sets/points. Keep for migration, remove later? Or rename? Let's rename for clarity.
+  awayScore    Int?      // DEPRECATED - Will be replaced by sets/points. Keep for migration, remove later? Or rename? Let's rename for clarity.
+
+  // Detailed score
+  homeSets          Int?      // Sets won by home team
+  awaySets          Int?      // Sets won by away team
+  homePoints        Int?      // Total points/balls scored by home team (optional)
+  awayPoints        Int?      // Total points/balls scored by away team (optional)
+
+  // Calculated match points based on league rules
+  homeMatchPoints   Int?
+  awayMatchPoints   Int?
+
   order        Int       // For manual sorting
 
   @@index([leagueId])

@@ -10,30 +10,100 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
   try {
     const { 
-      homeTeamId, 
-      awayTeamId, 
-      fixtureDate, 
-      homeScore, 
-      awayScore 
-    } = await request.json()
+      homeTeamId,
+      awayTeamId,
+      fixtureDate,
+      // New fields from request
+      homeSets,
+      awaySets,
+      homePoints,
+      awayPoints
+      // homeScore, awayScore are deprecated but might still be sent initially
+    } = await request.json();
 
-    // Basic validation
+    // --- Validation ---
     if (!homeTeamId || !awayTeamId) {
       return NextResponse.json({ message: 'Heim- und Auswärtsteam dürfen nicht leer sein' }, { status: 400 })
     }
     if (homeTeamId === awayTeamId) {
-        return NextResponse.json({ message: 'Heim- und Auswärtsteam dürfen nicht identisch sein' }, { status: 400 })
+        return NextResponse.json({ message: 'Heim- und Auswärtsteam dürfen nicht identisch sein' }, { status: 400 });
     }
 
-    // Prepare update data, handling potential null values for scores and date
+    const homeSetsNum = homeSets !== null && homeSets !== undefined && String(homeSets).trim() !== '' ? Number(homeSets) : null;
+    const awaySetsNum = awaySets !== null && awaySets !== undefined && String(awaySets).trim() !== '' ? Number(awaySets) : null;
+
+    // Validate sets (e.g., must be 3 for one team if score is 3:0, 3:1, or 3:2)
+    if (homeSetsNum !== null && awaySetsNum !== null) {
+        if (!((homeSetsNum === 3 && awaySetsNum < 3) || (awaySetsNum === 3 && homeSetsNum < 3))) {
+             return NextResponse.json({ message: 'Ungültige Satzanzahl. Ein Team muss 3 Sätze gewonnen haben.' }, { status: 400 });
+        }
+        if (homeSetsNum > 3 || awaySetsNum > 3 || homeSetsNum < 0 || awaySetsNum < 0) {
+             return NextResponse.json({ message: 'Ungültige Satzanzahl. Sätze müssen zwischen 0 und 3 liegen.' }, { status: 400 });
+        }
+         if (homeSetsNum === 3 && awaySetsNum === 3) {
+             return NextResponse.json({ message: 'Ungültige Satzanzahl. Es kann kein 3:3 geben.' }, { status: 400 });
+        }
+    } else if (homeSetsNum !== null || awaySetsNum !== null) {
+        // If one is entered, the other should be too for point calculation
+        return NextResponse.json({ message: 'Beide Satzanzahlen (Heim und Auswärts) müssen angegeben werden, um Punkte zu berechnen.' }, { status: 400 });
+    }
+
+
+    // --- Calculate Match Points ---
+    let homeMatchPoints = null;
+    let awayMatchPoints = null;
+
+    if (homeSetsNum !== null && awaySetsNum !== null) {
+        // Fetch league point rules
+        const fixtureWithLeague = await prisma.fixture.findUnique({
+            where: { id },
+            include: { league: true }
+        });
+        if (!fixtureWithLeague) {
+             return NextResponse.json({ message: 'Spielpaarung nicht gefunden' }, { status: 404 });
+        }
+        const rules = fixtureWithLeague.league;
+
+        if (homeSetsNum === 3 && awaySetsNum === 0) {
+            homeMatchPoints = rules.pointsWin30;
+            awayMatchPoints = 0;
+        } else if (homeSetsNum === 3 && awaySetsNum === 1) {
+            homeMatchPoints = rules.pointsWin31;
+            awayMatchPoints = 0;
+        } else if (homeSetsNum === 3 && awaySetsNum === 2) {
+            homeMatchPoints = rules.pointsWin32;
+            awayMatchPoints = rules.pointsLoss32;
+        } else if (awaySetsNum === 3 && homeSetsNum === 0) {
+            awayMatchPoints = rules.pointsWin30;
+            homeMatchPoints = 0;
+        } else if (awaySetsNum === 3 && homeSetsNum === 1) {
+            awayMatchPoints = rules.pointsWin31;
+            homeMatchPoints = 0;
+        } else if (awaySetsNum === 3 && homeSetsNum === 2) {
+            awayMatchPoints = rules.pointsWin32;
+            homeMatchPoints = rules.pointsLoss32;
+        }
+    }
+
+    // --- Prepare Update Data ---
     const updateData: any = {
       homeTeamId: Number(homeTeamId),
       awayTeamId: Number(awayTeamId),
       fixtureDate: fixtureDate ? new Date(fixtureDate) : null,
-      homeScore: homeScore !== null ? Number(homeScore) : null,
-      awayScore: awayScore !== null ? Number(awayScore) : null,
-    }
+      // Store new detailed scores
+      homeSets: homeSetsNum,
+      awaySets: awaySetsNum,
+      homePoints: homePoints !== null && homePoints !== undefined && String(homePoints).trim() !== '' ? Number(homePoints) : null,
+      awayPoints: awayPoints !== null && awayPoints !== undefined && String(awayPoints).trim() !== '' ? Number(awayPoints) : null,
+      // Store calculated match points
+      homeMatchPoints: homeMatchPoints,
+      awayMatchPoints: awayMatchPoints,
+      // Keep deprecated fields null or update if needed for compatibility? Let's set them null.
+      homeScore: null, 
+      awayScore: null,
+    };
 
+    // --- Update Database ---
     const updatedFixture = await prisma.fixture.update({
       where: { id },
       data: updateData,

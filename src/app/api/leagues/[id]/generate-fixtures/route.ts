@@ -40,8 +40,14 @@ function generateRoundRobinFixtures(teams: { id: number }[], hasReturnMatches: b
           round: round + 1, // Rounds are 1-based
           matchday: round + 1, // Simple mapping for now
           fixtureDate: null,
-          homeScore: null,
-          awayScore: null,
+          homeScore: null, // Keep for now if schema still has it
+          awayScore: null, // Keep for now if schema still has it
+          homeSets: null,
+          awaySets: null,
+          homePoints: null,
+          awayPoints: null,
+          homeMatchPoints: null,
+          awayMatchPoints: null,
         });
       }
     }

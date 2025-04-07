@@ -30,7 +30,17 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { name, numberOfTeams, hasReturnMatches, teamIds } = await request.json()
+  const { 
+    name, 
+    numberOfTeams, 
+    hasReturnMatches, 
+    teamIds,
+    // Add point rules, defaulting if not provided
+    pointsWin30 = 3, 
+    pointsWin31 = 3, 
+    pointsWin32 = 2, 
+    pointsLoss32 = 1 
+  } = await request.json()
 
   try {
     // Überprüfen, ob die Anzahl der ausgewählten Teams die maximale Anzahl überschreitet
@@ -42,10 +52,14 @@ export async function POST(request: Request) {
     }
 
     const league = await prisma.league.create({
-      data: { 
+      data: {
         name,
         numberOfTeams,
         hasReturnMatches,
+        pointsWin30,
+        pointsWin31,
+        pointsWin32,
+        pointsLoss32,
         ...(teamIds && teamIds.length > 0 && {
           teams: {
             connect: teamIds.map((id: number) => ({ id }))
