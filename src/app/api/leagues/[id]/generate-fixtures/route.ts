@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import prisma from '../../../../../lib/prisma' // Adjust path as needed
+import prisma from '../../../../../../lib/prisma' // Adjust path as needed
 
 // Helper function to generate round-robin fixtures
 function generateRoundRobinFixtures(teams: { id: number }[], hasReturnMatches: boolean): Omit<Fixture, 'id' | 'leagueId' | 'homeTeam' | 'awayTeam' | 'order'>[] {
