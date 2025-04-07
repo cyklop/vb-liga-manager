@@ -16,8 +16,8 @@ interface User {
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Tabelle', href: '/tabelle' },
-  { name: 'Spielplan', href: '/spielplan' },
+  { name: 'Tabelle', href: '/table' },
+  { name: 'Spielplan', href: '/fixtures' },
 ]
 
 const adminNavigation = [

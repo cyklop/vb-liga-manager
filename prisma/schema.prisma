@@ -82,3 +82,11 @@ model Fixture {
   @@index([homeTeamId])
   @@index([awayTeamId])
 }
+
+// Settings model for application configuration
+model Setting {
+  key   String @id
+  value String
+
+  @@map("settings")
+}
