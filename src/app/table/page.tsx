@@ -48,7 +48,19 @@ export default function TablePage() {
     // Fetch leagues and active league
     const fetchLeagues = async () => {
       try {
-        const response = await fetch('/api/leagues');
+        // Fetch current user first to check if they have a team
+        const userResponse = await fetch('/api/users/me');
+        const userData = await userResponse.json();
+        
+        let response;
+        if (userData.team && !userData.isAdmin && !userData.isSuperAdmin) {
+          // Regular user with team - only fetch leagues where their team plays
+          response = await fetch(`/api/leagues?teamId=${userData.team.id}`);
+        } else {
+          // Admin or super admin - fetch all leagues
+          response = await fetch('/api/leagues');
+        }
+        
         if (response.ok) {
           const data = await response.json();
           setLeagues(data);

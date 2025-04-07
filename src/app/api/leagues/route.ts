@@ -95,3 +95,60 @@ export async function POST(request: Request) {
   }
   // No finally block needed for singleton
 }
+import { NextResponse } from 'next/server'
+import prisma from '../../../../lib/prisma'
+
+export async function GET(request: Request) {
+  // URL-Parameter auslesen
+  const { searchParams } = new URL(request.url)
+  const teamId = searchParams.get('teamId')
+
+  try {
+    let leagues;
+    
+    if (teamId) {
+      // Nur Ligen abrufen, in denen das angegebene Team spielt
+      const teamIdNumber = parseInt(teamId)
+      leagues = await prisma.league.findMany({
+        where: {
+          teams: {
+            some: {
+              id: teamIdNumber
+            }
+          }
+        },
+        include: {
+          teams: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      })
+    } else {
+      // Alle Ligen abrufen
+      leagues = await prisma.league.findMany({
+        include: {
+          teams: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      })
+    }
+
+    return NextResponse.json(leagues)
+  } catch (error) {
+    console.error('Error fetching leagues:', error)
+    return NextResponse.json({ message: 'Ein Fehler ist aufgetreten' }, { status: 500 })
+  }
+}

@@ -137,9 +137,9 @@ export default function Navbar() {
                     {/* Zeige Teamleiter-Link für normale Benutzer mit Team */}
                     {!currentUser?.isAdmin && !currentUser?.isSuperAdmin && currentUser?.team && (
                       <Link
-                        href="/admin/teams"
+                        href="/team"
                         className={classNames(
-                          pathname === '/admin/teams'
+                          pathname === '/team'
                             ? 'bg-indigo-700 text-white'
                             : 'text-indigo-200 hover:bg-indigo-500 hover:text-white',
                           'rounded-md px-3 py-2 text-sm font-medium'
@@ -216,9 +216,9 @@ export default function Navbar() {
               {!currentUser?.isAdmin && !currentUser?.isSuperAdmin && currentUser?.team && (
                 <Disclosure.Button
                   as="a"
-                  href="/admin/teams"
+                  href="/team"
                   className={classNames(
-                    pathname === '/admin/teams'
+                    pathname === '/team'
                       ? 'bg-indigo-700 text-white'
                       : 'text-indigo-200 hover:bg-indigo-500 hover:text-white',
                     'block rounded-md px-3 py-2 text-base font-medium'
