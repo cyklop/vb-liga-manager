@@ -524,7 +524,8 @@ export default function LeaguesPage() {
                     type="checkbox"
                     id={`team-${team.id}`}
                     checked={newLeague.teamIds.includes(team.id)}
-                    disabled={!e.target.checked && newLeague.teamIds.length >= newLeague.numberOfTeams} // Disable adding more than allowed
+                    // Disable adding more teams if the max number is reached and this team is not already selected
+                    disabled={!newLeague.teamIds.includes(team.id) && newLeague.teamIds.length >= newLeague.numberOfTeams} 
                     onChange={(e) => {
                       const isChecked = e.target.checked;
                       const currentTeamIds = newLeague.teamIds;
