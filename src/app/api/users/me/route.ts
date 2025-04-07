@@ -67,7 +67,7 @@ export async function PUT(request: Request) {
   
   const userId = parseInt(session.user.id)
 
-  const { name, email, password } = await request.json()
+  const { name, email, password, theme } = await request.json()
 
   try {
     const updateData: any = { name, email }
@@ -75,6 +75,10 @@ export async function PUT(request: Request) {
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10)
       updateData.password = hashedPassword
+    }
+    
+    if (theme) {
+      updateData.theme = theme
     }
 
     const updatedUser = await prisma.user.update({

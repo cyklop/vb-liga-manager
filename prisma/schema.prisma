@@ -29,6 +29,7 @@ model User {
   name         String
   isAdmin      Boolean    @default(false)
   isSuperAdmin Boolean    @default(false)
+  theme        String     @default("system") // "light", "dark", or "system"
   teams        UserTeam[]
   leadingTeam  Team?      @relation("TeamLeader")
 }
