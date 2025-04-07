@@ -27,6 +27,10 @@ export default function Login() {
     e.preventDefault()
     setError('') // Reset error message
     try {
+      // First, ensure we're logged out
+      await fetch('/api/auth/signout', { method: 'POST' });
+      
+      // Then attempt to log in
       const result = await signIn('credentials', {
         redirect: false,
         email,

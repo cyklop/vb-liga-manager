@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
-const handler = NextAuth({
+export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -50,8 +50,9 @@ const handler = NextAuth({
     error: "/login",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
+        // Only update the token when a sign in happens
         token.id = user.id;
         token.isAdmin = user.isAdmin;
         token.isSuperAdmin = user.isSuperAdmin;
@@ -70,6 +71,7 @@ const handler = NextAuth({
   session: {
     strategy: "jwt",
   },
-});
+};
 
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
