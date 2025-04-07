@@ -157,6 +157,8 @@ export default function TeamPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          homeTeamId: editingFixture.homeTeamId,
+          awayTeamId: editingFixture.awayTeamId,
           homeSets: formData.homeSets ? parseInt(formData.homeSets) : null,
           awaySets: formData.awaySets ? parseInt(formData.awaySets) : null,
           homePoints: formData.homePoints ? parseInt(formData.homePoints) : null,
