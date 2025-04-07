@@ -21,10 +21,14 @@ export const authOptions = {
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
           include: {
-            team: {
+            teams: {
               select: {
-                id: true,
-                name: true
+                team: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                }
               }
             }
           }
@@ -43,13 +47,16 @@ export const authOptions = {
           throw new Error("Ungültiges Passwort");
         }
 
+        // Extract the first team if available
+        const team = user.teams.length > 0 ? user.teams[0].team : null;
+        
         return {
           id: user.id.toString(),
           email: user.email,
           name: user.name,
           isAdmin: user.isAdmin,
           isSuperAdmin: user.isSuperAdmin,
-          team: user.team
+          team: team
         };
       },
     }),
