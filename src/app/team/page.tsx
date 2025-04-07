@@ -89,17 +89,70 @@ export default function TeamPage() {
         console.log("Current user:", currentUser); // Debug-Ausgabe
         
         const userTeams: Team[] = [];
+        const processedTeamIds: number[] = [];
       
-      // Füge das Haupt-Team hinzu, falls vorhanden
-      if (currentUser.team) {
-        // Versuche, vollständige Teamdaten zu laden
-        try {
-          const response = await fetch(`/api/teams/${currentUser.team.id}/details`);
-          if (response.ok) {
-            const teamDetails = await response.json();
-            userTeams.push(teamDetails);
-          } else {
-            // Fallback, wenn API-Endpunkt nicht verfügbar
+        // Verarbeite alle Teams aus dem teams-Array
+        if (currentUser.teams && currentUser.teams.length > 0) {
+          console.log("User teams array:", currentUser.teams); // Debug-Ausgabe
+          
+          for (const team of currentUser.teams) {
+            if (processedTeamIds.includes(team.id)) continue;
+            
+            try {
+              const response = await fetch(`/api/teams/${team.id}/details`);
+              if (response.ok) {
+                const teamDetails = await response.json();
+                userTeams.push(teamDetails);
+                processedTeamIds.push(team.id);
+              } else {
+                // Fallback, wenn API-Endpunkt nicht verfügbar
+                const teamData = {
+                  id: team.id,
+                  name: team.name,
+                  location: "Nicht verfügbar",
+                  hallAddress: "Nicht verfügbar",
+                  trainingTimes: "Nicht verfügbar"
+                };
+                userTeams.push(teamData);
+                processedTeamIds.push(team.id);
+              }
+            } catch (error) {
+              console.error(`Fehler beim Laden der Teamdetails für Team ${team.id}:`, error);
+              const teamData = {
+                id: team.id,
+                name: team.name,
+                location: "Nicht verfügbar",
+                hallAddress: "Nicht verfügbar",
+                trainingTimes: "Nicht verfügbar"
+              };
+              userTeams.push(teamData);
+              processedTeamIds.push(team.id);
+            }
+          }
+        }
+        
+        // Füge das Haupt-Team hinzu, falls es noch nicht verarbeitet wurde
+        if (currentUser.team && !processedTeamIds.includes(currentUser.team.id)) {
+          try {
+            const response = await fetch(`/api/teams/${currentUser.team.id}/details`);
+            if (response.ok) {
+              const teamDetails = await response.json();
+              userTeams.push(teamDetails);
+              processedTeamIds.push(currentUser.team.id);
+            } else {
+              // Fallback, wenn API-Endpunkt nicht verfügbar
+              const teamData = {
+                id: currentUser.team.id,
+                name: currentUser.team.name,
+                location: "Nicht verfügbar",
+                hallAddress: "Nicht verfügbar",
+                trainingTimes: "Nicht verfügbar"
+              };
+              userTeams.push(teamData);
+              processedTeamIds.push(currentUser.team.id);
+            }
+          } catch (error) {
+            console.error(`Fehler beim Laden der Teamdetails für Team ${currentUser.team.id}:`, error);
             const teamData = {
               id: currentUser.team.id,
               name: currentUser.team.name,
@@ -108,66 +161,19 @@ export default function TeamPage() {
               trainingTimes: "Nicht verfügbar"
             };
             userTeams.push(teamData);
+            processedTeamIds.push(currentUser.team.id);
           }
-        } catch (error) {
-          console.error("Fehler beim Laden der Teamdetails:", error);
-          const teamData = {
-            id: currentUser.team.id,
-            name: currentUser.team.name,
-            location: "Nicht verfügbar",
-            hallAddress: "Nicht verfügbar",
-            trainingTimes: "Nicht verfügbar"
-          };
-          userTeams.push(teamData);
         }
+      
+        console.log("Processed teams:", userTeams); // Debug-Ausgabe
         
-        // Setze das erste Team als ausgewähltes Team
-        if (!selectedTeamId) {
-          setSelectedTeamId(currentUser.team.id);
-        }
-      }
-      
-      // Füge alle anderen Teams hinzu
-      if (currentUser.teams && currentUser.teams.length > 0) {
-        for (const teamRelation of currentUser.teams) {
-          if (teamRelation.team) {
-            // Prüfe, ob das Team bereits in der Liste ist
-            const exists = userTeams.some(t => t.id === teamRelation.team.id);
-            if (!exists) {
-              try {
-                const response = await fetch(`/api/teams/${teamRelation.team.id}/details`);
-                if (response.ok) {
-                  const teamDetails = await response.json();
-                  userTeams.push(teamDetails);
-                } else {
-                  // Fallback, wenn API-Endpunkt nicht verfügbar
-                  const teamData = {
-                    id: teamRelation.team.id,
-                    name: teamRelation.team.name,
-                    location: "Nicht verfügbar",
-                    hallAddress: "Nicht verfügbar",
-                    trainingTimes: "Nicht verfügbar"
-                  };
-                  userTeams.push(teamData);
-                }
-              } catch (error) {
-                console.error("Fehler beim Laden der Teamdetails:", error);
-                const teamData = {
-                  id: teamRelation.team.id,
-                  name: teamRelation.team.name,
-                  location: "Nicht verfügbar",
-                  hallAddress: "Nicht verfügbar",
-                  trainingTimes: "Nicht verfügbar"
-                };
-                userTeams.push(teamData);
-              }
-            }
-          }
-        }
-      }
-      
         // Aktualisiere die Teams-Liste
         setTeams(userTeams);
+        
+        // Setze das erste Team als ausgewähltes Team, wenn noch keines ausgewählt ist
+        if (userTeams.length > 0 && !selectedTeamId) {
+          setSelectedTeamId(userTeams[0].id);
+        }
         
         // Lade Heimspiele für alle Teams
         for (const team of userTeams) {
