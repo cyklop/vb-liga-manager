@@ -874,32 +874,15 @@ function SortableFixtureItem({ fixture, onEditClick }: SortableFixtureItemProps)
         <button
           onClick={() => onEditClick(fixture)}
           className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded"
-                                title="Spielpaarung bearbeiten"
-                              >
-                                <PencilIcon className="h-4 w-4" />
-                              </button>
-                              <button
-                                onClick={() => moveFixtureUp(index)}
-                                disabled={index === 0}
-                                className={`p-1 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded ${index === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                title="Nach oben verschieben"
-                              >
-                                <ArrowUpIcon className="h-4 w-4" />
-                              </button>
-                              <button
-                                onClick={() => moveFixtureDown(index)}
-                                disabled={index === selectedLeagueFixtures.length - 1}
-                                className={`p-1 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded ${index === selectedLeagueFixtures.length - 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                title="Nach unten verschieben"
-                              >
-                                <ArrowDownIcon className="h-4 w-4" />
-                              </button>
-                            </div>
-                          </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-xs text-gray-500">Kein Spielplan für diese Liga vorhanden oder generiert.</p>
+          title="Spielpaarung bearbeiten"
+        >
+          <PencilIcon className="h-4 w-4" />
+        </button>
+        {/* Removed Up/Down buttons as Drag&Drop is used */}
+      </div>
+    </li>
+  );
+}
                   )}
                 </div>
               )}
