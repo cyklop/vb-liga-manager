@@ -12,10 +12,10 @@ interface User {
   name: string
   isAdmin: boolean
   isSuperAdmin: boolean
-  team?: {
+  teams?: {
     id: number
     name: string
-  }
+  }[]
 }
 
 interface Team {
@@ -27,7 +27,7 @@ export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([])
   const [teams, setTeams] = useState<Team[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [newUser, setNewUser] = useState({ id: 0, email: '', name: '', password: '', isAdmin: false, teamId: '' })
+  const [newUser, setNewUser] = useState({ id: 0, email: '', name: '', password: '', isAdmin: false, teamIds: [] as number[] })
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [userToDelete, setUserToDelete] = useState<User | null>(null)
   const [isEditing, setIsEditing] = useState(false)
@@ -119,7 +119,7 @@ export default function UsersPage() {
         <h1 className="text-2xl font-bold mb-4">Benutzer verwalten</h1>
         <button
           onClick={() => {
-            setNewUser({ id: 0, email: '', name: '', password: '', isAdmin: false, teamId: '' })
+            setNewUser({ id: 0, email: '', name: '', password: '', isAdmin: false, teamIds: [] })
             setIsEditing(false)
             setIsModalOpen(true)
           }}
@@ -134,7 +134,11 @@ export default function UsersPage() {
                 <div>
                   <p className="text-sm font-medium text-indigo-600 truncate">{user.name}</p>
                   <p className="text-sm text-gray-500">{user.email}</p>
-                  {user.team && <p className="text-sm text-gray-500">Team: {user.team.name}</p>}
+                  {user.teams && user.teams.length > 0 && (
+                    <p className="text-sm text-gray-500">
+                      Teams: {user.teams.map(team => team.name).join(', ')}
+                    </p>
+                  )}
                 </div>
                 <div className="flex items-center">
                   <span className={`px-2 py-1 text-xs font-medium rounded-full ${user.isAdmin ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
@@ -147,7 +151,9 @@ export default function UsersPage() {
                   )}
                   <button
                     onClick={() => {
-                      setNewUser({ ...user, password: '' })
+                      // Konvertiere das teams-Array in ein teamIds-Array für das Formular
+                      const teamIds = user.teams ? user.teams.map(team => team.id) : [];
+                      setNewUser({ ...user, password: '', teamIds })
                       setIsEditing(true)
                       setIsModalOpen(true)
                     }}
@@ -193,16 +199,37 @@ export default function UsersPage() {
             className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
             required={!isEditing}
           />
-          <select
-            value={newUser.teamId}
-            onChange={(e) => setNewUser({ ...newUser, teamId: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
-          >
-            <option value="">Kein Team</option>
-            {teams.map((team) => (
-              <option key={team.id} value={team.id}>{team.name}</option>
-            ))}
-          </select>
+          <div className="w-full">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Teams</label>
+            <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-md p-2">
+              {teams.map((team) => (
+                <div key={team.id} className="flex items-center mb-2">
+                  <input
+                    type="checkbox"
+                    id={`team-${team.id}`}
+                    checked={newUser.teamIds.includes(team.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setNewUser({ 
+                          ...newUser, 
+                          teamIds: [...newUser.teamIds, team.id] 
+                        });
+                      } else {
+                        setNewUser({ 
+                          ...newUser, 
+                          teamIds: newUser.teamIds.filter(id => id !== team.id) 
+                        });
+                      }
+                    }}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor={`team-${team.id}`} className="ml-2 block text-sm text-gray-900">
+                    {team.name}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
           <div className="flex items-center">
             <input
               type="checkbox"
