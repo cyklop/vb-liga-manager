@@ -46,9 +46,12 @@ export default function TeamsPage() {
   const [userTeamId, setUserTeamId] = useState<number | null>(null)
 
   useEffect(() => {
-    fetchCurrentUser()
-    fetchTeams()
-    fetchUsers()
+    const init = async () => {
+      await fetchCurrentUser()
+      fetchTeams()
+      fetchUsers()
+    }
+    init()
   }, [])
 
   const fetchCurrentUser = async () => {
@@ -76,14 +79,16 @@ export default function TeamsPage() {
       if (response.ok) {
         const data = await response.json()
         
+        // Prüfen, ob der aktuelle Benutzer ein Admin ist
+        const isUserAdmin = currentUser?.isAdmin || currentUser?.isSuperAdmin
+        
         // Wenn kein Admin, dann nur das eigene Team anzeigen
-        if (!isAdmin && userTeamId) {
-          const filteredTeams = data.filter((team: Team) => team.id === userTeamId)
+        if (!isUserAdmin && currentUser?.team?.id) {
+          const filteredTeams = data.filter((team: Team) => team.id === currentUser.team?.id)
           setTeams(filteredTeams)
-        } else if (isAdmin) {
-          setTeams(data)
         } else {
-          setTeams([])
+          // Für Admins oder Super-Admins alle Teams anzeigen
+          setTeams(data)
         }
       }
     } catch (error) {
