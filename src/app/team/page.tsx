@@ -89,7 +89,7 @@ export default function TeamPage() {
       // Füge alle anderen Teams hinzu
       if (currentUser.teams && currentUser.teams.length > 0) {
         currentUser.teams.forEach(teamRelation => {
-          if (!userTeams.includes(teamRelation.team.id)) {
+          if (teamRelation.team && !userTeams.includes(teamRelation.team.id)) {
             userTeams.push(teamRelation.team.id);
           }
         });
