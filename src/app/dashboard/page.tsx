@@ -12,8 +12,8 @@ interface User {
 }
 
 const navigation = [
-  { name: 'Tabelle', href: '/tabelle' },
-  { name: 'Spielplan', href: '/spielplan' },
+  { name: 'Tabelle', href: '/table' },
+  { name: 'Spielplan', href: '/fixtures' },
   { name: 'Mein Konto', href: '/account' },
 ]
 
