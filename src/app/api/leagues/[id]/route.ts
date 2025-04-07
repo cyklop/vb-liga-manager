@@ -23,6 +23,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     numberOfTeams, 
     hasReturnMatches, 
     teamIds,
+    isActive,
     // Add point rules
     pointsWin30, 
     pointsWin31, 
@@ -56,6 +57,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         name,
         numberOfTeams,
         hasReturnMatches,
+        isActive: isActive !== undefined ? isActive : undefined,
         // Update point rules - ensure they are numbers or use defaults/existing
         pointsWin30: pointsWin30 !== undefined ? Number(pointsWin30) : undefined,
         pointsWin31: pointsWin31 !== undefined ? Number(pointsWin31) : undefined,
