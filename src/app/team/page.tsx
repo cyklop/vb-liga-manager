@@ -80,33 +80,31 @@ export default function TeamPage() {
     if (currentUser) {
       console.log("Current user:", currentUser); // Debug-Ausgabe
       
-      // Sammle alle Team-IDs des Benutzers
-      const userTeams: number[] = [];
-      
-      // Füge das Haupt-Team hinzu, falls vorhanden
+      // Da der GET-Endpunkt für Teams nicht funktioniert, 
+      // erstellen wir ein Team-Objekt direkt aus den Daten des currentUser
       if (currentUser.team) {
-        userTeams.push(currentUser.team.id);
-      }
-      
-      // Füge alle anderen Teams hinzu
-      if (currentUser.teams && currentUser.teams.length > 0) {
-        currentUser.teams.forEach(teamRelation => {
-          if (teamRelation.team && !userTeams.includes(teamRelation.team.id)) {
-            userTeams.push(teamRelation.team.id);
-          }
-        });
-      }
-      
-      console.log("User teams:", userTeams); // Debug-Ausgabe
-      
-      if (userTeams.length > 0) {
-        // Lade Details für alle Teams
-        Promise.all(userTeams.map(teamId => fetchTeamDetails(teamId)));
+        // Füge das Team direkt zur Liste hinzu
+        const teamData = {
+          id: currentUser.team.id,
+          name: currentUser.team.name,
+          location: "Nicht verfügbar", // Diese Daten sind nicht in currentUser.team
+          hallAddress: "Nicht verfügbar",
+          trainingTimes: "Nicht verfügbar"
+        };
         
-        // Lade Heimspiele für alle Teams
-        Promise.all(userTeams.map(teamId => fetchHomeFixtures(teamId)));
+        setTeams(prevTeams => {
+          // Prüfe, ob das Team bereits in der Liste ist
+          const exists = prevTeams.some(t => t.id === teamData.id);
+          if (!exists) {
+            return [...prevTeams, teamData];
+          }
+          return prevTeams;
+        });
+        
+        // Lade Heimspiele für das Team
+        fetchHomeFixtures(currentUser.team.id);
       } else {
-        // Benutzer hat keine Teams
+        // Benutzer hat kein Team
         setIsLoading(false);
       }
     }
@@ -129,6 +127,8 @@ export default function TeamPage() {
     }
   };
 
+  // Diese Funktion wird nicht mehr verwendet, da der GET-Endpunkt nicht funktioniert
+  // Wir behalten sie für zukünftige Verwendung
   const fetchTeamDetails = async (teamId: number) => {
     try {
       const response = await fetch(`/api/teams/${teamId}`);
@@ -142,6 +142,8 @@ export default function TeamPage() {
           }
           return prevTeams;
         });
+      } else {
+        console.error(`Error fetching team details: ${response.status} ${response.statusText}`);
       }
     } catch (error) {
       console.error('Error fetching team details:', error);
