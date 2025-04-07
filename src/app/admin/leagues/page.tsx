@@ -883,11 +883,7 @@ function SortableFixtureItem({ fixture, onEditClick }: SortableFixtureItemProps)
     </li>
   );
 }
-                  )}
-                </div>
-              )}
-            </li>
-          ))}
+// Removed extraneous closing tags from previous inline mapping
         </ul>
       </div>
 
