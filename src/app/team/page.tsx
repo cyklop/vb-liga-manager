@@ -14,6 +14,12 @@ interface User {
     id: number;
     name: string;
   };
+  teams?: {
+    team: {
+      id: number;
+      name: string;
+    }
+  }[];
 }
 
 interface Team {
@@ -51,8 +57,8 @@ interface Fixture {
 
 export default function TeamPage() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [team, setTeam] = useState<Team | null>(null);
-  const [homeFixtures, setHomeFixtures] = useState<Fixture[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [homeFixtures, setHomeFixtures] = useState<{[teamId: number]: Fixture[]}>({}); 
   const [isLoading, setIsLoading] = useState(true);
   const [editingFixture, setEditingFixture] = useState<Fixture | null>(null);
   const router = useRouter();
@@ -71,12 +77,34 @@ export default function TeamPage() {
   }, []);
 
   useEffect(() => {
-    if (currentUser?.team) {
-      fetchTeamDetails(currentUser.team.id);
-      fetchHomeFixtures(currentUser.team.id);
-    } else if (currentUser && !currentUser.team) {
-      // User has no team
-      setIsLoading(false);
+    if (currentUser) {
+      // Sammle alle Team-IDs des Benutzers
+      const userTeams: number[] = [];
+      
+      // Füge das Haupt-Team hinzu, falls vorhanden
+      if (currentUser.team) {
+        userTeams.push(currentUser.team.id);
+      }
+      
+      // Füge alle anderen Teams hinzu
+      if (currentUser.teams && currentUser.teams.length > 0) {
+        currentUser.teams.forEach(teamRelation => {
+          if (!userTeams.includes(teamRelation.team.id)) {
+            userTeams.push(teamRelation.team.id);
+          }
+        });
+      }
+      
+      if (userTeams.length > 0) {
+        // Lade Details für alle Teams
+        Promise.all(userTeams.map(teamId => fetchTeamDetails(teamId)));
+        
+        // Lade Heimspiele für alle Teams
+        Promise.all(userTeams.map(teamId => fetchHomeFixtures(teamId)));
+      } else {
+        // Benutzer hat keine Teams
+        setIsLoading(false);
+      }
     }
   }, [currentUser]);
 
@@ -101,7 +129,14 @@ export default function TeamPage() {
       const response = await fetch(`/api/teams/${teamId}`);
       if (response.ok) {
         const teamData = await response.json();
-        setTeam(teamData);
+        setTeams(prevTeams => {
+          // Prüfe, ob das Team bereits in der Liste ist
+          const exists = prevTeams.some(t => t.id === teamData.id);
+          if (!exists) {
+            return [...prevTeams, teamData];
+          }
+          return prevTeams;
+        });
       }
     } catch (error) {
       console.error('Error fetching team details:', error);
@@ -114,7 +149,10 @@ export default function TeamPage() {
       const response = await fetch(`/api/teams/${teamId}/fixtures?homeOnly=true`);
       if (response.ok) {
         const fixtures = await response.json();
-        setHomeFixtures(fixtures);
+        setHomeFixtures(prevFixtures => ({
+          ...prevFixtures,
+          [teamId]: fixtures
+        }));
       }
     } catch (error) {
       console.error('Error fetching home fixtures:', error);
@@ -169,8 +207,9 @@ export default function TeamPage() {
 
       if (response.ok) {
         // Refresh fixtures after update
-        if (currentUser?.team) {
-          fetchHomeFixtures(currentUser.team.id);
+        // Aktualisiere die Heimspiele für das betroffene Team
+        if (editingFixture) {
+          fetchHomeFixtures(editingFixture.homeTeamId);
         }
         setEditingFixture(null);
       } else {
@@ -205,12 +244,15 @@ export default function TeamPage() {
     );
   }
 
-  if (!currentUser.team) {
+  // Prüfe, ob der Benutzer Teams hat
+  const hasTeams = teams.length > 0;
+  
+  if (!hasTeams && !isLoading) {
     return (
       <>
         <Navigation />
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-2xl font-bold mb-6">Meine Mannschaft</h1>
+          <h1 className="text-2xl font-bold mb-6">Meine Mannschaften</h1>
           <div className="bg-white shadow overflow-hidden sm:rounded-md p-6 text-center text-gray-500">
             Sie sind keiner Mannschaft zugeordnet. Bitte kontaktieren Sie einen Administrator.
           </div>
@@ -223,46 +265,48 @@ export default function TeamPage() {
     <>
       <Navigation />
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">Meine Mannschaft: {team?.name}</h1>
+        <h1 className="text-2xl font-bold mb-6">Meine Mannschaften</h1>
         
-        {team && (
-          <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
-            <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">Mannschaftsdetails</h3>
+        {teams.map(team => (
+          <div key={team.id} className="mb-12">
+            <h2 className="text-xl font-semibold mb-4">{team.name}</h2>
+            
+            <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
+              <div className="px-4 py-5 sm:px-6">
+                <h3 className="text-lg leading-6 font-medium text-gray-900">Mannschaftsdetails</h3>
+              </div>
+              <div className="border-t border-gray-200">
+                <dl>
+                  <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-500">Name</dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.name}</dd>
+                  </div>
+                  <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-500">Ort</dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.location}</dd>
+                  </div>
+                  <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-500">Hallenadresse</dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.hallAddress}</dd>
+                  </div>
+                  <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-500">Trainingszeiten</dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.trainingTimes}</dd>
+                  </div>
+                </dl>
+              </div>
             </div>
-            <div className="border-t border-gray-200">
-              <dl>
-                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Name</dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.name}</dd>
-                </div>
-                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Ort</dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.location}</dd>
-                </div>
-                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Hallenadresse</dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.hallAddress}</dd>
-                </div>
-                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Trainingszeiten</dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.trainingTimes}</dd>
-                </div>
-              </dl>
-            </div>
-          </div>
-        )}
 
-        <h2 className="text-xl font-semibold mb-4">Heimspiele verwalten</h2>
-        
-        {isLoading ? (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-          </div>
-        ) : homeFixtures.length > 0 ? (
-          <div className="bg-white shadow overflow-hidden sm:rounded-md">
-            <ul className="divide-y divide-gray-200">
-              {homeFixtures.map((fixture) => (
+            <h3 className="text-lg font-semibold mb-4">Heimspiele verwalten</h3>
+            
+            {isLoading ? (
+              <div className="flex justify-center items-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+              </div>
+            ) : homeFixtures[team.id] && homeFixtures[team.id].length > 0 ? (
+              <div className="bg-white shadow overflow-hidden sm:rounded-md mb-8">
+                <ul className="divide-y divide-gray-200">
+                  {homeFixtures[team.id].map((fixture) => (
                 <li key={fixture.id} className="px-4 py-4 sm:px-6">
                   {editingFixture?.id === fixture.id ? (
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -415,11 +459,13 @@ export default function TeamPage() {
               ))}
             </ul>
           </div>
-        ) : (
-          <div className="bg-white shadow overflow-hidden sm:rounded-md p-6 text-center text-gray-500">
-            Keine Heimspiele gefunden.
+            ) : (
+              <div className="bg-white shadow overflow-hidden sm:rounded-md p-6 text-center text-gray-500 mb-8">
+                Keine Heimspiele für {team.name} gefunden.
+              </div>
+            )}
           </div>
-        )}
+        ))}
       </div>
     </>
   );
