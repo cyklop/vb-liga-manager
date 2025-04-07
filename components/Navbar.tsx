@@ -59,10 +59,19 @@ export default function Navbar() {
   }
 
   const handleLogout = async () => {
-    const response = await fetch('/api/logout', { method: 'POST' })
-    if (response.ok) {
+    try {
+      // Erst die NextAuth-Session beenden
+      await fetch('/api/auth/signout', { method: 'POST' })
+      // Dann den alten Logout-Endpunkt aufrufen für Kompatibilität
+      await fetch('/api/logout', { method: 'POST' })
+      
+      // Lokalen Zustand zurücksetzen
       setCurrentUser(null)
-      router.push('/login')
+      
+      // Vollständigen Seitenneuladen erzwingen, um alle Session-Daten zu löschen
+      window.location.href = '/login'
+    } catch (error) {
+      console.error('Fehler beim Abmelden:', error)
     }
   }
 

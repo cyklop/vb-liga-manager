@@ -27,20 +27,23 @@ export default function Login() {
     e.preventDefault()
     setError('') // Reset error message
     try {
-      // First, ensure we're logged out
+      // Zuerst sicherstellen, dass wir vollständig abgemeldet sind
       await fetch('/api/auth/signout', { method: 'POST' });
+      await fetch('/api/logout', { method: 'POST' });
       
-      // Then attempt to log in
+      // Dann versuchen, sich anzumelden mit callbackUrl für vollständige Session-Aktualisierung
       const result = await signIn('credentials', {
         redirect: false,
         email,
-        password
+        password,
+        callbackUrl: '/dashboard'
       })
 
       if (result?.error) {
         setError(result.error || 'Anmeldung fehlgeschlagen')
       } else {
-        router.replace('/dashboard')
+        // Vollständigen Seitenneuladen erzwingen, um alle Session-Daten zu aktualisieren
+        window.location.href = '/dashboard'
       }
     } catch (error) {
       console.error('Login error:', error)
