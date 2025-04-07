@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import prisma from '../../../../../lib/prisma' // Import the singleton instance
+import { cookies } from 'next/headers'
 
 // PUT Handler to update a specific fixture
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
@@ -9,6 +10,40 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 
   try {
+    // Benutzerberechtigungen prüfen
+    // In einer echten Anwendung würden Sie hier die Benutzer-ID aus der Session oder einem JWT-Token abrufen
+    // Für dieses Beispiel verwenden wir eine Mockmethode
+    const userId = 1 // Ersetzen Sie dies durch die tatsächliche Benutzer-ID aus der Authentifizierung
+    
+    // Benutzer abrufen
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        team: true,
+      },
+    })
+    
+    if (!user) {
+      return NextResponse.json({ message: 'Nicht autorisiert' }, { status: 401 })
+    }
+    
+    // Fixture abrufen, um zu prüfen, ob der Benutzer berechtigt ist
+    const fixture = await prisma.fixture.findUnique({
+      where: { id },
+    })
+    
+    if (!fixture) {
+      return NextResponse.json({ message: 'Spielpaarung nicht gefunden' }, { status: 404 })
+    }
+    
+    // Wenn der Benutzer kein Admin ist, darf er nur Heimspiele seiner eigenen Mannschaft bearbeiten
+    if (!user.isAdmin && !user.isSuperAdmin && user.team) {
+      if (fixture.homeTeamId !== user.team.id) {
+        return NextResponse.json({ 
+          message: 'Sie sind nur berechtigt, Heimspiele Ihrer eigenen Mannschaft zu bearbeiten' 
+        }, { status: 403 })
+      }
+    }
     const { 
       homeTeamId,
       awayTeamId,

@@ -31,6 +31,18 @@ interface Team {
   name: string
 }
 
+interface User {
+  id: number
+  name: string
+  email: string
+  isAdmin: boolean
+  isSuperAdmin: boolean
+  team?: {
+    id: number
+    name: string
+  }
+}
+
 interface Fixture {
   id: number
   leagueId: number
@@ -103,11 +115,31 @@ export default function LeaguesPage() {
     })
   );
 
+  // --- User state ---
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [userTeamId, setUserTeamId] = useState<number | null>(null)
+
   // --- Fetch initial data ---
   useEffect(() => {
+    fetchCurrentUser()
     fetchLeagues()
     fetchTeams()
   }, [])
+
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await fetch('/api/users/me')
+      if (response.ok) {
+        const user = await response.json()
+        setCurrentUser(user)
+        setIsAdmin(user.isAdmin || user.isSuperAdmin)
+        setUserTeamId(user.team?.id || null)
+      }
+    } catch (error) {
+      console.error('Fehler beim Abrufen des aktuellen Benutzers', error)
+    }
+  }
 
   // --- Data Fetching Functions ---
   const fetchLeagues = async (selectLeagueId: number | null = null) => {
@@ -198,6 +230,15 @@ export default function LeaguesPage() {
     if (!league.isActive) {
       alert('Spielpaarungen können nur für aktive Ligen bearbeitet werden. Abgeschlossene Ligen müssen zuerst wieder aktiviert werden.');
       return;
+    }
+    
+    // Prüfe Berechtigungen für normale Benutzer
+    if (!isAdmin && userTeamId) {
+      // Normale Benutzer dürfen nur Heimspiele ihrer eigenen Mannschaft bearbeiten
+      if (fixture.homeTeamId !== userTeamId) {
+        alert('Sie können nur Heimspiele Ihrer eigenen Mannschaft bearbeiten.');
+        return;
+      }
     }
     
     setEditingFixture({
@@ -427,29 +468,33 @@ export default function LeaguesPage() {
     <>
       <Navigation />
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-4">Ligen verwalten</h1>
+        <h1 className="text-2xl font-bold mb-4">
+          {isAdmin ? "Ligen verwalten" : "Spielpläne anzeigen"}
+        </h1>
         
-        {/* Add League Button */}
-        <button
-          onClick={() => {
-            setEditingLeague(null);
-            // Reset form with default point rules when adding new
-            setNewLeague({ 
-              name: '', 
-              numberOfTeams: 0, 
-              hasReturnMatches: false, 
-              teamIds: [],
-              pointsWin30: 3,
-              pointsWin31: 3,
-              pointsWin32: 2,
-              pointsLoss32: 1,
-            });
-            setIsModalOpen(true);
-          }}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
-        >
-          Neue Liga hinzufügen
-        </button>
+        {/* Add League Button - nur für Admins */}
+        {isAdmin && (
+          <button
+            onClick={() => {
+              setEditingLeague(null);
+              // Reset form with default point rules when adding new
+              setNewLeague({ 
+                name: '', 
+                numberOfTeams: 0, 
+                hasReturnMatches: false, 
+                teamIds: [],
+                pointsWin30: 3,
+                pointsWin31: 3,
+                pointsWin32: 2,
+                pointsLoss32: 1,
+              });
+              setIsModalOpen(true);
+            }}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
+          >
+            Neue Liga hinzufügen
+          </button>
+        )}
 
         {/* Leagues List */}
         <ul className="bg-white shadow overflow-hidden sm:rounded-md">
@@ -473,65 +518,69 @@ export default function LeaguesPage() {
                 </div>
                 {/* Action Buttons */}
                 <div className="flex space-x-1">
-                  <button
-                    onClick={() => {
-                      setEditingLeague(league);
-                      setNewLeague({
-                        name: league.name,
-                        numberOfTeams: league.numberOfTeams,
-                        hasReturnMatches: league.hasReturnMatches,
-                        teamIds: league.teams.map(team => team.id),
-                        isActive: league.isActive,
-                        // Load existing point rules when editing
-                        pointsWin30: league.pointsWin30,
-                        pointsWin31: league.pointsWin31,
-                        pointsWin32: league.pointsWin32,
-                        pointsLoss32: league.pointsLoss32,
-                      });
-                      setIsModalOpen(true);
-                    }}
-                    className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded"
-                    title="Liga bearbeiten"
-                  >
-                    <PencilIcon className="h-5 w-5" />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteLeague(league.id)}
-                    className="p-1 text-red-600 hover:text-red-900 hover:bg-red-100 rounded"
-                    title="Liga löschen"
-                  >
-                    <TrashIcon className="h-5 w-5" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      setEditingLeague(league);
-                      setNewLeague({
-                        ...newLeague,
-                        name: league.name,
-                        numberOfTeams: league.numberOfTeams,
-                        hasReturnMatches: league.hasReturnMatches,
-                        teamIds: league.teams.map(team => team.id),
-                        isActive: !league.isActive, // Umkehren des aktuellen Status
-                        pointsWin30: league.pointsWin30,
-                        pointsWin31: league.pointsWin31,
-                        pointsWin32: league.pointsWin32,
-                        pointsLoss32: league.pointsLoss32,
-                      });
-                      setIsModalOpen(true);
-                    }}
-                    className={`p-1 ${league.isActive ? 'text-amber-600 hover:text-amber-900' : 'text-green-600 hover:text-green-900'} hover:bg-gray-100 rounded`}
-                    title={league.isActive ? "Liga abschließen" : "Liga wieder aktivieren"}
-                  >
-                    {league.isActive ? <LockClosedIcon className="h-5 w-5" /> : <LockOpenIcon className="h-5 w-5" />}
-                  </button>
-                  <button
-                    onClick={() => handleGenerateFixtures(league.id)}
-                    className={`p-1 ${league.isActive ? 'text-green-600 hover:text-green-900 hover:bg-green-100' : 'text-gray-400 cursor-not-allowed'} rounded`}
-                    title={league.isActive ? "Spielplan generieren" : "Liga ist abgeschlossen"}
-                    disabled={!league.isActive}
-                  >
-                    <CalendarDaysIcon className="h-5 w-5" />
-                  </button>
+                  {isAdmin && (
+                    <>
+                      <button
+                        onClick={() => {
+                          setEditingLeague(league);
+                          setNewLeague({
+                            name: league.name,
+                            numberOfTeams: league.numberOfTeams,
+                            hasReturnMatches: league.hasReturnMatches,
+                            teamIds: league.teams.map(team => team.id),
+                            isActive: league.isActive,
+                            // Load existing point rules when editing
+                            pointsWin30: league.pointsWin30,
+                            pointsWin31: league.pointsWin31,
+                            pointsWin32: league.pointsWin32,
+                            pointsLoss32: league.pointsLoss32,
+                          });
+                          setIsModalOpen(true);
+                        }}
+                        className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded"
+                        title="Liga bearbeiten"
+                      >
+                        <PencilIcon className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteLeague(league.id)}
+                        className="p-1 text-red-600 hover:text-red-900 hover:bg-red-100 rounded"
+                        title="Liga löschen"
+                      >
+                        <TrashIcon className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setEditingLeague(league);
+                          setNewLeague({
+                            ...newLeague,
+                            name: league.name,
+                            numberOfTeams: league.numberOfTeams,
+                            hasReturnMatches: league.hasReturnMatches,
+                            teamIds: league.teams.map(team => team.id),
+                            isActive: !league.isActive, // Umkehren des aktuellen Status
+                            pointsWin30: league.pointsWin30,
+                            pointsWin31: league.pointsWin31,
+                            pointsWin32: league.pointsWin32,
+                            pointsLoss32: league.pointsLoss32,
+                          });
+                          setIsModalOpen(true);
+                        }}
+                        className={`p-1 ${league.isActive ? 'text-amber-600 hover:text-amber-900' : 'text-green-600 hover:text-green-900'} hover:bg-gray-100 rounded`}
+                        title={league.isActive ? "Liga abschließen" : "Liga wieder aktivieren"}
+                      >
+                        {league.isActive ? <LockClosedIcon className="h-5 w-5" /> : <LockOpenIcon className="h-5 w-5" />}
+                      </button>
+                      <button
+                        onClick={() => handleGenerateFixtures(league.id)}
+                        className={`p-1 ${league.isActive ? 'text-green-600 hover:text-green-900 hover:bg-green-100' : 'text-gray-400 cursor-not-allowed'} rounded`}
+                        title={league.isActive ? "Spielplan generieren" : "Liga ist abgeschlossen"}
+                        disabled={!league.isActive}
+                      >
+                        <CalendarDaysIcon className="h-5 w-5" />
+                      </button>
+                    </>
+                  )}
                   <button
                     onClick={() => handleShowFixtures(league.id)}
                     className="p-1 text-blue-600 hover:text-blue-900 hover:bg-blue-100 rounded"
@@ -547,8 +596,8 @@ export default function LeaguesPage() {
                 <div className="px-4 py-4 sm:px-6 border-t border-gray-200 bg-gray-50">
                   <div className="flex justify-between items-center mb-3">
                     <h3 className="text-lg font-semibold text-gray-800">Spielplan</h3>
-                    {/* Save Order Button */}
-                    {isOrderChanged && (
+                    {/* Save Order Button - nur für Admins */}
+                    {isAdmin && isOrderChanged && (
                        <button
                          onClick={handleSaveFixtureOrder}
                          className="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-4 rounded text-sm flex items-center shadow-sm transition duration-150 ease-in-out"

@@ -26,6 +26,11 @@ const adminNavigation = [
   { name: 'Ligen', href: '/admin/leagues' },
 ]
 
+// Navigation für Teamleiter (normale Benutzer mit Teamleiter-Rolle)
+const teamLeaderNavigation = [
+  { name: 'Meine Mannschaft', href: '/admin/teams' },
+]
+
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
@@ -94,7 +99,7 @@ export default function Navbar() {
                         {item.name}
                       </Link>
                     ))}
-                    {currentUser?.isSuperAdmin && (
+                    {(currentUser?.isAdmin || currentUser?.isSuperAdmin) && (
                       <Link
                         href="/admin"
                         className={classNames(
@@ -105,6 +110,20 @@ export default function Navbar() {
                         )}
                       >
                         Admin
+                      </Link>
+                    )}
+                    {/* Zeige Teamleiter-Link für normale Benutzer mit Team */}
+                    {!currentUser?.isAdmin && !currentUser?.isSuperAdmin && currentUser?.team && (
+                      <Link
+                        href="/admin/teams"
+                        className={classNames(
+                          pathname === '/admin/teams'
+                            ? 'bg-indigo-700 text-white'
+                            : 'text-indigo-200 hover:bg-indigo-500 hover:text-white',
+                          'rounded-md px-3 py-2 text-sm font-medium'
+                        )}
+                      >
+                        Meine Mannschaft
                       </Link>
                     )}
                   </div>
@@ -157,7 +176,7 @@ export default function Navbar() {
                   {item.name}
                 </Disclosure.Button>
               ))}
-              {currentUser?.isSuperAdmin && (
+              {(currentUser?.isAdmin || currentUser?.isSuperAdmin) && (
                 <Disclosure.Button
                   as="a"
                   href="/admin"
@@ -169,6 +188,21 @@ export default function Navbar() {
                   )}
                 >
                   Admin
+                </Disclosure.Button>
+              )}
+              {/* Zeige Teamleiter-Link für normale Benutzer mit Team im mobilen Menü */}
+              {!currentUser?.isAdmin && !currentUser?.isSuperAdmin && currentUser?.team && (
+                <Disclosure.Button
+                  as="a"
+                  href="/admin/teams"
+                  className={classNames(
+                    pathname === '/admin/teams'
+                      ? 'bg-indigo-700 text-white'
+                      : 'text-indigo-200 hover:bg-indigo-500 hover:text-white',
+                    'block rounded-md px-3 py-2 text-base font-medium'
+                  )}
+                >
+                  Meine Mannschaft
                 </Disclosure.Button>
               )}
             </div>

@@ -8,6 +8,12 @@ import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 interface User {
   id: number
   name: string
+  isAdmin?: boolean
+  isSuperAdmin?: boolean
+  team?: {
+    id: number
+    name: string
+  }
 }
 
 interface Team {
@@ -35,17 +41,43 @@ export default function TeamsPage() {
   const [formData, setFormData] = useState<TeamFormData>({})
   const [editingTeam, setEditingTeam] = useState<Team | null>(null)
 
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [userTeamId, setUserTeamId] = useState<number | null>(null)
+
   useEffect(() => {
+    fetchCurrentUser()
     fetchTeams()
     fetchUsers()
   }, [])
+
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await fetch('/api/users/me')
+      if (response.ok) {
+        const user = await response.json()
+        setCurrentUser(user)
+        setIsAdmin(user.isAdmin || user.isSuperAdmin)
+        setUserTeamId(user.team?.id || null)
+      }
+    } catch (error) {
+      console.error('Fehler beim Abrufen des aktuellen Benutzers', error)
+    }
+  }
 
   const fetchTeams = async () => {
     try {
       const response = await fetch('/api/teams')
       if (response.ok) {
         const data = await response.json()
-        setTeams(data)
+        
+        // Wenn kein Admin, dann nur das eigene Team anzeigen
+        if (!isAdmin && userTeamId) {
+          const filteredTeams = data.filter((team: Team) => team.id === userTeamId)
+          setTeams(filteredTeams)
+        } else {
+          setTeams(data)
+        }
       }
     } catch (error) {
       console.error('Fehler beim Abrufen der Teams', error)
@@ -128,17 +160,21 @@ export default function TeamsPage() {
     <>
       <Navigation />
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-4">Mannschaften verwalten</h1>
-        <button
-          onClick={() => {
-            setEditingTeam(null)
-            setFormData({}) // Reset form data for adding new team
-            setIsModalOpen(true)
-          }}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
-        >
-          Neue Mannschaft hinzufügen
-        </button>
+        <h1 className="text-2xl font-bold mb-4">
+          {isAdmin ? "Mannschaften verwalten" : "Meine Mannschaft"}
+        </h1>
+        {isAdmin && (
+          <button
+            onClick={() => {
+              setEditingTeam(null)
+              setFormData({}) // Reset form data for adding new team
+              setIsModalOpen(true)
+            }}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
+          >
+            Neue Mannschaft hinzufügen
+          </button>
+        )}
         <ul className="bg-white shadow overflow-hidden sm:rounded-md">
           {teams.map((team) => (
             <li key={team.id} className="border-b border-gray-200 last:border-b-0">
@@ -170,12 +206,14 @@ export default function TeamsPage() {
                   >
                     <PencilIcon className="h-5 w-5" />
                   </button>
-                  <button
-                    onClick={() => handleDeleteTeam(team.id)}
-                    className="text-red-600 hover:text-red-900"
-                  >
-                    <TrashIcon className="h-5 w-5" />
-                  </button>
+                  {isAdmin && (
+                    <button
+                      onClick={() => handleDeleteTeam(team.id)}
+                      className="text-red-600 hover:text-red-900"
+                    >
+                      <TrashIcon className="h-5 w-5" />
+                    </button>
+                  )}
                 </div>
               </div>
             </li>
