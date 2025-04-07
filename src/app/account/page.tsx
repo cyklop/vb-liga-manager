@@ -102,6 +102,7 @@ export default function Account() {
                     Wählen Sie Ihr bevorzugtes Erscheinungsbild für die Anwendung.
                   </p>
                 </div>
+              </div>
             </div>
           </div>
         </div>
