@@ -31,6 +31,11 @@ export default function Login() {
       await fetch('/api/auth/signout', { method: 'POST' });
       await fetch('/api/logout', { method: 'POST' });
       
+      // Cookies im Browser löschen
+      document.cookie.split(";").forEach(function(c) {
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
+      
       // Dann versuchen, sich anzumelden mit callbackUrl für vollständige Session-Aktualisierung
       const result = await signIn('credentials', {
         redirect: false,

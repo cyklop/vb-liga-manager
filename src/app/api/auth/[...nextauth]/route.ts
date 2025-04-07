@@ -20,6 +20,14 @@ export const authOptions = {
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
+          include: {
+            team: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
         });
 
         if (!user) {
@@ -41,6 +49,7 @@ export const authOptions = {
           name: user.name,
           isAdmin: user.isAdmin,
           isSuperAdmin: user.isSuperAdmin,
+          team: user.team
         };
       },
     }),
@@ -54,16 +63,22 @@ export const authOptions = {
       if (user) {
         // Only update the token when a sign in happens
         token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
         token.isAdmin = user.isAdmin;
         token.isSuperAdmin = user.isSuperAdmin;
+        token.team = user.team;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id;
+        session.user.email = token.email;
+        session.user.name = token.name;
         session.user.isAdmin = token.isAdmin;
         session.user.isSuperAdmin = token.isSuperAdmin;
+        session.user.team = token.team;
       }
       return session;
     },

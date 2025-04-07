@@ -63,10 +63,15 @@ export default function Navbar() {
       // Erst die NextAuth-Session beenden
       await fetch('/api/auth/signout', { method: 'POST' })
       // Dann den alten Logout-Endpunkt aufrufen für Kompatibilität
-      await fetch('/api/logout', { method: 'POST' })
+      const response = await fetch('/api/logout', { method: 'POST' })
       
       // Lokalen Zustand zurücksetzen
       setCurrentUser(null)
+      
+      // Alle Cookies im Browser löschen
+      document.cookie.split(";").forEach(function(c) {
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
       
       // Vollständigen Seitenneuladen erzwingen, um alle Session-Daten zu löschen
       window.location.href = '/login'
