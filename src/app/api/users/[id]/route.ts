@@ -44,14 +44,15 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
       // Neue Team-Zuordnungen erstellen
       if (teamIds && teamIds.length > 0) {
-        const teamConnections = teamIds.map((teamId: number) => ({
-          userId: id,
-          teamId: teamId
-        }))
-        
-        await tx.userTeam.createMany({
-          data: teamConnections
-        })
+        // Statt createMany (nicht unterstützt) einzelne create-Aufrufe verwenden
+        for (const teamId of teamIds) {
+          await tx.userTeam.create({
+            data: {
+              userId: id,
+              teamId: teamId
+            }
+          });
+        }
       }
 
       // Benutzer mit aktualisierten Teams abrufen
