@@ -7,6 +7,18 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     return NextResponse.json({ message: 'Ungültige Liga-ID' }, { status: 400 })
   }
 
+  // Benutzerberechtigungen prüfen
+  const userId = 1 // In einer echten Anwendung aus der Session/Token holen
+  
+  // Benutzer abrufen
+  const currentUser = await prisma.user.findUnique({
+    where: { id: userId },
+  })
+  
+  if (!currentUser || (!currentUser.isAdmin && !currentUser.isSuperAdmin)) {
+    return NextResponse.json({ message: 'Nicht autorisiert' }, { status: 403 })
+  }
+
   try {
     const { orderedFixtureIds } = await request.json()
 

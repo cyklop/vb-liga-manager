@@ -99,6 +99,8 @@ export default function Navbar() {
                         {item.name}
                       </Link>
                     ))}
+                    
+                    {/* Admin-Menü nur für Administratoren anzeigen */}
                     {(currentUser?.isAdmin || currentUser?.isSuperAdmin) && (
                       <Link
                         href="/admin"
