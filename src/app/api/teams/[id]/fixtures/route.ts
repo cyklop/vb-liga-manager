@@ -26,7 +26,7 @@ export async function GET(
     // Prüfen, ob der Benutzer Admin ist oder zum Team gehört
     const user = await prisma.user.findUnique({
       where: { id: parseInt(session.user.id) },
-      include: { team: true }
+      include: { teams: true }
     })
 
     if (!user) {
@@ -34,7 +34,8 @@ export async function GET(
     }
 
     // Nur Admins oder Mitglieder des Teams dürfen die Daten sehen
-    if (!user.isAdmin && !user.isSuperAdmin && (!user.team || user.team.id !== teamId)) {
+    const userTeams = user.teams.map(ut => ut.teamId);
+    if (!user.isAdmin && !user.isSuperAdmin && !userTeams.includes(teamId)) {
       return NextResponse.json({ message: 'Keine Berechtigung' }, { status: 403 })
     }
 
