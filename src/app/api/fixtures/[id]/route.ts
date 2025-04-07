@@ -5,7 +5,10 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '../../../auth/[...nextauth]/route'
 
 // PUT Handler to update a specific fixture
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(
+  request: Request, 
+  { params }: { params: { id: string } }
+) {
   const id = parseInt(params.id)
   if (isNaN(id)) {
     return NextResponse.json({ message: 'Ungültige Fixture-ID' }, { status: 400 })
@@ -165,16 +168,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 }
 
 // Optional: DELETE Handler if needed later
-// export async function DELETE(request: Request, { params }: { params: { id: string } }) { ... } 
-import { NextResponse } from 'next/server'
-import prisma from '../../../../../lib/prisma'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '../../auth/[...nextauth]/route'
-
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+// export async function DELETE(request: Request, { params }: { params: { id: string } }) { ... }
   const fixtureId = parseInt(params.id)
   if (isNaN(fixtureId)) {
     return NextResponse.json({ message: 'Ungültige Spiel-ID' }, { status: 400 })
