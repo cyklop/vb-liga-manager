@@ -3,6 +3,14 @@
 import { useState, useEffect } from 'react'
 import Navigation from '../../../components/Navbar'
 import Link from 'next/link'
+import { 
+  TableCellsIcon, 
+  CalendarIcon, 
+  UserIcon, 
+  UsersIcon, 
+  UserGroupIcon, 
+  TrophyIcon 
+} from '@heroicons/react/24/outline'
 
 interface User {
   id: number
@@ -12,15 +20,15 @@ interface User {
 }
 
 const navigation = [
-  { name: 'Tabelle', href: '/table' },
-  { name: 'Spielplan', href: '/fixtures' },
-  { name: 'Mein Konto', href: '/account' },
+  { name: 'Tabelle', href: '/table', icon: TableCellsIcon },
+  { name: 'Spielplan', href: '/fixtures', icon: CalendarIcon },
+  { name: 'Mein Konto', href: '/account', icon: UserIcon },
 ]
 
 const adminNavigation = [
-  { name: 'Mannschaften verwalten', href: '/admin/teams' },
-  { name: 'Benutzer verwalten', href: '/admin/users' },
-  { name: 'Ligen verwalten', href: '/admin/leagues' },
+  { name: 'Mannschaften verwalten', href: '/admin/teams', icon: UserGroupIcon },
+  { name: 'Benutzer verwalten', href: '/admin/users', icon: UsersIcon },
+  { name: 'Ligen verwalten', href: '/admin/leagues', icon: TrophyIcon },
 ]
 
 export default function Dashboard() {
@@ -53,36 +61,38 @@ export default function Dashboard() {
       <main>
         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
           <div className="px-4 py-6 sm:px-0">
-            <div className="rounded-lg border-4 border-dashed border-gray-200 p-4">
-              <h2 className="text-2xl font-bold mb-4">Willkommen, {user?.name}!</h2>
-              <nav className="space-y-1">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </nav>
-              {user?.isAdmin && (
-                <>
-                  <h3 className="text-lg font-semibold mt-6 mb-2">Admin-Bereich</h3>
-                  <nav className="space-y-1">
-                    {adminNavigation.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                  </nav>
-                </>
-              )}
+            <h2 className="text-2xl font-bold mb-6">Willkommen, {user?.name}!</h2>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                >
+                  <item.icon className="h-12 w-12 text-indigo-600 mb-4" aria-hidden="true" />
+                  <span className="text-gray-900 font-medium">{item.name}</span>
+                </Link>
+              ))}
             </div>
+            
+            {user?.isAdmin && (
+              <>
+                <h3 className="text-xl font-semibold mt-10 mb-6">Admin-Bereich</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                  {adminNavigation.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                    >
+                      <item.icon className="h-12 w-12 text-indigo-600 mb-4" aria-hidden="true" />
+                      <span className="text-gray-900 font-medium">{item.name}</span>
+                    </Link>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </main>
