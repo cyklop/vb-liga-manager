@@ -15,7 +15,6 @@ interface User {
 }
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard' },
   { name: 'Tabelle', href: '/table' },
   { name: 'Spielplan', href: '/fixtures' },
 ]
@@ -99,7 +98,7 @@ export default function Navbar() {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <Link href="/" className="text-2xl font-bold text-white">
+                  <Link href="/dashboard" className="text-2xl font-bold text-white">
                     Volleyball Liga
                   </Link>
                 </div>
@@ -125,7 +124,7 @@ export default function Navbar() {
                       <Link
                         href="/admin"
                         className={classNames(
-                          pathname === '/admin'
+                          pathname === '/admin' || pathname.startsWith('/admin/')
                             ? 'bg-indigo-700 text-white'
                             : 'text-indigo-200 hover:bg-indigo-500 hover:text-white',
                           'rounded-md px-3 py-2 text-sm font-medium'
@@ -134,8 +133,8 @@ export default function Navbar() {
                         Admin
                       </Link>
                     )}
-                    {/* Zeige Teamleiter-Link für normale Benutzer mit Team */}
-                    {!currentUser?.isAdmin && !currentUser?.isSuperAdmin && currentUser?.team && (
+                    {/* Zeige Teamleiter-Link für alle Benutzer mit Team */}
+                    {currentUser?.team && (
                       <Link
                         href="/team"
                         className={classNames(
@@ -203,7 +202,7 @@ export default function Navbar() {
                   as="a"
                   href="/admin"
                   className={classNames(
-                    pathname === '/admin'
+                    pathname === '/admin' || pathname.startsWith('/admin/')
                       ? 'bg-indigo-700 text-white'
                       : 'text-indigo-200 hover:bg-indigo-500 hover:text-white',
                     'block rounded-md px-3 py-2 text-base font-medium'
@@ -212,8 +211,8 @@ export default function Navbar() {
                   Admin
                 </Disclosure.Button>
               )}
-              {/* Zeige Teamleiter-Link für normale Benutzer mit Team im mobilen Menü */}
-              {!currentUser?.isAdmin && !currentUser?.isSuperAdmin && currentUser?.team && (
+              {/* Zeige Teamleiter-Link für alle Benutzer mit Team im mobilen Menü */}
+              {currentUser?.team && (
                 <Disclosure.Button
                   as="a"
                   href="/team"
