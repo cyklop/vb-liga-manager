@@ -40,9 +40,13 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     }
 
     // Zuerst alle bestehenden Team-Verbindungen entfernen
-    await prisma.team.updateMany({
-      where: { leagueId: id },
-      data: { leagueId: null }
+    await prisma.league.update({
+      where: { id },
+      data: {
+        teams: {
+          set: [] // Alle Team-Verbindungen entfernen
+        }
+      }
     })
 
     // Liga aktualisieren und neue Team-Verbindungen erstellen
