@@ -44,12 +44,14 @@ export default function Login() {
     }
   }
 
-  // Fügen Sie useEffect hinzu, um den Zustand zu überprüfen und bei Bedarf umzuleiten
+  // Überprüfen des Login-Status mit NextAuth
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await fetch('/api/user');
-        if (response.ok) {
+        const response = await fetch('/api/auth/session');
+        const session = await response.json();
+        
+        if (session && session.user) {
           router.replace('/dashboard');
         }
       } catch (error) {
