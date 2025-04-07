@@ -164,42 +164,49 @@ export default function FixturesPage() {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
           </div>
         ) : fixtures.length > 0 ? (
-          <div className="bg-white shadow overflow-hidden sm:rounded-md">
-            <ul className="divide-y divide-gray-200">
-              {fixtures.map((fixture) => (
-                <li key={fixture.id} className="px-4 py-4 sm:px-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col sm:flex-row sm:items-center">
-                      <div className="text-sm font-medium text-indigo-600 mr-4">
-                        {fixture.matchday ? `Spieltag ${fixture.matchday}` : 'Spieltag N/A'}
-                      </div>
-                      <div className="mt-2 sm:mt-0">
-                        <span className="font-medium">{fixture.homeTeam.name}</span>
-                        <span className="mx-2">vs</span>
-                        <span className="font-medium">{fixture.awayTeam.name}</span>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end">
-                      <div className="text-sm text-gray-500">
-                        {formatDate(fixture.fixtureDate)}
-                      </div>
-                      {fixture.homeSets !== null && fixture.awaySets !== null ? (
-                        <div className="mt-1 text-sm font-semibold">
-                          {fixture.homeSets} : {fixture.awaySets}
-                          {fixture.homePoints !== null && fixture.awayPoints !== null && (
-                            <span className="ml-2 text-xs text-gray-500">
-                              (Bälle: {fixture.homePoints} : {fixture.awayPoints})
-                            </span>
+          <div className="space-y-6">
+            {/* Group fixtures by matchday */}
+            {Array.from(new Set(fixtures.map(f => f.matchday))).sort((a, b) => (a || 0) - (b || 0)).map(matchday => (
+              <div key={matchday || 'unknown'} className="bg-white shadow overflow-hidden sm:rounded-md">
+                <div className="bg-indigo-50 px-4 py-2 border-b border-indigo-100">
+                  <h3 className="text-lg font-medium text-indigo-800">
+                    {matchday ? `Spieltag ${matchday}` : 'Spieltag nicht zugeordnet'}
+                  </h3>
+                </div>
+                <ul className="divide-y divide-gray-200">
+                  {fixtures.filter(fixture => fixture.matchday === matchday).map((fixture) => (
+                    <li key={fixture.id} className="px-4 py-4 sm:px-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex flex-col sm:flex-row sm:items-center">
+                          <div className="mt-2 sm:mt-0">
+                            <span className="font-medium">{fixture.homeTeam.name}</span>
+                            <span className="mx-2">vs</span>
+                            <span className="font-medium">{fixture.awayTeam.name}</span>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end">
+                          <div className="text-sm text-gray-500">
+                            {formatDate(fixture.fixtureDate)}
+                          </div>
+                          {fixture.homeSets !== null && fixture.awaySets !== null ? (
+                            <div className="mt-1 text-sm font-semibold">
+                              {fixture.homeSets} : {fixture.awaySets}
+                              {fixture.homePoints !== null && fixture.awayPoints !== null && (
+                                <span className="ml-2 text-xs text-gray-500">
+                                  (Bälle: {fixture.homePoints} : {fixture.awayPoints})
+                                </span>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="mt-1 text-sm text-gray-500">Ergebnis ausstehend</div>
                           )}
                         </div>
-                      ) : (
-                        <div className="mt-1 text-sm text-gray-500">Ergebnis ausstehend</div>
-                      )}
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="bg-white shadow overflow-hidden sm:rounded-md p-6 text-center text-gray-500">

@@ -136,6 +136,19 @@ export default function TablePage() {
           </select>
         </div>
 
+        <div className="mb-4 text-sm text-gray-600 bg-gray-100 p-3 rounded-md">
+          <p className="font-medium mb-1">Sortierreihenfolge:</p>
+          <ol className="list-decimal list-inside">
+            <li>Punkte</li>
+            <li>Satzdifferenz</li>
+            <li>Satzquotient</li>
+            <li>Direkter Vergleich</li>
+            <li>Balldifferenz</li>
+            <li>Ballquotient</li>
+            <li>Anzahl der Siege</li>
+          </ol>
+        </div>
+        
         {isLoading ? (
           <div className="flex justify-center items-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>

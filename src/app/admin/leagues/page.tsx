@@ -475,6 +475,25 @@ export default function LeaguesPage() {
                     <TrashIcon className="h-5 w-5" />
                   </button>
                   <button
+                    onClick={async () => {
+                      try {
+                        await fetch('/api/leagues/active', {
+                          method: 'PUT',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ leagueId: league.id }),
+                        });
+                        alert(`Liga "${league.name}" wurde als aktive Liga gesetzt.`);
+                      } catch (error) {
+                        console.error('Fehler beim Setzen der aktiven Liga:', error);
+                        alert('Fehler beim Setzen der aktiven Liga.');
+                      }
+                    }}
+                    className="p-1 text-green-600 hover:text-green-900 hover:bg-green-100 rounded"
+                    title="Als aktive Liga setzen"
+                  >
+                    <CheckIcon className="h-5 w-5" />
+                  </button>
+                  <button
                     onClick={() => handleGenerateFixtures(league.id)}
                     className="p-1 text-green-600 hover:text-green-900 hover:bg-green-100 rounded"
                     title="Spielplan generieren"
