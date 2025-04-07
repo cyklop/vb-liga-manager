@@ -72,7 +72,7 @@ export default function LeaguesPage() {
     } catch (error) {
       console.error('Fehler beim Abrufen der Ligen', error)
     }
-  }
+  };
 
   const fetchTeams = async () => {
     try {
@@ -84,7 +84,7 @@ export default function LeaguesPage() {
     } catch (error) {
       console.error('Fehler beim Abrufen der Teams', error)
     }
-  }
+  };
 
   const handleGenerateFixtures = async (leagueId: number) => {
     try {
@@ -111,7 +111,7 @@ export default function LeaguesPage() {
       console.error('Fehler beim Generieren des Spielplans:', error);
       alert('Ein Netzwerkfehler ist aufgetreten.');
     }
-  }
+  };
 
   // Function to fetch and display fixtures for a selected league
   const handleShowFixtures = async (leagueId: number) => {
@@ -152,7 +152,7 @@ export default function LeaguesPage() {
       //   console.error('Fehler beim Abrufen der Spielpaarungen', error);
       // }
     }
-  }
+  };
 
   // --- Fixture Editing Functions ---
 
@@ -308,7 +308,7 @@ export default function LeaguesPage() {
     } catch (error) {
       console.error('Fehler beim Hinzufügen der Liga', error)
     }
-  }
+  };
 
   const handleEditLeague = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -338,7 +338,7 @@ export default function LeaguesPage() {
     } catch (error) {
       console.error('Fehler beim Bearbeiten der Liga', error)
     }
-  }
+  };
 
   const handleDeleteLeague = async (id: number) => {
     try {
@@ -351,7 +351,7 @@ export default function LeaguesPage() {
     } catch (error) {
       console.error('Fehler beim Löschen der Liga', error)
     }
-  }
+  };
 
   return (
     <>
