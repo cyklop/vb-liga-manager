@@ -45,10 +45,16 @@ export default function Navbar() {
   }, [])
 
   const fetchCurrentUser = async () => {
-    const response = await fetch('/api/users/me')
-    if (response.ok) {
-      const user = await response.json()
-      setCurrentUser(user)
+    try {
+      const response = await fetch('/api/users/me')
+      if (response.ok) {
+        const user = await response.json()
+        setCurrentUser(user)
+      } else {
+        console.error('Fehler beim Abrufen des Benutzers:', response.statusText)
+      }
+    } catch (error) {
+      console.error('Fehler beim Abrufen des Benutzers:', error)
     }
   }
 

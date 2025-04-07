@@ -29,7 +29,25 @@ export async function GET() {
   // No finally block needed for singleton
 }
 
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../../auth/[...nextauth]/route'
+
 export async function POST(request: Request) {
+  // Benutzerberechtigungen prüfen
+  const session = await getServerSession(authOptions)
+  if (!session || !session.user?.email) {
+    return NextResponse.json({ message: 'Nicht authentifiziert' }, { status: 401 })
+  }
+  
+  // Benutzer abrufen
+  const currentUser = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  })
+  
+  if (!currentUser || (!currentUser.isAdmin && !currentUser.isSuperAdmin)) {
+    return NextResponse.json({ message: 'Nicht autorisiert' }, { status: 403 })
+  }
+
   const { 
     name, 
     numberOfTeams, 

@@ -353,11 +353,29 @@ interface Fixture {
 }
 
 
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../../../../auth/[...nextauth]/route'
+
 export async function POST(request: Request, { params: { id } }: { params: { id: string } }) {
   // Destructure id directly from params
   const leagueId = parseInt(id); 
   if (isNaN(leagueId)) {
     return NextResponse.json({ message: 'Ungültige Liga-ID' }, { status: 400 });
+  }
+
+  // Benutzerberechtigungen prüfen
+  const session = await getServerSession(authOptions)
+  if (!session || !session.user?.email) {
+    return NextResponse.json({ message: 'Nicht authentifiziert' }, { status: 401 })
+  }
+  
+  // Benutzer abrufen
+  const currentUser = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  })
+  
+  if (!currentUser || (!currentUser.isAdmin && !currentUser.isSuperAdmin)) {
+    return NextResponse.json({ message: 'Nicht autorisiert' }, { status: 403 })
   }
 
   try {

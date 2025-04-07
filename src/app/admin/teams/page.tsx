@@ -59,6 +59,11 @@ export default function TeamsPage() {
         setCurrentUser(user)
         setIsAdmin(user.isAdmin || user.isSuperAdmin)
         setUserTeamId(user.team?.id || null)
+        
+        // Wenn kein Admin und kein Team, zur Dashboard-Seite umleiten
+        if (!user.isAdmin && !user.isSuperAdmin && !user.team) {
+          router.push('/dashboard')
+        }
       }
     } catch (error) {
       console.error('Fehler beim Abrufen des aktuellen Benutzers', error)
@@ -75,8 +80,10 @@ export default function TeamsPage() {
         if (!isAdmin && userTeamId) {
           const filteredTeams = data.filter((team: Team) => team.id === userTeamId)
           setTeams(filteredTeams)
-        } else {
+        } else if (isAdmin) {
           setTeams(data)
+        } else {
+          setTeams([])
         }
       }
     } catch (error) {

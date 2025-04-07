@@ -8,11 +8,14 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 
   // Benutzerberechtigungen prüfen
-  const userId = 1 // In einer echten Anwendung aus der Session/Token holen
+  const session = await getServerSession(authOptions)
+  if (!session || !session.user?.email) {
+    return NextResponse.json({ message: 'Nicht authentifiziert' }, { status: 401 })
+  }
   
   // Benutzer abrufen
   const currentUser = await prisma.user.findUnique({
-    where: { id: userId },
+    where: { email: session.user.email },
   })
   
   if (!currentUser || (!currentUser.isAdmin && !currentUser.isSuperAdmin)) {

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import prisma from '../../../../../lib/prisma' // Import the singleton instance
 import { cookies } from 'next/headers'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../../../auth/[...nextauth]/route'
 
 // PUT Handler to update a specific fixture
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
@@ -11,13 +13,14 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
   try {
     // Benutzerberechtigungen prüfen
-    // In einer echten Anwendung würden Sie hier die Benutzer-ID aus der Session oder einem JWT-Token abrufen
-    // Für dieses Beispiel verwenden wir eine Mockmethode
-    const userId = 1 // Ersetzen Sie dies durch die tatsächliche Benutzer-ID aus der Authentifizierung
+    const session = await getServerSession(authOptions)
+    if (!session || !session.user?.email) {
+      return NextResponse.json({ message: 'Nicht authentifiziert' }, { status: 401 })
+    }
     
     // Benutzer abrufen
     const user = await prisma.user.findUnique({
-      where: { id: userId },
+      where: { email: session.user.email },
       include: {
         team: true,
       },

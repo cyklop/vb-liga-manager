@@ -127,6 +127,8 @@ export default function LeaguesPage() {
     fetchTeams()
   }, [])
 
+  const router = useRouter()
+
   const fetchCurrentUser = async () => {
     try {
       const response = await fetch('/api/users/me')
@@ -135,6 +137,11 @@ export default function LeaguesPage() {
         setCurrentUser(user)
         setIsAdmin(user.isAdmin || user.isSuperAdmin)
         setUserTeamId(user.team?.id || null)
+        
+        // Wenn kein Admin, zur Dashboard-Seite umleiten
+        if (!user.isAdmin && !user.isSuperAdmin) {
+          router.push('/dashboard')
+        }
       }
     } catch (error) {
       console.error('Fehler beim Abrufen des aktuellen Benutzers', error)
