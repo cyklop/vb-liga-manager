@@ -120,11 +120,14 @@ export async function POST(request: Request, { params }: { params: { id: string 
       order: index + 1, // Assign sequential order
     }));
 
-    // 6. Save new fixtures
+    // 6. Save new fixtures within a transaction
     if (fixturesToCreate.length > 0) {
-      await prisma.fixture.createMany({
-        data: fixturesToCreate,
-      });
+      // Use $transaction to ensure all fixtures are created or none are
+      await prisma.$transaction(
+        fixturesToCreate.map(fixtureData => 
+          prisma.fixture.create({ data: fixtureData })
+        )
+      );
     }
 
     // 7. Return success response
