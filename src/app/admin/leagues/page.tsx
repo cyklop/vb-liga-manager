@@ -155,13 +155,8 @@ export default function LeaguesPage() {
       const response = await fetch('/api/leagues')
       if (response.ok) {
         const data: League[] = await response.json()
-        // Sortiere die Ligen nach Erstellungsdatum, neueste zuerst
-        const sortedData = [...data].sort((a, b) => {
-          // Stellen Sie sicher, dass createdAt ein gültiges Datum ist
-          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-          return dateB - dateA;
-        });
+        // Sortiere die Ligen nach ID, neueste (höchste ID) zuerst
+        const sortedData = [...data].sort((a, b) => b.id - a.id);
         setLeagues(sortedData)
         if (selectLeagueId) {
           const selected = sortedData.find(l => l.id === selectLeagueId)
