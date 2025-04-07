@@ -86,15 +86,11 @@ export default function TeamPage() {
   useEffect(() => {
     async function loadTeamData() {
       if (currentUser) {
-        console.log("Current user:", currentUser); // Debug-Ausgabe
-        
         const userTeams: Team[] = [];
         const processedTeamIds: number[] = [];
       
         // Verarbeite alle Teams aus dem teams-Array
         if (currentUser.teams && currentUser.teams.length > 0) {
-          console.log("User teams array:", currentUser.teams); // Debug-Ausgabe
-          
           for (const team of currentUser.teams) {
             if (processedTeamIds.includes(team.id)) continue;
             
@@ -165,8 +161,6 @@ export default function TeamPage() {
           }
         }
       
-        console.log("Processed teams:", userTeams); // Debug-Ausgabe
-        
         // Aktualisiere die Teams-Liste
         setTeams(userTeams);
         
@@ -195,7 +189,6 @@ export default function TeamPage() {
       const response = await fetch('/api/users/me');
       if (response.ok) {
         const user = await response.json();
-        console.log("API response user:", user); // Debug-Ausgabe
         setCurrentUser(user);
       } else {
         // Not authenticated or error

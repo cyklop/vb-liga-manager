@@ -48,8 +48,6 @@ export async function GET(request: Request) {
         name: user.teams[0].team.name
       } : null
     }
-    
-    console.log("Formatted user:", formattedUser);
 
     return NextResponse.json(formattedUser)
   } catch (error) {
