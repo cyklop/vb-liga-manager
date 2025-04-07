@@ -22,23 +22,22 @@ export default function Login() {
   const [isResetModalOpen, setIsResetModalOpen] = useState(false)
   const router = useRouter()
 
+  import { signIn } from 'next-auth/react'
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('') // Reset error message
     try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      const result = await signIn('credentials', {
+        redirect: false,
+        email,
+        password
       })
-      const data = await response.json()
-      if (response.ok) {
-        // Hier können Sie den Benutzer in den globalen Zustand setzen, z.B. mit Context API oder Redux
-        console.log('Logged in user:', data)
-        // Verwenden Sie replace statt push, um eine Weiterleitung zu erzwingen
-        router.replace('/dashboard')
+
+      if (result?.error) {
+        setError(result.error || 'Anmeldung fehlgeschlagen')
       } else {
-        setError(data.message || 'Ein Fehler ist aufgetreten')
+        router.replace('/dashboard')
       }
     } catch (error) {
       console.error('Login error:', error)
