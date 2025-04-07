@@ -883,9 +883,8 @@ function SortableFixtureItem({ fixture, onEditClick }: SortableFixtureItemProps)
     </li>
   );
 }
-// Removed extraneous closing tags from previous inline mapping
-        </ul>
-      </div>
+        </ul> // Correctly closes the SortableContext list
+      </div> // Correctly closes the conditional fixture section
 
       {/* Add/Edit League Modal */}
       <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingLeague(null); }} title={editingLeague ? "Liga bearbeiten" : "Neue Liga hinzufügen"}>
