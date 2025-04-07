@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import prisma from '../../../../lib/prisma' // Import the singleton instance
 import bcrypt from 'bcryptjs'
-
-const prisma = new PrismaClient()
 
 export async function POST(request: Request) {
   const { email, name, password, isAdmin, teamId } = await request.json()
@@ -22,9 +20,8 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error creating user:', error)
     return NextResponse.json({ message: 'Fehler beim Erstellen des Benutzers' }, { status: 400 })
-  } finally {
-    await prisma.$disconnect()
   }
+  // No finally block needed for singleton
 }
 
 export async function GET() {
@@ -43,7 +40,6 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching users:', error)
     return NextResponse.json({ message: 'Fehler beim Abrufen der Benutzer' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
+  // No finally block needed for singleton
 }

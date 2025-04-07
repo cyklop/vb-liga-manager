@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import prisma from '../../../../../lib/prisma' // Import the singleton instance
 import bcrypt from 'bcryptjs'
-
-const prisma = new PrismaClient()
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   const id = parseInt(params.id)
@@ -15,9 +13,8 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
   } catch (error) {
     console.error('Error deleting user:', error)
     return NextResponse.json({ message: 'Fehler beim Löschen des Benutzers' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
+  // No finally block needed for singleton
 }
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
@@ -46,7 +43,6 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   } catch (error) {
     console.error('Error updating user:', error)
     return NextResponse.json({ message: 'Fehler beim Aktualisieren des Benutzers' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
+  // No finally block needed for singleton
 }

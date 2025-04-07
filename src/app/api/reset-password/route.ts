@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import prisma from '../../../../lib/prisma' // Import the singleton instance
 import * as bcrypt from 'bcrypt'
-
-const prisma = new PrismaClient()
 
 export async function POST(request: Request) {
   const { email } = await request.json()
@@ -30,7 +28,6 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Fehler beim Zurücksetzen des Passworts:', error)
     return NextResponse.json({ message: 'Fehler beim Zurücksetzen des Passworts' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
+  // No finally block needed for singleton
 }

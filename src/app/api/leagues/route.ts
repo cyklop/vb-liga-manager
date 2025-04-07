@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import prisma from '../../../../lib/prisma' // Import the singleton instance
 
 export async function GET() {
   try {
@@ -27,9 +25,8 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching leagues:', error)
     return NextResponse.json({ message: 'Fehler beim Abrufen der Ligen' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
+  // No finally block needed for singleton
 }
 
 export async function POST(request: Request) {
@@ -63,7 +60,6 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error creating league:', error)
     return NextResponse.json({ message: 'Fehler beim Erstellen der Liga' }, { status: 400 })
-  } finally {
-    await prisma.$disconnect()
   }
+  // No finally block needed for singleton
 }

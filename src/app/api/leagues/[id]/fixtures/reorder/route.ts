@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import prisma from '../../../../../../../lib/prisma' // Import the singleton instance
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   const leagueId = parseInt(params.id)
@@ -44,7 +42,6 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     }
     // Check for Prisma transaction errors or other issues
     return NextResponse.json({ message: 'Fehler beim Aktualisieren der Spielplanreihenfolge' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
+  // No finally block needed for singleton
 }

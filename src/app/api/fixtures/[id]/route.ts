@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import prisma from '../../../../../lib/prisma' // Import the singleton instance
 
 // PUT Handler to update a specific fixture
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
@@ -54,9 +52,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
          return NextResponse.json({ message: 'Spielpaarung nicht gefunden' }, { status: 404 })
     }
     return NextResponse.json({ message: 'Fehler beim Aktualisieren der Spielpaarung' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
+  // No finally block needed for singleton
 }
 
 // Optional: DELETE Handler if needed later

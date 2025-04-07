@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import prisma from '../../../../../lib/prisma' // Import the singleton instance
 import bcrypt from 'bcryptjs'
-
-const prisma = new PrismaClient()
 
 export async function GET(request: Request) {
   // Hier würden Sie den Benutzer aus der Session oder einem JWT Token identifizieren
@@ -35,9 +33,8 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error('Fehler beim Abrufen des Benutzerprofils:', error)
     return NextResponse.json({ message: 'Ein Fehler ist aufgetreten' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
+  // No finally block needed for singleton
 }
 
 export async function PUT(request: Request) {
@@ -77,7 +74,6 @@ export async function PUT(request: Request) {
   } catch (error) {
     console.error('Fehler beim Aktualisieren des Benutzerprofils:', error)
     return NextResponse.json({ message: 'Ein Fehler ist aufgetreten' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
+  // No finally block needed for singleton
 }

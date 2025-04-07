@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import prisma from '../../../../../lib/prisma' // Import the singleton instance
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   const id = parseInt(params.id)
@@ -14,9 +12,8 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
   } catch (error) {
     console.error('Error deleting team:', error)
     return NextResponse.json({ message: 'Fehler beim Löschen des Teams' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
+  // No finally block needed for singleton
 }
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
@@ -46,7 +43,6 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   } catch (error) {
     console.error('Error updating team:', error)
     return NextResponse.json({ message: 'Fehler beim Aktualisieren des Teams' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
+  // No finally block needed for singleton
 }
