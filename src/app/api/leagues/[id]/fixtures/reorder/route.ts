@@ -13,6 +13,26 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     if (!Array.isArray(orderedFixtureIds) || orderedFixtureIds.length === 0) {
       return NextResponse.json({ message: 'Liste der Fixture-IDs fehlt oder ist leer' }, { status: 400 })
     }
+    
+    // Verify all fixtures belong to the specified league
+    const fixtures = await prisma.fixture.findMany({
+      where: {
+        id: { in: orderedFixtureIds },
+      },
+      select: {
+        id: true,
+        leagueId: true,
+      }
+    });
+    
+    // Check if any fixture doesn't belong to the specified league
+    const invalidFixtures = fixtures.filter(fixture => fixture.leagueId !== leagueId);
+    if (invalidFixtures.length > 0) {
+      return NextResponse.json({ 
+        message: 'Einige Fixtures gehören nicht zu dieser Liga',
+        invalidFixtureIds: invalidFixtures.map(f => f.id)
+      }, { status: 400 });
+    }
 
     // Use a transaction to update all order fields atomically
     const updatePromises = orderedFixtureIds.map((fixtureId, index) => {
@@ -21,11 +41,10 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         throw new Error('Ungültige Fixture-ID in der Liste gefunden.'); 
       }
       return prisma.fixture.update({
-        where: { 
-          id: fixtureId,
-          leagueId: leagueId // Ensure the fixture belongs to the correct league
+        where: { id: fixtureId },
+        data: { 
+          order: index + 1 // Assign order based on array index (1-based)
         },
-        data: { order: index + 1 }, // Assign order based on array index (1-based)
       });
     });
 
