@@ -58,9 +58,16 @@ interface Fixture {
 export default function TeamPage() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [teams, setTeams] = useState<Team[]>([]);
+  const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
   const [homeFixtures, setHomeFixtures] = useState<{[teamId: number]: Fixture[]}>({}); 
   const [isLoading, setIsLoading] = useState(true);
   const [editingFixture, setEditingFixture] = useState<Fixture | null>(null);
+  const [editingTeam, setEditingTeam] = useState<Team | null>(null);
+  const [teamFormData, setTeamFormData] = useState({
+    location: '',
+    hallAddress: '',
+    trainingTimes: ''
+  });
   const router = useRouter();
 
   // Form state for editing fixture results
@@ -80,35 +87,61 @@ export default function TeamPage() {
     if (currentUser) {
       console.log("Current user:", currentUser); // Debug-Ausgabe
       
-      // Da der GET-Endpunkt für Teams nicht funktioniert, 
-      // erstellen wir ein Team-Objekt direkt aus den Daten des currentUser
+      const userTeams: Team[] = [];
+      
+      // Füge das Haupt-Team hinzu, falls vorhanden
       if (currentUser.team) {
-        // Füge das Team direkt zur Liste hinzu
         const teamData = {
           id: currentUser.team.id,
           name: currentUser.team.name,
-          location: "Nicht verfügbar", // Diese Daten sind nicht in currentUser.team
+          location: "Nicht verfügbar", // Diese Daten werden später editierbar sein
           hallAddress: "Nicht verfügbar",
           trainingTimes: "Nicht verfügbar"
         };
         
-        setTeams(prevTeams => {
-          // Prüfe, ob das Team bereits in der Liste ist
-          const exists = prevTeams.some(t => t.id === teamData.id);
-          if (!exists) {
-            return [...prevTeams, teamData];
-          }
-          return prevTeams;
-        });
+        userTeams.push(teamData);
         
-        // Lade Heimspiele für das Team
-        fetchHomeFixtures(currentUser.team.id);
-      } else {
-        // Benutzer hat kein Team
+        // Setze das erste Team als ausgewähltes Team
+        if (!selectedTeamId) {
+          setSelectedTeamId(teamData.id);
+        }
+      }
+      
+      // Füge alle anderen Teams hinzu
+      if (currentUser.teams && currentUser.teams.length > 0) {
+        currentUser.teams.forEach(teamRelation => {
+          if (teamRelation.team) {
+            const teamData = {
+              id: teamRelation.team.id,
+              name: teamRelation.team.name,
+              location: "Nicht verfügbar",
+              hallAddress: "Nicht verfügbar",
+              trainingTimes: "Nicht verfügbar"
+            };
+            
+            // Prüfe, ob das Team bereits in der Liste ist
+            const exists = userTeams.some(t => t.id === teamData.id);
+            if (!exists) {
+              userTeams.push(teamData);
+            }
+          }
+        });
+      }
+      
+      // Aktualisiere die Teams-Liste
+      setTeams(userTeams);
+      
+      // Lade Heimspiele für alle Teams
+      userTeams.forEach(team => {
+        fetchHomeFixtures(team.id);
+      });
+      
+      if (userTeams.length === 0) {
+        // Benutzer hat keine Teams
         setIsLoading(false);
       }
     }
-  }, [currentUser]);
+  }, [currentUser, selectedTeamId]);
 
   const fetchCurrentUser = async () => {
     try {
@@ -129,24 +162,90 @@ export default function TeamPage() {
 
   // Diese Funktion wird nicht mehr verwendet, da der GET-Endpunkt nicht funktioniert
   // Wir behalten sie für zukünftige Verwendung
+  // Funktion zum Laden der Teamdetails
   const fetchTeamDetails = async (teamId: number) => {
     try {
       const response = await fetch(`/api/teams/${teamId}`);
       if (response.ok) {
         const teamData = await response.json();
         setTeams(prevTeams => {
-          // Prüfe, ob das Team bereits in der Liste ist
-          const exists = prevTeams.some(t => t.id === teamData.id);
-          if (!exists) {
-            return [...prevTeams, teamData];
-          }
-          return prevTeams;
+          return prevTeams.map(team => 
+            team.id === teamData.id ? { ...team, ...teamData } : team
+          );
         });
       } else {
         console.error(`Error fetching team details: ${response.status} ${response.statusText}`);
       }
     } catch (error) {
       console.error('Error fetching team details:', error);
+    }
+  };
+  
+  // Funktion zum Bearbeiten eines Teams
+  const handleEditTeam = (team: Team) => {
+    setEditingTeam(team);
+    setTeamFormData({
+      location: team.location,
+      hallAddress: team.hallAddress,
+      trainingTimes: team.trainingTimes
+    });
+  };
+  
+  // Funktion zum Abbrechen der Teambearbeitung
+  const handleCancelTeamEdit = () => {
+    setEditingTeam(null);
+  };
+  
+  // Funktion zum Ändern der Teaminformationen
+  const handleTeamInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setTeamFormData({
+      ...teamFormData,
+      [name]: value
+    });
+  };
+  
+  // Funktion zum Speichern der Teaminformationen
+  const handleTeamSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingTeam) return;
+    
+    try {
+      const response = await fetch(`/api/teams/${editingTeam.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: editingTeam.name,
+          location: teamFormData.location,
+          hallAddress: teamFormData.hallAddress,
+          trainingTimes: teamFormData.trainingTimes
+        }),
+      });
+      
+      if (response.ok) {
+        // Aktualisiere das Team in der lokalen Liste
+        setTeams(prevTeams => 
+          prevTeams.map(team => 
+            team.id === editingTeam.id 
+              ? { 
+                  ...team, 
+                  location: teamFormData.location,
+                  hallAddress: teamFormData.hallAddress,
+                  trainingTimes: teamFormData.trainingTimes
+                } 
+              : team
+          )
+        );
+        setEditingTeam(null);
+      } else {
+        const error = await response.json();
+        alert(`Fehler beim Speichern: ${error.message}`);
+      }
+    } catch (error) {
+      console.error('Error updating team:', error);
+      alert('Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
     }
   };
 
@@ -274,34 +373,129 @@ export default function TeamPage() {
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">Meine Mannschaften</h1>
         
-        {teams.map(team => (
+        {/* Team-Auswahl Dropdown, wenn mehr als ein Team vorhanden ist */}
+        {teams.length > 1 && (
+          <div className="mb-6">
+            <label htmlFor="team-select" className="block text-sm font-medium text-gray-700 mb-1">
+              Mannschaft auswählen:
+            </label>
+            <select
+              id="team-select"
+              value={selectedTeamId || ''}
+              onChange={(e) => setSelectedTeamId(Number(e.target.value))}
+              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            >
+              {teams.map(team => (
+                <option key={team.id} value={team.id}>
+                  {team.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+        
+        {/* Zeige nur das ausgewählte Team an oder das erste Team, wenn keines ausgewählt ist */}
+        {teams
+          .filter(team => selectedTeamId ? team.id === selectedTeamId : true)
+          .map(team => (
           <div key={team.id} className="mb-12">
             <h2 className="text-xl font-semibold mb-4">{team.name}</h2>
             
+            {/* Mannschaftsdetails */}
             <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
-              <div className="px-4 py-5 sm:px-6">
+              <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
                 <h3 className="text-lg leading-6 font-medium text-gray-900">Mannschaftsdetails</h3>
+                {!editingTeam && (
+                  <button
+                    onClick={() => handleEditTeam(team)}
+                    className="px-3 py-1 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200"
+                  >
+                    Bearbeiten
+                  </button>
+                )}
               </div>
-              <div className="border-t border-gray-200">
-                <dl>
-                  <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-500">Name</dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.name}</dd>
-                  </div>
-                  <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-500">Ort</dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.location}</dd>
-                  </div>
-                  <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-500">Hallenadresse</dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.hallAddress}</dd>
-                  </div>
-                  <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-500">Trainingszeiten</dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.trainingTimes}</dd>
-                  </div>
-                </dl>
-              </div>
+              
+              {editingTeam?.id === team.id ? (
+                <div className="border-t border-gray-200">
+                  <form onSubmit={handleTeamSubmit} className="p-4 space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Ort
+                      </label>
+                      <input
+                        type="text"
+                        name="location"
+                        value={teamFormData.location}
+                        onChange={handleTeamInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Hallenadresse
+                      </label>
+                      <input
+                        type="text"
+                        name="hallAddress"
+                        value={teamFormData.hallAddress}
+                        onChange={handleTeamInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Trainingszeiten
+                      </label>
+                      <textarea
+                        name="trainingTimes"
+                        value={teamFormData.trainingTimes}
+                        onChange={handleTeamInputChange}
+                        rows={3}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      />
+                    </div>
+                    
+                    <div className="flex justify-end space-x-3">
+                      <button
+                        type="button"
+                        onClick={handleCancelTeamEdit}
+                        className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                      >
+                        Abbrechen
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                      >
+                        Speichern
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              ) : (
+                <div className="border-t border-gray-200">
+                  <dl>
+                    <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                      <dt className="text-sm font-medium text-gray-500">Name</dt>
+                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.name}</dd>
+                    </div>
+                    <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                      <dt className="text-sm font-medium text-gray-500">Ort</dt>
+                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.location}</dd>
+                    </div>
+                    <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                      <dt className="text-sm font-medium text-gray-500">Hallenadresse</dt>
+                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.hallAddress}</dd>
+                    </div>
+                    <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                      <dt className="text-sm font-medium text-gray-500">Trainingszeiten</dt>
+                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.trainingTimes}</dd>
+                    </div>
+                  </dl>
+                </div>
+              )}
             </div>
 
             <h3 className="text-lg font-semibold mb-4">Heimspiele verwalten</h3>
