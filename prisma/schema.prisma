@@ -14,7 +14,7 @@ model Team {
   location        String?
   hallAddress     String?
   trainingTimes   String?
-  users           User[]
+  users           UserTeam[]
   teamLeader      User?     @relation("TeamLeader", fields: [teamLeaderId], references: [id])
   teamLeaderId    Int?      @unique
 
@@ -24,15 +24,25 @@ model Team {
 }
 
 model User {
-  id           Int     @id @default(autoincrement())
-  email        String  @unique
+  id           Int        @id @default(autoincrement())
+  email        String     @unique
   password     String
   name         String
-  isAdmin      Boolean @default(false)
-  isSuperAdmin Boolean @default(false)
-  teamId       Int?
-  team         Team?   @relation(fields: [teamId], references: [id])
-  leadingTeam  Team?   @relation("TeamLeader")
+  isAdmin      Boolean    @default(false)
+  isSuperAdmin Boolean    @default(false)
+  teams        UserTeam[]
+  leadingTeam  Team?      @relation("TeamLeader")
+}
+
+// Verbindungstabelle für die m:n-Beziehung zwischen User und Team
+model UserTeam {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId    Int
+  createdAt DateTime @default(now())
+
+  @@id([userId, teamId])
 }
 
 model League {
