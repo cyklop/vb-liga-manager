@@ -341,7 +341,7 @@ export default function LeaguesPage() {
     } catch (error) {
       console.error('Fehler beim Löschen der Liga', error)
     }
-  }; // Explizit ein Semikolon hinzugefügt
+  }
 
   return (
     <>
