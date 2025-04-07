@@ -4,6 +4,11 @@ import { useState, useEffect } from 'react'
 import Navigation from '../../../components/Navbar'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { 
+  UserGroupIcon, 
+  UsersIcon, 
+  TrophyIcon 
+} from '@heroicons/react/24/outline'
 
 interface User {
   id: number
@@ -45,26 +50,33 @@ export default function AdminPage() {
         </div>
       </header>
       <main className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <h2 className="text-lg font-medium leading-6 text-gray-900 mb-4">Verwaltung</h2>
-            <ul className="space-y-4">
-              <li>
-                <Link href="/admin/teams" className="text-indigo-600 hover:text-indigo-900">
-                  Mannschaften verwalten
-                </Link>
-              </li>
-              <li>
-                <Link href="/admin/users" className="text-indigo-600 hover:text-indigo-900">
-                  Benutzer verwalten
-                </Link>
-              </li>
-              <li>
-                <Link href="/admin/leagues" className="text-indigo-600 hover:text-indigo-900">
-                  Ligen verwalten
-                </Link>
-              </li>
-            </ul>
+        <div className="px-4 py-6 sm:px-0">
+          <h2 className="text-xl font-bold mb-6">Verwaltung</h2>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <Link
+              href="/admin/teams"
+              className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+            >
+              <UserGroupIcon className="h-12 w-12 text-indigo-600 mb-4" aria-hidden="true" />
+              <span className="text-gray-900 font-medium">Mannschaften verwalten</span>
+            </Link>
+            
+            <Link
+              href="/admin/users"
+              className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+            >
+              <UsersIcon className="h-12 w-12 text-indigo-600 mb-4" aria-hidden="true" />
+              <span className="text-gray-900 font-medium">Benutzer verwalten</span>
+            </Link>
+            
+            <Link
+              href="/admin/leagues"
+              className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+            >
+              <TrophyIcon className="h-12 w-12 text-indigo-600 mb-4" aria-hidden="true" />
+              <span className="text-gray-900 font-medium">Ligen verwalten</span>
+            </Link>
           </div>
         </div>
       </main>
