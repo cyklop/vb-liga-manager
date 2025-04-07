@@ -80,8 +80,9 @@ interface Fixture {
 }
 
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
-  const leagueId = parseInt(params.id);
+export async function POST(request: Request, { params: { id } }: { params: { id: string } }) {
+  // Destructure id directly from params
+  const leagueId = parseInt(id); 
   if (isNaN(leagueId)) {
     return NextResponse.json({ message: 'Ungültige Liga-ID' }, { status: 400 });
   }
