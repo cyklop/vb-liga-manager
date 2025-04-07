@@ -78,6 +78,8 @@ export default function TeamPage() {
 
   useEffect(() => {
     if (currentUser) {
+      console.log("Current user:", currentUser); // Debug-Ausgabe
+      
       // Sammle alle Team-IDs des Benutzers
       const userTeams: number[] = [];
       
@@ -94,6 +96,8 @@ export default function TeamPage() {
           }
         });
       }
+      
+      console.log("User teams:", userTeams); // Debug-Ausgabe
       
       if (userTeams.length > 0) {
         // Lade Details für alle Teams
@@ -113,6 +117,7 @@ export default function TeamPage() {
       const response = await fetch('/api/users/me');
       if (response.ok) {
         const user = await response.json();
+        console.log("API response user:", user); // Debug-Ausgabe
         setCurrentUser(user);
       } else {
         // Not authenticated or error
