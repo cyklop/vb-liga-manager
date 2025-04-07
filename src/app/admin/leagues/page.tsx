@@ -881,8 +881,7 @@ function SortableFixtureItem({ fixture, onEditClick }: SortableFixtureItemProps)
         {/* Removed Up/Down buttons as Drag&Drop is used */}
       </div>
     </li>
-// Removed extraneous closing tags from the extracted SortableFixtureItem component definition
-} 
+// Closing brace for SortableFixtureItem component function is above this line
         </ul> // Correctly closes the SortableContext list
       </div> // Correctly closes the conditional fixture section
 
