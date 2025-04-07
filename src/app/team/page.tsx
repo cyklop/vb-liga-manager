@@ -84,63 +84,104 @@ export default function TeamPage() {
   }, []);
 
   useEffect(() => {
-    if (currentUser) {
-      console.log("Current user:", currentUser); // Debug-Ausgabe
-      
-      const userTeams: Team[] = [];
+    async function loadTeamData() {
+      if (currentUser) {
+        console.log("Current user:", currentUser); // Debug-Ausgabe
+        
+        const userTeams: Team[] = [];
       
       // Füge das Haupt-Team hinzu, falls vorhanden
       if (currentUser.team) {
-        const teamData = {
-          id: currentUser.team.id,
-          name: currentUser.team.name,
-          location: "Nicht verfügbar", // Diese Daten werden später editierbar sein
-          hallAddress: "Nicht verfügbar",
-          trainingTimes: "Nicht verfügbar"
-        };
-        
-        userTeams.push(teamData);
+        // Versuche, vollständige Teamdaten zu laden
+        try {
+          const response = await fetch(`/api/teams/${currentUser.team.id}/details`);
+          if (response.ok) {
+            const teamDetails = await response.json();
+            userTeams.push(teamDetails);
+          } else {
+            // Fallback, wenn API-Endpunkt nicht verfügbar
+            const teamData = {
+              id: currentUser.team.id,
+              name: currentUser.team.name,
+              location: "Nicht verfügbar",
+              hallAddress: "Nicht verfügbar",
+              trainingTimes: "Nicht verfügbar"
+            };
+            userTeams.push(teamData);
+          }
+        } catch (error) {
+          console.error("Fehler beim Laden der Teamdetails:", error);
+          const teamData = {
+            id: currentUser.team.id,
+            name: currentUser.team.name,
+            location: "Nicht verfügbar",
+            hallAddress: "Nicht verfügbar",
+            trainingTimes: "Nicht verfügbar"
+          };
+          userTeams.push(teamData);
+        }
         
         // Setze das erste Team als ausgewähltes Team
         if (!selectedTeamId) {
-          setSelectedTeamId(teamData.id);
+          setSelectedTeamId(currentUser.team.id);
         }
       }
       
       // Füge alle anderen Teams hinzu
       if (currentUser.teams && currentUser.teams.length > 0) {
-        currentUser.teams.forEach(teamRelation => {
+        for (const teamRelation of currentUser.teams) {
           if (teamRelation.team) {
-            const teamData = {
-              id: teamRelation.team.id,
-              name: teamRelation.team.name,
-              location: "Nicht verfügbar",
-              hallAddress: "Nicht verfügbar",
-              trainingTimes: "Nicht verfügbar"
-            };
-            
             // Prüfe, ob das Team bereits in der Liste ist
-            const exists = userTeams.some(t => t.id === teamData.id);
+            const exists = userTeams.some(t => t.id === teamRelation.team.id);
             if (!exists) {
-              userTeams.push(teamData);
+              try {
+                const response = await fetch(`/api/teams/${teamRelation.team.id}/details`);
+                if (response.ok) {
+                  const teamDetails = await response.json();
+                  userTeams.push(teamDetails);
+                } else {
+                  // Fallback, wenn API-Endpunkt nicht verfügbar
+                  const teamData = {
+                    id: teamRelation.team.id,
+                    name: teamRelation.team.name,
+                    location: "Nicht verfügbar",
+                    hallAddress: "Nicht verfügbar",
+                    trainingTimes: "Nicht verfügbar"
+                  };
+                  userTeams.push(teamData);
+                }
+              } catch (error) {
+                console.error("Fehler beim Laden der Teamdetails:", error);
+                const teamData = {
+                  id: teamRelation.team.id,
+                  name: teamRelation.team.name,
+                  location: "Nicht verfügbar",
+                  hallAddress: "Nicht verfügbar",
+                  trainingTimes: "Nicht verfügbar"
+                };
+                userTeams.push(teamData);
+              }
             }
           }
-        });
+        }
       }
       
-      // Aktualisiere die Teams-Liste
-      setTeams(userTeams);
-      
-      // Lade Heimspiele für alle Teams
-      userTeams.forEach(team => {
-        fetchHomeFixtures(team.id);
-      });
-      
-      if (userTeams.length === 0) {
-        // Benutzer hat keine Teams
-        setIsLoading(false);
+        // Aktualisiere die Teams-Liste
+        setTeams(userTeams);
+        
+        // Lade Heimspiele für alle Teams
+        for (const team of userTeams) {
+          await fetchHomeFixtures(team.id);
+        }
+        
+        if (userTeams.length === 0) {
+          // Benutzer hat keine Teams
+          setIsLoading(false);
+        }
       }
     }
+    
+    loadTeamData();
   }, [currentUser, selectedTeamId]);
 
   const fetchCurrentUser = async () => {
@@ -373,8 +414,8 @@ export default function TeamPage() {
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">Meine Mannschaften</h1>
         
-        {/* Team-Auswahl Dropdown, wenn mehr als ein Team vorhanden ist */}
-        {teams.length > 1 && (
+        {/* Team-Auswahl Dropdown, wenn Teams vorhanden sind */}
+        {teams.length > 0 && (
           <div className="mb-6">
             <label htmlFor="team-select" className="block text-sm font-medium text-gray-700 mb-1">
               Mannschaft auswählen:
