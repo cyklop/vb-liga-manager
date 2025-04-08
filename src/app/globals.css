@@ -198,7 +198,15 @@
 .dark button.edit-button,
 .dark button[aria-label="Bearbeiten"],
 .dark button:has(svg.h-5.w-5) {
-  @apply bg-muted text-foreground border border-border hover:bg-card;
+  background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+.dark button.edit-button:hover,
+.dark button[aria-label="Bearbeiten"]:hover,
+.dark button:has(svg.h-5.w-5):hover {
+  background-color: hsl(var(--card));
 }
 
 /* Spezifische Stile für Info-Buttons und deren Container */
