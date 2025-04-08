@@ -194,6 +194,13 @@
   @apply text-foreground;
 }
 
+/* Bearbeiten-Button Stile */
+.dark button.edit-button,
+.dark button[aria-label="Bearbeiten"],
+.dark button:has(svg.h-5.w-5) {
+  @apply bg-muted text-foreground border border-border hover:bg-card;
+}
+
 /* Spezifische Stile für Info-Buttons und deren Container */
 .dark button.info-button,
 .dark button.toggle-button,
@@ -228,7 +235,8 @@
 .dark .stat-icon,
 .dark .stat-value,
 .dark .stat-label,
-.dark span {
+.dark span,
+.dark dd {
   @apply text-foreground;
 }
 
