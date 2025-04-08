@@ -157,7 +157,13 @@
   @apply text-foreground;
 }
 
-/* Stile für Formulare im Dark Mode */
+/* Stile für Formulare im Light und Dark Mode */
+input,
+select,
+textarea {
+  border: 1px solid hsl(var(--input));
+}
+
 .dark input,
 .dark select,
 .dark textarea {
@@ -170,6 +176,19 @@
 .dark select:focus,
 .dark textarea:focus {
   @apply border-primary ring-primary/30;
+}
+
+/* Floating Label Stile */
+.dark .floating-label,
+.dark label[for]:focus-within,
+.dark input:focus ~ label,
+.dark select:focus ~ label,
+.dark textarea:focus ~ label,
+.dark input:not(:placeholder-shown) ~ label,
+.dark select:not(:placeholder-shown) ~ label,
+.dark textarea:not(:placeholder-shown) ~ label {
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--card));
 }
 
 /* Dropdown-Stile im Dark Mode */
