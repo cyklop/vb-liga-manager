@@ -20,6 +20,7 @@ interface User {
 
 export default function Account() {
   const [user, setUser] = useState<User | null>(null)
+  const { theme, setTheme } = useTheme()
 
   useEffect(() => {
     fetchUser()
@@ -31,13 +32,16 @@ export default function Account() {
       if (response.ok) {
         const userData = await response.json()
         setUser(userData)
+        
+        // Wenn der Benutzer ein gespeichertes Theme hat, verwende es
+        if (userData.theme) {
+          setTheme(userData.theme as 'light' | 'dark' | 'system')
+        }
       }
     } catch (error) {
       console.error('Fehler beim Abrufen des Benutzerprofils', error)
     }
   }
-
-  const { setTheme } = useTheme()
   
   const handleProfileUpdate = async (updatedUser: Partial<User>) => {
     try {
@@ -48,24 +52,17 @@ export default function Account() {
       })
       if (response.ok) {
         const data = await response.json()
-        setUser(prevUser => ({ ...prevUser, ...data }))
+        setUser(prevUser => prevUser ? { ...prevUser, ...data } : null)
         
         // Wenn das Theme aktualisiert wurde, aktualisiere auch den Theme-Context
-        if (updatedUser.theme && updatedUser.theme !== data.theme) {
-          setTheme(data.theme as 'light' | 'dark' | 'system')
+        if (updatedUser.theme) {
+          setTheme(updatedUser.theme as 'light' | 'dark' | 'system')
         }
       }
     } catch (error) {
       console.error('Fehler beim Aktualisieren des Benutzerprofils', error)
     }
   }
-  
-  // Synchronisiere das Theme mit dem Benutzer-Theme, wenn die Daten geladen werden
-  useEffect(() => {
-    if (user?.theme) {
-      setTheme(user.theme as 'light' | 'dark' | 'system')
-    }
-  }, [user?.theme, setTheme])
 
   return (
     <>
