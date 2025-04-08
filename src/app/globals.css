@@ -124,7 +124,11 @@
 .dark div[x-show="showSortInfo"],
 .dark div.mt-2.p-4.text-sm.text-gray-600.bg-gray-50.rounded-md.border.border-gray-200,
 .dark div.bg-gray-50 {
-  @apply bg-muted text-foreground border border-border rounded-md p-2;
+  background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.375rem;
+  padding: 0.5rem;
 }
 
 /* Listen in Info-Bereichen */
@@ -142,7 +146,9 @@
 .dark input,
 .dark select,
 .dark textarea {
-  @apply bg-card border-border text-foreground border;
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground));
 }
 
 .dark input:focus,
@@ -156,7 +162,9 @@
 .dark [role="combobox"],
 .dark .dropdown-toggle,
 .dark .select-container {
-  @apply border border-border bg-card text-foreground;
+  border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--card));
+  color: hsl(var(--foreground));
 }
 
 .dark select:hover,
@@ -176,7 +184,16 @@
 .dark button.toggle-button,
 .dark button.accordion-button,
 .dark button.flex {
-  @apply bg-muted text-foreground border border-border hover:bg-card;
+  background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+.dark button.info-button:hover,
+.dark button.toggle-button:hover,
+.dark button.accordion-button:hover,
+.dark button.flex:hover {
+  background-color: hsl(var(--card));
 }
 
 /* Stile für Karten/Cards im Dark Mode */
