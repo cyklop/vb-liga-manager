@@ -75,12 +75,12 @@ export default function Login() {
   }, [router]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <Card color="transparent" shadow={false} placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
-        <Typography variant="h4" color="blue-gray" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      <Card color="transparent" shadow={false} placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}} className="dark:bg-gray-800/30">
+        <Typography variant="h4" color="blue-gray" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}} className="dark:text-gray-100">
           Anmelden
         </Typography>
-        <Typography color="gray" className="mt-1 font-normal" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
+        <Typography color="gray" className="mt-1 font-normal dark:text-gray-300" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
           Geben Sie Ihre Anmeldedaten ein, um sich anzumelden.
         </Typography>
         <form onSubmit={handleSubmit} className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
@@ -94,6 +94,7 @@ export default function Login() {
               onPointerEnterCapture={() => {}}
               onPointerLeaveCapture={() => {}}
               crossOrigin={undefined}
+              className="!transform-none dark:text-gray-200 dark:border-gray-500"
             />
             <Input
               type="password"
@@ -105,6 +106,7 @@ export default function Login() {
               onPointerEnterCapture={() => {}}
               onPointerLeaveCapture={() => {}}
               crossOrigin={undefined}
+              className="!transform-none dark:text-gray-200 dark:border-gray-500"
             />
           </div>
           <Checkbox
@@ -112,7 +114,7 @@ export default function Login() {
               <Typography
                 variant="small"
                 color="gray"
-                className="flex items-center font-normal"
+                className="flex items-center font-normal dark:text-gray-300"
                 placeholder={undefined}
                 onPointerEnterCapture={() => {}}
                 onPointerLeaveCapture={() => {}}
@@ -134,11 +136,11 @@ export default function Login() {
           <Button className="mt-6" fullWidth type="submit" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
             Anmelden
           </Button>
-          <Typography color="gray" className="mt-4 text-center font-normal" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
+          <Typography color="gray" className="mt-4 text-center font-normal dark:text-gray-300" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
             Passwort vergessen?{" "}
             <button
               onClick={() => setIsResetModalOpen(true)}
-              className="font-medium text-blue-500 transition-colors hover:text-blue-700"
+              className="font-medium text-blue-500 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
             >
               Zurücksetzen
             </button>
@@ -174,7 +176,7 @@ export default function Login() {
               onPointerEnterCapture={() => {}}
               onPointerLeaveCapture={() => {}}
               crossOrigin={undefined}
-              className="mb-4"
+              className="mb-4 !transform-none dark:text-gray-200 dark:border-gray-500"
             />
             <Button type="submit" fullWidth placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
               Passwort zurücksetzen
