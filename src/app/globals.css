@@ -117,8 +117,12 @@
 .dark .info-section,
 .dark .info-container,
 .dark .table-info,
-.dark .table-footer {
-  @apply bg-card text-foreground;
+.dark .table-footer,
+.dark .info-panel,
+.dark .sort-info,
+.dark .help-text,
+.dark div[x-show="showSortInfo"] {
+  @apply bg-card text-foreground border border-border rounded-md p-2;
 }
 
 /* Stile für Formulare im Dark Mode */
@@ -152,6 +156,13 @@
 /* Stile für Buttons im Dark Mode */
 .dark button:not(.material-button) {
   @apply text-foreground;
+}
+
+/* Spezifische Stile für Info-Buttons und deren Container */
+.dark button.info-button,
+.dark button.toggle-button,
+.dark button.accordion-button {
+  @apply bg-card text-foreground border border-border hover:bg-muted;
 }
 
 /* Stile für Karten/Cards im Dark Mode */
