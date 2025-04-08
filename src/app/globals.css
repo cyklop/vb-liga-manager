@@ -168,16 +168,45 @@ textarea {
 
 .dark input,
 .dark select,
-.dark textarea {
+.dark textarea,
+.dark .form-input,
+.dark .form-select,
+.dark .form-textarea,
+.dark .MuiInputBase-input {
   background-color: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   color: hsl(var(--foreground));
+  z-index: 1;
 }
 
 /* Stile für Label-Elemente */
 label {
   position: relative;
   z-index: 2;
+}
+
+/* Spezifische Stile für Material-UI und andere Formular-Frameworks */
+.dark .MuiInputLabel-root,
+.dark .MuiFormLabel-root,
+.dark .form-label,
+.dark .input-label {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .MuiInputLabel-root.Mui-focused,
+.dark .MuiFormLabel-root.Mui-focused,
+.dark .form-label.focused,
+.dark .input-label.focused {
+  color: hsl(var(--foreground)) !important;
+  background-color: transparent !important;
+}
+
+/* Stile für Formular-Wrapper */
+.dark .form-group,
+.dark .input-group,
+.dark .form-control-wrapper,
+.dark .MuiFormControl-root {
+  position: relative;
 }
 
 .dark input:focus,
@@ -194,13 +223,18 @@ label {
 .dark textarea:focus ~ label,
 .dark input:not(:placeholder-shown) ~ label,
 .dark select:not(:placeholder-shown) ~ label,
-.dark textarea:not(:placeholder-shown) ~ label {
-  color: hsl(var(--foreground));
-  background-color: hsl(var(--card));
+.dark textarea:not(:placeholder-shown) ~ label,
+.dark .form-input:focus ~ .form-label,
+.dark .form-input:not(:placeholder-shown) ~ .form-label,
+.dark .form-select:focus ~ .form-label,
+.dark .form-textarea:focus ~ .form-label {
+  color: hsl(var(--foreground)) !important;
+  background-color: transparent !important;
   padding: 0 0.25rem;
   font-size: 0.875rem;
   line-height: 1;
-  z-index: 1;
+  z-index: 5;
+  transform: translateY(-1.5rem);
 }
 
 /* Dropdown-Stile im Dark Mode */
