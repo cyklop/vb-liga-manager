@@ -122,7 +122,7 @@
 .dark .sort-info,
 .dark .help-text,
 .dark div[x-show="showSortInfo"] {
-  @apply bg-card text-foreground border border-border rounded-md p-2;
+  @apply bg-muted text-foreground border border-border rounded-md p-2;
 }
 
 /* Stile für Formulare im Dark Mode */
@@ -161,8 +161,9 @@
 /* Spezifische Stile für Info-Buttons und deren Container */
 .dark button.info-button,
 .dark button.toggle-button,
-.dark button.accordion-button {
-  @apply bg-card text-foreground border border-border hover:bg-muted;
+.dark button.accordion-button,
+.dark button.flex {
+  @apply bg-muted text-foreground border border-border hover:bg-card;
 }
 
 /* Stile für Karten/Cards im Dark Mode */
