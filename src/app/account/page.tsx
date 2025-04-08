@@ -20,9 +20,11 @@ interface User {
 
 export default function Account() {
   const [user, setUser] = useState<User | null>(null)
-  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  const themeContext = useTheme()
 
   useEffect(() => {
+    setMounted(true)
     fetchUser()
   }, [])
 
@@ -34,8 +36,8 @@ export default function Account() {
         setUser(userData)
         
         // Wenn der Benutzer ein gespeichertes Theme hat, verwende es
-        if (userData.theme) {
-          setTheme(userData.theme as 'light' | 'dark' | 'system')
+        if (userData.theme && mounted && themeContext) {
+          themeContext.setTheme(userData.theme as 'light' | 'dark' | 'system')
         }
       }
     } catch (error) {
@@ -55,8 +57,8 @@ export default function Account() {
         setUser(prevUser => prevUser ? { ...prevUser, ...data } : null)
         
         // Wenn das Theme aktualisiert wurde, aktualisiere auch den Theme-Context
-        if (updatedUser.theme) {
-          setTheme(updatedUser.theme as 'light' | 'dark' | 'system')
+        if (updatedUser.theme && mounted && themeContext) {
+          themeContext.setTheme(updatedUser.theme as 'light' | 'dark' | 'system')
         }
       }
     } catch (error) {
@@ -85,16 +87,18 @@ export default function Account() {
                   <label htmlFor="theme" className="block text-sm font-medium mb-2 text-gray-700 dark:text-foreground">
                     Theme-Einstellung
                   </label>
-                  <select
-                    id="theme"
-                    value={user?.theme || 'system'}
-                    onChange={(e) => handleProfileUpdate({ theme: e.target.value })}
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md bg-white dark:bg-card text-gray-900 dark:text-foreground"
-                  >
+                  {mounted && (
+                    <select
+                      id="theme"
+                      value={user?.theme || themeContext?.theme || 'system'}
+                      onChange={(e) => handleProfileUpdate({ theme: e.target.value })}
+                      className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md bg-white dark:bg-card text-gray-900 dark:text-foreground"
+                    >
                     <option value="light">Hell</option>
                     <option value="dark">Dunkel</option>
                     <option value="system">System (Browser-Einstellung)</option>
-                  </select>
+                    </select>
+                  )}
                   <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                     Wählen Sie Ihr bevorzugtes Erscheinungsbild für die Anwendung.
                   </p>
