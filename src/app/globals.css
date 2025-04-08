@@ -91,6 +91,22 @@
   @apply bg-muted/50;
 }
 
+/* Spezifische Stile für Tabellen-Container */
+.dark .table-container,
+.dark .table-wrapper,
+.dark .table-responsive,
+.dark div:has(> table) {
+  @apply bg-card;
+}
+
+/* Info-Bereiche unter Tabellen */
+.dark .info-section,
+.dark .info-container,
+.dark .table-info,
+.dark .table-footer {
+  @apply bg-card text-foreground;
+}
+
 /* Stile für Formulare im Dark Mode */
 .dark input,
 .dark select,
@@ -111,8 +127,22 @@
 
 /* Stile für Karten/Cards im Dark Mode */
 .dark .card,
-.dark div[role="dialog"] {
-  @apply bg-card border-border;
+.dark div[role="dialog"],
+.dark .dashboard-card,
+.dark .dashboard-item,
+.dark .card-container,
+.dark .MuiPaper-root,
+.dark .MuiCard-root {
+  @apply bg-card border-border text-foreground;
+}
+
+/* Dashboard-spezifische Elemente */
+.dark .dashboard-icon,
+.dark .dashboard-stat,
+.dark .stat-icon,
+.dark .stat-value,
+.dark .stat-label {
+  @apply text-foreground;
 }
 
 /* Stile für Icons im Dark Mode */
@@ -130,25 +160,89 @@
 }
 
 /* Stile für Navigationsleisten im Dark Mode */
-.dark nav {
+.dark nav,
+.dark header,
+.dark .navbar,
+.dark .app-bar,
+.dark .MuiAppBar-root {
   @apply bg-card border-border;
 }
 
-.dark nav a {
+.dark nav a,
+.dark .nav-link,
+.dark .menu-item {
   @apply text-foreground hover:bg-muted;
 }
 
-.dark nav a.active {
+.dark nav a.active,
+.dark .active-link {
   @apply bg-muted;
+}
+
+/* Dropdown-Menüs in der Navigation */
+.dark .dropdown-menu,
+.dark .submenu,
+.dark .MuiMenu-paper,
+.dark .MuiPopover-paper {
+  @apply bg-card border-border text-foreground;
+}
+
+.dark .dropdown-item,
+.dark .submenu-item,
+.dark .MuiMenuItem-root {
+  @apply text-foreground hover:bg-muted;
+}
+
+/* Header-Bereiche */
+.dark .page-header,
+.dark .section-header,
+.dark .header-container,
+.dark .title-section {
+  @apply bg-card text-foreground border-border;
 }
 
 /* Stile für Dropdown-Menüs im Dark Mode */
 .dark [role="menu"],
-.dark [role="listbox"] {
+.dark [role="listbox"],
+.dark .MuiList-root {
   @apply bg-card border-border;
 }
 
 .dark [role="menuitem"],
-.dark [role="option"] {
+.dark [role="option"],
+.dark .MuiListItem-root {
   @apply text-foreground hover:bg-muted;
+}
+
+/* Material UI spezifische Komponenten */
+.dark .MuiPaper-root {
+  @apply bg-card text-foreground;
+}
+
+.dark .MuiTypography-root {
+  @apply text-foreground;
+}
+
+.dark .MuiButton-root {
+  @apply text-foreground;
+}
+
+.dark .MuiIconButton-root {
+  @apply text-foreground;
+}
+
+.dark .MuiInputBase-root {
+  @apply bg-card text-foreground border-border;
+}
+
+.dark .MuiOutlinedInput-notchedOutline {
+  @apply border-border;
+}
+
+/* Allgemeine Container */
+.dark .container,
+.dark .content-container,
+.dark .page-container,
+.dark .section-container {
+  @apply bg-background text-foreground;
 }
