@@ -103,7 +103,6 @@ function AccountContent() {
         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
           <div className="px-4 py-6 sm:px-0">
             <div className="rounded-lg p-4 bg-white dark:bg-card shadow">
-              <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-foreground">Profil bearbeiten</h2>
               {user && <UserProfileForm user={user} onUpdate={handleProfileUpdate} />}
               
               <div className="mt-8 border-t dark:border-border pt-6">
@@ -124,7 +123,7 @@ function AccountContent() {
                     <option value="system">System (Browser-Einstellung)</option>
                     </select>
                   )}
-                  <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
+                  <p className="mt-2 mb-4 text-sm text-gray-500 dark:text-gray-200">
                     Wählen Sie Ihr bevorzugtes Erscheinungsbild für die Anwendung.
                   </p>
                 </div>
