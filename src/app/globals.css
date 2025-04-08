@@ -201,7 +201,8 @@
 .dark .MuiMenu-paper,
 .dark .MuiPopover-paper,
 .dark div:has(> a.dropdown-item),
-.dark div:has(> a.submenu-item) {
+.dark div:has(> a.submenu-item),
+.dark .group:hover div {
   @apply bg-card border-border text-foreground;
 }
 
