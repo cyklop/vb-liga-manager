@@ -72,3 +72,83 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Spezifische Stile für Tabellen im Dark Mode */
+.dark table {
+  @apply bg-card border-border;
+}
+
+.dark th,
+.dark td {
+  @apply border-border text-foreground;
+}
+
+.dark thead th {
+  @apply bg-muted text-foreground;
+}
+
+.dark tbody tr:hover {
+  @apply bg-muted/50;
+}
+
+/* Stile für Formulare im Dark Mode */
+.dark input,
+.dark select,
+.dark textarea {
+  @apply bg-card border-border text-foreground;
+}
+
+.dark input:focus,
+.dark select:focus,
+.dark textarea:focus {
+  @apply border-primary ring-primary/30;
+}
+
+/* Stile für Buttons im Dark Mode */
+.dark button:not(.material-button) {
+  @apply text-foreground;
+}
+
+/* Stile für Karten/Cards im Dark Mode */
+.dark .card,
+.dark div[role="dialog"] {
+  @apply bg-card border-border;
+}
+
+/* Stile für Icons im Dark Mode */
+.dark svg {
+  @apply text-foreground;
+}
+
+/* Stile für Modals im Dark Mode */
+.dark .modal-content {
+  @apply bg-card border-border;
+}
+
+.dark .modal-header {
+  @apply border-border;
+}
+
+/* Stile für Navigationsleisten im Dark Mode */
+.dark nav {
+  @apply bg-card border-border;
+}
+
+.dark nav a {
+  @apply text-foreground hover:bg-muted;
+}
+
+.dark nav a.active {
+  @apply bg-muted;
+}
+
+/* Stile für Dropdown-Menüs im Dark Mode */
+.dark [role="menu"],
+.dark [role="listbox"] {
+  @apply bg-card border-border;
+}
+
+.dark [role="menuitem"],
+.dark [role="option"] {
+  @apply text-foreground hover:bg-muted;
+}

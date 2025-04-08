@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="de" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.className} transition-colors duration-200`}>
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
