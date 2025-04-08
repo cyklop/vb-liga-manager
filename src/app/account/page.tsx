@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Navigation from '../../../components/Navbar'
 import UserProfileForm from '../../../components/UserProfileForm'
-import { useTheme } from '../../../components/ThemeProvider'
+import { ThemeProvider, useTheme } from '../../../components/ThemeProvider'
 
 interface User {
   id: number
@@ -18,7 +18,8 @@ interface User {
   }
 }
 
-export default function Account() {
+// Wrapper-Komponente, die den ThemeProvider enthält
+function AccountContent() {
   const [user, setUser] = useState<User | null>(null)
   const [mounted, setMounted] = useState(false)
   const themeContext = useTheme()
@@ -109,5 +110,14 @@ export default function Account() {
         </div>
       </main>
     </>
+  )
+}
+
+// Hauptkomponente, die den ThemeProvider enthält
+export default function Account() {
+  return (
+    <ThemeProvider>
+      <AccountContent />
+    </ThemeProvider>
   )
 }
