@@ -1,5 +1,4 @@
 -- Einfache Lösung: Nur die slug-Spalte hinzufügen
-PRAGMA foreign_keys=off;
 
 -- Spalte hinzufügen
 ALTER TABLE "League" ADD COLUMN "slug" TEXT;
@@ -9,5 +8,3 @@ UPDATE "League" SET "slug" = lower(replace(replace(replace("name", ' ', '-'), '�
 
 -- Unique-Index für slug erstellen
 CREATE UNIQUE INDEX "League_slug_key" ON "League"("slug");
-
-PRAGMA foreign_keys=on;
