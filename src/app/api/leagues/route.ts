@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import prisma from '../../../../lib/prisma' // Import the singleton instance
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../../auth/[...nextauth]/route'
+import { createSlug, isValidSlug } from '../../../../lib/slugify'
 
 export async function GET(request: Request) {
   // URL-Parameter auslesen
@@ -96,6 +97,7 @@ export async function POST(request: Request) {
 
   const { 
     name, 
+    slug: providedSlug,
     numberOfTeams, 
     hasReturnMatches, 
     teamIds,
@@ -114,10 +116,38 @@ export async function POST(request: Request) {
         { status: 400 }
       )
     }
+    
+    // Slug generieren oder validieren
+    let finalSlug = providedSlug ? providedSlug.trim() : createSlug(name)
+    
+    // Slug-Validierung
+    if (!isValidSlug(finalSlug)) {
+      return NextResponse.json(
+        { message: 'Der URL-Slug darf nur Kleinbuchstaben, Zahlen und Bindestriche enthalten' },
+        { status: 400 }
+      )
+    }
+    
+    // Prüfen, ob der Slug bereits existiert
+    const existingLeague = await prisma.league.findUnique({
+      where: { slug: finalSlug }
+    })
+    
+    // Falls der Slug bereits existiert, eine Nummer anhängen
+    let counter = 1
+    while (existingLeague) {
+      finalSlug = `${providedSlug ? providedSlug : createSlug(name)}-${counter}`
+      counter++
+      const checkLeague = await prisma.league.findUnique({
+        where: { slug: finalSlug }
+      })
+      if (!checkLeague) break
+    }
 
     const league = await prisma.league.create({
       data: {
         name,
+        slug: finalSlug,
         numberOfTeams,
         hasReturnMatches,
         pointsWin30,

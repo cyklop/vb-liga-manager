@@ -48,6 +48,7 @@ model UserTeam {
 model League {
   id                Int       @id @default(autoincrement())
   name              String    @unique
+  slug              String    @unique // Sprechender URL-Slug (z.B. "volleyball-hobbyliga-2024")
   numberOfTeams     Int
   hasReturnMatches  Boolean
   teams             Team[]

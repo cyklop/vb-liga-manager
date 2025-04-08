@@ -4,8 +4,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Navigation from '../../../../components/Navbar';
 import Modal from '../../../../components/Modal';
-import { PencilIcon, TrashIcon, CalendarDaysIcon, ArrowsUpDownIcon, ArrowUpIcon, ArrowDownIcon, LockClosedIcon, LockOpenIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, CalendarDaysIcon, ArrowsUpDownIcon, ArrowUpIcon, ArrowDownIcon, LockClosedIcon, LockOpenIcon, CheckIcon, LinkIcon, ClipboardIcon } from '@heroicons/react/24/outline';
 import { Bars3Icon as GripVerticalIcon } from '@heroicons/react/24/outline'; // Verwende Bars3Icon als Ersatz für GripVerticalIcon
+import { createSlug } from '../../../../lib/slugify';
 // Import dnd-kit components
 import {
   DndContext,
@@ -69,6 +70,7 @@ interface Fixture {
 interface League {
   id: number
   name: string
+  slug: string
   numberOfTeams: number
   hasReturnMatches: boolean
   teams: Team[]
@@ -92,6 +94,7 @@ export default function LeaguesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [newLeague, setNewLeague] = useState({
     name: '',
+    slug: '',
     numberOfTeams: 0,
     hasReturnMatches: false,
     teamIds: [] as number[],
@@ -387,6 +390,7 @@ export default function LeaguesPage() {
         // Reset form with default point rules
         setNewLeague({ 
           name: '', 
+          slug: '',
           numberOfTeams: 0, 
           hasReturnMatches: false, 
           teamIds: [],
@@ -525,6 +529,9 @@ export default function LeaguesPage() {
                   <p className="text-xs text-gray-400 dark:text-gray-500">
                     Erstellt am: {new Date(league.createdAt).toLocaleDateString('de-DE')}
                   </p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">
+                    Öffentlicher Link: <a href={`/public/league/${league.slug}`} target="_blank" className="text-blue-500 hover:underline">/public/league/{league.slug}</a>
+                  </p>
                 </div>
                 {/* Action Buttons */}
                 <div className="flex space-x-1">
@@ -535,6 +542,7 @@ export default function LeaguesPage() {
                           setEditingLeague(league);
                           setNewLeague({
                             name: league.name,
+                            slug: league.slug,
                             numberOfTeams: league.numberOfTeams,
                             hasReturnMatches: league.hasReturnMatches,
                             teamIds: league.teams.map(team => team.id),
@@ -565,6 +573,7 @@ export default function LeaguesPage() {
                           setNewLeague({
                             ...newLeague,
                             name: league.name,
+                            slug: league.slug,
                             numberOfTeams: league.numberOfTeams,
                             hasReturnMatches: league.hasReturnMatches,
                             teamIds: league.teams.map(team => team.id),
@@ -667,6 +676,26 @@ export default function LeaguesPage() {
               required
               className="mt-1 w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
             />
+          </div>
+          
+          <div className="mt-4">
+            <label htmlFor="leagueSlug" className="block text-sm font-medium text-gray-700">URL-Slug</label>
+            <div className="mt-1 flex rounded-md shadow-sm">
+              <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                /public/league/
+              </span>
+              <input
+                id="leagueSlug"
+                type="text"
+                value={newLeague.slug}
+                onChange={(e) => setNewLeague({...newLeague, slug: e.target.value})}
+                placeholder={newLeague.name ? createSlug(newLeague.name) : "volleyball-liga-2024"}
+                className="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border border-gray-300 focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+              />
+            </div>
+            <p className="mt-1 text-xs text-gray-500">
+              Dieser Wert wird in der URL verwendet. Nur Kleinbuchstaben, Zahlen und Bindestriche erlaubt. Leer lassen für automatische Generierung aus dem Namen.
+            </p>
           </div>
           {/* Number of Teams */}
           <div>
