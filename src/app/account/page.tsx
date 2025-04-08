@@ -70,29 +70,29 @@ export default function Account() {
   return (
     <>
       <Navigation />
-      <header className="bg-white shadow">
+      <header className="bg-white dark:bg-card shadow">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">Mein Konto</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-foreground">Mein Konto</h1>
         </div>
       </header>
       <main>
         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
           <div className="px-4 py-6 sm:px-0">
-            <div className="rounded-lg border-4 border-dashed border-gray-200 p-4">
-              <h2 className="text-2xl font-bold mb-4">Profil bearbeiten</h2>
+            <div className="rounded-lg p-4 bg-white dark:bg-card shadow">
+              <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-foreground">Profil bearbeiten</h2>
               {user && <UserProfileForm user={user} onUpdate={handleProfileUpdate} />}
               
-              <div className="mt-8 border-t pt-6">
-                <h2 className="text-2xl font-bold mb-4">Darstellung</h2>
+              <div className="mt-8 border-t dark:border-border pt-6">
+                <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-foreground">Darstellung</h2>
                 <div className="mb-4">
-                  <label htmlFor="theme" className="block text-sm font-medium mb-2">
+                  <label htmlFor="theme" className="block text-sm font-medium mb-2 text-gray-700 dark:text-foreground">
                     Theme-Einstellung
                   </label>
                   <select
                     id="theme"
                     value={user?.theme || 'system'}
                     onChange={(e) => handleProfileUpdate({ theme: e.target.value })}
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md bg-white dark:bg-card text-gray-900 dark:text-foreground"
                   >
                     <option value="light">Hell</option>
                     <option value="dark">Dunkel</option>
