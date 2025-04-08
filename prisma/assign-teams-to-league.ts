@@ -1,6 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-
-const prisma = new PrismaClient();
+const { prisma } = require('../lib/prisma');
 
 async function main() {
   // Finde oder erstelle die Liga "Volleyball Hobbyliga 2024/25"
