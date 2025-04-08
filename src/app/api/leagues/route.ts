@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import prisma from '../../../../lib/prisma' // Import the singleton instance
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../../auth/[...nextauth]/route'
-import { createSlug, isValidSlug } from '../../../../lib/slugify'
+import { createSlug, isValidSlug } from '@/lib/slugify'
 
 export async function GET(request: Request) {
   // URL-Parameter auslesen

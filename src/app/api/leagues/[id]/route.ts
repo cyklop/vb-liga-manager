@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import prisma from '../../../../../lib/prisma' // Import the singleton instance
-import { createSlug, isValidSlug } from '../../../../../lib/slugify'
+import { createSlug, isValidSlug } from '@/lib/slugify'
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   const id = parseInt(params.id)
