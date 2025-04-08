@@ -76,7 +76,7 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <Card color="transparent" shadow={false} placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}} className="dark:bg-gray-800/30">
+      <Card color="transparent" shadow={false} placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}} className="dark:bg-gray-800/30 p-6">
         <Typography variant="h4" color="blue-gray" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}} className="dark:text-gray-100">
           Anmelden
         </Typography>
@@ -94,7 +94,7 @@ export default function Login() {
               onPointerEnterCapture={() => {}}
               onPointerLeaveCapture={() => {}}
               crossOrigin={undefined}
-              className="!transform-none dark:text-gray-200 dark:border-gray-500"
+              className="dark:text-gray-200 dark:border-gray-500"
             />
             <Input
               type="password"
@@ -106,7 +106,7 @@ export default function Login() {
               onPointerEnterCapture={() => {}}
               onPointerLeaveCapture={() => {}}
               crossOrigin={undefined}
-              className="!transform-none dark:text-gray-200 dark:border-gray-500"
+              className="dark:text-gray-200 dark:border-gray-500"
             />
           </div>
           <Checkbox
@@ -176,7 +176,7 @@ export default function Login() {
               onPointerEnterCapture={() => {}}
               onPointerLeaveCapture={() => {}}
               crossOrigin={undefined}
-              className="mb-4 !transform-none dark:text-gray-200 dark:border-gray-500"
+              className="mb-4 dark:text-gray-200 dark:border-gray-500"
             />
             <Button type="submit" fullWidth placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
               Passwort zurücksetzen
