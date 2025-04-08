@@ -119,6 +119,10 @@ export default function Login() {
             containerProps={{ className: "-ml-2.5" }}
             placeholder={undefined}
             crossOrigin={undefined}
+            className="dark:checked:bg-blue-500 dark:border-gray-500 dark:checked:border-blue-500 focus:ring-0 focus:ring-offset-0"
+            iconProps={{
+              className: "dark:text-white"
+            }}
           />
           {error && (
             <Typography color="red" className="mt-2 text-center text-sm" placeholder={undefined}>
@@ -165,8 +169,6 @@ export default function Login() {
               value={resetEmail}
               onChange={(e) => setResetEmail(e.target.value)}
               placeholder={undefined}
-              onPointerEnterCapture={() => {}}
-              onPointerLeaveCapture={() => {}}
               crossOrigin={undefined}
               className="mb-4 dark:text-gray-200 dark:border-gray-500"
             />
