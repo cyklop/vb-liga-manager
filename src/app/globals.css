@@ -113,6 +113,16 @@
   @apply bg-card;
 }
 
+/* Fixtures-spezifische Stile */
+.dark div.bg-white {
+  @apply bg-card;
+}
+
+.dark div.bg-indigo-50 {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
+}
+
 /* Info-Bereiche unter Tabellen */
 .dark .info-section,
 .dark .info-container,
@@ -139,6 +149,11 @@
 
 .dark ol li,
 .dark ul li {
+  @apply text-foreground;
+}
+
+/* Label-Elemente im Dark Mode */
+.dark label {
   @apply text-foreground;
 }
 
