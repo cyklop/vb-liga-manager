@@ -49,8 +49,8 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ user, onUpdate }) => 
   };
 
   return (
-    <Card color="transparent" shadow={false} placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
-      <Typography variant="h4" color="blue-gray" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
+    <Card color="transparent" shadow={false} placeholder={undefined}>
+      <Typography variant="h4" color="blue-gray" placeholder={undefined}>
         Profil aktualisieren
       </Typography>
       <Typography color="gray" className="mt-1 mb-4 font-normal dark:text-gray-200">
@@ -58,8 +58,8 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ user, onUpdate }) => 
       </Typography>
       <form onSubmit={handleSubmit} className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
         <div className="mb-4 flex flex-col gap-6">
-          <Input size="lg" label="Name" value={name} onChange={(e) => setName(e.target.value)} placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}} className="!transform-none" />
-          <Input size="lg" label="Email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}} className="!transform-none" />
+          <Input size="lg" label="Name" value={name} onChange={(e) => setName(e.target.value)} placeholder={undefined} className="!transform-none" />
+          <Input size="lg" label="Email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={undefined} className="!transform-none" />
           <Input
             type="password"
             size="lg"
@@ -67,8 +67,6 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ user, onUpdate }) => 
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder={undefined}
-            onPointerEnterCapture={() => {}}
-            onPointerLeaveCapture={() => {}}
             className="!transform-none"
           />
           <Input
@@ -78,8 +76,6 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ user, onUpdate }) => 
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder={undefined}
-            onPointerEnterCapture={() => {}}
-            onPointerLeaveCapture={() => {}}
             className="!transform-none"
           />
         </div>
@@ -88,7 +84,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ user, onUpdate }) => 
             {error}
           </Typography>
         )}
-        <Button className="mt-6" fullWidth type="submit" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
+        <Button className="mt-6" fullWidth type="submit" placeholder={undefined}>
           Profil aktualisieren
         </Button>
       </form>
