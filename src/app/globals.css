@@ -162,6 +162,8 @@ input,
 select,
 textarea {
   border: 1px solid hsl(var(--input));
+  position: relative;
+  z-index: 0;
 }
 
 .dark input,
@@ -170,6 +172,12 @@ textarea {
   background-color: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   color: hsl(var(--foreground));
+}
+
+/* Stile für Label-Elemente */
+label {
+  position: relative;
+  z-index: 2;
 }
 
 .dark input:focus,
@@ -189,6 +197,10 @@ textarea {
 .dark textarea:not(:placeholder-shown) ~ label {
   color: hsl(var(--foreground));
   background-color: hsl(var(--card));
+  padding: 0 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1;
+  z-index: 1;
 }
 
 /* Dropdown-Stile im Dark Mode */
