@@ -141,7 +141,8 @@
 .dark .dashboard-stat,
 .dark .stat-icon,
 .dark .stat-value,
-.dark .stat-label {
+.dark .stat-label,
+.dark span {
   @apply text-foreground;
 }
 
@@ -198,7 +199,9 @@
 .dark .dropdown-menu,
 .dark .submenu,
 .dark .MuiMenu-paper,
-.dark .MuiPopover-paper {
+.dark .MuiPopover-paper,
+.dark div:has(> a.dropdown-item),
+.dark div:has(> a.submenu-item) {
   @apply bg-card border-border text-foreground;
 }
 
