@@ -87,8 +87,22 @@
   @apply bg-muted text-foreground;
 }
 
+.dark tbody tr {
+  @apply text-foreground;
+}
+
+.dark tbody tr.bg-white,
+.dark tbody tr:nth-child(odd) {
+  @apply bg-card;
+}
+
+.dark tbody tr.bg-gray-50,
+.dark tbody tr:nth-child(even) {
+  @apply bg-muted;
+}
+
 .dark tbody tr:hover {
-  @apply bg-muted/50;
+  @apply bg-muted/80;
 }
 
 /* Spezifische Stile für Tabellen-Container */
@@ -111,13 +125,28 @@
 .dark input,
 .dark select,
 .dark textarea {
-  @apply bg-card border-border text-foreground;
+  @apply bg-card border-border text-foreground border;
 }
 
 .dark input:focus,
 .dark select:focus,
 .dark textarea:focus {
   @apply border-primary ring-primary/30;
+}
+
+/* Dropdown-Stile im Dark Mode */
+.dark select,
+.dark [role="combobox"],
+.dark .dropdown-toggle,
+.dark .select-container {
+  @apply border border-border bg-card text-foreground;
+}
+
+.dark select:hover,
+.dark [role="combobox"]:hover,
+.dark .dropdown-toggle:hover,
+.dark .select-container:hover {
+  @apply border-primary/50;
 }
 
 /* Stile für Buttons im Dark Mode */
