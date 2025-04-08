@@ -182,21 +182,21 @@ export default function TeamsPage() {
               setFormData({}) // Reset form data for adding new team
               setIsModalOpen(true)
             }}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 dark:bg-blue-600 dark:hover:bg-blue-800"
           >
             Neue Mannschaft hinzufügen
           </button>
         )}
-        <ul className="bg-white shadow overflow-hidden sm:rounded-md">
+        <ul className="bg-white dark:bg-card shadow overflow-hidden sm:rounded-md">
           {teams.map((team) => (
-            <li key={team.id} className="border-b border-gray-200 last:border-b-0">
+            <li key={team.id} className="border-b border-gray-200 dark:border-border last:border-b-0">
               <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
                 <div>
-                  <p className="text-sm font-medium text-indigo-600 truncate">{team.name}</p>
-                  <p className="text-sm text-gray-500">{team.location}</p>
-                  <p className="text-sm text-gray-500">{team.hallAddress}</p>
-                  <p className="text-sm text-gray-500">Trainingszeiten: {team.trainingTimes}</p>
-                  {team.teamLeader && <p className="text-sm text-gray-500">Spielleiter: {team.teamLeader.name}</p>}
+                  <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">{team.name}</p>
+                  <p className="text-sm text-gray-500 dark:text-foreground">{team.location}</p>
+                  <p className="text-sm text-gray-500 dark:text-foreground">{team.hallAddress}</p>
+                  <p className="text-sm text-gray-500 dark:text-foreground">Trainingszeiten: {team.trainingTimes}</p>
+                  {team.teamLeader && <p className="text-sm text-gray-500 dark:text-foreground">Spielleiter: {team.teamLeader.name}</p>}
                 </div>
                 <div>
                   <button
@@ -214,14 +214,16 @@ export default function TeamsPage() {
                       setIsModalOpen(false) // Close modal first if already open from another edit
                       setTimeout(() => setIsModalOpen(true), 0) // Then open with new data
                     }}
-                    className="mr-2 text-indigo-600 hover:text-indigo-900"
+                    className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded dark:text-foreground dark:hover:bg-muted mr-2"
+                    title="Mannschaft bearbeiten"
                   >
                     <PencilIcon className="h-5 w-5" />
                   </button>
                   {isAdmin && (
                     <button
                       onClick={() => handleDeleteTeam(team.id)}
-                      className="text-red-600 hover:text-red-900"
+                      className="p-1 text-red-600 hover:text-red-900 hover:bg-red-100 rounded dark:text-red-400 dark:hover:bg-red-900/20"
+                      title="Mannschaft löschen"
                     >
                       <TrashIcon className="h-5 w-5" />
                     </button>
@@ -277,7 +279,7 @@ export default function TeamsPage() {
           </select>
           <button
             type="submit"
-            className="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            className="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-600 dark:hover:bg-blue-800"
           >
             {editingTeam ? "Aktualisieren" : "Hinzufügen"}
           </button>
