@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Navigation from '../../../components/Navbar'
 import UserProfileForm from '../../../components/UserProfileForm'
 import { ThemeProvider, useTheme } from '../../../components/ThemeProvider'
@@ -22,14 +23,17 @@ interface User {
 function AccountContent() {
   const [user, setUser] = useState<User | null>(null)
   const [mounted, setMounted] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
   const themeContext = useTheme()
 
   useEffect(() => {
     setMounted(true)
     fetchUser()
-  }, [])
+  }, [router])
 
   const fetchUser = async () => {
+    setLoading(true)
     try {
       const response = await fetch('/api/users/me')
       if (response.ok) {
@@ -40,9 +44,16 @@ function AccountContent() {
         if (userData.theme && mounted && themeContext) {
           themeContext.setTheme(userData.theme as 'light' | 'dark' | 'system')
         }
+      } else if (response.status === 401) {
+        // Nicht authentifiziert, zur Login-Seite weiterleiten
+        router.push('/login')
+        return
       }
     } catch (error) {
       console.error('Fehler beim Abrufen des Benutzerprofils', error)
+      router.push('/login')
+    } finally {
+      setLoading(false)
     }
   }
   
@@ -65,6 +76,19 @@ function AccountContent() {
     } catch (error) {
       console.error('Fehler beim Aktualisieren des Benutzerprofils', error)
     }
+  }
+
+  if (loading) {
+    return (
+      <>
+        <Navigation />
+        <div className="flex items-center justify-center h-screen">
+          <div className="text-center">
+            <p className="text-lg text-gray-600 dark:text-gray-400">Laden...</p>
+          </div>
+        </div>
+      </>
+    )
   }
 
   return (
