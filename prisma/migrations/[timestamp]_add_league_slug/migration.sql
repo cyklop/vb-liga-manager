@@ -5,6 +5,8 @@
 -- 4. Temporäre Tabelle umbenennen
 
 -- Temporäre Tabelle erstellen
+PRAGMA foreign_keys=off;
+
 CREATE TABLE "League_new" (
   "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "name" TEXT NOT NULL,
@@ -70,10 +72,7 @@ CREATE TABLE "Fixture" (
   "awayPoints" INTEGER,
   "homeMatchPoints" INTEGER,
   "awayMatchPoints" INTEGER,
-  "order" INTEGER NOT NULL,
-  FOREIGN KEY ("leagueId") REFERENCES "League"("id") ON DELETE CASCADE,
-  FOREIGN KEY ("homeTeamId") REFERENCES "Team"("id") ON DELETE CASCADE,
-  FOREIGN KEY ("awayTeamId") REFERENCES "Team"("id") ON DELETE CASCADE
+  "order" INTEGER NOT NULL
 );
 
 -- Beziehungstabelle neu erstellen
@@ -100,3 +99,9 @@ CREATE INDEX "Fixture_awayTeamId_idx" ON "Fixture"("awayTeamId");
 -- Unique-Index für die Beziehungstabelle
 CREATE UNIQUE INDEX "_League_teams_AB_unique" ON "_League_teams"("A", "B");
 CREATE INDEX "_League_teams_B_index" ON "_League_teams"("B");
+
+-- Foreign Keys für Fixture hinzufügen
+PRAGMA foreign_keys=on;
+ALTER TABLE "Fixture" ADD CONSTRAINT "Fixture_leagueId_fkey" FOREIGN KEY ("leagueId") REFERENCES "League"("id") ON DELETE CASCADE;
+ALTER TABLE "Fixture" ADD CONSTRAINT "Fixture_homeTeamId_fkey" FOREIGN KEY ("homeTeamId") REFERENCES "Team"("id") ON DELETE CASCADE;
+ALTER TABLE "Fixture" ADD CONSTRAINT "Fixture_awayTeamId_fkey" FOREIGN KEY ("awayTeamId") REFERENCES "Team"("id") ON DELETE CASCADE;
