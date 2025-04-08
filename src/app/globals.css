@@ -145,6 +145,21 @@
   @apply text-foreground;
 }
 
+/* Dashboard Flex-Elemente und Links */
+.dark a.flex,
+.dark .dashboard-link,
+.dark .stat-card,
+.dark .dashboard-tile {
+  @apply bg-card text-foreground border-border;
+}
+
+.dark a.flex:hover,
+.dark .dashboard-link:hover,
+.dark .stat-card:hover,
+.dark .dashboard-tile:hover {
+  @apply bg-muted;
+}
+
 /* Stile für Icons im Dark Mode */
 .dark svg {
   @apply text-foreground;
@@ -197,8 +212,19 @@
 .dark .page-header,
 .dark .section-header,
 .dark .header-container,
-.dark .title-section {
+.dark .title-section,
+.dark header {
   @apply bg-card text-foreground border-border;
+}
+
+.dark h1, 
+.dark h2, 
+.dark h3, 
+.dark h4, 
+.dark h5, 
+.dark h6,
+.dark .heading {
+  @apply text-foreground;
 }
 
 /* Stile für Dropdown-Menüs im Dark Mode */
