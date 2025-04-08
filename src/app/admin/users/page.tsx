@@ -123,29 +123,29 @@ export default function UsersPage() {
             setIsEditing(false)
             setIsModalOpen(true)
           }}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 dark:bg-blue-600 dark:hover:bg-blue-800"
         >
           Neuen Benutzer hinzufügen
         </button>
-        <ul className="bg-white shadow overflow-hidden sm:rounded-md">
+        <ul className="bg-white dark:bg-card shadow overflow-hidden sm:rounded-md">
           {users.map((user) => (
-            <li key={user.id} className="border-b border-gray-200 last:border-b-0">
+            <li key={user.id} className="border-b border-gray-200 dark:border-border last:border-b-0">
               <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
                 <div>
-                  <p className="text-sm font-medium text-indigo-600 truncate">{user.name}</p>
-                  <p className="text-sm text-gray-500">{user.email}</p>
+                  <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">{user.name}</p>
+                  <p className="text-sm text-gray-500 dark:text-foreground">{user.email}</p>
                   {user.teams && user.teams.length > 0 && (
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-foreground">
                       Teams: {user.teams.map(team => team.name).join(', ')}
                     </p>
                   )}
                 </div>
                 <div className="flex items-center">
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${user.isAdmin ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${user.isAdmin ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'}`}>
                     {user.isAdmin ? 'Admin' : 'Benutzer'}
                   </span>
                   {user.isSuperAdmin && (
-                    <span className="ml-2 px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800">
+                    <span className="ml-2 px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">
                       Superadmin
                     </span>
                   )}
@@ -157,13 +157,15 @@ export default function UsersPage() {
                       setIsEditing(true)
                       setIsModalOpen(true)
                     }}
-                    className="ml-2 text-indigo-600 hover:text-indigo-900"
+                    className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded dark:text-foreground dark:hover:bg-muted ml-2"
+                    title="Benutzer bearbeiten"
                   >
                     <PencilIcon className="h-5 w-5" />
                   </button>
                   <button
                     onClick={() => handleDeleteUser(user)}
-                    className="ml-2 text-red-600 hover:text-red-900"
+                    className="p-1 text-red-600 hover:text-red-900 hover:bg-red-100 rounded dark:text-red-400 dark:hover:bg-red-900/20 ml-2"
+                    title="Benutzer löschen"
                   >
                     <TrashIcon className="h-5 w-5" />
                   </button>
@@ -244,7 +246,7 @@ export default function UsersPage() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-600 dark:hover:bg-blue-800"
           >
             {isEditing ? "Aktualisieren" : "Hinzufügen"}
           </button>
