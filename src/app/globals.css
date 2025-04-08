@@ -121,8 +121,21 @@
 .dark .info-panel,
 .dark .sort-info,
 .dark .help-text,
-.dark div[x-show="showSortInfo"] {
+.dark div[x-show="showSortInfo"],
+.dark div.mt-2.p-4.text-sm.text-gray-600.bg-gray-50.rounded-md.border.border-gray-200,
+.dark div.bg-gray-50 {
   @apply bg-muted text-foreground border border-border rounded-md p-2;
+}
+
+/* Listen in Info-Bereichen */
+.dark ol,
+.dark ul {
+  @apply text-foreground;
+}
+
+.dark ol li,
+.dark ul li {
+  @apply text-foreground;
 }
 
 /* Stile für Formulare im Dark Mode */
