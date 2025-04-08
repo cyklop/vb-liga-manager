@@ -50,10 +50,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ user, onUpdate }) => 
 
   return (
     <Card color="transparent" shadow={false} placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
-      <Typography variant="h4" color="blue-gray" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
-        Profil aktualisieren
-      </Typography>
-      <Typography color="gray" className="mt-1 font-normal">
+      <Typography color="gray" className="mt-1 mb-4 font-normal dark:text-gray-200">
         Geben Sie Ihre Details ein, um Ihr Profil zu aktualisieren.
       </Typography>
       <form onSubmit={handleSubmit} className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
@@ -87,7 +84,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ user, onUpdate }) => 
           </Typography>
         )}
         <Button className="mt-6" fullWidth type="submit" placeholder={undefined} onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
-          Profil aktualisieren
+          Speichern
         </Button>
       </form>
     </Card>
