@@ -146,4 +146,5 @@ export default function AccountPage() {
       </main>
     </>
   )
+} // Fehlende schließende Klammer für AccountPage hinzugefügt
 // Redundanter ThemeProvider-Wrapper und AccountContent-Referenz entfernt
