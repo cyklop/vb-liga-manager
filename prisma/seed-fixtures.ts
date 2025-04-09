@@ -1,17 +1,42 @@
 import { prisma } from '../lib/prisma'; // Use ES module import
 
 async function main() {
-  // Finde oder erstelle die Liga "Volleyball Hobbyliga 2024/25"
-  let league = await prisma.league.findFirst({
-    where: {
-      name: {
-        contains: "Volleyball Hobbyliga 2024/25"
+  const leagueName = "Volleyball Hobbyliga 2024/25";
+  const leagueSlug = "volleyball-hobbyliga-2024-25";
+  const requiredTeamNames = ['TSV Bad Berneck', 'BSV H5', 'TSV Kirchenlaibach', 'MTV/SG Pegnitz', 'USC Bayreuth 1', 'USC Bayreuth 2', 'CVJM Naila'];
+
+  // Finde die Liga ODER erstelle sie, falls nicht vorhanden
+  let league = await prisma.league.upsert({
+    where: { slug: leagueSlug }, // Suche über den eindeutigen Slug
+    update: {}, // Nichts updaten, falls gefunden
+    create: {
+      name: leagueName,
+      slug: leagueSlug,
+      numberOfTeams: requiredTeamNames.length,
+      hasReturnMatches: true,
+      pointsWin30: 3,
+      pointsWin31: 3,
+      pointsWin32: 2,
+      pointsLoss32: 1,
+      isActive: true,
+    },
+    // Wähle die benötigten Felder aus
+    select: {
+      id: true,
+      name: true,
+      pointsWin30: true,
+      pointsWin31: true,
+      pointsWin32: true,
+      pointsLoss32: true,
+      teams: { // Lade die Teams, die BEREITS dieser Liga zugeordnet sind
+        select: { id: true, name: true }
       }
     }
   });
 
+  /* // Alte Logik zum Erstellen entfernt, da upsert verwendet wird
   if (!league) {
-    console.log("Liga 'Volleyball Hobbyliga 2024/25' wird erstellt...");
+    console.log(`Liga '${leagueName}' wird erstellt...`);
     league = await prisma.league.create({
       data: {
         name: "Volleyball Hobbyliga 2024/25",
@@ -26,32 +51,43 @@ async function main() {
     });
   }
 
-  console.log(`Liga gefunden: ${league.name} (ID: ${league.id})`);
+  console.log(`Liga gefunden/erstellt: ${league.name} (ID: ${league.id})`);
 
-  // Finde alle Teams
-  const teams = await prisma.team.findMany({
+  // Stelle sicher, dass die benötigten Teams existieren UND zur Liga gehören
+  // (Der Haupt-Seed sollte sie erstellt haben, hier prüfen wir die Zuordnung)
+  const teamsInDb = await prisma.team.findMany({
     where: {
-      OR: [
-        { name: 'TSV Bad Berneck' },
-        { name: 'BSV H5' },
-        { name: 'TSV Kirchenlaibach' },
-        { name: 'MTV/SG Pegnitz' },
-        { name: 'USC Bayreuth 1' },
-        { name: 'USC Bayreuth 2' },
-        { name: 'CVJM Naila' }
-      ]
-    }
+      name: { in: requiredTeamNames }
+    },
+    select: { id: true, name: true }
   });
 
-  // Erstelle ein Mapping von Teamnamen zu IDs
-  const teamMap = teams.reduce((map, team) => {
+  const teamMap = teamsInDb.reduce((map, team) => {
     map[team.name] = team.id;
     return map;
   }, {} as Record<string, number>);
 
-  // Überprüfe, ob alle Teams gefunden wurden
-  const requiredTeams = ['TSV Bad Berneck', 'BSV H5', 'TSV Kirchenlaibach', 'MTV/SG Pegnitz', 'USC Bayreuth 1', 'USC Bayreuth 2', 'CVJM Naila'];
-  const missingTeams = requiredTeams.filter(name => !teamMap[name]);
+  // Überprüfe, ob alle Teams in der DB gefunden wurden
+  const missingTeamsInDb = requiredTeamNames.filter(name => !teamMap[name]);
+  if (missingTeamsInDb.length > 0) {
+    console.error(`FEHLER: Folgende Teams wurden nicht in der Datenbank gefunden: ${missingTeamsInDb.join(', ')}. Stelle sicher, dass 'npx prisma db seed' gelaufen ist.`);
+    return;
+  }
+
+  // Überprüfe, ob die gefundenen Teams auch wirklich zur Liga gehören
+  const leagueTeamIds = new Set(league.teams.map(t => t.id));
+  const teamsNotInLeague = requiredTeamNames.filter(name => !leagueTeamIds.has(teamMap[name]));
+
+  if (teamsNotInLeague.length > 0) {
+     console.error(`FEHLER: Folgende Teams gehören nicht zur Liga '${league.name}' (ID: ${league.id}): ${teamsNotInLeague.join(', ')}. Überprüfe die Team-Liga-Zuordnung.`);
+     // Optional: Hier könnte man versuchen, die Zuordnung zu korrigieren, ist aber komplexer.
+     // await prisma.team.updateMany({ where: { name: { in: teamsNotInLeague } }, data: { leagues: { connect: { id: league.id } } } }); // Beispiel, Schema-abhängig!
+     return; // Sicherer ist, hier abzubrechen.
+  }
+
+  // --- Ab hier sollte sicher sein, dass Liga und Teams korrekt sind ---
+
+  // Lösche bestehende Fixtures NUR für diese Liga
   
   if (missingTeams.length > 0) {
     console.error(`Folgende Teams wurden nicht gefunden: ${missingTeams.join(', ')}`);
