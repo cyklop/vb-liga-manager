@@ -15,10 +15,8 @@ export async function POST(request: Request) {
     const trimmedEmail = email.trim();
     const user = await prisma.user.findFirst({
       where: {
-        email: {
-          equals: trimmedEmail,
-          mode: 'insensitive', // Ignoriert Groß-/Kleinschreibung
-        }
+        // Suche nach exakter Übereinstimmung (wieder Case-Sensitive)
+        email: trimmedEmail,
       },
     })
 
