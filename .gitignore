@@ -1,5 +1,6 @@
 .aider*
 node_modules
-node_modules
 .env*
-key_github*
+key_github
+key_github.pub
+
