@@ -130,8 +130,11 @@ export function ThemeToggle() {
 
   return (
     <button
-      // Toggle between light and dark explicitly
-      onClick={() => setTheme(effectiveTheme === 'dark' ? 'light' : 'dark')}
+      // Immer explizit auf 'light' oder 'dark' umschalten, basierend auf dem aktuell angezeigten Modus (effectiveTheme)
+      onClick={() => {
+        const nextTheme = effectiveTheme === 'dark' ? 'light' : 'dark';
+        setTheme(nextTheme); // Aktualisiert den Kontext (und löst Speicherung im localStorage aus)
+      }}
       className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
       aria-label={effectiveTheme === 'dark' ? 'Zum hellen Modus wechseln' : 'Zum dunklen Modus wechseln'}
     >
