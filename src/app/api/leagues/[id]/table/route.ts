@@ -99,8 +99,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
       const awayTeamId = fixture.awayTeamId;
       
       if (!tableEntries[homeTeamId] || !tableEntries[awayTeamId]) {
-        console.warn(`Team not found in league: ${homeTeamId} or ${awayTeamId}`);
-        return;
+        // Logge eine Warnung, aber fahre mit dem nächsten Spiel fort
+        console.warn(`Fixture ${fixture.id} involves team not currently in league ${leagueId} (Teams: ${homeTeamId}, ${awayTeamId}). Skipping fixture for table calculation.`);
+        continue; // Springe zum nächsten Fixture in der Schleife
       }
 
       const homeSets = fixture.homeSets || 0;
