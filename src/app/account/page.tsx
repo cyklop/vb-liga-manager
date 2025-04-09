@@ -146,13 +146,4 @@ export default function AccountPage() {
       </main>
     </>
   )
-}
-
-// Hauptkomponente, die den ThemeProvider enthält
-export default function Account() {
-  return (
-    <ThemeProvider>
-      <AccountContent />
-    </ThemeProvider>
-  )
-}
+// Redundanter ThemeProvider-Wrapper und AccountContent-Referenz entfernt
