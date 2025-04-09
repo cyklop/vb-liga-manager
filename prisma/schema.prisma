@@ -32,6 +32,10 @@ model User {
   theme        String     @default("system") // "light", "dark", or "system"
   teams        UserTeam[]
   leadingTeam  Team?      @relation("TeamLeader")
+
+  // Fields for password reset
+  passwordResetToken  String?   @unique
+  passwordResetExpires DateTime?
 }
 
 // Verbindungstabelle für die m:n-Beziehung zwischen User und Team
