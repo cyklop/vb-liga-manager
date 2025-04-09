@@ -37,8 +37,21 @@ async function main() {
     { name: 'Blau-Weiss Fiktivlingen', location: 'Fiktivlingen', hallAddress: 'Mehrzweckhalle', trainingTimes: 'Di 20-22 Uhr' },
   ];
 
-  console.log('Erstelle Demo-Mannschaften...');
-  for (const teamData of demoTeams) {
+  // Füge die spezifischen Hobbyliga-Teams hinzu
+  const hobbyLigaTeams = [
+    { name: 'TSV Bad Berneck', location: 'Bad Berneck', hallAddress: 'Klang 15, 95460 Bad Berneck', trainingTimes: 'Dienstag 18:45-22:00' },
+    { name: 'BSV H5', location: 'Bayreuth', hallAddress: 'Sporthalle BSZ, Adolf-Wächter-Str.', trainingTimes: 'Mittwoch 19:30-22:00' },
+    { name: 'TSV Kirchenlaibach', location: 'Speichersdorf', hallAddress: 'Sportarena Speichersdorf', trainingTimes: 'Donnerstag 19:30-22:00' },
+    { name: 'MTV/SG Pegnitz', location: 'Pegnitz', hallAddress: 'Gymnasium Pegnitz', trainingTimes: 'Montag 20:00-22:00' },
+    { name: 'USC Bayreuth 1', location: 'Bayreuth', hallAddress: 'Uni-Sportzentrum', trainingTimes: 'Mittwoch 19:00-20:30' },
+    { name: 'USC Bayreuth 2', location: 'Bayreuth', hallAddress: 'Uni-Sportzentrum', trainingTimes: 'Freitag 20:00-22:00' },
+    { name: 'CVJM Naila', location: 'Naila', hallAddress: 'Frankenhalle Naila', trainingTimes: 'Freitag 20:00-22:00' },
+  ];
+
+  const allTeamsToSeed = [...demoTeams, ...hobbyLigaTeams];
+
+  console.log('Erstelle/Überprüfe Mannschaften...');
+  for (const teamData of allTeamsToSeed) {
     await prisma.team.upsert({
       where: { name: teamData.name },
       update: {}, // No update needed if exists
