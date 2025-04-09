@@ -11,12 +11,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'E-Mail-Adresse erforderlich' }, { status: 400 })
     }
 
-    // Trimme die E-Mail und suche Case-Insensitive
-    const trimmedEmail = email.trim();
-    const user = await prisma.user.findFirst({
+    // E-Mail normalisieren (Kleinschreibung, Leerzeichen entfernen)
+    const normalizedEmail = email.toLowerCase().trim();
+    // Suche mit der normalisierten E-Mail (findUnique ist hier wieder sicher, da wir normalisieren)
+    const user = await prisma.user.findUnique({
       where: {
-        // Suche nach exakter Übereinstimmung (wieder Case-Sensitive)
-        email: trimmedEmail,
+        email: normalizedEmail,
       },
     })
 
@@ -84,7 +84,7 @@ export async function POST(request: Request) {
          return NextResponse.json({ message: 'Fehler beim Senden der E-Mail.' }, { status: 500 });
       }
     } else {
-       console.log(`Password reset request for non-existent email (case-insensitive search): ${trimmedEmail}`);
+       console.log(`Password reset request for non-existent email: ${normalizedEmail}`);
     }
 
     // Generische Erfolgsmeldung (wird immer gesendet, auch wenn Benutzer nicht gefunden wurde)

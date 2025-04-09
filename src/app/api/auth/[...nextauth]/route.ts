@@ -17,8 +17,11 @@ export const authOptions = {
           throw new Error("Bitte geben Sie E-Mail und Passwort ein");
         }
 
+        // E-Mail normalisieren (Kleinschreibung, Leerzeichen entfernen)
+        const normalizedEmail = credentials.email.toLowerCase().trim();
+
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email: normalizedEmail }, // Suche mit normalisierter E-Mail
           include: {
             teams: {
               select: {
