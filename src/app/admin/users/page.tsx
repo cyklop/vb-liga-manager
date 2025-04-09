@@ -27,7 +27,8 @@ export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([])
   const [teams, setTeams] = useState<Team[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [newUser, setNewUser] = useState({ id: 0, email: '', name: '', password: '', isAdmin: false, teamIds: [] as number[] })
+  // Passwort aus dem initialen State entfernt
+  const [newUser, setNewUser] = useState({ id: 0, email: '', name: '', isAdmin: false, teamIds: [] as number[] })
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [userToDelete, setUserToDelete] = useState<User | null>(null)
   const [isEditing, setIsEditing] = useState(false)
@@ -57,10 +58,13 @@ export default function UsersPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newUser),
+        // Passwort wird nicht mehr gesendet
+        const { password, ...userData } = newUser;
+        body: JSON.stringify(userData),
       })
       if (response.ok) {
-        setNewUser({ id: 0, email: '', name: '', password: '', isAdmin: false, teamIds: [] })
+        // Reset ohne Passwort
+        setNewUser({ id: 0, email: '', name: '', isAdmin: false, teamIds: [] })
         setIsModalOpen(false)
         fetchUsers()
       }
@@ -77,10 +81,13 @@ export default function UsersPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newUser),
+        // Passwort wird nicht mehr gesendet
+        const { password, ...userData } = newUser;
+        body: JSON.stringify(userData),
       })
       if (response.ok) {
-        setNewUser({ id: 0, email: '', name: '', password: '', isAdmin: false, teamIds: [] })
+        // Reset ohne Passwort
+        setNewUser({ id: 0, email: '', name: '', isAdmin: false, teamIds: [] })
         setIsModalOpen(false)
         setIsEditing(false)
         fetchUsers()
@@ -119,7 +126,8 @@ export default function UsersPage() {
         <h1 className="text-2xl font-bold mb-4">Benutzer verwalten</h1>
         <button
           onClick={() => {
-            setNewUser({ id: 0, email: '', name: '', password: '', isAdmin: false, teamIds: [] })
+            // Reset ohne Passwort
+            setNewUser({ id: 0, email: '', name: '', isAdmin: false, teamIds: [] })
             setIsEditing(false)
             setIsModalOpen(true)
           }}
@@ -153,7 +161,9 @@ export default function UsersPage() {
                     onClick={() => {
                       // Konvertiere das teams-Array in ein teamIds-Array für das Formular
                       const teamIds = user.teams ? user.teams.map(team => team.id) : [];
-                      setNewUser({ ...user, password: '', teamIds })
+                      // Setze State ohne Passwort
+                      const { password, ...userData } = user;
+                      setNewUser({ ...userData, teamIds })
                       setIsEditing(true)
                       setIsModalOpen(true)
                     }}
@@ -190,20 +200,13 @@ export default function UsersPage() {
             value={newUser.name}
             onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
             placeholder="Name"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-input dark:border-border dark:text-foreground" // Dark mode styles hinzugefügt
             required
           />
-          <input
-            type="password"
-            value={newUser.password}
-            onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-            placeholder={isEditing ? "Neues Passwort (leer lassen für keine Änderung)" : "Passwort"}
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
-            required={!isEditing}
-          />
+          {/* Passwortfeld entfernt */}
           <div className="w-full">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Teams</label>
-            <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-md p-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Teams</label> {/* Dark mode styles hinzugefügt */}
+            <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-md p-2 dark:border-border"> {/* Dark mode styles hinzugefügt */}
               {teams.map((team) => (
                 <div key={team.id} className="flex items-center mb-2">
                   <input
