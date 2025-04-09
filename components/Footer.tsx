@@ -39,7 +39,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="mt-auto w-full border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400 text-xs print:hidden"> {/* print:hidden, um im Druck auszublenden */}
+    <footer className="fixed bottom-0 left-0 right-0 z-50 w-full border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400 text-xs print:hidden"> {/* print:hidden, um im Druck auszublenden */}
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         <span>
           Made with AI {/* Dein gewünschter Text */}

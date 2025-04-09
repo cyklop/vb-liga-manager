@@ -18,20 +18,18 @@ export default function RootLayout({
   return (
     <html lang="de" suppressHydrationWarning>
       {/*
-        Flexbox-Layout für den Body, damit der Footer nach unten geschoben wird.
-        min-h-screen stellt sicher, dass der Body mindestens die Bildschirmhöhe einnimmt.
+        Padding am Body, um Platz für den fixierten Footer zu schaffen.
       */}
-      <body className={`${inter.className} flex flex-col min-h-screen transition-colors duration-200`}>
+      <body className={`${inter.className} pb-10 transition-colors duration-200`}> {/* pb-10 hinzugefügt, Flexbox entfernt */}
         <ThemeProvider> {/* ThemeProvider umschließt alles */}
           {/*
             Hauptinhalt der Seite.
-            flex-grow sorgt dafür, dass dieser Bereich den verfügbaren Platz einnimmt
-            und den Footer nach unten drückt.
+            Kein flex-grow mehr nötig.
           */}
-          <main className="flex-grow">
+          <main> {/* flex-grow entfernt */}
             {children}
           </main>
-          <Footer /> {/* Footer am Ende, aber innerhalb des ThemeProviders */}
+          <Footer /> {/* Footer wird durch CSS fixiert */}
         </ThemeProvider>
       </body>
     </html>
