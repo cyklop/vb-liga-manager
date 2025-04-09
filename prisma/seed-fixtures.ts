@@ -46,10 +46,13 @@ async function main() {
         pointsWin30: 3,
         pointsWin31: 3,
         pointsWin32: 2,
+        pointsWin30: 3,
+        pointsWin31: 3,
+        pointsWin32: 2,
         pointsLoss32: 1
       }
     });
-  }
+  }*/ // Korrektes Ende des Blockkommentars
 
   console.log(`Liga gefunden/erstellt: ${league.name} (ID: ${league.id})`);
 
