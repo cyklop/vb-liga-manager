@@ -1,27 +1,28 @@
 'use client' // Diese Komponente benötigt Client-seitige Interaktivität
 
-import React, { useContext, useEffect, useState } from 'react'
-import { ThemeContext } from './ThemeProvider' // Importiere deinen spezifischen Context
+import React, { useEffect, useState } from 'react' // useContext entfernt
+import { useTheme } from './ThemeProvider' // Importiere den useTheme Hook
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline' // Beispiel-Icons
 
 export function Footer() {
-  const themeContext = useContext(ThemeContext)
+  // Verwende den useTheme Hook statt useContext direkt
+  const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Wichtig: Rendere nichts oder einen Platzhalter, bis die Komponente gemountet ist
-  // und der Kontext verfügbar ist, um Hydration Mismatches zu vermeiden.
-  if (!mounted || !themeContext) {
+  // Wichtig: Rendere nichts oder einen Platzhalter, bis die Komponente gemountet ist,
+  // um Hydration Mismatches zu vermeiden. Der Hook stellt sicher, dass der Kontext existiert.
+  if (!mounted) {
     // Du kannst hier auch einen einfachen Platzhalter-Footer rendern,
     // falls das Layout darauf angewiesen ist.
     // z.B. <footer className="h-10 mt-auto"></footer>
     return null;
   }
 
-  const { theme, setTheme } = themeContext
+  // theme und setTheme kommen jetzt direkt vom useTheme Hook
 
   // Bestimme das *effektive* Theme (light oder dark) für die Icon-Anzeige.
   // Wenn 'system' gewählt ist, prüfe die Systemeinstellung des Browsers.
