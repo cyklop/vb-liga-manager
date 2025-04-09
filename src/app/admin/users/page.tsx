@@ -59,8 +59,12 @@ export default function UsersPage() {
           'Content-Type': 'application/json',
         },
         // Passwort wird nicht mehr gesendet
-        const { password, ...userData } = newUser;
-        body: JSON.stringify(userData),
+        body: JSON.stringify({
+          email: newUser.email,
+          name: newUser.name,
+          isAdmin: newUser.isAdmin,
+          teamIds: newUser.teamIds,
+        }),
       })
       if (response.ok) {
         // Reset ohne Passwort
@@ -82,8 +86,13 @@ export default function UsersPage() {
           'Content-Type': 'application/json',
         },
         // Passwort wird nicht mehr gesendet
-        const { password, ...userData } = newUser;
-        body: JSON.stringify(userData),
+        // Sende nur die relevanten Daten für das Update
+        body: JSON.stringify({
+          email: newUser.email,
+          name: newUser.name,
+          isAdmin: newUser.isAdmin,
+          teamIds: newUser.teamIds,
+        }),
       })
       if (response.ok) {
         // Reset ohne Passwort
