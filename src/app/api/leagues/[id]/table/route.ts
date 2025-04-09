@@ -101,7 +101,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
       if (!tableEntries[homeTeamId] || !tableEntries[awayTeamId]) {
         // Logge eine Warnung, aber fahre mit dem nächsten Spiel fort
         console.warn(`Fixture ${fixture.id} involves team not currently in league ${leagueId} (Teams: ${homeTeamId}, ${awayTeamId}). Skipping fixture for table calculation.`);
-        continue; // Springe zum nächsten Fixture in der Schleife
+        return; // Verwende 'return' statt 'continue' in forEach
       }
 
       const homeSets = fixture.homeSets || 0;
