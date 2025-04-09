@@ -20,7 +20,8 @@ export default function Login() {
   const [rememberMe, setRememberMe] = useState(false) // State für "Angemeldet bleiben"
   const [error, setError] = useState('')
   const [resetEmail, setResetEmail] = useState('')
-  const [resetMessage, setResetMessage] = useState('')
+  const [resetMessage, setResetMessage] = useState('') // Für Erfolgsmeldungen
+  const [resetError, setResetError] = useState('') // Für Fehlermeldungen im Modal
   const [isResetModalOpen, setIsResetModalOpen] = useState(false)
   const router = useRouter()
 
@@ -146,26 +147,35 @@ export default function Login() {
             </button>
           </Typography>
         </form>
-        <Modal isOpen={isResetModalOpen} onClose={() => setIsResetModalOpen(false)} title="Passwort zurücksetzen">
+        <Modal isOpen={isResetModalOpen} onClose={() => { setIsResetModalOpen(false); setResetError(''); setResetMessage(''); setResetEmail(''); }} title="Passwort zurücksetzen">
           <form onSubmit={async (e) => {
-            e.preventDefault()
+            e.preventDefault();
+            setResetError(''); // Fehler zurücksetzen
+            setResetMessage(''); // Erfolgsmeldung zurücksetzen
             try {
-              const response = await fetch('/api/reset-password', {
+              const response = await fetch('/api/auth/request-password-reset', { // Endpunkt aktualisiert
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: resetEmail }),
               })
-              const data = await response.json()
+              const data = await response.json();
               if (response.ok) {
-                setResetMessage(data.message)
-                setIsResetModalOpen(false)
+                setResetMessage(data.message); // Erfolgsmeldung im State speichern
+                // Modal nicht sofort schließen, damit die Nachricht sichtbar ist
+                // setIsResetModalOpen(false); // Entfernt oder auskommentiert
               } else {
-                setError(data.message)
+                setResetError(data.message || 'Ein Fehler ist aufgetreten.'); // Fehlermeldung im Modal-State speichern
               }
             } catch (error) {
-              setError('Fehler beim Zurücksetzen des Passworts')
+              console.error('Password reset request failed:', error);
+              setResetError('Fehler beim Anfordern des Passwort-Resets. Bitte versuchen Sie es später erneut.');
             }
           }}>
+            {resetMessage && ( // Erfolgsmeldung im Modal anzeigen
+              <Typography color="green" className="mb-4 text-center text-sm" placeholder={undefined}>
+                {resetMessage}
+              </Typography>
+            )}
             <Input
               type="email"
               size="lg"
@@ -176,16 +186,27 @@ export default function Login() {
               crossOrigin={undefined}
               className="mb-4 dark:text-gray-200 dark:border-gray-500"
             />
-            <Button type="submit" fullWidth placeholder={undefined}>
-              Passwort zurücksetzen
-            </Button>
+            {resetError && ( // Fehlermeldung im Modal anzeigen
+              <Typography color="red" className="mb-4 text-center text-sm" placeholder={undefined}>
+                {resetError}
+              </Typography>
+            )}
+            <div className="flex justify-end gap-2">
+               <Button variant="text" color="red" onClick={() => { setIsResetModalOpen(false); setResetError(''); setResetMessage(''); setResetEmail(''); }} placeholder={undefined}>
+                 Abbrechen
+               </Button>
+               <Button type="submit" placeholder={undefined}>
+                 Link senden
+               </Button>
+            </div>
           </form>
         </Modal>
-        {resetMessage && (
+        {/* Erfolgsmeldung wird jetzt im Modal angezeigt, kann hier entfernt werden, wenn nicht gewünscht */}
+        {/* {resetMessage && (
           <Typography color="green" className="mt-2 text-center text-sm" placeholder={undefined}>
             {resetMessage}
           </Typography>
-        )}
+        )} */}
       </Card>
     </div>
   )
