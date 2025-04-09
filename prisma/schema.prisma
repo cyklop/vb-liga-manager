@@ -25,7 +25,7 @@ model Team {
 model User {
   id           Int        @id @default(autoincrement())
   email        String     @unique
-  password     String
+  password     String? // Passwort ist jetzt optional bei Erstellung
   name         String
   isAdmin      Boolean    @default(false)
   isSuperAdmin Boolean    @default(false)
@@ -36,6 +36,10 @@ model User {
   // Fields for password reset
   passwordResetToken  String?   @unique
   passwordResetExpires DateTime?
+
+  // Fields for initial password setup
+  passwordSetupToken   String?  @unique // NEU
+  passwordSetupExpires DateTime? // NEU
 }
 
 // Verbindungstabelle für die m:n-Beziehung zwischen User und Team
