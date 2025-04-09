@@ -10,6 +10,7 @@ export const authOptions = {
       credentials: {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
+        rememberMe: { label: "Remember Me", type: "checkbox" } // Hinzugefügt
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -47,14 +48,16 @@ export const authOptions = {
 
         // Extract the first team if available
         const team = user.teams.length > 0 ? user.teams[0].team : null;
-        
+        const rememberUser = credentials.rememberMe === 'true' || credentials.rememberMe === true; // Auslesen
+
         return {
           id: user.id.toString(),
           email: user.email,
           name: user.name,
           isAdmin: user.isAdmin,
           isSuperAdmin: user.isSuperAdmin,
-          team: team
+          team: team,
+          rememberMe: rememberUser // Hinzugefügt
         };
       },
     }),
@@ -65,14 +68,15 @@ export const authOptions = {
   },
   callbacks: {
     async jwt({ token, user, trigger }) {
-      if (user) {
-        // Only update the token when a sign in happens
+      // Beim initialen Login (wenn user-Objekt vorhanden ist)
+      if (trigger === 'signIn' && user) {
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
         token.isAdmin = user.isAdmin;
         token.isSuperAdmin = user.isSuperAdmin;
         token.team = user.team;
+        token.rememberMe = user.rememberMe; // Im Token speichern
       }
       return token;
     },
@@ -81,16 +85,34 @@ export const authOptions = {
         session.user.id = token.id;
         session.user.email = token.email;
         session.user.name = token.name;
-        session.user.isAdmin = token.isAdmin;
-        session.user.isSuperAdmin = token.isSuperAdmin;
-        session.user.team = token.team;
+        session.user.isAdmin = token.isAdmin as boolean;
+        session.user.isSuperAdmin = token.isSuperAdmin as boolean;
+        session.user.team = token.team as any; // Ggf. Typ anpassen
+        session.user.rememberMe = token.rememberMe as boolean; // In Session speichern
       }
       return session;
     },
   },
   session: {
     strategy: "jwt",
+    // Session-Dauer auf 30 Tage setzen, wenn "Angemeldet bleiben" genutzt wird
+    maxAge: 30 * 24 * 60 * 60, // 30 days in seconds
   },
+  // Cookie-Dauer explizit setzen (sollte mit session.maxAge übereinstimmen)
+  cookies: {
+     sessionToken: {
+       name: process.env.NODE_ENV === 'production' 
+         ? `__Secure-next-auth.session-token` 
+         : `next-auth.session-token`, // Unterschiedliche Namen für Dev/Prod
+       options: {
+         httpOnly: true,
+         sameSite: 'lax',
+         path: '/',
+         secure: process.env.NODE_ENV === 'production',
+         maxAge: 30 * 24 * 60 * 60 // 30 days in seconds (gleiche Dauer wie Session)
+       }
+     }
+  }
 };
 
 const handler = NextAuth(authOptions);

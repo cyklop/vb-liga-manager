@@ -17,6 +17,7 @@ import {
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [rememberMe, setRememberMe] = useState(false) // State für "Angemeldet bleiben"
   const [error, setError] = useState('')
   const [resetEmail, setResetEmail] = useState('')
   const [resetMessage, setResetMessage] = useState('')
@@ -41,6 +42,7 @@ export default function Login() {
         redirect: false,
         email,
         password,
+        rememberMe: rememberMe, // Wert der Checkbox übergeben
         callbackUrl: '/dashboard'
       })
 
@@ -123,6 +125,8 @@ export default function Login() {
             iconProps={{
               className: ""
             }}
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
           />
           {error && (
             <Typography color="red" className="mt-2 text-center text-sm" placeholder={undefined}>
