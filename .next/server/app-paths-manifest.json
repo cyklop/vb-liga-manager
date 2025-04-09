@@ -1,16 +1,11 @@
 {
-  "/login/page": "app/login/page.js",
-  "/api/auth/signout/route": "app/api/auth/signout/route.js",
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/api/logout/route": "app/api/logout/route.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/admin/leagues/page": "app/admin/leagues/page.js",
+  "/api/leagues/[id]/route": "app/api/leagues/[id]/route.js",
   "/api/leagues/route": "app/api/leagues/route.js",
   "/api/users/me/route": "app/api/users/me/route.js",
-  "/api/teams/route": "app/api/teams/route.js",
-  "/account/page": "app/account/page.js",
-  "/api/leagues/active/route": "app/api/leagues/active/route.js",
-  "/api/leagues/[id]/table/route": "app/api/leagues/[id]/table/route.js",
   "/table/page": "app/table/page.js",
-  "/api/leagues/[id]/matchdays/route": "app/api/leagues/[id]/matchdays/route.js"
+  "/api/leagues/active/route": "app/api/leagues/active/route.js",
+  "/api/leagues/[id]/matchdays/route": "app/api/leagues/[id]/matchdays/route.js",
+  "/api/leagues/[id]/table/route": "app/api/leagues/[id]/table/route.js"
 }
