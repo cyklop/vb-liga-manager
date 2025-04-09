@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Navigation from '../../../components/Navbar'
 import UserProfileForm from '../../../components/UserProfileForm'
-import { ThemeProvider, useTheme } from '../../../components/ThemeProvider'
+// ThemeProvider entfernt, nur useTheme wird benötigt
+import { useTheme } from '../../../components/ThemeProvider'
 
 interface User {
   id: number
@@ -19,8 +20,8 @@ interface User {
   }
 }
 
-// Wrapper-Komponente, die den ThemeProvider enthält
-function AccountContent() {
+// Logik direkt in die Hauptkomponente verschoben
+export default function AccountPage() {
   const [user, setUser] = useState<User | null>(null)
   const [mounted, setMounted] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -28,9 +29,10 @@ function AccountContent() {
   const { theme, setTheme } = useTheme() // Destrukturieren für einfacheren Zugriff
 
   useEffect(() => {
-    setMounted(true)
+    setMounted(true) // Markiert, dass die Komponente client-seitig gemountet ist
     fetchUser()
-  }, [router])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Läuft einmal nach dem Mounten
 
   const fetchUser = async () => {
     setLoading(true)
@@ -40,11 +42,8 @@ function AccountContent() {
         const userData = await response.json()
         setUser(userData)
 
-        // Setze den Theme-Kontext basierend auf den Benutzerdaten, falls abweichend
-        // Dies stellt sicher, dass der Kontext den gespeicherten Wert widerspiegelt
-        if (userData.theme && mounted && userData.theme !== theme) {
-           setTheme(userData.theme as 'light' | 'dark' | 'system')
-        }
+        // Entfernt: Der Kontext wird vom Root-Provider initialisiert.
+        // Das Dropdown liest den Wert direkt aus dem Kontext.
       } else if (response.status === 401) {
         // Nicht authentifiziert, zur Login-Seite weiterleiten
         router.push('/login')
@@ -52,13 +51,17 @@ function AccountContent() {
       }
     } catch (error) {
       console.error('Fehler beim Abrufen des Benutzerprofils', error)
-      router.push('/login')
+      // Optional: Weiterleitung nur bei bestimmten Fehlern
+      // router.push('/login')
     } finally {
       setLoading(false)
     }
   }
-  
+
   const handleProfileUpdate = async (updatedUser: Partial<User>) => {
+    // Nur fortfahren, wenn Benutzerdaten geladen sind
+    if (!user) return;
+
     try {
       const response = await fetch('/api/users/me', {
         method: 'PUT',
@@ -67,8 +70,11 @@ function AccountContent() {
       })
       if (response.ok) {
         const data = await response.json()
+        // Lokalen Benutzerstatus mit der Antwort vom Server aktualisieren
         setUser(prevUser => prevUser ? { ...prevUser, ...data } : null)
-        // Der Theme-Context wird jetzt direkt im onChange des Selects aktualisiert
+      } else {
+         // Fehler bei der Aktualisierung behandeln (z.B. Nachricht anzeigen)
+         console.error('Fehler beim Aktualisieren des Profils:', response.statusText);
       }
     } catch (error) {
       console.error('Fehler beim Aktualisieren des Benutzerprofils', error)
@@ -86,6 +92,11 @@ function AccountContent() {
         </div>
       </>
     )
+  }
+
+  // Rendert erst, wenn client-seitig gemountet, um Hydration-Fehler zu vermeiden
+  if (!mounted) {
+    return null; // Oder eine minimale Ladeanzeige
   }
 
   return (
