@@ -43,9 +43,12 @@ export async function POST(request: Request) {
         teamId: teamId
       }))
 
-      await prisma.userTeam.createMany({
-        data: teamConnections
-      })
+      // Ersetze createMany durch eine Schleife mit create
+      for (const connection of teamConnections) {
+        await prisma.userTeam.create({
+          data: connection,
+        });
+      }
     }
 
     // ---- Start: Setup-Token generieren und E-Mail senden ----
