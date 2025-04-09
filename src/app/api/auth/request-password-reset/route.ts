@@ -11,8 +11,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'E-Mail-Adresse erforderlich' }, { status: 400 })
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email },
+    // Trimme die E-Mail und suche Case-Insensitive
+    const trimmedEmail = email.trim();
+    const user = await prisma.user.findFirst({
+      where: {
+        email: {
+          equals: trimmedEmail,
+          mode: 'insensitive', // Ignoriert Groß-/Kleinschreibung
+        }
+      },
     })
 
     // Wichtig: Sende immer eine Erfolgsmeldung, auch wenn der Benutzer nicht existiert,
@@ -28,9 +35,9 @@ export async function POST(request: Request) {
       // Setze eine Gültigkeitsdauer (z.B. 1 Stunde)
       const passwordResetExpires = new Date(Date.now() + 3600000) // 1 Stunde
 
-      // Speichere den gehashten Token und das Ablaufdatum in der Datenbank
+      // Speichere den gehashten Token und das Ablaufdatum in der Datenbank über die User-ID
       await prisma.user.update({
-        where: { email },
+        where: { id: user.id }, // Update über die gefundene User-ID
         data: {
           passwordResetToken,
           passwordResetExpires,
@@ -57,7 +64,7 @@ export async function POST(request: Request) {
       try {
         await transporter.sendMail({
           from: process.env.EMAIL_FROM || '"Deine App" <noreply@example.com>', // Passe den Absendernamen an
-          to: user.email,
+          to: user.email, // Sende an die E-Mail-Adresse aus der DB
           subject: 'Passwort zurücksetzen für Deine App', // Passe den Betreff an
           text: `Sie erhalten diese E-Mail, weil Sie (oder jemand anderes) das Zurücksetzen des Passworts für Ihr Konto angefordert haben.\n\n` +
                 `Bitte klicken Sie auf den folgenden Link oder fügen Sie ihn in Ihren Browser ein, um den Vorgang abzuschließen:\n\n` +
@@ -79,10 +86,10 @@ export async function POST(request: Request) {
          return NextResponse.json({ message: 'Fehler beim Senden der E-Mail.' }, { status: 500 });
       }
     } else {
-       console.log(`Password reset request for non-existent email: ${email}`);
+       console.log(`Password reset request for non-existent email (case-insensitive search): ${trimmedEmail}`);
     }
 
-    // Generische Erfolgsmeldung
+    // Generische Erfolgsmeldung (wird immer gesendet, auch wenn Benutzer nicht gefunden wurde)
     return NextResponse.json({ message: 'Wenn ein Konto mit dieser E-Mail-Adresse existiert, wurde ein Link zum Zurücksetzen des Passworts gesendet.' })
 
   } catch (error) {
