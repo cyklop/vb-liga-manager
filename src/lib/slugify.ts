@@ -1,4 +1,4 @@
-import * as slugify from 'slugify';
+import slugify from 'slugify';
 
 /**
  * Generiert einen URL-freundlichen Slug aus einem String
