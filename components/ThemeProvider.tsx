@@ -9,84 +9,133 @@ interface ThemeContextType {
   setTheme: (theme: Theme) => void
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
+// Provide a default value that matches the initial state
+const defaultContextValue: ThemeContextType = {
+  theme: 'system', // Matches initial useState
+  setTheme: () => {}, // Placeholder function
+};
+
+const ThemeContext = createContext<ThemeContextType>(defaultContextValue) // Use default value
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  // Initial state should ideally reflect potential localStorage or system preference,
+  // but 'system' is a safe default before client-side check.
   const [theme, setTheme] = useState<Theme>('system')
   const [mounted, setMounted] = useState(false)
 
-  // Beim ersten Rendern den Theme-Wert aus dem localStorage laden
+  // Effect to set initial theme from localStorage or system preference ONCE on mount
   useEffect(() => {
-    const storedTheme = localStorage.getItem('theme') as Theme | null
-    if (storedTheme) {
-      setTheme(storedTheme)
-    }
-    setMounted(true)
-  }, [])
+    let initialTheme: Theme;
+    const storedTheme = localStorage.getItem('theme') as Theme | null;
 
-  // Theme-Änderungen im localStorage speichern
+    if (storedTheme) {
+      initialTheme = storedTheme;
+    } else {
+      // Default to system preference if no theme is stored
+      initialTheme = 'system'; // Keep 'system' as the state if no storage
+    }
+    setTheme(initialTheme);
+    setMounted(true); // Mark as mounted AFTER setting the initial theme state
+
+    // Apply initial theme immediately after determining it
+    applyTheme(initialTheme);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array ensures this runs only once on mount
+
+  // Effect to apply theme changes whenever 'theme' state changes AFTER mount
   useEffect(() => {
     if (mounted) {
-      localStorage.setItem('theme', theme)
-      
-      const root = window.document.documentElement
-      root.classList.remove('light', 'dark')
-      
-      if (theme === 'system') {
-        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-        root.classList.add(systemTheme)
-        // Setze data-theme Attribut für CSS-Selektoren
-        root.setAttribute('data-theme', systemTheme)
-      } else {
-        root.classList.add(theme)
-        // Setze data-theme Attribut für CSS-Selektoren
-        root.setAttribute('data-theme', theme)
-      }
+      localStorage.setItem('theme', theme);
+      applyTheme(theme);
     }
-  }, [theme, mounted])
+  }, [theme, mounted]);
 
-  // Auf Änderungen der Systemeinstellung reagieren
+  // Helper function to apply theme to the DOM
+  const applyTheme = (currentTheme: Theme) => {
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
+
+    if (currentTheme === 'system') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      root.classList.add(systemTheme);
+      root.setAttribute('data-theme', systemTheme);
+    } else {
+      root.classList.add(currentTheme);
+      root.setAttribute('data-theme', currentTheme);
+    }
+  };
+
+  // Auf Änderungen der Systemeinstellung reagieren (nur wenn theme === 'system')
   useEffect(() => {
-    if (theme === 'system') {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-      
+    if (theme === 'system' && mounted) { // Ensure mounted before adding listener
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
       const handleChange = () => {
-        const root = window.document.documentElement
-        const newTheme = mediaQuery.matches ? 'dark' : 'light'
-        root.classList.remove('light', 'dark')
-        root.classList.add(newTheme)
-        root.setAttribute('data-theme', newTheme)
-      }
-      
-      mediaQuery.addEventListener('change', handleChange)
-      return () => mediaQuery.removeEventListener('change', handleChange)
+        // Re-apply the theme based on the new system preference
+        applyTheme('system');
+      };
+
+      mediaQuery.addEventListener('change', handleChange);
+      // Initial check in case preference changed before listener was added
+      handleChange();
+      return () => mediaQuery.removeEventListener('change', handleChange);
     }
-  }, [theme])
+  }, [theme, mounted]); // Depend on theme and mounted status
 
-  // Während des Server-Renderings oder beim ersten Client-Rendering
-  // zeigen wir die Kinder ohne Theme-Anpassungen an
-  if (!mounted) {
-    return <>{children}</>
-  }
+  // Provider value should reflect the current state
+  const value = { theme, setTheme };
 
+  // Immer den Provider rendern. Der Wert wird aktualisiert, sobald der State gesetzt ist.
+  // Die Kinder werden initial möglicherweise kurz mit dem Default-Theme gerendert,
+  // aber der useEffect aktualisiert dies schnell.
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
-  )
+  );
 }
 
 // Komponente zum Umschalten des Themes
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme()
-  
+
+  // Determine the effective theme for display/aria-label, considering 'system'
+  const [effectiveTheme, setEffectiveTheme] = useState(theme);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    if (theme === 'system') {
+      setEffectiveTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    } else {
+      setEffectiveTheme(theme);
+    }
+
+    // Add listener for system changes if theme is 'system'
+    if (theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = () => {
+        setEffectiveTheme(mediaQuery.matches ? 'dark' : 'light');
+      };
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+  }, [theme]);
+
+  if (!isMounted) {
+    // Avoid rendering the button server-side or before hydration
+    return null;
+  }
+
   return (
     <button
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      // Toggle between light and dark explicitly
+      onClick={() => setTheme(effectiveTheme === 'dark' ? 'light' : 'dark')}
       className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-      aria-label={theme === 'dark' ? 'Zum hellen Modus wechseln' : 'Zum dunklen Modus wechseln'}
+      aria-label={effectiveTheme === 'dark' ? 'Zum hellen Modus wechseln' : 'Zum dunklen Modus wechseln'}
     >
-      {theme === 'dark' ? (
+      {effectiveTheme === 'dark' ? (
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
         </svg>
@@ -96,13 +145,15 @@ export function ThemeToggle() {
         </svg>
       )}
     </button>
-  )
+  );
 }
 
+
 export function useTheme() {
-  const context = useContext(ThemeContext)
+  const context = useContext(ThemeContext);
+  // Although we provide a default, this check is still good practice.
   if (context === undefined) {
-    throw new Error('useTheme must be used within a ThemeProvider')
+    throw new Error('useTheme must be used within a ThemeProvider');
   }
-  return context
+  return context;
 }
