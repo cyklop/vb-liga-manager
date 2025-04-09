@@ -15,6 +15,7 @@ async function main() {
     league = await prisma.league.create({
       data: {
         name: "Volleyball Hobbyliga 2024/25",
+        slug: "volleyball-hobbyliga-2024-25", // Slug hinzugefügt
         numberOfTeams: 7,
         hasReturnMatches: true,
         pointsWin30: 3,
