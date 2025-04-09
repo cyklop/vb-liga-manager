@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
-import { Tabs, TabsHeader, TabsBody, Tab, TabPanel } from "@material-tailwind/react"
+import { Tabs, TabsHeader, TabsBody, Tab, TabPanel, Checkbox, Typography } from "@material-tailwind/react" // Checkbox und Typography hinzugefügt
 import { ThemeProvider } from '../../../../../components/ThemeProvider'
 
 // Typen für die Daten
@@ -58,6 +58,7 @@ export default function PublicLeaguePage() {
   const [league, setLeague] = useState<League | null>(null)
   const [tableData, setTableData] = useState<TableEntry[]>([])
   const [activeTab, setActiveTab] = useState("table")
+  const [showOnlyOpenFixtures, setShowOnlyOpenFixtures] = useState(false); // State für Checkbox
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -110,6 +111,15 @@ export default function PublicLeaguePage() {
     )
   }
 
+  // Filter fixtures based on the checkbox state and score presence
+  const filteredFixtures = league?.fixtures?.filter(fixture => {
+    if (!showOnlyOpenFixtures) {
+      return true; // Show all if checkbox is off
+    }
+    // Show only fixtures where scores are not set (null or undefined)
+    return fixture.homeSets === null || fixture.homeSets === undefined || fixture.awaySets === null || fixture.awaySets === undefined;
+  }) || [];
+
   return (
     <ThemeProvider>
       <div className="container mx-auto px-4 py-8">
@@ -157,6 +167,29 @@ export default function PublicLeaguePage() {
               </div>
             </TabPanel>
             <TabPanel value="fixtures" className={activeTab === "fixtures" ? "block" : "hidden"}>
+              {/* Checkbox zum Filtern offener Spiele */}
+              <div className="my-4">
+                <Checkbox
+                  label={
+                    <Typography
+                      variant="small"
+                      color="gray"
+                      className="flex items-center font-normal dark:text-gray-300"
+                      placeholder={undefined}
+                    >
+                      Nur offene Spiele anzeigen
+                    </Typography>
+                  }
+                  checked={showOnlyOpenFixtures}
+                  onChange={(e) => setShowOnlyOpenFixtures(e.target.checked)}
+                  crossOrigin={undefined}
+                  placeholder={undefined}
+                  className="focus:ring-0 focus:ring-offset-0"
+                  iconProps={{
+                    className: ""
+                  }}
+                />
+              </div>
               {/* Spielplan */}
               <div className="overflow-x-auto">
                 <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700">
@@ -169,7 +202,7 @@ export default function PublicLeaguePage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {league.fixtures.sort((a, b) => {
+                    {filteredFixtures.sort((a, b) => { // Verwende filteredFixtures statt league.fixtures
                       // Nach Datum sortieren, null-Werte am Ende
                       if (!a.fixtureDate) return 1;
                       if (!b.fixtureDate) return -1;
