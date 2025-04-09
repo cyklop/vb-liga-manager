@@ -13,10 +13,10 @@ export async function POST(request: Request) {
 
     // E-Mail normalisieren (Kleinschreibung, Leerzeichen entfernen)
     const normalizedEmail = email.toLowerCase().trim();
-    // Suche mit der normalisierten E-Mail (findUnique ist hier wieder sicher, da wir normalisieren)
+    // Suche mit der normalisierten E-Mail (findUnique ist hier sicher)
     const user = await prisma.user.findUnique({
       where: {
-        email: normalizedEmail,
+        email: normalizedEmail, // Suche mit normalisierter E-Mail
       },
     })
 
@@ -84,6 +84,7 @@ export async function POST(request: Request) {
          return NextResponse.json({ message: 'Fehler beim Senden der E-Mail.' }, { status: 500 });
       }
     } else {
+       // Log mit der normalisierten E-Mail
        console.log(`Password reset request for non-existent email: ${normalizedEmail}`);
     }
 
