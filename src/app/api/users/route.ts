@@ -39,10 +39,10 @@ export async function POST(request: Request) {
     // Füge die Team-Zuordnungen hinzu, wenn teamIds vorhanden sind
     if (teamIds && teamIds.length > 0) {
       const teamConnections = teamIds.map((teamId: number) => ({
-        userId: user.id,
+        userId: newUser.id, // Korrigiert: newUser statt user
         teamId: teamId
       }))
-      
+
       await prisma.userTeam.createMany({
         data: teamConnections
       })
