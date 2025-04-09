@@ -25,7 +25,7 @@ function AccountContent() {
   const [mounted, setMounted] = useState(false)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
-  const themeContext = useTheme()
+  const { theme, setTheme } = useTheme() // Destrukturieren für einfacheren Zugriff
 
   useEffect(() => {
     setMounted(true)
@@ -39,10 +39,11 @@ function AccountContent() {
       if (response.ok) {
         const userData = await response.json()
         setUser(userData)
-        
-        // Wenn der Benutzer ein gespeichertes Theme hat, verwende es
-        if (userData.theme && mounted && themeContext) {
-          themeContext.setTheme(userData.theme as 'light' | 'dark' | 'system')
+
+        // Setze den Theme-Kontext basierend auf den Benutzerdaten, falls abweichend
+        // Dies stellt sicher, dass der Kontext den gespeicherten Wert widerspiegelt
+        if (userData.theme && mounted && userData.theme !== theme) {
+           setTheme(userData.theme as 'light' | 'dark' | 'system')
         }
       } else if (response.status === 401) {
         // Nicht authentifiziert, zur Login-Seite weiterleiten
@@ -67,11 +68,7 @@ function AccountContent() {
       if (response.ok) {
         const data = await response.json()
         setUser(prevUser => prevUser ? { ...prevUser, ...data } : null)
-        
-        // Wenn das Theme aktualisiert wurde, aktualisiere auch den Theme-Context
-        if (updatedUser.theme && mounted && themeContext) {
-          themeContext.setTheme(updatedUser.theme as 'light' | 'dark' | 'system')
-        }
+        // Der Theme-Context wird jetzt direkt im onChange des Selects aktualisiert
       }
     } catch (error) {
       console.error('Fehler beim Aktualisieren des Benutzerprofils', error)
@@ -114,8 +111,12 @@ function AccountContent() {
                   {mounted && (
                     <select
                       id="theme"
-                      value={user?.theme || themeContext?.theme || 'system'}
-                      onChange={(e) => handleProfileUpdate({ theme: e.target.value })}
+                      value={theme} // Wert aus dem Kontext binden
+                      onChange={(e) => {
+                        const newTheme = e.target.value as 'light' | 'dark' | 'system';
+                        setTheme(newTheme); // Kontext aktualisieren
+                        handleProfileUpdate({ theme: newTheme }); // Änderung im Backend speichern
+                      }}
                       className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md bg-white dark:bg-card text-gray-900 dark:text-foreground"
                     >
                     <option value="light">Hell</option>
