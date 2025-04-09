@@ -140,6 +140,7 @@ export default function Login() {
           <Typography color="gray" className="mt-4 text-center font-normal dark:text-gray-300" placeholder={undefined}>
             Passwort vergessen?{" "}
             <button
+              type="button" // Verhindert das Absenden des Formulars
               onClick={() => setIsResetModalOpen(true)}
               className="font-medium text-blue-500 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
             >
