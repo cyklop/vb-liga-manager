@@ -92,8 +92,10 @@ async function main() {
 
   // Lösche bestehende Fixtures NUR für diese Liga
   
-  if (missingTeams.length > 0) {
-    console.error(`Folgende Teams wurden nicht gefunden: ${missingTeams.join(', ')}`);
+  // Korrigierter Variablenname
+  if (missingTeamsInDb.length > 0) { 
+    // Korrigierter Variablenname in der Fehlermeldung
+    console.error(`Folgende Teams wurden nicht gefunden: ${missingTeamsInDb.join(', ')}`); 
     return;
   }
 
