@@ -41,16 +41,25 @@ export async function PUT(
     if (!fixture) {
       return NextResponse.json({ message: 'Spielpaarung nicht gefunden' }, { status: 404 })
     }
-    
-    // Wenn der Benutzer kein Admin ist, darf er nur Heimspiele seiner eigenen Mannschaft bearbeiten
-    if (!user.isAdmin && !user.isSuperAdmin && user.team) {
-      if (fixture.homeTeamId !== user.team.id) {
-        return NextResponse.json({ 
-          message: 'Sie sind nur berechtigt, Heimspiele Ihrer eigenen Mannschaft zu bearbeiten' 
-        }, { status: 403 })
+
+    // Wenn der Benutzer kein Admin/SuperAdmin ist, prüfen, ob er zum Heimteam gehört
+    if (!user.isAdmin && !user.isSuperAdmin) {
+      // Prüfen, ob der Benutzer überhaupt Teams hat
+      if (!user.teams || user.teams.length === 0) {
+          return NextResponse.json({ message: 'Benutzer ist keinem Team zugeordnet.' }, { status: 403 });
+      }
+      // Extrahieren der Team-IDs, denen der Benutzer zugeordnet ist.
+      // Die Struktur von user.teams ist UserTeam[], wobei jedes Element { teamId: number, userId: number } enthält.
+      const userTeamIds = user.teams.map(userTeam => userTeam.teamId); 
+
+      if (!userTeamIds.includes(fixture.homeTeamId)) {
+          return NextResponse.json({
+              message: 'Sie sind nur berechtigt, Heimspiele Ihrer eigenen Mannschaft zu bearbeiten.'
+          }, { status: 403 });
       }
     }
-    const { 
+
+    const {
       homeTeamId,
       awayTeamId,
       fixtureDate,
