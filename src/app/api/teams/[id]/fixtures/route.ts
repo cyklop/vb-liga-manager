@@ -25,7 +25,7 @@ export async function GET(
   try {
     // Prüfen, ob der Benutzer Admin ist oder zum Team gehört
     const user = await prisma.user.findUnique({
-      where: { id: parseInt(session.user.id) },
+      where: { id: session.user.id }, // parseInt entfernt, da session.user.id bereits number ist
       include: { teams: true }
     })
 
