@@ -25,7 +25,7 @@ export async function PUT(
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
       include: {
-        team: true,
+        teams: true, // Korrigiert von 'team' zu 'teams'
       },
     })
     
