@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ message: 'Nicht authentifiziert' }, { status: 401 })
   }
   
-  const userId = parseInt(session.user.id)
+  const userId = session.user.id // parseInt entfernt, da session.user.id bereits number ist
 
   try {
     const user = await prisma.user.findUnique({
@@ -65,7 +65,7 @@ export async function PUT(request: Request) {
     return NextResponse.json({ message: 'Nicht authentifiziert' }, { status: 401 })
   }
   
-  const userId = parseInt(session.user.id)
+  const userId = session.user.id // parseInt entfernt, da session.user.id bereits number ist
 
   const { name, email, password, theme } = await request.json()
 
