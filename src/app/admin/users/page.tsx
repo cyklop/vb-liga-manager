@@ -170,8 +170,8 @@ export default function UsersPage() {
                     onClick={() => {
                       // Konvertiere das teams-Array in ein teamIds-Array für das Formular
                       const teamIds = user.teams ? user.teams.map(team => team.id) : [];
-                      // Setze State ohne Passwort
-                      const { password, ...userData } = user;
+                      // Setze State ohne Passwort (Passwort ist im User-Objekt nicht vorhanden)
+                      const { ...userData } = user; // 'password' Destrukturierung entfernt
                       setNewUser({ ...userData, teamIds })
                       setIsEditing(true)
                       setIsModalOpen(true)
