@@ -112,7 +112,6 @@ export default function Login() {
                 variant="small"
                 color="gray"
                 className="flex items-center font-normal dark:text-gray-300"
-                placeholder={undefined}
               >
                 Angemeldet bleiben
               </Typography>
@@ -170,7 +169,7 @@ export default function Login() {
             }
           }}>
             {resetMessage && ( // Erfolgsmeldung im Modal anzeigen
-              <Typography color="green" className="mb-4 text-center text-sm" placeholder={undefined}>
+              <Typography color="green" className="mb-4 text-center text-sm">
                 {resetMessage}
               </Typography>
             )}
@@ -180,17 +179,16 @@ export default function Login() {
               label="E-Mail-Adresse"
               value={resetEmail}
               onChange={(e) => setResetEmail(e.target.value)}
-              placeholder={undefined}
               crossOrigin={undefined}
               className="mb-4 dark:text-gray-200 dark:border-gray-500"
             />
             {resetError && ( // Fehlermeldung im Modal anzeigen
-              <Typography color="red" className="mb-4 text-center text-sm" placeholder={undefined}>
+              <Typography color="red" className="mb-4 text-center text-sm">
                 {resetError}
               </Typography>
             )}
             <div className="flex justify-end gap-2">
-               <Button variant="text" color="red" onClick={() => { setIsResetModalOpen(false); setResetError(''); setResetMessage(''); setResetEmail(''); }} placeholder={undefined}>
+               <Button variant="text" color="red" onClick={() => { setIsResetModalOpen(false); setResetError(''); setResetMessage(''); setResetEmail(''); }}>
                  Abbrechen
                </Button>
                <Button type="submit" placeholder={undefined}>
