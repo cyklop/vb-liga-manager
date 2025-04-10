@@ -79,21 +79,20 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <Card color="transparent" shadow={false} placeholder={undefined} className="dark:bg-gray-800/30 p-6">
-        <Typography variant="h4" color="blue-gray" placeholder={undefined} className="dark:text-gray-100">
+      <Card color="transparent" shadow={false} className="dark:bg-gray-800/30 p-6">
+        <Typography variant="h4" color="blue-gray" className="dark:text-gray-100">
           Anmelden
         </Typography>
-        <Typography color="gray" className="mt-1 font-normal dark:text-gray-300" placeholder={undefined}>
+        <Typography color="gray" className="mt-1 font-normal dark:text-gray-300">
           Geben Sie Ihre Anmeldedaten ein, um sich anzumelden.
         </Typography>
         <form onSubmit={handleSubmit} className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
           <div className="mb-4 flex flex-col gap-6">
             <Input 
               size="lg" 
-              label="E-Mail" 
+              label="E-Mail"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder={undefined}
               crossOrigin={undefined}
               className="dark:text-gray-200 dark:border-gray-500"
             />
@@ -103,7 +102,6 @@ export default function Login() {
               label="Passwort"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder={undefined}
               crossOrigin={undefined}
               className="dark:text-gray-200 dark:border-gray-500"
             />
@@ -120,7 +118,6 @@ export default function Login() {
               </Typography>
             }
             containerProps={{ className: "-ml-2.5" }}
-            placeholder={undefined}
             crossOrigin={undefined}
             className="focus:ring-0 focus:ring-offset-0"
             iconProps={{
@@ -130,14 +127,14 @@ export default function Login() {
             onChange={(e) => setRememberMe(e.target.checked)}
           />
           {error && (
-            <Typography color="red" className="mt-2 text-center text-sm" placeholder={undefined}>
+            <Typography color="red" className="mt-2 text-center text-sm">
               {error}
             </Typography>
           )}
-          <Button className="mt-6" fullWidth type="submit" placeholder={undefined}>
+          <Button className="mt-6" fullWidth type="submit">
             Anmelden
           </Button>
-          <Typography color="gray" className="mt-4 text-center font-normal dark:text-gray-300" placeholder={undefined}>
+          <Typography color="gray" className="mt-4 text-center font-normal dark:text-gray-300">
             Passwort vergessen?{" "}
             <button
               type="button" // Verhindert das Absenden des Formulars
