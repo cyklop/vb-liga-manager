@@ -191,7 +191,7 @@ export default function Login() {
                <Button variant="text" color="red" onClick={() => { setIsResetModalOpen(false); setResetError(''); setResetMessage(''); setResetEmail(''); }}>
                  Abbrechen
                </Button>
-               <Button type="submit" placeholder={undefined}>
+               <Button type="submit">
                  Link senden
                </Button>
             </div>
