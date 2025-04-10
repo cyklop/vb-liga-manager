@@ -92,7 +92,10 @@ export default function TeamPage() {
         // Verarbeite alle Teams aus dem teams-Array
         if (currentUser.teams && currentUser.teams.length > 0) {
           for (const team of currentUser.teams) {
-            if (processedTeamIds.includes(team.team.id)) continue;
+            // Zusätzliche Prüfung, ob team.team und team.team.id existieren
+            if (!team.team || typeof team.team.id !== 'number' || processedTeamIds.includes(team.team.id)) {
+              continue; 
+            }
             
             try {
               const response = await fetch(`/api/teams/${team.team.id}/details`);
