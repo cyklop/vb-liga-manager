@@ -23,4 +23,6 @@ Thumbs.db
 # Test coverage
 coverage/
 
-prisma/dev.db
+#Database
+*.sqlite
+*.db
