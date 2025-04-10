@@ -1,7 +1,7 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
-import { ThemeProvider } from '../../components/ThemeProvider' // Pfad beibehalten
-import { Footer } from '../../components/Footer' // Footer importieren (Pfad anpassen, falls nötig)
+import { ThemeProvider } from '@/components/ThemeProvider' // Pfad auf Alias geändert
+import { Footer } from '@/components/Footer' // Pfad auf Alias geändert
 
 const inter = Inter({ subsets: ['latin'] })
 
