@@ -388,13 +388,13 @@ export default function LeaguesPage() {
       
       if (response.ok) {
         // Reset form with default point rules
-        setNewLeague({ 
-          name: '', 
-          slug: '',
-          numberOfTeams: 0, 
-          hasReturnMatches: false, 
+        setNewLeague({
+          name: '',
+          slug: '', // Fehlendes Feld hinzugefügt
+          numberOfTeams: 0,
+          hasReturnMatches: false,
           teamIds: [],
-          isActive: true,
+          isActive: true, // Fehlendes Feld hinzugefügt
           pointsWin30: 3,
           pointsWin31: 3,
           pointsWin32: 2,
