@@ -70,11 +70,11 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <Card color="transparent" shadow={false} placeholder={undefined} className="dark:bg-gray-800/30 p-6">
-        <Typography variant="h4" color="blue-gray" placeholder={undefined} className="dark:text-gray-100">
+      <Card color="transparent" shadow={false} placeholder={undefined} className="dark:bg-gray-800/30 p-6" onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+        <Typography variant="h4" color="blue-gray" placeholder={undefined} className="dark:text-gray-100" onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
           Neues Passwort festlegen
         </Typography>
-        <Typography color="gray" className="mt-1 font-normal dark:text-gray-300" placeholder={undefined}>
+        <Typography color="gray" className="mt-1 font-normal dark:text-gray-300" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} >
           Gib dein neues Passwort ein.
         </Typography>
         <form onSubmit={handleSubmit} className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
@@ -91,6 +91,8 @@ export default function ResetPasswordPage() {
                   crossOrigin={undefined}
                   className="dark:text-gray-200 dark:border-gray-500"
                   disabled={isLoading}
+                  onPointerEnterCapture={undefined}
+                  onPointerLeaveCapture={undefined}
                 />
                 <Input
                   type="password"
@@ -102,19 +104,21 @@ export default function ResetPasswordPage() {
                   crossOrigin={undefined}
                   className="dark:text-gray-200 dark:border-gray-500"
                   disabled={isLoading}
+                  onPointerEnterCapture={undefined}
+                  onPointerLeaveCapture={undefined}
                 />
               </div>
               {error && (
-                <Typography color="red" className="mt-2 text-center text-sm" placeholder={undefined}>
+                <Typography color="red" className="mt-2 text-center text-sm" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                   {error}
                 </Typography>
               )}
-              <Button className="mt-6" fullWidth type="submit" placeholder={undefined} disabled={isLoading}>
+              <Button className="mt-6" fullWidth type="submit" placeholder={undefined} disabled={isLoading} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                 {isLoading ? 'Wird verarbeitet...' : 'Passwort zurücksetzen'}
               </Button>
             </>
           ) : (
-            <Typography color="green" className="mt-4 text-center text-sm" placeholder={undefined}>
+            <Typography color="green" className="mt-4 text-center text-sm" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
               {success}
             </Typography>
           )}

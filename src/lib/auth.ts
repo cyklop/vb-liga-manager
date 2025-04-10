@@ -3,7 +3,32 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
 
+declare module "next-auth" {
+  interface User {
+    id: number;
+    email: string;
+    name: string; 
+    isAdmin?: boolean;
+    isSuperAdmin?: boolean;
+    team?: { id: number; name: string } | null;
+    rememberMe?: boolean;
+  }
+
+  interface Session {
+    user: {
+      id: number;
+      email?: string | null;
+      name?: string | null;
+      isAdmin?: boolean;
+      isSuperAdmin?: boolean;
+      team?: { id: number; name: string } | null;
+      rememberMe?: boolean;
+    }
+  }
+}
+
 export const authOptions: AuthOptions = {
+  
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -58,10 +83,10 @@ export const authOptions: AuthOptions = {
 
         // Extract the first team if available
         const team = user.teams.length > 0 ? user.teams[0].team : null;
-        const rememberUser = credentials.rememberMe === 'true' || credentials.rememberMe === true; // Auslesen
+        const rememberUser = credentials.rememberMe === 'true';
 
         return {
-          id: user.id.toString(),
+          id: Number(user.id),
           email: user.email,
           name: user.name,
           isAdmin: user.isAdmin,
@@ -80,7 +105,7 @@ export const authOptions: AuthOptions = {
     async jwt({ token, user, trigger }) {
       // Beim initialen Login (wenn user-Objekt vorhanden ist)
       if (trigger === 'signIn' && user) {
-        token.id = user.id;
+        token.id = Number(user.id);
         token.email = user.email;
         token.name = user.name;
         token.isAdmin = user.isAdmin;

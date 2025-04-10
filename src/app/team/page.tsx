@@ -92,37 +92,37 @@ export default function TeamPage() {
         // Verarbeite alle Teams aus dem teams-Array
         if (currentUser.teams && currentUser.teams.length > 0) {
           for (const team of currentUser.teams) {
-            if (processedTeamIds.includes(team.id)) continue;
+            if (processedTeamIds.includes(team.team.id)) continue;
             
             try {
-              const response = await fetch(`/api/teams/${team.id}/details`);
+              const response = await fetch(`/api/teams/${team.team.id}/details`);
               if (response.ok) {
                 const teamDetails = await response.json();
                 userTeams.push(teamDetails);
-                processedTeamIds.push(team.id);
+                processedTeamIds.push(team.team.id);
               } else {
                 // Fallback, wenn API-Endpunkt nicht verfügbar
                 const teamData = {
-                  id: team.id,
-                  name: team.name,
+                  id: team.team.id,
+                  name: team.team.name,
                   location: "Nicht verfügbar",
                   hallAddress: "Nicht verfügbar",
                   trainingTimes: "Nicht verfügbar"
                 };
                 userTeams.push(teamData);
-                processedTeamIds.push(team.id);
+                processedTeamIds.push(team.team.id);
               }
             } catch (error) {
-              console.error(`Fehler beim Laden der Teamdetails für Team ${team.id}:`, error);
+              console.error(`Fehler beim Laden der Teamdetails für Team ${team.team.id}:`, error);
               const teamData = {
-                id: team.id,
-                name: team.name,
+                id: team.team.id,
+                name: team.team.name,
                 location: "Nicht verfügbar",
                 hallAddress: "Nicht verfügbar",
                 trainingTimes: "Nicht verfügbar"
               };
               userTeams.push(teamData);
-              processedTeamIds.push(team.id);
+              processedTeamIds.push(team.team.id);
             }
           }
         }

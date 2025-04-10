@@ -126,15 +126,15 @@ export default function PublicLeaguePage() {
         <h1 className="text-2xl font-bold mb-6">{league.name}</h1>
         
         <Tabs value={activeTab}>
-          <TabsHeader>
-            <Tab value="table" onClick={() => setActiveTab("table")}>
+          <TabsHeader placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+            <Tab value="table" onClick={() => setActiveTab("table")} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
               Tabelle
             </Tab>
-            <Tab value="fixtures" onClick={() => setActiveTab("fixtures")}>
+            <Tab value="fixtures" onClick={() => setActiveTab("fixtures")} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
               Spielplan
             </Tab>
           </TabsHeader>
-          <TabsBody>
+          <TabsBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             <TabPanel value="table" className={activeTab === "table" ? "block" : "hidden"}>
               {/* Tabelle */}
               <div className="overflow-x-auto">
@@ -176,12 +176,16 @@ export default function PublicLeaguePage() {
                       color="gray"
                       className="flex items-center font-normal dark:text-gray-300"
                       placeholder={undefined}
+                      onPointerEnterCapture={undefined}
+                      onPointerLeaveCapture={undefined}
                     >
                       Nur offene Spiele anzeigen
                     </Typography>
                   }
                   checked={showOnlyOpenFixtures}
                   onChange={(e) => setShowOnlyOpenFixtures(e.target.checked)}
+                  onPointerEnterCapture={undefined}
+                  onPointerLeaveCapture={undefined}
                   crossOrigin={undefined}
                   placeholder={undefined}
                   className="focus:ring-0 focus:ring-offset-0"
