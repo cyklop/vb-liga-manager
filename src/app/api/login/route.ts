@@ -14,6 +14,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'Ungültige E-Mail oder Passwort' }, { status: 401 })
     }
 
+    // Prüfen, ob der Benutzer überhaupt ein Passwort hat
+    if (!user.password) {
+      // Wenn kein Passwort gespeichert ist, kann das eingegebene nicht korrekt sein
+      return NextResponse.json({ message: 'Ungültige E-Mail oder Passwort' }, { status: 401 })
+    }
+
+    // Jetzt ist sicher, dass user.password ein String ist
     const isPasswordValid = await bcrypt.compare(password, user.password)
 
     if (!isPasswordValid) {
