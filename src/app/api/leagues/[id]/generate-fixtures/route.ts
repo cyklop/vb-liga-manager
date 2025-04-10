@@ -159,7 +159,10 @@ function generateRoundRobinFixtures(teams: { id: number }[], hasReturnMatches: b
     fixtures.push(...roundFixtures);
     
     // Rotate teams for the next round (first team stays fixed)
-    rotatingTeams.push(rotatingTeams.shift());
+    const shiftedTeam = rotatingTeams.shift(); // Get the first element
+    if (shiftedTeam) { // Check if it's not undefined
+      rotatingTeams.push(shiftedTeam); // Add it to the end
+    }
   }
 
   // Add return matches if required
