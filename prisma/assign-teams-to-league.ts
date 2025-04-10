@@ -1,4 +1,4 @@
-const { prisma } = require('../lib/prisma');
+import { prisma } from '../src/lib/prisma'; // Geändert auf ES Module import und korrekten Pfad
 
 async function main() {
   // Finde oder erstelle die Liga "Volleyball Hobbyliga 2024/25"
