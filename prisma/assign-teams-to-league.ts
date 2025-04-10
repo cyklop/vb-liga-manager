@@ -1,4 +1,5 @@
 import { prisma } from '../src/lib/prisma'; // Geändert auf ES Module import und korrekten Pfad
+import { createSlug } from '../src/lib/slugify'; // Importiere die Slug-Funktion
 
 async function main() {
   // Finde oder erstelle die Liga "Volleyball Hobbyliga 2024/25"
@@ -12,9 +13,11 @@ async function main() {
 
   if (!league) {
     console.log("Liga 'Volleyball Hobbyliga 2024/25' wird erstellt...");
+    const leagueName = "Volleyball Hobbyliga 2024/25";
     league = await prisma.league.create({
       data: {
-        name: "Volleyball Hobbyliga 2024/25",
+        name: leagueName,
+        slug: createSlug(leagueName), // Füge den generierten Slug hinzu
         numberOfTeams: 7,
         hasReturnMatches: true,
         pointsWin30: 3,
