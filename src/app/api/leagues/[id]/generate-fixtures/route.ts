@@ -21,7 +21,8 @@ function generateRoundRobinFixtures(teams: { id: number }[], hasReturnMatches: b
   const matchesPerRound = numTeamsWithDummy / 2; // Number of matches per round
   
   // Create a map to track the last fixture for each team (home or away)
-  const lastFixtureWasHome: Record<number, boolean> = {};
+  // Allow undefined to indicate no previous fixture
+  const lastFixtureWasHome: Record<number, boolean | undefined> = {}; 
   
   // Initialize with undefined (no previous fixtures)
   teams.forEach(team => {
