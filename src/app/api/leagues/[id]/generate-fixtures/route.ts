@@ -329,12 +329,12 @@ function generateRoundRobinFixtures(teams: { id: number }[], hasReturnMatches: b
       teamSchedule[awayTeamId].awayGames++;
     }
   });
-  
-  // Log schedule balance for debugging
-  console.log("Team schedule balance:");
-  Object.entries(teamSchedule).forEach(([teamId, schedule]) => {
-    console.log(`Team ${teamId}: ${schedule.homeGames} home, ${schedule.awayGames} away, ${schedule.matchdays.length} matchdays`);
-  });
+
+  // // Log schedule balance for debugging (auskommentiert für Produktion)
+  // console.log("Team schedule balance:");
+  // Object.entries(teamSchedule).forEach(([teamId, schedule]) => {
+  //   console.log(`Team ${teamId}: ${schedule.homeGames} home, ${schedule.awayGames} away, ${schedule.matchdays.length} matchdays`);
+  // });
 
   return fixtures;
 }

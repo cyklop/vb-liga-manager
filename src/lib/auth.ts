@@ -40,6 +40,13 @@ export const authOptions: AuthOptions = {
           throw new Error("Benutzer nicht gefunden");
         }
 
+        // Prüfen, ob der Benutzer überhaupt ein Passwort hat
+        if (!user.password) {
+          // Wenn kein Passwort gespeichert ist, kann das eingegebene nicht korrekt sein
+          throw new Error("Ungültiges Passwort");
+        }
+
+        // Jetzt ist sicher, dass user.password ein String ist
         const isPasswordValid = await bcrypt.compare(
           credentials.password,
           user.password
