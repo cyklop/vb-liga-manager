@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import { Tabs, TabsHeader, TabsBody, Tab, TabPanel, Checkbox, Typography } from "@material-tailwind/react" // Checkbox und Typography hinzugefügt
-import { ThemeProvider } from '../../../../../components/ThemeProvider'
+import { ThemeProvider } from '@/components/ThemeProvider'
 
 // Typen für die Daten
 interface Team {

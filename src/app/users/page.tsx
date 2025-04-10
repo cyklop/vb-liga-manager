@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Navigation from '../../../components/Navbar'
-import Modal from '../../../components/Modal'
-import DeleteConfirmation from '../../../components/DeleteConfirmation'
+import Navigation from '@/components/Navbar'
+import Modal from '@/components/Modal'
+import DeleteConfirmation from '@/components/DeleteConfirmation'
 
 interface User {
   id: number

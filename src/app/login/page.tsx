@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { LockClosedIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
-import Modal from '../../../components/Modal'
+import Modal from '@/components/Modal'
 import { signIn } from 'next-auth/react'
 import {
   Card,

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Navigation from '../../../components/Navbar'
+import Navigation from '@/components/Navbar'
 
 interface Team {
   id: number
