@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = env("DATABASE_PROVIDER") // Lese den Provider aus der Umgebungsvariable
+  provider = "mysql" // Provider muss statisch sein (Zielsystem ist MariaDB/MySQL)
   url      = env("DATABASE_URL")      // Lese die URL aus der Umgebungsvariable
 }
 
