@@ -100,8 +100,8 @@ export async function PUT(
 
 
     // --- Calculate Match Points ---
-    let homeMatchPoints = null;
-    let awayMatchPoints = null;
+    let homeMatchPoints: number | null = null; // Explizit Typ number | null
+    let awayMatchPoints: number | null = null; // Explizit Typ number | null
 
     if (homeSetsNum !== null && awaySetsNum !== null) {
         // Fetch league point rules
