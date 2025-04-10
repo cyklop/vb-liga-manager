@@ -127,8 +127,8 @@ export default function TeamPage() {
           }
         }
         
-        // Füge das Haupt-Team hinzu, falls es noch nicht verarbeitet wurde
-        if (currentUser.team && !processedTeamIds.includes(currentUser.team.id)) {
+        // Füge das Haupt-Team hinzu, falls es existiert, eine ID hat und noch nicht verarbeitet wurde
+        if (currentUser.team && typeof currentUser.team.id === 'number' && !processedTeamIds.includes(currentUser.team.id)) {
           try {
             const response = await fetch(`/api/teams/${currentUser.team.id}/details`);
             if (response.ok) {
