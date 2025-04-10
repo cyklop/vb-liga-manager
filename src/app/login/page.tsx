@@ -79,22 +79,22 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <Card color="transparent" shadow={false} className="dark:bg-gray-800/30 p-6">
-        <Typography variant="h4" color="blue-gray" className="dark:text-gray-100">
+      <Card color="transparent" shadow={false} className="dark:bg-gray-800/30 p-6" placeholder="">
+        <Typography variant="h4" color="blue-gray" className="dark:text-gray-100" placeholder="">
           Anmelden
         </Typography>
-        <Typography color="gray" className="mt-1 font-normal dark:text-gray-300">
+        <Typography color="gray" className="mt-1 font-normal dark:text-gray-300" placeholder="">
           Geben Sie Ihre Anmeldedaten ein, um sich anzumelden.
         </Typography>
         <form onSubmit={handleSubmit} className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
           <div className="mb-4 flex flex-col gap-6">
             <Input 
-              size="lg" 
+              size="lg"
               label="E-Mail"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              crossOrigin={undefined}
               className="dark:text-gray-200 dark:border-gray-500"
+              placeholder=""
             />
             <Input
               type="password"
@@ -102,8 +102,8 @@ export default function Login() {
               label="Passwort"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              crossOrigin={undefined}
               className="dark:text-gray-200 dark:border-gray-500"
+              placeholder=""
             />
           </div>
           <Checkbox
@@ -112,13 +112,14 @@ export default function Login() {
                 variant="small"
                 color="gray"
                 className="flex items-center font-normal dark:text-gray-300"
+                placeholder=""
               >
                 Angemeldet bleiben
               </Typography>
             }
             containerProps={{ className: "-ml-2.5" }}
-            crossOrigin={undefined}
             className="focus:ring-0 focus:ring-offset-0"
+            placeholder=""
             iconProps={{
               className: ""
             }}
@@ -126,14 +127,14 @@ export default function Login() {
             onChange={(e) => setRememberMe(e.target.checked)}
           />
           {error && (
-            <Typography color="red" className="mt-2 text-center text-sm">
+            <Typography color="red" className="mt-2 text-center text-sm" placeholder="">
               {error}
             </Typography>
           )}
-          <Button className="mt-6" fullWidth type="submit">
+          <Button className="mt-6" fullWidth type="submit" placeholder="">
             Anmelden
           </Button>
-          <Typography color="gray" className="mt-4 text-center font-normal dark:text-gray-300">
+          <Typography color="gray" className="mt-4 text-center font-normal dark:text-gray-300" placeholder="">
             Passwort vergessen?{" "}
             <button
               type="button" // Verhindert das Absenden des Formulars
@@ -169,7 +170,7 @@ export default function Login() {
             }
           }}>
             {resetMessage && ( // Erfolgsmeldung im Modal anzeigen
-              <Typography color="green" className="mb-4 text-center text-sm">
+              <Typography color="green" className="mb-4 text-center text-sm" placeholder="">
                 {resetMessage}
               </Typography>
             )}
@@ -179,19 +180,19 @@ export default function Login() {
               label="E-Mail-Adresse"
               value={resetEmail}
               onChange={(e) => setResetEmail(e.target.value)}
-              crossOrigin={undefined}
               className="mb-4 dark:text-gray-200 dark:border-gray-500"
+              placeholder=""
             />
             {resetError && ( // Fehlermeldung im Modal anzeigen
-              <Typography color="red" className="mb-4 text-center text-sm">
+              <Typography color="red" className="mb-4 text-center text-sm" placeholder="">
                 {resetError}
               </Typography>
             )}
             <div className="flex justify-end gap-2">
-               <Button variant="text" color="red" onClick={() => { setIsResetModalOpen(false); setResetError(''); setResetMessage(''); setResetEmail(''); }}>
+               <Button variant="text" color="red" onClick={() => { setIsResetModalOpen(false); setResetError(''); setResetMessage(''); setResetEmail(''); }} placeholder="">
                  Abbrechen
                </Button>
-               <Button type="submit">
+               <Button type="submit" placeholder="">
                  Link senden
                </Button>
             </div>
