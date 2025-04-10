@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "mysql" // Ändern zu mysql für MariaDB/MySQL
+  url      = env("DATABASE_URL") // Lese die URL aus der Umgebungsvariable
 }
 
 model Team {
