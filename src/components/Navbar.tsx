@@ -100,7 +100,7 @@ export default function Navbar() {
                   )}
                 </Disclosure.Button>
               </div>
-              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+              <div className="flex flex-1 items-center sm:items-stretch sm:justify-start"> {/* justify-center entfernt */}
                 <div className="flex flex-shrink-0 items-center">
                   <Link href="/dashboard" className="text-2xl font-bold text-white">
                     Volleyball Liga
