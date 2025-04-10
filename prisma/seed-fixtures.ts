@@ -1,4 +1,4 @@
-import { prisma } from '../lib/prisma'; // Use ES module import
+import { prisma } from '../src/lib/prisma'; // Use ES module import
 
 async function main() {
   const leagueName = "Volleyball Hobbyliga 2024/25";

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import prisma from '../../../../lib/prisma' // Import the singleton instance
+import prisma from '../../../lib/prisma' // Import the singleton instance
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../../../lib/auth' // Corrected import path
 import { createSlug, isValidSlug } from '../../../../src/lib/slugify'

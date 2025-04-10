@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import prisma from '../../../../../../lib/prisma' // Import the singleton instance
+import prisma from '../../../../../lib/prisma' // Import the singleton instance
 
 // Helper function to generate round-robin fixtures with balanced home/away games
 function generateRoundRobinFixtures(teams: { id: number }[], hasReturnMatches: boolean): Omit<Fixture, 'id' | 'leagueId' | 'homeTeam' | 'awayTeam' | 'order'>[] {

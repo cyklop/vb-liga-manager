@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt'
-import { prisma } from '../lib/prisma'
+import { prisma } from '../src/lib/prisma'
 
 async function main() {
   const superAdminEmail = 'superadmin@example.com'
