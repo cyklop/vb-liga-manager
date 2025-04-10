@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation' // Import useRouter
 import Navigation from '@/components/Navbar'
 import Modal from '@/components/Modal'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
@@ -26,6 +27,7 @@ interface Team {
 }
 
 export default function TeamsPage() {
+  const router = useRouter() // Initialize router
   const [teams, setTeams] = useState<Team[]>([])
   const [users, setUsers] = useState<User[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
