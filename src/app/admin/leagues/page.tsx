@@ -431,11 +431,13 @@ export default function LeaguesPage() {
       
       if (response.ok) {
          // Reset form with default point rules
-        setNewLeague({ 
-          name: '', 
-          numberOfTeams: 0, 
-          hasReturnMatches: false, 
+        setNewLeague({
+          name: '',
+          slug: '', // Fehlendes Feld hinzugefügt
+          numberOfTeams: 0,
+          hasReturnMatches: false,
           teamIds: [],
+          isActive: true, // Fehlendes Feld hinzugefügt
           pointsWin30: 3,
           pointsWin31: 3,
           pointsWin32: 2,
@@ -492,11 +494,13 @@ export default function LeaguesPage() {
             onClick={() => {
               setEditingLeague(null);
               // Reset form with default point rules when adding new
-              setNewLeague({ 
-                name: '', 
-                numberOfTeams: 0, 
-                hasReturnMatches: false, 
+              setNewLeague({
+                name: '',
+                slug: '', // Fehlendes Feld hinzugefügt
+                numberOfTeams: 0,
+                hasReturnMatches: false,
                 teamIds: [],
+                isActive: true, // Fehlendes Feld hinzugefügt
                 pointsWin30: 3,
                 pointsWin31: 3,
                 pointsWin32: 2,
