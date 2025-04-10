@@ -12,7 +12,11 @@ export async function GET(request: Request) {
     return NextResponse.json({ message: 'Nicht authentifiziert' }, { status: 401 })
   }
   
-  const userId = session.user.id // parseInt entfernt, da session.user.id bereits number ist
+  // ID aus Session holen und sicher in Zahl umwandeln
+  const userId = parseInt(session.user.id as any, 10); // Use 'as any' to bypass potential TS type conflict if needed, parseInt expects string
+  if (isNaN(userId)) {
+    return NextResponse.json({ message: 'Ungültige Benutzer-ID in der Session' }, { status: 400 });
+  }
 
   try {
     const user = await prisma.user.findUnique({
@@ -65,7 +69,11 @@ export async function PUT(request: Request) {
     return NextResponse.json({ message: 'Nicht authentifiziert' }, { status: 401 })
   }
   
-  const userId = session.user.id // parseInt entfernt, da session.user.id bereits number ist
+  // ID aus Session holen und sicher in Zahl umwandeln
+  const userId = parseInt(session.user.id as any, 10); // Use 'as any' to bypass potential TS type conflict if needed, parseInt expects string
+  if (isNaN(userId)) {
+    return NextResponse.json({ message: 'Ungültige Benutzer-ID in der Session' }, { status: 400 });
+  }
 
   const { name, email, password, theme } = await request.json()
 

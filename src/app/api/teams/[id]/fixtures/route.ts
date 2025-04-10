@@ -18,6 +18,12 @@ export async function GET(
     return NextResponse.json({ message: 'Nicht authentifiziert' }, { status: 401 })
   }
 
+  // ID aus Session holen und sicher in Zahl umwandeln
+  const sessionUserId = parseInt(session.user.id as any, 10); // Use 'as any' to bypass potential TS type conflict if needed, parseInt expects string
+  if (isNaN(sessionUserId)) {
+    return NextResponse.json({ message: 'Ungültige Benutzer-ID in der Session' }, { status: 400 });
+  }
+
   // URL-Parameter auslesen
   const { searchParams } = new URL(request.url)
   const homeOnly = searchParams.get('homeOnly') === 'true'
@@ -25,7 +31,7 @@ export async function GET(
   try {
     // Prüfen, ob der Benutzer Admin ist oder zum Team gehört
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id }, // parseInt entfernt, da session.user.id bereits number ist
+      where: { id: sessionUserId }, // Verwende die geparste ID
       include: { teams: true }
     })
 
