@@ -2,6 +2,8 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/ThemeProvider' // Pfad auf Alias geändert
 import { Footer } from '@/components/Footer' // Pfad auf Alias geändert
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // CSS Import hinzufügen
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -30,6 +32,20 @@ export default function RootLayout({
             {children}
           </main>
           <Footer /> {/* Footer wird durch CSS fixiert */}
+          {/* ToastContainer konfiguriert für oben rechts mit Abstand */}
+          <ToastContainer
+            position="top-right"
+            autoClose={4000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+            className="mt-16" // Fügt Abstand von oben hinzu (Tailwind: mt-16 = 4rem = 64px)
+          />
         </ThemeProvider>
       </body>
     </html>

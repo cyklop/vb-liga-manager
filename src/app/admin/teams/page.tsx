@@ -6,6 +6,7 @@ import Navigation from '@/components/Navbar'
 import Modal from '@/components/Modal'
 import DeleteConfirmation from '@/components/DeleteConfirmation' // Import hinzufügen
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { toast } from 'react-toastify';
 
 interface User {
   id: number
