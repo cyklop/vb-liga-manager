@@ -1,15 +1,32 @@
 import { NextResponse } from 'next/server'
 import prisma from '../../../../../lib/prisma' // Import the singleton instance
 
-// Helper function to extract the first HH:MM time from a string
+// Helper function to extract the first HH:MM or approximate HH:00 time from a string
 function extractTimeFromString(text: string | null | undefined): string | null {
   if (!text) {
     return null;
   }
-  // Regex to find the first occurrence of HH:MM or H:MM
-  const timeRegex = /\b(\d{1,2}:\d{2})\b/;
-  const match = text.match(timeRegex);
-  return match ? match[1] : null; // Return the first captured group (the time) or null
+  // 1. Try to find exact HH:MM or H:MM format first
+  const exactTimeRegex = /\b(\d{1,2}:\d{2})\b/;
+  const exactMatch = text.match(exactTimeRegex);
+  if (exactMatch) {
+    return exactMatch[1]; // Return the exact time found
+  }
+
+  // 2. If no exact match, try to find the first hour number (e.g., "20" in "20-22 Uhr")
+  const hourRegex = /\b(\d{1,2})\b/; // Find the first 1 or 2 digit number
+  const hourMatch = text.match(hourRegex);
+  if (hourMatch) {
+    // Format as HH:00 (add leading zero if needed)
+    const hour = parseInt(hourMatch[1], 10);
+    // Basic validation: assume it's an hour between 0 and 23
+    if (hour >= 0 && hour <= 23) {
+      return `${String(hour).padStart(2, '0')}:00`;
+    }
+  }
+
+  // 3. If nothing found, return null
+  return null;
 }
 
 // Updated Team type for the helper function
