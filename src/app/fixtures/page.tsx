@@ -24,9 +24,10 @@ interface Fixture {
   awayPoints?: number | null;
   homeMatchPoints?: number | null;
   awayMatchPoints?: number | null;
+  fixtureTime?: string | null; // Add fixtureTime
   order: number;
 }
-
+ 
 interface League {
   id: number;
   name: string;
@@ -171,7 +172,19 @@ export default function FixturesPage() {
       year: 'numeric',
     });
   };
-
+ 
+  // Updated function to format date and time
+  const formatDateTime = (dateString: string | null | undefined, timeString: string | null | undefined) => {
+    if (!dateString) return 'Datum N/A';
+    const datePart = new Date(dateString).toLocaleDateString('de-DE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+    const timePart = timeString ? ` ${timeString}` : '';
+    return `${datePart}${timePart}`;
+  };
+ 
   return (
     <>
       <Navigation />

@@ -66,6 +66,7 @@ interface Fixture {
   awayPoints?: number | null // Total balls/points
   homeMatchPoints?: number | null // Points for the league table
   awayMatchPoints?: number | null // Points for the league table
+  fixtureTime?: string | null // Add fixtureTime
   order: number
 }
 
@@ -289,6 +290,7 @@ export default function LeaguesPage() {
       awaySets: fixture.awaySets,
       homePoints: fixture.homePoints,
       awayPoints: fixture.awayPoints,
+      fixtureTime: fixture.fixtureTime, // Add fixtureTime
     });
     setIsFixtureModalOpen(true);
   };
@@ -310,10 +312,11 @@ export default function LeaguesPage() {
           awaySets: editingFixture.awaySets !== null && String(editingFixture.awaySets).trim() !== '' ? Number(editingFixture.awaySets) : null,
           homePoints: editingFixture.homePoints !== null && String(editingFixture.homePoints).trim() !== '' ? Number(editingFixture.homePoints) : null,
           awayPoints: editingFixture.awayPoints !== null && String(editingFixture.awayPoints).trim() !== '' ? Number(editingFixture.awayPoints) : null,
+          fixtureTime: editingFixture.fixtureTime || null, // Send fixtureTime
           // homeScore/awayScore are calculated/set on the backend now
         }),
       });
-
+ 
       if (response.ok) {
         setIsFixtureModalOpen(false);
         setEditingFixture(null);
@@ -942,7 +945,20 @@ export default function LeaguesPage() {
                 className="mt-1 block w-full pl-3 pr-3 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
               />
             </div>
-
+ 
+            {/* Fixture Time */}
+            <div>
+              <label htmlFor="fixtureTime" className="block text-sm font-medium text-gray-700">Uhrzeit</label>
+              <input
+                type="time"
+                id="fixtureTime"
+                name="fixtureTime"
+                value={editingFixture.fixtureTime || ''}
+                onChange={handleFixtureInputChange}
+                className="mt-1 block w-full pl-3 pr-3 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              />
+            </div>
+ 
             {/* Sets */}
             <div className="flex space-x-4">
               <div className="flex-1">
@@ -1084,6 +1100,7 @@ function SortableFixtureItem({ fixture, onEditClick, isLeagueActive }: SortableF
         <span>{fixture.homeTeam?.name || 'N/A'} vs {fixture.awayTeam?.name || 'N/A'}</span>
         <span className="ml-4 text-gray-500 text-xs">
           {fixture.fixtureDate ? new Date(fixture.fixtureDate).toLocaleDateString('de-DE') : 'Datum N/A'}
+          {fixture.fixtureTime ? ` ${fixture.fixtureTime}` : ''} {/* Display time if available */}
         </span>
       </div>
       {/* Score (Sets and Match Points) */}
