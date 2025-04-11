@@ -4,7 +4,8 @@ import { Fragment, useEffect, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation' // useRouter entfernt, falls nicht anderweitig benötigt
+import { signOut } from 'next-auth/react'; // signOut importieren
 
 interface User {
   id: number
@@ -60,29 +61,17 @@ export default function Navbar() {
       console.error('Fehler beim Abrufen des Benutzers:', error)
     }
   }
-
+  
   const handleLogout = async () => {
-    try {
-      // Erst die NextAuth-Session beenden
-      await fetch('/api/auth/signout', { method: 'POST' })
-      // Dann den alten Logout-Endpunkt aufrufen für Kompatibilität
-      const response = await fetch('/api/logout', { method: 'POST' })
-      
-      // Lokalen Zustand zurücksetzen
-      setCurrentUser(null)
-      
-      // Alle Cookies im Browser löschen
-      document.cookie.split(";").forEach(function(c) {
-        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-      });
-      
-      // Vollständigen Seitenneuladen erzwingen, um alle Session-Daten zu löschen
-      window.location.href = '/login'
-    } catch (error) {
-      console.error('Fehler beim Abmelden:', error)
-    }
+    // Verwende die signOut-Funktion von next-auth/react
+    // Sie kümmert sich um das Beenden der Session, das Löschen des Cookies
+    // und die Weiterleitung.
+    await signOut({ callbackUrl: '/login' }); 
+    // callbackUrl gibt an, wohin der Benutzer nach dem Logout geleitet wird.
+    // Der lokale Zustand (currentUser) muss nicht manuell zurückgesetzt werden,
+    // da die Seite neu geladen wird oder die Session-Daten nicht mehr verfügbar sind.
   }
-
+  
   return (
     <Disclosure as="nav" className="bg-indigo-600">
       {({ open }) => (
