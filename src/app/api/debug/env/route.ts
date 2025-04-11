@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-// Importiere den Wert von NODE_ENV zum Zeitpunkt der auth.ts Initialisierung
-import { authInitializationNodeEnv } from '@/lib/auth';
+// Import von authInitializationNodeEnv entfernt, da die Variable in auth.ts entfernt wurde
 
 export async function GET() {
   // Wert von NODE_ENV während dieser API-Anfrage
@@ -8,15 +7,14 @@ export async function GET() {
   const nextAuthUrl = process.env.NEXTAUTH_URL;
   const nextAuthSecret = process.env.NEXTAUTH_SECRET ? 'Set' : 'Not Set';
 
-  // Logge beide Werte serverseitig zum Vergleich (optional)
+  // Logge nur den aktuellen Wert (optional)
   console.log(`[Debug Env Check] NODE_ENV at request time: ${nodeEnvAtRequestTime}`);
-  console.log(`[Debug Env Check] NODE_ENV at auth.ts initialization: ${authInitializationNodeEnv}`);
 
   return NextResponse.json({
     NODE_ENV_at_request_time: nodeEnvAtRequestTime,
-    NODE_ENV_at_auth_initialization: authInitializationNodeEnv, // Füge den Wert hinzu
+    // NODE_ENV_at_auth_initialization entfernt
     NEXTAUTH_URL: nextAuthUrl,
     NEXTAUTH_SECRET_STATUS: nextAuthSecret,
-    message: 'Current environment variables from running process and auth initialization.'
+    message: 'Current environment variables from running process.' // Nachricht angepasst
   });
 }
