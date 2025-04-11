@@ -282,13 +282,14 @@ export default function TeamPage() {
           )
         );
         setEditingTeam(null);
+        toast.success('Mannschaftsdetails erfolgreich gespeichert!'); // Erfolgs-Toast
       } else {
         const error = await response.json();
-        alert(`Fehler beim Speichern: ${error.message}`);
+        toast.error(`Fehler beim Speichern: ${error.message || 'Unbekannter Fehler'}`); // Fehler-Toast
       }
     } catch (error) {
       console.error('Error updating team:', error);
-      alert('Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
+      toast.error('Ein Netzwerkfehler ist aufgetreten. Bitte versuchen Sie es später erneut.'); // Netzwerkfehler-Toast
     }
   };
 
@@ -361,13 +362,14 @@ export default function TeamPage() {
           fetchHomeFixtures(editingFixture.homeTeamId);
         }
         setEditingFixture(null);
+        toast.success('Spielergebnis erfolgreich gespeichert!'); // Erfolgs-Toast
       } else {
         const error = await response.json();
-        alert(`Fehler beim Speichern: ${error.message}`);
+        toast.error(`Fehler beim Speichern: ${error.message || 'Unbekannter Fehler'}`); // Fehler-Toast
       }
     } catch (error) {
       console.error('Error updating fixture:', error);
-      alert('Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
+      toast.error('Ein Netzwerkfehler ist aufgetreten. Bitte versuchen Sie es später erneut.'); // Netzwerkfehler-Toast
     }
   };
 
