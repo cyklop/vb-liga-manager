@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation' // Import useRouter
 import Navigation from '@/components/Navbar'
 import Modal from '@/components/Modal'
+import DeleteConfirmation from '@/components/DeleteConfirmation' // Import hinzufügen
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 
 interface User {
@@ -42,6 +43,9 @@ export default function TeamsPage() {
   }
   const [formData, setFormData] = useState<TeamFormData>({})
   const [editingTeam, setEditingTeam] = useState<Team | null>(null)
+  // State für Löschbestätigung hinzufügen
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+  const [teamToDelete, setTeamToDelete] = useState<Team | null>(null)
 
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [isAdmin, setIsAdmin] = useState(false)
@@ -157,18 +161,40 @@ export default function TeamsPage() {
     }
   }
 
-  const handleDeleteTeam = async (id: number) => {
-    try {
-      const response = await fetch(`/api/teams/${id}`, {
-        method: 'DELETE',
-      })
-      if (response.ok) {
-        fetchTeams()
+  // Funktion, um den Löschdialog zu öffnen
+  const requestDeleteTeam = (team: Team) => {
+    setTeamToDelete(team)
+    setShowDeleteConfirmation(true)
+  }
+
+  // Funktion, die die Löschung nach Bestätigung durchführt
+  const confirmDeleteTeam = async () => {
+    if (teamToDelete) {
+      try {
+        const response = await fetch(`/api/teams/${teamToDelete.id}`, {
+          method: 'DELETE',
+        })
+        if (response.ok) {
+          fetchTeams() // Liste nach erfolgreichem Löschen neu laden
+        } else {
+          console.error('Fehler beim Löschen des Teams:', await response.text())
+        }
+      } catch (error) {
+        console.error('Fehler beim Löschen des Teams', error)
+      } finally {
+        // Dialog schließen und State zurücksetzen
+        setShowDeleteConfirmation(false)
+        setTeamToDelete(null)
       }
-    } catch (error) {
-      console.error('Fehler beim Löschen des Teams', error)
     }
   }
+
+  // Funktion zum Abbrechen des Löschvorgangs
+  const cancelDeleteTeam = () => {
+    setShowDeleteConfirmation(false)
+    setTeamToDelete(null)
+  }
+
 
   return (
     <>
@@ -223,7 +249,8 @@ export default function TeamsPage() {
                   </button>
                   {isAdmin && (
                     <button
-                      onClick={() => handleDeleteTeam(team.id)}
+                      // onClick anpassen, um den Dialog zu öffnen
+                      onClick={() => requestDeleteTeam(team)}
                       className="p-1 text-red-600 hover:text-red-900 hover:bg-red-100 rounded dark:text-red-400 dark:hover:bg-red-900/20"
                       title="Mannschaft löschen"
                     >
@@ -287,6 +314,14 @@ export default function TeamsPage() {
           </button>
         </form>
       </Modal>
+      {/* DeleteConfirmation Komponente hinzufügen */}
+      {showDeleteConfirmation && teamToDelete && (
+        <DeleteConfirmation
+          onConfirm={confirmDeleteTeam}
+          onCancel={cancelDeleteTeam}
+          message={`Möchten Sie die Mannschaft ${teamToDelete.name} wirklich löschen?`}
+        />
+      )}
     </>
   )
 }
