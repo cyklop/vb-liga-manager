@@ -111,6 +111,9 @@ export default function LeaguesPage() {
   const [editingFixture, setEditingFixture] = useState<Partial<Fixture> | null>(null) // Use Partial for flexibility during editing
   const [isFixtureModalOpen, setIsFixtureModalOpen] = useState(false)
   const [isOrderChanged, setIsOrderChanged] = useState(false)
+  // State für Spielplan-Generierungsbestätigung
+  const [showGenerateConfirmation, setShowGenerateConfirmation] = useState(false);
+  const [leagueToGenerate, setLeagueToGenerate] = useState<League | null>(null);
 
   // --- Drag & Drop Sensors ---
   const sensors = useSensors(
@@ -970,6 +973,16 @@ export default function LeaguesPage() {
           </form>
         )}
       </Modal>
+
+      {/* Bestätigungsdialog für Spielplan-Generierung */}
+      {showGenerateConfirmation && leagueToGenerate && (
+        <DeleteConfirmation
+          onConfirm={confirmGenerateFixtures}
+          onCancel={cancelGenerateFixtures}
+          message={`Möchten Sie den Spielplan für Liga "${leagueToGenerate.name}" wirklich generieren? Bestehende Spielpläne für diese Liga werden überschrieben.`}
+          confirmButtonText="Generieren" // Optional: Button-Text anpassen
+        />
+      )}
     </>
   );
 }
