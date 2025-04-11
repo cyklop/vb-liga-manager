@@ -181,12 +181,17 @@ function generateRoundRobinFixtures(teams: TeamWithTrainingTime[], hasReturnMatc
         }
         
         // Update the last fixture status
+        // Extract time from the determined home team's training times
+        const fixtureTime = extractTimeFromString(trainingTimesMap[homeTeamId]);
+
+        // Update the last fixture status
         lastFixtureWasHome[homeTeamId] = true;
         lastFixtureWasHome[awayTeamId] = false;
-        
+
         roundFixtures.push({
           homeTeamId,
           awayTeamId,
+          fixtureTime, // Add extracted time here as well
           round: round + 1,
           matchday: round + 1,
           fixtureDate: null,
