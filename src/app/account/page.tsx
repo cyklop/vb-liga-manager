@@ -70,14 +70,18 @@ export default function AccountPage() {
       })
       if (response.ok) {
         const data = await response.json()
-        // Lokalen Benutzerstatus mit der Antwort vom Server aktualisieren
-        setUser(prevUser => prevUser ? { ...prevUser, ...data } : null)
-      } else {
-         // Fehler bei der Aktualisierung behandeln (z.B. Nachricht anzeigen)
-         console.error('Fehler beim Aktualisieren des Profils:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Fehler beim Aktualisieren des Benutzerprofils', error)
+       // Lokalen Benutzerstatus mit der Antwort vom Server aktualisieren
+       setUser(prevUser => prevUser ? { ...prevUser, ...data } : null)
+       toast.success('Profil erfolgreich aktualisiert!'); // Erfolgs-Toast
+     } else {
+       // Fehler bei der Aktualisierung behandeln (z.B. Nachricht anzeigen)
+       const errorData = await response.json().catch(() => ({ message: response.statusText })); // Versuche, JSON zu parsen, sonst Status-Text
+       console.error('Fehler beim Aktualisieren des Profils:', errorData.message || response.statusText);
+       toast.error(`Fehler: ${errorData.message || 'Profil konnte nicht aktualisiert werden.'}`); // Fehler-Toast
+     }
+   } catch (error) {
+     console.error('Fehler beim Aktualisieren des Benutzerprofils', error)
+     toast.error('Ein Netzwerk- oder Serverfehler ist aufgetreten.'); // Netzwerkfehler-Toast
     }
   }
 
