@@ -6,6 +6,7 @@ import Navigation from '@/components/Navbar'
 import UserProfileForm from '@/components/UserProfileForm'
 // ThemeProvider entfernt, nur useTheme wird benötigt
 import { useTheme } from '@/components/ThemeProvider'
+import { toast } from 'react-toastify';
 
 interface User {
   id: number
