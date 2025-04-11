@@ -3,6 +3,10 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
 
+// --- DEBUG LOGGING START ---
+console.log(`[auth.ts] Initializing authOptions... NODE_ENV = ${process.env.NODE_ENV}`);
+// --- DEBUG LOGGING END ---
+
 declare module "next-auth" {
   interface User {
     id: number;
