@@ -86,7 +86,8 @@ model Fixture {
   awayTeamId   Int
   awayTeam     Team      @relation("AwayTeam", fields: [awayTeamId], references: [id], onDelete: Cascade)
   fixtureDate  DateTime? // Optional date and time of the fixture
-  fixtureTime  String?   // Optional time of the fixture (e.g., "18:30") <<< ENSURE THIS LINE EXISTS
+  fixtureTime  String?   // Optional time of the fixture (e.g., "18:30")
+  setScores    Json?     // Optional: Store individual set scores, e.g., [{"home": 25, "away": 21}, ...]
   homeScore    Int?      // DEPRECATED - Will be replaced by sets/points. Keep for migration, remove later? Or rename? Let's rename for clarity.
   awayScore    Int?      // DEPRECATED - Will be replaced by sets/points. Keep for migration, remove later? Or rename? Let's rename for clarity.
 
