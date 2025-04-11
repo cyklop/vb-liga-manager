@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = env("DATABASE_PROVIDER") // Provider aus Umgebungsvariable lesen
+  provider = "sqlite" // Statischer Provider für lokale SQLite-Entwicklung
   url      = env("DATABASE_URL")      // URL aus Umgebungsvariable lesen
 }
 
