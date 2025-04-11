@@ -79,11 +79,11 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <Card color="transparent" shadow={false} className="dark:bg-gray-800/30 p-6" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-        <Typography variant="h4" color="blue-gray" className="dark:text-gray-100" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+      <Card color="transparent" shadow={false} className="dark:bg-gray-800/30 p-6" placeholder={undefined} >
+        <Typography variant="h4" color="blue-gray" className="dark:text-gray-100" placeholder={undefined} >
           Anmelden
         </Typography>
-        <Typography color="gray" className="mt-1 font-normal dark:text-gray-300" placeholder={undefined}onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+        <Typography color="gray" className="mt-1 font-normal dark:text-gray-300" placeholder={undefined}>
           Geben Sie Ihre Anmeldedaten ein, um sich anzumelden.
         </Typography>
         <form onSubmit={handleSubmit} className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
@@ -96,8 +96,6 @@ export default function Login() {
               className="dark:text-gray-200 dark:border-gray-500"
               placeholder={undefined}
               crossOrigin={undefined}
-              onPointerEnterCapture={undefined}
-              onPointerLeaveCapture={undefined}
             />
             <Input
               type="password"
@@ -107,9 +105,7 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               className="dark:text-gray-200 dark:border-gray-500"
               placeholder={undefined}
-              crossOrigin={undefined} 
-              onPointerEnterCapture={undefined}
-              onPointerLeaveCapture={undefined}
+              crossOrigin={undefined}
             />
           </div>
           <Checkbox
@@ -119,8 +115,6 @@ export default function Login() {
                 color="gray"
                 className="flex items-center font-normal dark:text-gray-300"
                 placeholder={undefined}
-                onPointerEnterCapture={undefined}
-                onPointerLeaveCapture={undefined}
               >
                 Angemeldet bleiben
               </Typography>
@@ -133,19 +127,17 @@ export default function Login() {
             }}
             checked={rememberMe}
             onChange={(e) => setRememberMe(e.target.checked)}
-            onPointerEnterCapture={undefined}
-            onPointerLeaveCapture={undefined}
             crossOrigin={undefined}
           />
           {error && (
-            <Typography color="red" className="mt-2 text-center text-sm" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+            <Typography color="red" className="mt-2 text-center text-sm" placeholder={undefined} >
               {error}
             </Typography>
           )}
-          <Button className="mt-6" fullWidth type="submit" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+          <Button className="mt-6" fullWidth type="submit" placeholder={undefined} >
             Anmelden
           </Button>
-          <Typography color="gray" className="mt-4 text-center font-normal dark:text-gray-300" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+          <Typography color="gray" className="mt-4 text-center font-normal dark:text-gray-300" placeholder={undefined} >
             Passwort vergessen?{" "}
             <button
               type="button" // Verhindert das Absenden des Formulars
@@ -181,7 +173,7 @@ export default function Login() {
             }
           }}>
             {resetMessage && ( // Erfolgsmeldung im Modal anzeigen
-              <Typography color="green" className="mb-4 text-center text-sm" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+              <Typography color="green" className="mb-4 text-center text-sm" placeholder={undefined} >
                 {resetMessage}
               </Typography>
             )}
@@ -194,19 +186,17 @@ export default function Login() {
               className="mb-4 dark:text-gray-200 dark:border-gray-500"
               placeholder={undefined}
               crossOrigin={undefined}
-              onPointerEnterCapture={undefined}
-              onPointerLeaveCapture={undefined}
             />
             {resetError && ( // Fehlermeldung im Modal anzeigen
-              <Typography color="red" className="mb-4 text-center text-sm" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+              <Typography color="red" className="mb-4 text-center text-sm" placeholder={undefined} >
                 {resetError}
               </Typography>
             )}
             <div className="flex justify-end gap-2">
-               <Button variant="text" color="red" onClick={() => { setIsResetModalOpen(false); setResetError(''); setResetMessage(''); setResetEmail(''); }} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+               <Button variant="text" color="red" onClick={() => { setIsResetModalOpen(false); setResetError(''); setResetMessage(''); setResetEmail(''); }} placeholder={undefined} >
                  Abbrechen
                </Button>
-               <Button type="submit" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+               <Button type="submit" placeholder={undefined} >
                  Link senden
                </Button>
             </div>
