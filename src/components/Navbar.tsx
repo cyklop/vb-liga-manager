@@ -61,17 +61,34 @@ export default function Navbar() {
       console.error('Fehler beim Abrufen des Benutzers:', error)
     }
   }
-  
+
   const handleLogout = async () => {
-    // Verwende die signOut-Funktion von next-auth/react
-    // Sie kümmert sich um das Beenden der Session, das Löschen des Cookies
-    // und die Weiterleitung.
-    await signOut({ callbackUrl: '/login' }); 
-    // callbackUrl gibt an, wohin der Benutzer nach dem Logout geleitet wird.
-    // Der lokale Zustand (currentUser) muss nicht manuell zurückgesetzt werden,
-    // da die Seite neu geladen wird oder die Session-Daten nicht mehr verfügbar sind.
+    try {
+      // Rufe unsere benutzerdefinierte Logout-Route auf
+      const response = await fetch('/api/auth/custom-signout', {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        console.log('Custom logout successful, redirecting...');
+        // Setze den lokalen Benutzerstatus zurück (optional, aber sauber)
+        setCurrentUser(null);
+        // Leite den Benutzer clientseitig zur Login-Seite weiter
+        // Verwende router.push für clientseitige Navigation
+        router.push('/login');
+        // Optional: Hard-Reload erzwingen, um sicherzustellen, dass keine alten Daten im Cache sind
+        // window.location.href = '/login';
+      } else {
+        console.error('Custom logout failed:', await response.text());
+        // Optional: Fehlermeldung anzeigen
+        alert('Logout fehlgeschlagen. Bitte versuchen Sie es erneut.');
+      }
+    } catch (error) {
+      console.error('Error during custom logout request:', error);
+      alert('Ein Fehler ist beim Logout aufgetreten.');
+    }
   }
-  
+
   return (
     <Disclosure as="nav" className="bg-indigo-600">
       {({ open }) => (
