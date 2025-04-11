@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql" // Provider muss statisch sein (Zielsystem ist MariaDB/MySQL)
-  url      = env("DATABASE_URL")      // Lese die URL aus der Umgebungsvariable
+  provider = "sqlite" // Geändert für lokale Entwicklung mit SQLite
+  url      = "file:./dev.db" // Pfad zur lokalen SQLite-Datenbankdatei
 }
 
 model Team {
