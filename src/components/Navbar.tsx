@@ -64,21 +64,28 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-      // Rufe unsere benutzerdefinierte Logout-Route auf
+      // 1. Rufe unsere benutzerdefinierte Route auf, um Cookies serverseitig sicher zu löschen
       const response = await fetch('/api/auth/custom-signout', {
         method: 'POST',
       });
 
       if (response.ok) {
-        console.log('Custom logout successful, redirecting...');
-        // Setze den lokalen Benutzerstatus zurück (optional, aber sauber)
+        console.log('Custom signout API call successful.');
+
+        // 2. Rufe signOut von next-auth auf, um den Client-Status zu bereinigen,
+        //    aber verhindere die automatische Weiterleitung durch next-auth.
+        await signOut({ redirect: false }); 
+        console.log('next-auth signOut({ redirect: false }) called.');
+
+        // 3. Setze den lokalen Benutzerstatus zurück
         setCurrentUser(null);
-        // Leite den Benutzer durch Neuladen der Seite zur Login-Seite weiter.
-        // Dies vermeidet Probleme mit veraltetem Client-Status oder Race Conditions
-        // nach dem Löschen der Cookies.
+
+        // 4. Führe einen harten Redirect zur Login-Seite durch.
+        console.log('Redirecting to /login via window.location.href');
         window.location.href = '/login';
+
       } else {
-        console.error('Custom logout failed:', await response.text());
+        console.error('Custom signout API call failed:', await response.text());
         // Optional: Fehlermeldung anzeigen
         alert('Logout fehlgeschlagen. Bitte versuchen Sie es erneut.');
       }
