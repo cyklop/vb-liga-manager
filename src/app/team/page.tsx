@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Navigation from '@/components/Navbar';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 interface User {
   id: number;
