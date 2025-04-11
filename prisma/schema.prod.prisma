@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql" // Statischer Provider für lokale SQLite-Entwicklung
+  url      = env("DATABASE_URL")      // URL aus Umgebungsvariable lesen
+}
+
+model Team {
+  id              Int       @id @default(autoincrement())
+  name            String    @unique
+  location        String?
+  hallAddress     String?
+  trainingTimes   String?
+  users           UserTeam[]
+  teamLeader      User?     @relation("TeamLeader", fields: [teamLeaderId], references: [id])
+  teamLeaderId    Int?      @unique
+
+  leagues         League[]  // Many-to-many relation with leagues
+  homeFixtures    Fixture[] @relation("HomeTeam") // Relation for fixtures where this team is home
+  awayFixtures    Fixture[] @relation("AwayTeam") // Relation for fixtures where this team is away
+}
+
+model User {
+  id           Int        @id @default(autoincrement())
+  email        String     @unique
+  password     String? // Passwort ist jetzt optional bei Erstellung
+  name         String
+  isAdmin      Boolean    @default(false)
+  isSuperAdmin Boolean    @default(false)
+  theme        String     @default("system") // "light", "dark", or "system"
+  teams        UserTeam[]
+  leadingTeam  Team?      @relation("TeamLeader")
+
+  // Fields for password reset
+  passwordResetToken  String?   @unique
+  passwordResetExpires DateTime?
+
+  // Fields for initial password setup
+  passwordSetupToken   String?  @unique // NEU
+  passwordSetupExpires DateTime? // NEU
+}
+
+// Verbindungstabelle für die m:n-Beziehung zwischen User und Team
+model UserTeam {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId    Int
+  createdAt DateTime @default(now())
+
+  @@id([userId, teamId])
+}
+
+model League {
+  id                Int       @id @default(autoincrement())
+  name              String    @unique
+  slug              String    @unique // Sprechender URL-Slug (z.B. "volleyball-hobbyliga-2024")
+  numberOfTeams     Int
+  hasReturnMatches  Boolean
+  teams             Team[]
+  fixtures          Fixture[]
+  isActive          Boolean   @default(true) // Flag to mark league as active/inactive
+  createdAt         DateTime  @default(now()) // Track creation date
+
+  // Point rules for the league
+  pointsWin30       Int       @default(3) // Points for winning 3:0
+  pointsWin31       Int       @default(3) // Points for winning 3:1
+  pointsWin32       Int       @default(2) // Points for winning 3:2
+  pointsLoss32      Int       @default(1) // Points for losing 2:3
+  // pointsLoss31 and pointsLoss30 are implicitly 0
+}
+
+model Fixture {
+  id           Int       @id @default(autoincrement())
+  leagueId     Int
+  league       League    @relation(fields: [leagueId], references: [id], onDelete: Cascade) // Cascade delete fixtures if league is deleted
+  round        Int?      // Optional round number
+  matchday     Int?      // Optional matchday number
+  homeTeamId   Int
+  homeTeam     Team      @relation("HomeTeam", fields: [homeTeamId], references: [id], onDelete: Cascade) // Prevent fixture if team is deleted? Or set null? Cascade for now.
+  awayTeamId   Int
+  awayTeam     Team      @relation("AwayTeam", fields: [awayTeamId], references: [id], onDelete: Cascade)
+  fixtureDate  DateTime? // Optional date and time of the fixture
+  homeScore    Int?      // DEPRECATED - Will be replaced by sets/points. Keep for migration, remove later? Or rename? Let's rename for clarity.
+  awayScore    Int?      // DEPRECATED - Will be replaced by sets/points. Keep for migration, remove later? Or rename? Let's rename for clarity.
+
+  // Detailed score
+  homeSets          Int?      // Sets won by home team
+  awaySets          Int?      // Sets won by away team
+  homePoints        Int?      // Total points/balls scored by home team (optional)
+  awayPoints        Int?      // Total points/balls scored by away team (optional)
+
+  // Calculated match points based on league rules
+  homeMatchPoints   Int?
+  awayMatchPoints   Int?
+
+  order        Int       // For manual sorting
+
+  @@index([leagueId])
+  @@index([homeTeamId])
+  @@index([awayTeamId])
+}
+
+// Settings model for application configuration
+model Setting {
+  key   String @id
+  value String
+
+  @@map("settings")
+}
