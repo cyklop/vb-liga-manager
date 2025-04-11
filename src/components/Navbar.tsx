@@ -4,7 +4,7 @@ import { Fragment, useEffect, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation' // useRouter entfernt, falls nicht anderweitig benötigt
+import { usePathname, useRouter } from 'next/navigation' // useRouter wieder hinzugefügt
 import { signOut } from 'next-auth/react'; // signOut importieren
 
 interface User {
