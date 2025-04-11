@@ -1,12 +1,18 @@
 import React from 'react'
 
 interface DeleteConfirmationProps {
-  onConfirm: () => void
-  onCancel: () => void
-  message: string
+  onConfirm: () => void;
+  onCancel: () => void;
+  message: string;
+  confirmButtonText?: string; // Optionaler Prop für den Button-Text
 }
 
-const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({ onConfirm, onCancel, message }) => {
+const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({ 
+  onConfirm, 
+  onCancel, 
+  message, 
+  confirmButtonText = 'Löschen' // Standardwert 'Löschen'
+}) => {
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
       <div className="bg-white p-5 rounded-lg shadow-lg">
@@ -23,7 +29,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({ onConfirm, onCa
             onClick={onConfirm}
             className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
           >
-            Löschen
+            {confirmButtonText} {/* Verwende den Prop-Wert oder den Standardwert */}
           </button>
         </div>
       </div>
