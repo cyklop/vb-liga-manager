@@ -415,10 +415,10 @@ export async function POST(request: Request, { params: { id } }: { params: { id:
   }
 
   try {
-    // 1. Fetch the league and its assigned teams
+    // 1. Fetch the league and its assigned teams including trainingTimes
     const league = await prisma.league.findUnique({
       where: { id: leagueId },
-      include: { teams: { select: { id: true } } }, // Only need team IDs
+      include: { teams: { select: { id: true, trainingTimes: true } } }, // Include trainingTimes
     });
 
     if (!league) {
