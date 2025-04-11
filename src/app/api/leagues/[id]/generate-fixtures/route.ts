@@ -1,21 +1,44 @@
 import { NextResponse } from 'next/server'
 import prisma from '../../../../../lib/prisma' // Import the singleton instance
 
+// Helper function to extract the first HH:MM time from a string
+function extractTimeFromString(text: string | null | undefined): string | null {
+  if (!text) {
+    return null;
+  }
+  // Regex to find the first occurrence of HH:MM or H:MM
+  const timeRegex = /\b(\d{1,2}:\d{2})\b/;
+  const match = text.match(timeRegex);
+  return match ? match[1] : null; // Return the first captured group (the time) or null
+}
+
+// Updated Team type for the helper function
+interface TeamWithTrainingTime {
+  id: number;
+  trainingTimes: string | null;
+}
+
 // Helper function to generate round-robin fixtures with balanced home/away games
-function generateRoundRobinFixtures(teams: { id: number }[], hasReturnMatches: boolean): Omit<Fixture, 'id' | 'leagueId' | 'homeTeam' | 'awayTeam' | 'order'>[] {
-  const fixtures: Omit<Fixture, 'id' | 'leagueId' | 'homeTeam' | 'awayTeam' | 'order'>[] = [];
+function generateRoundRobinFixtures(teams: TeamWithTrainingTime[], hasReturnMatches: boolean): Omit<Fixture, 'id' | 'leagueId' | 'homeTeam' | 'awayTeam' | 'order'>[] {
+  const fixtures: Omit<Fixture, 'id' | 'leagueId' | 'homeTeam' | 'awayTeam' | 'order' | 'fixtureTime'>[] = []; // Exclude fixtureTime initially
   const numTeams = teams.length;
 
   if (numTeams < 2) {
     return []; // Need at least 2 teams
   }
 
+  // Create a map to store training times by team ID for easy lookup
+  const trainingTimesMap: Record<number, string | null> = {};
+  teams.forEach(team => {
+    trainingTimesMap[team.id] = team.trainingTimes;
+  });
+
   // Add a dummy team if the number of teams is odd
   const localTeams = [...teams];
   if (numTeams % 2 !== 0) {
-    localTeams.push({ id: -1 }); // Dummy team marker
+    localTeams.push({ id: -1, trainingTimes: null }); // Dummy team marker
   }
-  
+
   const numTeamsWithDummy = localTeams.length;
   const rounds = numTeamsWithDummy - 1; // Number of rounds in a single cycle
   const matchesPerRound = numTeamsWithDummy / 2; // Number of matches per round
@@ -69,11 +92,17 @@ function generateRoundRobinFixtures(teams: { id: number }[], hasReturnMatches: b
       
       // Update the last fixture status
       lastFixtureWasHome[homeTeamId] = true;
+      // Extract time from home team's training times
+      const fixtureTime = extractTimeFromString(trainingTimesMap[homeTeamId]);
+
+      // Update the last fixture status
+      lastFixtureWasHome[homeTeamId] = true;
       lastFixtureWasHome[awayTeamId] = false;
-      
+
       roundFixtures.push({
         homeTeamId,
         awayTeamId,
+        fixtureTime, // Add extracted time
         round: round + 1,
         matchday: round + 1,
         fixtureDate: null,
@@ -176,11 +205,13 @@ function generateRoundRobinFixtures(teams: { id: number }[], hasReturnMatches: b
         ...fixture,
         homeTeamId: fixture.awayTeamId,
         awayTeamId: fixture.homeTeamId,
+        // Extract time for the new home team in the return match
+        fixtureTime: extractTimeFromString(trainingTimesMap[fixture.awayTeamId]),
         round: returnRound,
         matchday: returnRound,
       };
     });
-    
+
     fixtures.push(...returnFixtures);
   }
   
@@ -353,6 +384,7 @@ interface Fixture {
   fixtureDate?: string | null;
   homeScore?: number | null;
   awayScore?: number | null;
+  fixtureTime?: string | null; // Add fixtureTime
   order: number;
 }
 
