@@ -60,11 +60,31 @@ async function main() {
     console.log(`- Mannschaft "${teamData.name}" erstellt oder bereits vorhanden.`);
   }
   console.log('Demo-Mannschaften erfolgreich erstellt/überprüft.');
+
+  // Importiere die main Funktionen der anderen Seed-Skripte
+  // Stelle sicher, dass die main-Funktionen in den jeweiligen Dateien exportiert werden!
+  console.log('\nImportiere zusätzliche Seed-Skripte...');
+  // Verwende Aliasse, um Namenskollisionen zu vermeiden
+  const { main: assignTeamsMain } = await import('./assign-teams-to-league');
+  // Annahme: seed-fixtures.ts hat auch eine exportierte main-Funktion
+  const { main: seedFixturesMain } = await import('./seed-fixtures');
+
+  // Führe die importierten main Funktionen aus
+  console.log('\nFühre Zuweisung der Teams zur Liga aus...');
+  await assignTeamsMain();
+  console.log('Teamzuweisung abgeschlossen.');
+
+  console.log('\nFühre Erstellung der Spielpläne aus...');
+  await seedFixturesMain();
+  console.log('Spielplanerstellung abgeschlossen.');
+
+  console.log('\nAlle Seed-Vorgänge abgeschlossen.');
 }
 
 main()
   .catch((e) => {
-    console.error(e)
+    // Stelle sicher, dass Prisma auch bei Fehlern in den Sub-Skripten getrennt wird
+    console.error('Ein Fehler ist während des Seedings aufgetreten:', e)
     process.exit(1)
   })
   .finally(async () => {

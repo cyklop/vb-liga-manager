@@ -1,7 +1,8 @@
-import { prisma } from '../src/lib/prisma'; // Geändert auf ES Module import und korrekten Pfad
+import { prisma } from '../src/lib/prisma'; // Pfad ggf. anpassen
 import { createSlug } from '../src/lib/slugify'; // Importiere die Slug-Funktion
 
-async function main() {
+// Füge 'export' hinzu, damit die Funktion importiert werden kann
+export async function main() {
   // Finde oder erstelle die Liga "Volleyball Hobbyliga 2024/25"
   let league = await prisma.league.findFirst({
     where: {
@@ -59,11 +60,17 @@ async function main() {
   console.log(`${teams.length} Teams wurden der Liga zugeordnet`);
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+// Dieser Block wird nicht mehr benötigt, wenn das Skript nur als Modul importiert wird.
+// Kann entfernt oder auskommentiert werden.
+/*
+if (require.main === module) {
+  main()
+    .catch((e) => {
+      console.error(e);
+      process.exit(1);
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}
+*/
