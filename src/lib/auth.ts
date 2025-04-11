@@ -3,8 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
 
-// Erfasse NODE_ENV zum Zeitpunkt der Modulinitialisierung
-export const authInitializationNodeEnv = process.env.NODE_ENV;
+// Debug-Variable entfernt
 
 declare module "next-auth" {
   interface User {
