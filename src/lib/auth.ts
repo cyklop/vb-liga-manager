@@ -133,19 +133,42 @@ export const authOptions: AuthOptions = {
     // Session-Dauer auf 30 Tage setzen, wenn "Angemeldet bleiben" genutzt wird
     maxAge: 30 * 24 * 60 * 60, // 30 days in seconds
   },
-  // Cookie-Dauer explizit setzen (sollte mit session.maxAge übereinstimmen)
+  // Cookie-Konfigurationen explizit definieren, um Konsistenz sicherzustellen
   cookies: {
-     sessionToken: {
-       name: process.env.NODE_ENV === 'production' 
-         ? `__Secure-next-auth.session-token` 
-         : `next-auth.session-token`, // Unterschiedliche Namen für Dev/Prod
-       options: {
-         httpOnly: true,
-         sameSite: 'lax',
-         path: '/',
-         secure: process.env.NODE_ENV === 'production',
-         maxAge: 30 * 24 * 60 * 60 // 30 days in seconds (gleiche Dauer wie Session)
-       }
-     }
+    sessionToken: {
+      name: process.env.NODE_ENV === 'production'
+        ? `__Secure-next-auth.session-token`
+        : `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 30 * 24 * 60 * 60 // 30 days
+      }
+    },
+    callbackUrl: {
+      name: process.env.NODE_ENV === 'production'
+        ? `__Secure-next-auth.callback-url`
+        : `next-auth.callback-url`,
+      options: {
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      }
+    },
+    csrfToken: {
+      // Wichtig: __Host- Präfix erfordert Path=/ und secure: true. Kein 'domain' Attribut erlaubt.
+      name: process.env.NODE_ENV === 'production'
+        ? `__Host-next-auth.csrf-token`
+        : `next-auth.csrf-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      }
+    },
+    // Hier könnten bei Bedarf weitere Cookies wie pkceCodeVerifier definiert werden
   }
 };
