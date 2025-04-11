@@ -53,6 +53,7 @@ interface Fixture {
   awayPoints?: number | null;
   homeMatchPoints?: number | null;
   awayMatchPoints?: number | null;
+  fixtureTime?: string | null; // Add fixtureTime
   order: number;
 }
 
@@ -77,7 +78,8 @@ export default function TeamPage() {
     awaySets: '',
     homePoints: '',
     awayPoints: '',
-    fixtureDate: ''
+    fixtureDate: '',
+    fixtureTime: '' // Add fixtureTime to form state
   });
 
   useEffect(() => {
@@ -319,7 +321,8 @@ export default function TeamPage() {
       awaySets: fixture.awaySets?.toString() || '',
       homePoints: fixture.homePoints?.toString() || '',
       awayPoints: fixture.awayPoints?.toString() || '',
-      fixtureDate: fixture.fixtureDate || ''
+      fixtureDate: fixture.fixtureDate ? new Date(fixture.fixtureDate).toISOString().split('T')[0] : '', // Format date for input
+      fixtureTime: fixture.fixtureTime || '' // Add fixtureTime
     });
   };
 
@@ -352,7 +355,8 @@ export default function TeamPage() {
           awaySets: formData.awaySets ? parseInt(formData.awaySets) : null,
           homePoints: formData.homePoints ? parseInt(formData.homePoints) : null,
           awayPoints: formData.awayPoints ? parseInt(formData.awayPoints) : null,
-          fixtureDate: formData.fixtureDate || null
+          fixtureDate: formData.fixtureDate || null,
+          fixtureTime: formData.fixtureTime || null // Send fixtureTime
         }),
       });
 
@@ -382,7 +386,19 @@ export default function TeamPage() {
       year: 'numeric',
     });
   };
-
+ 
+  // Function to format date and time
+  const formatDateTime = (dateString: string | null | undefined, timeString: string | null | undefined) => {
+    if (!dateString) return 'Datum N/A';
+    const datePart = new Date(dateString).toLocaleDateString('de-DE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+    const timePart = timeString ? ` ${timeString}` : '';
+    return `${datePart}${timePart}`;
+  };
+ 
   if (!currentUser) {
     return (
       <>
@@ -586,8 +602,20 @@ export default function TeamPage() {
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                           />
                         </div>
-                        
-                        <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Uhrzeit
+                          </label>
+                          <input
+                            type="time"
+                            name="fixtureTime"
+                            value={formData.fixtureTime}
+                            onChange={handleInputChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                          />
+                        </div>
+ 
+                        <div className="grid grid-cols-2 gap-4 md:col-span-2"> {/* Span across columns */}
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                               Sätze Heim
@@ -618,8 +646,8 @@ export default function TeamPage() {
                           </div>
                         </div>
                       </div>
-                      
-                      <div className="grid grid-cols-2 gap-4">
+ 
+                      <div className="grid grid-cols-2 gap-4 md:col-span-2"> {/* Span across columns */}
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
                             Bälle Heim

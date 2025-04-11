@@ -67,7 +67,8 @@ export async function PUT(
       homeSets,
       awaySets,
       homePoints,
-      awayPoints
+      awayPoints,
+      fixtureTime // Add fixtureTime here
       // homeScore, awayScore are deprecated but might still be sent initially
     } = await request.json();
 
@@ -148,8 +149,9 @@ export async function PUT(
       // Store calculated match points
       homeMatchPoints: homeMatchPoints,
       awayMatchPoints: awayMatchPoints,
+      fixtureTime: fixtureTime || null, // Add fixtureTime to update data
       // Keep deprecated fields null or update if needed for compatibility? Let's set them null.
-      homeScore: null, 
+      homeScore: null,
       awayScore: null,
     };
 

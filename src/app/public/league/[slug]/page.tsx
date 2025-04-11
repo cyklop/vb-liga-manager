@@ -27,6 +27,7 @@ interface Fixture {
   awayPoints?: number | null
   homeMatchPoints?: number | null
   awayMatchPoints?: number | null
+  fixtureTime?: string | null // Add fixtureTime
 }
 
 interface League {
@@ -92,7 +93,19 @@ export default function PublicLeaguePage() {
       fetchLeagueData()
     }
   }, [slug])
-
+ 
+  // Function to format date and time
+  const formatDateTime = (dateString: string | null | undefined, timeString: string | null | undefined) => {
+    if (!dateString) return 'Nicht geplant';
+    const datePart = new Date(dateString).toLocaleDateString('de-DE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+    const timePart = timeString ? ` ${timeString}` : '';
+    return `${datePart}${timePart}`;
+  };
+ 
   if (loading) {
     return (
       <ThemeProvider>
@@ -214,9 +227,7 @@ export default function PublicLeaguePage() {
                     }).map((fixture) => (
                       <tr key={fixture.id} className="border-b dark:border-gray-700">
                         <td className="py-2 px-4">
-                          {fixture.fixtureDate 
-                            ? new Date(fixture.fixtureDate).toLocaleDateString('de-DE') 
-                            : 'Nicht geplant'}
+                          {formatDateTime(fixture.fixtureDate, fixture.fixtureTime)} {/* Use new function */}
                         </td>
                         <td className="py-2 px-4">{fixture.homeTeam.name}</td>
                         <td className="py-2 px-4 text-center">
