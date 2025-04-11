@@ -15,7 +15,7 @@
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:seed:base": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts",
     "prisma:seed:assign-teams": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/assign-teams-to-league.ts",
-    "prisma:seed:fixtures": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed-fixtures.ts", 
+    "prisma:seed:fixtures": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed-fixtures.ts",
     "prisma:seed:all": "npm run prisma:seed:base && npm run prisma:seed:assign-teams && npm run prisma:seed:fixtures"
   },
   "prisma": {
@@ -28,7 +28,7 @@
     "@headlessui/react": "^1.7.19",
     "@heroicons/react": "^2.2.0",
     "@material-tailwind/react": "^2.1.10",
-    "@prisma/client": "^4.14.0",
+    "@prisma/client": "^6.6.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.15",
@@ -52,7 +52,7 @@
     "eslint": "^8.0.0",
     "eslint-config-next": "^14.2.0",
     "postcss": "^8.4.24",
-    "prisma": "^4.14.0",
+    "prisma": "^6.6.0",
     "tailwindcss": "^3.3.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2"
