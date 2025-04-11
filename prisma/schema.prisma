@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "sqlite" // Statischer Provider für lokale SQLite-Entwicklung
-  url      = "file:./dev.db" // Direkter Pfad zur lokalen SQLite-Datei im prisma-Ordner
+  url      = env("DATABASE_URL")      // URL aus Umgebungsvariable lesen
 }
 
 model Team {
