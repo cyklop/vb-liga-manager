@@ -638,6 +638,19 @@ function calculateMatchPoints(sets: number | null, opponentSets: number | null, 
   return 0; // Unentschieden (sollte im Volleyball nicht vorkommen)
 }
 
+// Führe main aus, wenn das Skript direkt aufgerufen wird
+if (require.main === module) {
+  main()
+    .catch((e) => {
+      console.error(e);
+      process.exit(1);
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}
+
+/* // Alter main() Aufruf, falls vorhanden, kann entfernt werden
 main()
   .catch((e) => {
     console.error(e);

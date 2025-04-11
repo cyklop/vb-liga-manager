@@ -60,9 +60,7 @@ export async function main() {
   console.log(`${teams.length} Teams wurden der Liga zugeordnet`);
 }
 
-// Dieser Block wird nicht mehr benötigt, wenn das Skript nur als Modul importiert wird.
-// Kann entfernt oder auskommentiert werden.
-/*
+// Führe main aus, wenn das Skript direkt aufgerufen wird
 if (require.main === module) {
   main()
     .catch((e) => {
@@ -73,4 +71,3 @@ if (require.main === module) {
       await prisma.$disconnect();
     });
 }
-*/

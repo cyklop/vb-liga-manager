@@ -13,10 +13,15 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",
-    "prisma:seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts" // JSON in einfache Anführungszeichen setzen
+    "prisma:seed:base": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts", // Nur Admin + Teams
+    "prisma:seed:assign-teams": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/assign-teams-to-league.ts", // Nur Teamzuweisung
+    "prisma:seed:fixtures": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed-fixtures.ts", // Nur Spielpläne
+    // Optional: Ein Skript, das alles nacheinander ausführt
+    "prisma:seed:all": "npm run prisma:seed:base && npm run prisma:seed:assign-teams && npm run prisma:seed:fixtures"
   },
   "prisma": {
-    "seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts" // JSON in einfache Anführungszeichen setzen
+    // Das Standard-Seed-Skript bleibt das Basis-Skript
+    "seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
