@@ -73,11 +73,10 @@ export default function Navbar() {
         console.log('Custom logout successful, redirecting...');
         // Setze den lokalen Benutzerstatus zurück (optional, aber sauber)
         setCurrentUser(null);
-        // Leite den Benutzer clientseitig zur Login-Seite weiter
-        // Verwende router.push für clientseitige Navigation
-        router.push('/login');
-        // Optional: Hard-Reload erzwingen, um sicherzustellen, dass keine alten Daten im Cache sind
-        // window.location.href = '/login';
+        // Leite den Benutzer durch Neuladen der Seite zur Login-Seite weiter.
+        // Dies vermeidet Probleme mit veraltetem Client-Status oder Race Conditions
+        // nach dem Löschen der Cookies.
+        window.location.href = '/login';
       } else {
         console.error('Custom logout failed:', await response.text());
         // Optional: Fehlermeldung anzeigen
