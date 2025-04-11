@@ -130,9 +130,14 @@ export default function TeamsPage() {
         setFormData({}) // Reset form data state
         setIsModalOpen(false)
         fetchTeams()
+        toast.success('Mannschaft erfolgreich hinzugefügt!');
+      } else {
+        const errorData = await response.json();
+        toast.error(`Fehler: ${errorData.message || 'Mannschaft konnte nicht hinzugefügt werden.'}`);
       }
     } catch (error) {
       console.error('Fehler beim Hinzufügen des Teams', error)
+      toast.error('Ein Netzwerk- oder Serverfehler ist aufgetreten.');
     }
   }
 
@@ -155,9 +160,14 @@ export default function TeamsPage() {
         setIsModalOpen(false)
         setEditingTeam(null)
         fetchTeams()
+        toast.success('Mannschaft erfolgreich aktualisiert!');
+      } else {
+        const errorData = await response.json();
+        toast.error(`Fehler: ${errorData.message || 'Mannschaft konnte nicht aktualisiert werden.'}`);
       }
     } catch (error) {
       console.error('Fehler beim Bearbeiten des Teams', error)
+      toast.error('Ein Netzwerk- oder Serverfehler ist aufgetreten.');
     }
   }
 
@@ -176,11 +186,15 @@ export default function TeamsPage() {
         })
         if (response.ok) {
           fetchTeams() // Liste nach erfolgreichem Löschen neu laden
+          toast.success(`Mannschaft '${teamToDelete.name}' erfolgreich gelöscht!`);
         } else {
-          console.error('Fehler beim Löschen des Teams:', await response.text())
+          const errorText = await response.text();
+          console.error('Fehler beim Löschen des Teams:', errorText)
+          toast.error(`Fehler: ${errorText || 'Mannschaft konnte nicht gelöscht werden.'}`);
         }
       } catch (error) {
         console.error('Fehler beim Löschen des Teams', error)
+        toast.error('Ein Netzwerk- oder Serverfehler ist aufgetreten.');
       } finally {
         // Dialog schließen und State zurücksetzen
         setShowDeleteConfirmation(false)

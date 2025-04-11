@@ -71,9 +71,14 @@ export default function UsersPage() {
         setNewUser({ id: 0, email: '', name: '', isAdmin: false, teamIds: [] })
         setIsModalOpen(false)
         fetchUsers()
+        toast.success('Benutzer erfolgreich hinzugefügt und E-Mail versendet!');
+      } else {
+        const errorData = await response.json();
+        toast.error(`Fehler: ${errorData.message || 'Benutzer konnte nicht hinzugefügt werden.'}`);
       }
     } catch (error) {
       console.error('Fehler beim Hinzufügen des Benutzers', error)
+      toast.error('Ein Netzwerk- oder Serverfehler ist aufgetreten.');
     }
   }
 
@@ -100,9 +105,14 @@ export default function UsersPage() {
         setIsModalOpen(false)
         setIsEditing(false)
         fetchUsers()
+        toast.success('Benutzer erfolgreich aktualisiert!');
+      } else {
+        const errorData = await response.json();
+        toast.error(`Fehler: ${errorData.message || 'Benutzer konnte nicht aktualisiert werden.'}`);
       }
     } catch (error) {
       console.error('Fehler beim Bearbeiten des Benutzers', error)
+      toast.error('Ein Netzwerk- oder Serverfehler ist aufgetreten.');
     }
   }
 
@@ -119,9 +129,14 @@ export default function UsersPage() {
         })
         if (response.ok) {
           fetchUsers()
+          toast.success(`Benutzer '${userToDelete.name}' erfolgreich gelöscht!`);
+        } else {
+          const errorData = await response.json();
+          toast.error(`Fehler: ${errorData.message || 'Benutzer konnte nicht gelöscht werden.'}`);
         }
       } catch (error) {
         console.error('Fehler beim Löschen des Benutzers', error)
+        toast.error('Ein Netzwerk- oder Serverfehler ist aufgetreten.');
       }
     }
     setShowDeleteConfirmation(false)

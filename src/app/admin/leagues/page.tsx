@@ -194,27 +194,28 @@ export default function LeaguesPage() {
     // Finde die Liga in der lokalen State-Variable
     const league = leagues.find(l => l.id === leagueId);
     
-    // Prüfe, ob die Liga aktiv ist
-    if (!league || !league.isActive) {
-      alert('Spielpläne können nur für aktive Ligen generiert werden. Abgeschlossene Ligen müssen zuerst wieder aktiviert werden.');
-      return;
-    }
-    
-    const confirmation = confirm(`Möchten Sie den Spielplan für Liga ${leagueId} wirklich generieren? Bestehende Spielpläne für diese Liga werden überschrieben.`);
-    if (!confirmation) return;
+   // Prüfe, ob die Liga aktiv ist
+   if (!league || !league.isActive) {
+     toast.warn('Spielpläne können nur für aktive Ligen generiert werden. Abgeschlossene Ligen müssen zuerst wieder aktiviert werden.');
+     return;
+   }
+
+   // Verwende einen Toast für die Bestätigung (optional, confirm ist oft ausreichend)
+   const confirmation = confirm(`Möchten Sie den Spielplan für Liga ${league.name} wirklich generieren? Bestehende Spielpläne für diese Liga werden überschrieben.`);
+   if (!confirmation) return;
 
     try {
-      const response = await fetch(`/api/leagues/${leagueId}/generate-fixtures`, { method: 'POST' });
-      const data = await response.json();
-      if (response.ok) {
-        alert(data.message || 'Spielplan erfolgreich generiert!');
-        fetchLeagues(leagueId); // Refetch and select the current league
-      } else {
-        alert(`Fehler: ${data.message || 'Unbekannter Fehler'}`);
-      }
-    } catch (error) {
-      console.error('Fehler beim Generieren des Spielplans:', error);
-      alert('Ein Netzwerkfehler ist aufgetreten.');
+     const response = await fetch(`/api/leagues/${leagueId}/generate-fixtures`, { method: 'POST' });
+     const data = await response.json();
+     if (response.ok) {
+       toast.success(data.message || 'Spielplan erfolgreich generiert!');
+       fetchLeagues(leagueId); // Refetch and select the current league
+     } else {
+       toast.error(`Fehler: ${data.message || 'Spielplan konnte nicht generiert werden.'}`);
+     }
+   } catch (error) {
+     console.error('Fehler beim Generieren des Spielplans:', error);
+     toast.error('Ein Netzwerkfehler beim Generieren des Spielplans ist aufgetreten.');
     }
   };
 
@@ -239,19 +240,19 @@ export default function LeaguesPage() {
 
   // --- Fixture Editing ---
   const handleEditFixtureClick = (fixture: Fixture, league: League) => {
-    // Prüfe, ob die Liga aktiv ist
-    if (!league.isActive) {
-      alert('Spielpaarungen können nur für aktive Ligen bearbeitet werden. Abgeschlossene Ligen müssen zuerst wieder aktiviert werden.');
-      return;
-    }
-    
-    // Prüfe Berechtigungen für normale Benutzer
-    if (!isAdmin && userTeamId) {
-      // Normale Benutzer dürfen nur Heimspiele ihrer eigenen Mannschaft bearbeiten
-      if (fixture.homeTeamId !== userTeamId) {
-        alert('Sie können nur Heimspiele Ihrer eigenen Mannschaft bearbeiten.');
-        return;
-      }
+   // Prüfe, ob die Liga aktiv ist
+   if (!league.isActive) {
+     toast.warn('Spielpaarungen können nur für aktive Ligen bearbeitet werden. Abgeschlossene Ligen müssen zuerst wieder aktiviert werden.');
+     return;
+   }
+
+   // Prüfe Berechtigungen für normale Benutzer
+   if (!isAdmin && userTeamId) {
+     // Normale Benutzer dürfen nur Heimspiele ihrer eigenen Mannschaft bearbeiten
+     if (fixture.homeTeamId !== userTeamId) {
+       toast.warn('Sie können nur Heimspiele Ihrer eigenen Mannschaft bearbeiten.');
+       return;
+     }
     }
     
     setEditingFixture({
@@ -290,14 +291,15 @@ export default function LeaguesPage() {
       if (response.ok) {
         setIsFixtureModalOpen(false);
         setEditingFixture(null);
-        fetchLeagues(selectedLeagueId); // Refetch to show updated fixture
-      } else {
-        const errorData = await response.json();
-        alert(`Fehler beim Aktualisieren der Spielpaarung: ${errorData.message}`);
-      }
-    } catch (error) {
-      console.error('Fehler beim Aktualisieren der Spielpaarung:', error);
-      alert('Ein Netzwerkfehler ist aufgetreten.');
+       fetchLeagues(selectedLeagueId); // Refetch to show updated fixture
+       toast.success('Spielpaarung erfolgreich aktualisiert!');
+     } else {
+       const errorData = await response.json();
+       toast.error(`Fehler: ${errorData.message || 'Spielpaarung konnte nicht aktualisiert werden.'}`);
+     }
+   } catch (error) {
+     console.error('Fehler beim Aktualisieren der Spielpaarung:', error);
+     toast.error('Ein Netzwerkfehler beim Aktualisieren der Spielpaarung ist aufgetreten.');
     }
   };
 
@@ -353,18 +355,18 @@ export default function LeaguesPage() {
         body: JSON.stringify({ orderedFixtureIds }),
       });
 
-      if (response.ok) {
-        setIsOrderChanged(false);
-        alert('Spielplanreihenfolge erfolgreich gespeichert!');
-        // Refetch to ensure data consistency after reordering on the server
-        fetchLeagues(selectedLeagueId);
-      } else {
-        const errorData = await response.json();
-        alert(`Fehler beim Speichern der Reihenfolge: ${errorData.message}`);
-      }
-    } catch (error) {
-      console.error('Fehler beim Speichern der Spielplanreihenfolge:', error);
-      alert('Ein Netzwerkfehler ist aufgetreten.');
+     if (response.ok) {
+       setIsOrderChanged(false);
+       toast.success('Spielplanreihenfolge erfolgreich gespeichert!');
+       // Refetch to ensure data consistency after reordering on the server
+       fetchLeagues(selectedLeagueId);
+     } else {
+       const errorData = await response.json();
+       toast.error(`Fehler: ${errorData.message || 'Reihenfolge konnte nicht gespeichert werden.'}`);
+     }
+   } catch (error) {
+     console.error('Fehler beim Speichern der Spielplanreihenfolge:', error);
+     toast.error('Ein Netzwerkfehler beim Speichern der Reihenfolge ist aufgetreten.');
     }
   };
 
@@ -401,13 +403,15 @@ export default function LeaguesPage() {
           pointsLoss32: 1,
          });
         setIsModalOpen(false);
-        fetchLeagues(); // Refetch all leagues
-      } else {
-        const errorData = await response.json();
-        alert(errorData.message);
-      }
-    } catch (error) {
-      console.error('Fehler beim Hinzufügen der Liga', error);
+       fetchLeagues(); // Refetch all leagues
+       toast.success('Liga erfolgreich hinzugefügt!');
+     } else {
+       const errorData = await response.json();
+       toast.error(`Fehler: ${errorData.message || 'Liga konnte nicht hinzugefügt werden.'}`);
+     }
+   } catch (error) {
+     console.error('Fehler beim Hinzufügen der Liga', error);
+     toast.error('Ein Netzwerkfehler beim Hinzufügen der Liga ist aufgetreten.');
     }
   };
 
@@ -445,13 +449,15 @@ export default function LeaguesPage() {
          });
         setIsModalOpen(false);
         setEditingLeague(null);
-        fetchLeagues(); // Refetch all leagues
-      } else {
-        const errorData = await response.json();
-        alert(errorData.message);
-      }
-    } catch (error) {
-      console.error('Fehler beim Bearbeiten der Liga', error);
+       fetchLeagues(); // Refetch all leagues
+       toast.success('Liga erfolgreich aktualisiert!');
+     } else {
+       const errorData = await response.json();
+       toast.error(`Fehler: ${errorData.message || 'Liga konnte nicht aktualisiert werden.'}`);
+     }
+   } catch (error) {
+     console.error('Fehler beim Bearbeiten der Liga', error);
+     toast.error('Ein Netzwerkfehler beim Bearbeiten der Liga ist aufgetreten.');
     }
   };
 
@@ -467,15 +473,16 @@ export default function LeaguesPage() {
         if (selectedLeagueId === id) {
           setSelectedLeagueId(null);
           setSelectedLeagueFixtures([]);
-          setIsOrderChanged(false);
-        }
-      } else {
-        const errorData = await response.json();
-        alert(`Fehler beim Löschen der Liga: ${errorData.message || 'Unbekannter Fehler'}`);
-      }
-    } catch (error) {
-      console.error('Fehler beim Löschen der Liga', error);
-      alert('Ein Netzwerkfehler ist aufgetreten.');
+         setIsOrderChanged(false);
+       }
+       toast.success(`Liga erfolgreich gelöscht!`);
+     } else {
+       const errorData = await response.json();
+       toast.error(`Fehler: ${errorData.message || 'Liga konnte nicht gelöscht werden.'}`);
+     }
+   } catch (error) {
+     console.error('Fehler beim Löschen der Liga', error);
+     toast.error('Ein Netzwerkfehler beim Löschen der Liga ist aufgetreten.');
     }
   };
 
@@ -811,13 +818,13 @@ export default function LeaguesPage() {
                       if (isChecked) {
                         if (currentTeamIds.length < maxTeams) {
                           setNewLeague({ ...newLeague, teamIds: [...currentTeamIds, team.id] });
-                        } else {
-                          // Prevent checking if max is reached (though disabled should handle this)
-                          e.target.checked = false; 
-                          alert(`Es können maximal ${maxTeams} Teams zugewiesen werden.`);
-                        }
-                      } else {
-                        setNewLeague({ ...newLeague, teamIds: currentTeamIds.filter(id => id !== team.id) });
+                       } else {
+                         // Prevent checking if max is reached (though disabled should handle this)
+                         e.target.checked = false;
+                         toast.warn(`Es können maximal ${maxTeams} Teams zugewiesen werden.`);
+                       }
+                     } else {
+                       setNewLeague({ ...newLeague, teamIds: currentTeamIds.filter(id => id !== team.id) });
                       }
                     }}
                     className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 disabled:opacity-50"
