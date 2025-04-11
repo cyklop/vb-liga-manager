@@ -250,7 +250,7 @@ export default function FixturesPage() {
                         </div>
                         <div className="flex flex-col items-end">
                           <div className="text-sm text-gray-500">
-                            {formatDate(fixture.fixtureDate)}
+                            {formatDateTime(fixture.fixtureDate, fixture.fixtureTime)} {/* Use new function */}
                           </div>
                           {fixture.homeSets !== null && fixture.awaySets !== null ? (
                             <div className="mt-1 text-sm font-semibold">
