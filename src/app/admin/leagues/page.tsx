@@ -595,7 +595,8 @@ export default function LeaguesPage() {
                         <PencilIcon className="h-5 w-5" />
                       </button>
                       <button
-                        onClick={() => handleDeleteLeague(league.id)}
+                        // onClick anpassen, um den Dialog zu öffnen
+                        onClick={() => handleDeleteLeague(league)}
                         className="p-1 text-red-600 hover:text-red-900 hover:bg-red-100 rounded"
                         title="Liga löschen"
                       >
@@ -999,7 +1000,17 @@ export default function LeaguesPage() {
           onConfirm={confirmGenerateFixtures}
           onCancel={cancelGenerateFixtures}
           message={`Möchten Sie den Spielplan für Liga "${leagueToGenerate.name}" wirklich generieren? Bestehende Spielpläne für diese Liga werden überschrieben.`}
-          confirmButtonText="Generieren" // Optional: Button-Text anpassen
+          confirmButtonText="Generieren"
+        />
+      )}
+
+      {/* Bestätigungsdialog für Liga löschen */}
+      {showDeleteLeagueConfirmation && leagueToDelete && (
+        <DeleteConfirmation
+          onConfirm={confirmDeleteLeague}
+          onCancel={cancelDeleteLeague}
+          message={`Möchten Sie die Liga "${leagueToDelete.name}" wirklich löschen? Alle zugehörigen Spielpläne werden ebenfalls unwiderruflich gelöscht.`}
+          // confirmButtonText bleibt Standard "Löschen"
         />
       )}
     </>
