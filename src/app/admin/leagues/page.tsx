@@ -26,6 +26,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { toast } from 'react-toastify';
+import DeleteConfirmation from '@/components/DeleteConfirmation'; // Import hinzufügen
 
 
 // Define interfaces
@@ -204,11 +205,18 @@ export default function LeaguesPage() {
      return;
    }
 
-   // Verwende einen Toast für die Bestätigung (optional, confirm ist oft ausreichend)
-   const confirmation = confirm(`Möchten Sie den Spielplan für Liga ${league.name} wirklich generieren? Bestehende Spielpläne für diese Liga werden überschrieben.`);
-   if (!confirmation) return;
+   // Statt confirm(), den State für den Dialog setzen
+   setLeagueToGenerate(league);
+   setShowGenerateConfirmation(true);
+ };
 
-    try {
+ // Funktion, die nach Bestätigung im Dialog aufgerufen wird
+ const confirmGenerateFixtures = async () => {
+   if (!leagueToGenerate) return;
+
+   const leagueId = leagueToGenerate.id;
+
+   try {
      const response = await fetch(`/api/leagues/${leagueId}/generate-fixtures`, { method: 'POST' });
      const data = await response.json();
      if (response.ok) {
@@ -220,10 +228,21 @@ export default function LeaguesPage() {
    } catch (error) {
      console.error('Fehler beim Generieren des Spielplans:', error);
      toast.error('Ein Netzwerkfehler beim Generieren des Spielplans ist aufgetreten.');
-    }
-  };
+   } finally {
+     // Dialog schließen und State zurücksetzen
+     setShowGenerateConfirmation(false);
+     setLeagueToGenerate(null);
+   }
+ };
 
-  // --- Fixture Display ---
+ // Funktion zum Abbrechen des Dialogs
+ const cancelGenerateFixtures = () => {
+   setShowGenerateConfirmation(false);
+   setLeagueToGenerate(null);
+ };
+
+
+ // --- Fixture Display ---
   const handleShowFixtures = (leagueId: number) => {
     if (selectedLeagueId === leagueId) {
       setSelectedLeagueId(null)
