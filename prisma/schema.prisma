@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite" // Geändert für lokale Entwicklung mit SQLite
-  url      = "file:./dev.db" // Pfad zur lokalen SQLite-Datenbankdatei
+  provider = env("DATABASE_PROVIDER") // Provider aus Umgebungsvariable lesen
+  url      = env("DATABASE_URL")      // URL aus Umgebungsvariable lesen
 }
 
 model Team {
