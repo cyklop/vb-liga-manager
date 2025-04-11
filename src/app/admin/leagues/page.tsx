@@ -115,6 +115,9 @@ export default function LeaguesPage() {
   // State für Spielplan-Generierungsbestätigung
   const [showGenerateConfirmation, setShowGenerateConfirmation] = useState(false);
   const [leagueToGenerate, setLeagueToGenerate] = useState<League | null>(null);
+  // State für Liga-Löschbestätigung
+  const [showDeleteLeagueConfirmation, setShowDeleteLeagueConfirmation] = useState(false);
+  const [leagueToDelete, setLeagueToDelete] = useState<League | null>(null);
 
   // --- Drag & Drop Sensors ---
   const sensors = useSensors(
@@ -223,11 +226,11 @@ export default function LeaguesPage() {
        toast.success(data.message || 'Spielplan erfolgreich generiert!');
        fetchLeagues(leagueId); // Refetch and select the current league
      } else {
-       toast.error(`Fehler: ${data.message || 'Spielplan konnte nicht generiert werden.'}`);
+       toast.error(`Fehler: ${data.message || 'Spielplan konnte nicht generiert werden.'}`, { autoClose: 8000 }); // Fehler-Toast bleibt länger
      }
    } catch (error) {
      console.error('Fehler beim Generieren des Spielplans:', error);
-     toast.error('Ein Netzwerkfehler beim Generieren des Spielplans ist aufgetreten.');
+     toast.error('Ein Netzwerkfehler beim Generieren des Spielplans ist aufgetreten.', { autoClose: 8000 }); // Fehler-Toast bleibt länger
    } finally {
      // Dialog schließen und State zurücksetzen
      setShowGenerateConfirmation(false);
@@ -318,11 +321,11 @@ export default function LeaguesPage() {
        toast.success('Spielpaarung erfolgreich aktualisiert!');
      } else {
        const errorData = await response.json();
-       toast.error(`Fehler: ${errorData.message || 'Spielpaarung konnte nicht aktualisiert werden.'}`);
+       toast.error(`Fehler: ${errorData.message || 'Spielpaarung konnte nicht aktualisiert werden.'}`, { autoClose: 8000 }); // Fehler-Toast bleibt länger
      }
    } catch (error) {
      console.error('Fehler beim Aktualisieren der Spielpaarung:', error);
-     toast.error('Ein Netzwerkfehler beim Aktualisieren der Spielpaarung ist aufgetreten.');
+     toast.error('Ein Netzwerkfehler beim Aktualisieren der Spielpaarung ist aufgetreten.', { autoClose: 8000 }); // Fehler-Toast bleibt länger
     }
   };
 
@@ -385,11 +388,11 @@ export default function LeaguesPage() {
        fetchLeagues(selectedLeagueId);
      } else {
        const errorData = await response.json();
-       toast.error(`Fehler: ${errorData.message || 'Reihenfolge konnte nicht gespeichert werden.'}`);
+       toast.error(`Fehler: ${errorData.message || 'Reihenfolge konnte nicht gespeichert werden.'}`, { autoClose: 8000 }); // Fehler-Toast bleibt länger
      }
    } catch (error) {
      console.error('Fehler beim Speichern der Spielplanreihenfolge:', error);
-     toast.error('Ein Netzwerkfehler beim Speichern der Reihenfolge ist aufgetreten.');
+     toast.error('Ein Netzwerkfehler beim Speichern der Reihenfolge ist aufgetreten.', { autoClose: 8000 }); // Fehler-Toast bleibt länger
     }
   };
 
@@ -430,11 +433,11 @@ export default function LeaguesPage() {
        toast.success('Liga erfolgreich hinzugefügt!');
      } else {
        const errorData = await response.json();
-       toast.error(`Fehler: ${errorData.message || 'Liga konnte nicht hinzugefügt werden.'}`);
+       toast.error(`Fehler: ${errorData.message || 'Liga konnte nicht hinzugefügt werden.'}`, { autoClose: 8000 }); // Fehler-Toast bleibt länger
      }
    } catch (error) {
      console.error('Fehler beim Hinzufügen der Liga', error);
-     toast.error('Ein Netzwerkfehler beim Hinzufügen der Liga ist aufgetreten.');
+     toast.error('Ein Netzwerkfehler beim Hinzufügen der Liga ist aufgetreten.', { autoClose: 8000 }); // Fehler-Toast bleibt länger
     }
   };
 
@@ -476,17 +479,24 @@ export default function LeaguesPage() {
        toast.success('Liga erfolgreich aktualisiert!');
      } else {
        const errorData = await response.json();
-       toast.error(`Fehler: ${errorData.message || 'Liga konnte nicht aktualisiert werden.'}`);
+       toast.error(`Fehler: ${errorData.message || 'Liga konnte nicht aktualisiert werden.'}`, { autoClose: 8000 }); // Fehler-Toast bleibt länger
      }
    } catch (error) {
      console.error('Fehler beim Bearbeiten der Liga', error);
-     toast.error('Ein Netzwerkfehler beim Bearbeiten der Liga ist aufgetreten.');
+     toast.error('Ein Netzwerkfehler beim Bearbeiten der Liga ist aufgetreten.', { autoClose: 8000 }); // Fehler-Toast bleibt länger
     }
   };
 
-  const handleDeleteLeague = async (id: number) => {
-    const confirmation = confirm(`Möchten Sie die Liga mit ID ${id} wirklich löschen? Alle zugehörigen Spielpläne werden ebenfalls gelöscht.`);
-    if (!confirmation) return;
+  // Funktion, um den Löschdialog für Ligen zu öffnen
+  const handleDeleteLeague = (league: League) => {
+    setLeagueToDelete(league);
+    setShowDeleteLeagueConfirmation(true);
+  };
+
+  // Funktion, die die Löschung nach Bestätigung durchführt
+  const confirmDeleteLeague = async () => {
+    if (!leagueToDelete) return;
+    const id = leagueToDelete.id;
 
     try {
       const response = await fetch(`/api/leagues/${id}`, { method: 'DELETE' });
@@ -496,18 +506,29 @@ export default function LeaguesPage() {
         if (selectedLeagueId === id) {
           setSelectedLeagueId(null);
           setSelectedLeagueFixtures([]);
-         setIsOrderChanged(false);
-       }
-       toast.success(`Liga erfolgreich gelöscht!`);
-     } else {
-       const errorData = await response.json();
-       toast.error(`Fehler: ${errorData.message || 'Liga konnte nicht gelöscht werden.'}`);
-     }
-   } catch (error) {
-     console.error('Fehler beim Löschen der Liga', error);
-     toast.error('Ein Netzwerkfehler beim Löschen der Liga ist aufgetreten.');
+          setIsOrderChanged(false);
+        }
+        toast.success(`Liga '${leagueToDelete.name}' erfolgreich gelöscht!`);
+      } else {
+        const errorData = await response.json();
+        toast.error(`Fehler: ${errorData.message || 'Liga konnte nicht gelöscht werden.'}`, { autoClose: 8000 }); // Fehler-Toast bleibt länger
+      }
+    } catch (error) {
+      console.error('Fehler beim Löschen der Liga', error);
+      toast.error('Ein Netzwerkfehler beim Löschen der Liga ist aufgetreten.', { autoClose: 8000 }); // Fehler-Toast bleibt länger
+    } finally {
+      // Dialog schließen und State zurücksetzen
+      setShowDeleteLeagueConfirmation(false);
+      setLeagueToDelete(null);
     }
   };
+
+  // Funktion zum Abbrechen des Liga-Löschdialogs
+  const cancelDeleteLeague = () => {
+    setShowDeleteLeagueConfirmation(false);
+    setLeagueToDelete(null);
+  };
+
 
   // --- Render JSX ---
   return (
