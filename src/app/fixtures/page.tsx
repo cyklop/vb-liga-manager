@@ -83,8 +83,47 @@ export default function FixturesPage() {
       }
     };
 
-    fetchLeagues().then(() => fetchActiveLeague());
-  }, []);
+    const fetchAndSetActiveLeague = async () => {
+      try {
+        // Fetch current user first to check if they have a team
+        const userResponse = await fetch('/api/users/me');
+        if (!userResponse.ok) throw new Error('Failed to fetch user');
+        const userData = await userResponse.json();
+
+        let leaguesResponse;
+        if (userData.team && !userData.isAdmin && !userData.isSuperAdmin) {
+          leaguesResponse = await fetch(`/api/leagues?teamId=${userData.team.id}`);
+        } else {
+          leaguesResponse = await fetch('/api/leagues');
+        }
+
+        if (!leaguesResponse.ok) throw new Error('Failed to fetch leagues');
+        const fetchedLeagues = await leaguesResponse.json();
+        setLeagues(fetchedLeagues);
+
+        if (fetchedLeagues.length === 1) {
+          // If exactly one league is available, select it automatically
+          const singleLeagueId = fetchedLeagues[0].id;
+          setActiveLeagueId(singleLeagueId);
+          // Also update the backend
+          await fetch('/api/leagues/active', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ leagueId: singleLeagueId }),
+          });
+        } else {
+          // Otherwise, fetch the stored active league preference
+          await fetchActiveLeague();
+        }
+      } catch (error) {
+        console.error('Error fetching leagues or setting active league:', error);
+        // Optionally try fetching active league even if league fetch failed partially
+        await fetchActiveLeague();
+      }
+    };
+
+    fetchAndSetActiveLeague();
+  }, []); // Initial fetch runs only once
 
   useEffect(() => {
     // Fetch fixtures when activeLeagueId changes
