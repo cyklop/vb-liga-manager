@@ -7,7 +7,8 @@ function extractTimeFromString(text: string | null | undefined): string | null {
     return null;
   }
   // 1. Try to find exact HH:MM or H:MM format first
-  const exactTimeRegex = /\b(\d{1,2}:\d{2})\b/;
+  //    Removed trailing \b to allow matching times followed by e.g. a hyphen.
+  const exactTimeRegex = /\b(\d{1,2}:\d{2})/;
   const exactMatch = text.match(exactTimeRegex);
   if (exactMatch) {
     return exactMatch[1]; // Return the exact time found
