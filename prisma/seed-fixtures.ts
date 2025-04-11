@@ -659,3 +659,4 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+*/ // Fehlendes schließendes Kommentarzeichen hinzugefügt
