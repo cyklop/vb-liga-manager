@@ -367,8 +367,8 @@ export async function main() {
                 const homeSets = safeParseInt(fix.EndH);
                 const awaySets = safeParseInt(fix.EndG);
                 // Nimm Punkte direkt aus dem Sheet, da Regeln variieren könnten
-                const homeMatchPoints = safeParseInt(fix.PktH);
-                const awayMatchPoints = safeParseInt(fix.PktG);
+                // const homeMatchPoints = safeParseInt(fix.PktH); // Nicht im Schema?
+                // const awayMatchPoints = safeParseInt(fix.PktG); // Nicht im Schema?
 
                 // Prüfe, ob Sätze und Punkte konsistent sind (optional)
                 // if (homeSets !== null && awaySets !== null && homeMatchPoints !== null && awayMatchPoints !== null) {
@@ -378,7 +378,7 @@ export async function main() {
                 //     }
                 // }
 
-                // Fixtures erstellen
+                // Fixtures erstellen für diese Liga
                 let createdCount = 0;
                 let skippedCount = 0;
                 let order = 1;
@@ -404,7 +404,8 @@ export async function main() {
                     // const awayMatchPoints = safeParseInt(fix.PktG);
 
                     try {
-                        const fixtureInputData: Prisma.FixtureCreateInput = {
+                        // Datenobjekt für Prisma erstellen
+                        const fixtureInputData = {
                             order: order, // order wird nach erfolgreichem Create erhöht
                             matchday: matchday,
                             round: matchday, // Annahme: Runde = Spieltag
@@ -431,12 +432,6 @@ export async function main() {
                             // notes: fix.Anmerkungen || null, // Feld existiert nicht im Schema
                         };
 
-                        // --- Gezieltes Logging für 2015-16 (ENTFERNT, da fehlerhaft eingefügt) ---
-                        // if (filename === '2015-16.json' && order <= 2) {
-                        //     console.log(`      DEBUG Fixture Input Data for ${filename} (Order ${order}): ${JSON.stringify(fixtureInputData)}`);
-                        // }
-                        // --- Ende Logging ---
-
                         await prisma.fixture.create({ data: fixtureInputData });
                         order++; // Erhöhe Order nur bei Erfolg
                         createdCount++;
@@ -447,25 +442,25 @@ export async function main() {
                         // Entscheide, ob hier abgebrochen werden soll oder nur dieses übersprungen wird
                         // throw fixtureError; // Abbruch
                     }
-                }
+                } // Ende der for-Schleife für Fixtures
                 console.log(`   Created ${createdCount} fixtures, skipped ${skippedCount}.`);
 
-            } catch (error) {
+            } catch (error) { // Catch für Fehler beim Verarbeiten der Saison-Datei (Lesen, Parsen, Liga erstellen)
                 console.error(`❌ Error processing file ${filename}:`, error);
                 throw error; // Wirft den Fehler weiter, um den Prozess in seed.ts zu stoppen
             }
-        }
-    }
+        } // Ende der for-Schleife für Saison-Dateien
+    } // Ende der main Funktion
 
     // Führe main aus, wenn das Skript direkt aufgerufen wird (optional, da es von seed.ts importiert wird)
     if (require.main === module) {
-    main()
-        .catch(async (e) => {
-        console.error(e);
-        await prisma.$disconnect();
-        process.exit(1);
-        })
-        .finally(async () => {
-        await prisma.$disconnect();
-        });
+        main()
+            .catch(async (e) => {
+                console.error(e);
+                await prisma.$disconnect();
+                process.exit(1);
+            })
+            .finally(async () => {
+                await prisma.$disconnect();
+            });
     }
