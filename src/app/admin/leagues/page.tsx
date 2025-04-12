@@ -354,9 +354,14 @@ export default function LeaguesPage() {
             toast.error('Bei Eingabe des Gesamtergebnisses müssen beide Werte (Heim/Gast) angegeben werden.');
             return;
          }
-         scorePayload = { homeScore, awayScore };
+         scorePayload = {
+           homeScore,
+           awayScore,
+           // Add points to payload
+           homePoints: scoreInputData.homePoints === '' || scoreInputData.homePoints === null ? null : Number(scoreInputData.homePoints),
+           awayPoints: scoreInputData.awayPoints === '' || scoreInputData.awayPoints === null ? null : Number(scoreInputData.awayPoints)
+          };
       }
-
     } else { // SET_SCORES
       // Convert set scores, filter out completely empty sets
       const setScores = scoreInputData.setScores
