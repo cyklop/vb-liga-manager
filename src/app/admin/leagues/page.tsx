@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Navigation from '@/components/Navbar';
 import Modal from '@/components/Modal';
-import { PencilIcon, TrashIcon, CalendarDaysIcon, ArrowsUpDownIcon, ArrowUpIcon, ArrowDownIcon, LockClosedIcon, LockOpenIcon, CheckIcon, LinkIcon, ClipboardIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, CalendarDaysIcon, ArrowsUpDownIcon, ArrowUpIcon, ArrowDownIcon, LockClosedIcon, LockOpenIcon, CheckIcon, LinkIcon, ClipboardIcon, ArrowsRightLeftIcon } from '@heroicons/react/24/outline'; // Import ArrowsRightLeftIcon
 import { Bars3Icon as GripVerticalIcon } from '@heroicons/react/24/outline'; // Verwende Bars3Icon als Ersatz für GripVerticalIcon
 import { createSlug } from '@/lib/slugify';
 // Import dnd-kit components
@@ -442,7 +442,19 @@ export default function LeaguesPage() {
       });
     }
   };
-
+ 
+  // Handler to swap home and away teams in the modal state
+  const handleSwapTeams = () => {
+    if (!editingFixture) return;
+    const currentHomeId = editingFixture.homeTeamId;
+    const currentAwayId = editingFixture.awayTeamId;
+    setEditingFixture({
+      ...editingFixture,
+      homeTeamId: currentAwayId,
+      awayTeamId: currentHomeId,
+    });
+  };
+ 
   // Handler for score input changes
   const handleScoreInputChange = (e: React.ChangeEvent<HTMLInputElement>, index?: number) => {
     if (!scoreInputData || !editingLeagueContext) return;
@@ -1064,8 +1076,8 @@ export default function LeaguesPage() {
       <Modal isOpen={isFixtureModalOpen} onClose={() => { setIsFixtureModalOpen(false); setEditingFixture(null); setScoreInputData(null); setEditingLeagueContext(null); }} title="Spielpaarung bearbeiten/Ergebnis eintragen">
         {editingFixture && editingLeagueContext && scoreInputData && (
           <form onSubmit={handleUpdateFixture} className="space-y-4">
-            {/* Team Selection (Enabled) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Team Selection (Enabled) with Swap Button */}
+            <div className="grid grid-cols-[1fr_auto_1fr] gap-x-2 items-center"> {/* Adjusted grid for swap button */}
               <div>
                 <label htmlFor="homeTeamId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Heimteam</label>
                 <select
@@ -1082,6 +1094,17 @@ export default function LeaguesPage() {
                     <option key={team.id} value={team.id}>{team.name}</option>
                   ))}
                 </select>
+              </div>
+              {/* Swap Teams Button */}
+              <div className="flex items-end justify-center pb-1"> {/* Align button vertically */}
+                <button
+                  type="button"
+                  onClick={handleSwapTeams}
+                  className="p-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-muted rounded"
+                  title="Teams tauschen"
+                >
+                  <ArrowsRightLeftIcon className="h-5 w-5" />
+                </button>
               </div>
               <div>
                 <label htmlFor="awayTeamId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Auswärtsteam</label>
