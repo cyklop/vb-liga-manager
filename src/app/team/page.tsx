@@ -563,9 +563,10 @@ export default function TeamPage() {
             <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
               <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
                 <h3 className="text-lg leading-6 font-medium text-gray-900">Mannschaftsdetails</h3>
-                {!editingTeam && (
+                {/* Use selectedTeam here */}
+                {!editingTeam && selectedTeam && (
                   <button
-                    onClick={() => handleEditTeam(team)}
+                    onClick={() => handleEditTeam(selectedTeam)}
                     className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded dark:text-foreground dark:hover:bg-muted"
                     title="Team bearbeiten"
                   >
@@ -575,8 +576,9 @@ export default function TeamPage() {
                   </button>
                 )}
               </div>
-              
-              {editingTeam?.id === team.id ? (
+               
+              {/* Use selectedTeam here */}
+              {editingTeam?.id === selectedTeam.id ? (
                 <div className="border-t border-gray-200">
                   <form onSubmit={handleTeamSubmit} className="p-4 space-y-4">
                     <div>
