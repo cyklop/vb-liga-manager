@@ -105,10 +105,11 @@ export async function PUT(
 
     // --- Prepare Update Data ---
     // Use Partial<Fixture> for type safety
-    const updateData: Partial<Fixture> = {
-      // Update teams if provided
-      homeTeamId: homeTeamId !== undefined ? Number(homeTeamId) : undefined,
-      awayTeamId: awayTeamId !== undefined ? Number(awayTeamId) : undefined,
+    // Use a more flexible type to allow for relation updates
+    const updateData: any = {
+      // Update teams using connect syntax if provided
+      ...(homeTeamId !== undefined && { homeTeam: { connect: { id: Number(homeTeamId) } } }),
+      ...(awayTeamId !== undefined && { awayTeam: { connect: { id: Number(awayTeamId) } } }),
       // Update date/time if provided
       fixtureDate: fixtureDate !== undefined ? (fixtureDate ? new Date(fixtureDate) : null) : undefined,
       fixtureTime: fixtureTime !== undefined ? (fixtureTime || null) : undefined,
