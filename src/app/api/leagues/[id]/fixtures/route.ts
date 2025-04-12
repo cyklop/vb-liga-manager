@@ -39,10 +39,19 @@ export async function GET(request: Request, { params }: { params: { id: string }
       query.where = {
         ...query.where,
         OR: [
-          { fixtureDate: { gte: today } },
-          { homeSets: null },
-          { awaySets: null },
+          { fixtureDate: { gte: today } }, // Include future dates
+          { homeScore: null },             // Include games where home score is not set
+          { awayScore: null },             // Include games where away score is not set
         ],
+        // Ensure both scores are null to consider it truly upcoming/unplayed
+        AND: [
+          {
+            OR: [
+              { homeScore: null },
+              { awayScore: null },
+            ]
+          }
+        ]
       };
     }
     
