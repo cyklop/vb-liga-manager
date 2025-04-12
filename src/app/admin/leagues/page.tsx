@@ -829,9 +829,9 @@ export default function LeaguesPage() {
           ))}
         </ul>
       </div>
-
-      {/* Add/Edit League Modal */}
-      <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingLeague(null); }} title={editingLeague ? "Liga bearbeiten" : "Neue Liga hinzufügen"}>
+ 
+      {/* Add/Edit League Modal - Increase width using max-w- class */}
+      <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingLeague(null); }} title={editingLeague ? "Liga bearbeiten" : "Neue Liga hinzufügen"} maxWidth="max-w-2xl"> {/* Added maxWidth prop */}
         <form onSubmit={editingLeague ? handleEditLeague : handleAddLeague} className="space-y-4">
           {/* League Name */}
           <div>
@@ -902,13 +902,49 @@ export default function LeaguesPage() {
             />
             <label htmlFor="isActive" className="ml-2 block text-sm text-gray-900">Liga ist aktiv</label>
           </div>
-
-          {/* Point Rules Section */}
+ 
+          {/* Score Entry Configuration Section */}
+          <fieldset className="border border-gray-300 p-3 rounded-md">
+            <legend className="text-sm font-medium text-gray-700 px-1">Ergebniseingabe</legend>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-1">
+              {/* Score Entry Type */}
+              <div>
+                <label htmlFor="scoreEntryType" className="block text-xs font-medium text-gray-600">Art der Eingabe</label>
+                <select
+                  id="scoreEntryType"
+                  name="scoreEntryType"
+                  value={newLeague.scoreEntryType}
+                  onChange={(e) => setNewLeague({ ...newLeague, scoreEntryType: e.target.value as ScoreEntryType })}
+                  className="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+                >
+                  <option value={ScoreEntryType.MATCH_SCORE}>Nur Gesamtsätze (z.B. 3:1)</option>
+                  <option value={ScoreEntryType.SET_SCORES}>Einzelne Satzergebnisse (z.B. 25:20, 23:25, ...)</option>
+                </select>
+              </div>
+              {/* Sets to Win */}
+              <div>
+                <label htmlFor="setsToWin" className="block text-xs font-medium text-gray-600">Gewinnsätze</label>
+                <select
+                  id="setsToWin"
+                  name="setsToWin"
+                  value={newLeague.setsToWin}
+                  onChange={(e) => setNewLeague({ ...newLeague, setsToWin: parseInt(e.target.value) || 3 })}
+                  className="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+                >
+                  <option value={2}>2 (Best-of-3)</option>
+                  <option value={3}>3 (Best-of-5)</option>
+                  {/* Add more options if needed */}
+                </select>
+              </div>
+            </div>
+          </fieldset>
+ 
+          {/* Point Rules Section (Moved Here) */}
           <fieldset className="border border-gray-300 p-3 rounded-md">
               <legend className="text-sm font-medium text-gray-700 px-1">Punktregeln</legend>
               <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-1">
                   <div>
-                      <label htmlFor="pointsWin30" className="block text-xs font-medium text-gray-600">Punkte für 3:0</label>
+                      <label htmlFor="pointsWin30" className="block text-xs font-medium text-gray-600">Punkte für 3:0 / 2:0</label> {/* Adjusted label */}
                       <input
                           id="pointsWin30"
                           type="number"
@@ -919,7 +955,7 @@ export default function LeaguesPage() {
                       />
                   </div>
                    <div>
-                      <label htmlFor="pointsWin31" className="block text-xs font-medium text-gray-600">Punkte für 3:1</label>
+                      <label htmlFor="pointsWin31" className="block text-xs font-medium text-gray-600">Punkte für 3:1 / 2:1</label> {/* Adjusted label */}
                       <input
                           id="pointsWin31"
                           type="number"
@@ -953,43 +989,7 @@ export default function LeaguesPage() {
                   </div>
               </div>
           </fieldset>
-
-          {/* Score Entry Configuration Section */}
-          <fieldset className="border border-gray-300 p-3 rounded-md">
-            <legend className="text-sm font-medium text-gray-700 px-1">Ergebniseingabe</legend>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-1">
-              {/* Score Entry Type */}
-              <div>
-                <label htmlFor="scoreEntryType" className="block text-xs font-medium text-gray-600">Art der Eingabe</label>
-                <select
-                  id="scoreEntryType"
-                  name="scoreEntryType"
-                  value={newLeague.scoreEntryType}
-                  onChange={(e) => setNewLeague({ ...newLeague, scoreEntryType: e.target.value as ScoreEntryType })}
-                  className="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
-                >
-                  <option value={ScoreEntryType.MATCH_SCORE}>Gesamtergebnis (z.B. 3:1)</option>
-                  <option value={ScoreEntryType.SET_SCORES}>Satzergebnisse (z.B. 25:20, ...)</option>
-                </select>
-              </div>
-              {/* Sets to Win */}
-              <div>
-                <label htmlFor="setsToWin" className="block text-xs font-medium text-gray-600">Gewinnsätze</label>
-                <select
-                  id="setsToWin"
-                  name="setsToWin"
-                  value={newLeague.setsToWin}
-                  onChange={(e) => setNewLeague({ ...newLeague, setsToWin: parseInt(e.target.value) || 3 })}
-                  className="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
-                >
-                  <option value={2}>2 (Best-of-3)</option>
-                  <option value={3}>3 (Best-of-5)</option>
-                  {/* Add more options if needed */}
-                </select>
-              </div>
-            </div>
-          </fieldset>
-
+ 
           {/* Assign Teams */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
