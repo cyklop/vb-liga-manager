@@ -58,16 +58,29 @@ interface Fixture {
   awayTeamId: number
   awayTeam: Team
   fixtureDate?: string | null
-  homeScore?: number | null // Keep for potential data structure consistency, but UI will use sets/points
-  awayScore?: number | null // Keep for potential data structure consistency, but UI will use sets/points
-  // New detailed score fields
-  homeSets?: number | null
-  awaySets?: number | null
-  homePoints?: number | null // Total balls/points
-  awayPoints?: number | null // Total balls/points
+  fixtureTime?: string | null // Add fixtureTime
+
+  // Final Score (Sets Won) - Always populated when result is known
+  homeScore?: number | null
+  awayScore?: number | null
+
+  // Individual Set Scores (only used if league.scoreEntryType == SET_SCORES)
+  homeSet1?: number | null; awaySet1?: number | null;
+  homeSet2?: number | null; awaySet2?: number | null;
+  homeSet3?: number | null; awaySet3?: number | null;
+  homeSet4?: number | null; awaySet4?: number | null; // For Bo5
+  homeSet5?: number | null; awaySet5?: number | null; // For Bo5
+
+  // Calculated match points based on league rules
   homeMatchPoints?: number | null // Points for the league table
   awayMatchPoints?: number | null // Points for the league table
-  fixtureTime?: string | null // Add fixtureTime
+
+  // Deprecated / To be reviewed fields (consider removing if not used)
+  homeSets?: number | null // DEPRECATED - Use homeScore
+  awaySets?: number | null // DEPRECATED - Use awayScore
+  homePoints?: number | null // DEPRECATED - Maybe useful for tie-breakers?
+  awayPoints?: number | null // DEPRECATED - Maybe useful for tie-breakers?
+
   order: number
 }
 
@@ -1035,41 +1048,14 @@ export default function LeaguesPage() {
       </Modal>
 
       {/* Edit Fixture Modal */}
-      <Modal isOpen={isFixtureModalOpen} onClose={() => { setIsFixtureModalOpen(false); setEditingFixture(null); }} title="Spielpaarung bearbeiten">
-        {editingFixture && (
+      <Modal isOpen={isFixtureModalOpen} onClose={() => { setIsFixtureModalOpen(false); setEditingFixture(null); setScoreInputData(null); setEditingLeagueContext(null); }} title="Spielpaarung bearbeiten/Ergebnis eintragen">
+        {editingFixture && editingLeagueContext && scoreInputData && (
           <form onSubmit={handleUpdateFixture} className="space-y-4">
-            {/* Home Team Select */}
-            <div>
-              <label htmlFor="homeTeamId" className="block text-sm font-medium text-gray-700">Heimteam</label>
-              <select
-                id="homeTeamId"
-                name="homeTeamId"
-                value={editingFixture.homeTeamId || ''} // Handle potential undefined
-                onChange={handleFixtureInputChange}
-                required
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-              >
-                {teams.map(team => (
-                  <option key={team.id} value={team.id}>{team.name}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Away Team Select */}
-            <div>
-              <label htmlFor="awayTeamId" className="block text-sm font-medium text-gray-700">Auswärtsteam</label>
-              <select
-                id="awayTeamId"
-                name="awayTeamId"
-                value={editingFixture.awayTeamId || ''} // Handle potential undefined
-                onChange={handleFixtureInputChange}
-                required
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-              >
-                {teams.map(team => (
-                  <option key={team.id} value={team.id}>{team.name}</option>
-                ))}
-              </select>
+            {/* Display Teams (Readonly) */}
+            <div className="p-3 bg-gray-100 dark:bg-muted/50 rounded-md border border-gray-200 dark:border-border">
+              <p className="text-center font-semibold text-gray-800 dark:text-foreground">
+                {editingFixture.homeTeam?.name || 'N/A'} <span className="font-normal">vs</span> {editingFixture.awayTeam?.name || 'N/A'}
+              </p>
             </div>
 
             {/* Fixture Date */}
