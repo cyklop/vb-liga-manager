@@ -110,13 +110,6 @@ model Fixture {
   homeSet5     Int?      // Needed for Bo5 (tie-break)
   awaySet5     Int?
 
-  // Deprecated / To be reviewed fields (consider removing if not used)
-  setScores    Json?     // Optional: Store individual set scores, e.g., [{"home": 25, "away": 21}, ...] - Potentially redundant now?
-  homeSets          Int?      // DEPRECATED - Use homeScore
-  awaySets          Int?      // DEPRECATED - Use awayScore
-  homePoints        Int?      // Total points/balls scored by home team (optional, might be useful for tie-breakers)
-  awayPoints        Int?      // Total points/balls scored by away team (optional, might be useful for tie-breakers)
-
   // Calculated match points based on league rules
   homeMatchPoints   Int?
   awayMatchPoints   Int?
