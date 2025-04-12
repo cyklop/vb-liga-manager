@@ -184,17 +184,20 @@ export async function PUT(
           const winnerPoints = Math.max(homePoints, awayPoints);
           const loserPoints = Math.min(homePoints, awayPoints);
 
-          if (winnerPoints < minPoints) {
-            // Winner must reach minimum points
-            return NextResponse.json({ message: `Satz ${setIndex}: Das siegreiche Team muss mindestens ${minPoints} Punkte erreichen.` }, { status: 400 });
-          }
-          if (winnerPoints === minPoints && loserPoints > winnerPoints - 2) {
-             // If winner reached exactly minPoints, loser must have max minPoints - 2
-             return NextResponse.json({ message: `Satz ${setIndex}: Bei ${minPoints} Punkten muss der Unterschied mindestens 2 Punkte betragen.` }, { status: 400 });
-          }
-          if (winnerPoints > minPoints && winnerPoints - loserPoints !== 2) {
-            // If winner has more than minPoints, difference must be exactly 2
-            return NextResponse.json({ message: `Satz ${setIndex}: Bei über ${minPoints} Punkten muss der Unterschied genau 2 Punkte betragen.` }, { status: 400 });
+          // Allow 0:0 scores (e.g., forfeit)
+          if (!(homePoints === 0 && awayPoints === 0)) {
+            if (winnerPoints < minPoints) {
+              // Winner must reach minimum points
+              return NextResponse.json({ message: `Satz ${setIndex}: Das siegreiche Team muss mindestens ${minPoints} Punkte erreichen (erreicht: ${winnerPoints}).` }, { status: 400 });
+            }
+            if (winnerPoints === minPoints && loserPoints > winnerPoints - 2) {
+               // If winner reached exactly minPoints, loser must have max minPoints - 2
+               return NextResponse.json({ message: `Satz ${setIndex}: Bei ${minPoints} Punkten muss der Unterschied mindestens 2 Punkte betragen (aktuell: ${homePoints}:${awayPoints}).` }, { status: 400 });
+            }
+            if (winnerPoints > minPoints && winnerPoints - loserPoints !== 2) {
+              // If winner has more than minPoints, difference must be exactly 2
+              return NextResponse.json({ message: `Satz ${setIndex}: Bei über ${minPoints} Punkten muss der Unterschied genau 2 Punkte betragen (aktuell: ${homePoints}:${awayPoints}).` }, { status: 400 });
+            }
           }
           // End Volleyball Score Validation
 
