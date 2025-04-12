@@ -118,6 +118,8 @@ model Fixture {
   homeMatchPoints   Int?
   awayMatchPoints   Int?
 
+  notes             String?   // Optional field for fixture notes/comments
+
   order        Int       // For manual sorting
 
   @@index([leagueId])
