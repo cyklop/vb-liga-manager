@@ -45,7 +45,20 @@ interface SheetFixture {
 // Hilfsfunktion zum Normalisieren von Teamnamen
 function normalizeTeamName(name: string | null | undefined): string {
     if (!name) return '';
-    return name.trim().replace(/\s+/g, ' '); // Entfernt führende/folgende Leerzeichen und reduziert interne auf eins
+
+    let normalized = name.trim().replace(/\s+/g, ' '); // Grundlegende Bereinigung
+
+    // Spezifische Ersetzungen für bekannte Duplikate/Varianten
+    if (normalized === 'TV Helmbrechts') {
+        normalized = 'TSV Helmbrechts';
+    } else if (normalized === 'MTV Pegnitz/FSV Schnabelwaid') {
+        normalized = 'MTV/SG Pegnitz';
+    } else if (normalized === 'USC Bayreuth') {
+        normalized = 'USC Bayreuth 1';
+    }
+    // Füge hier bei Bedarf weitere Ersetzungen hinzu
+
+    return normalized;
 }
 
 // Hilfsfunktion zum Parsen von Datum und Uhrzeit
