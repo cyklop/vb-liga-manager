@@ -71,22 +71,21 @@ interface Fixture {
   awayPoints?: number | null;
 }
 
-// Define types for the score data structures within formData
-type MatchScoreData = {
-  homeScore: number | string; // Use string for input binding
-  awayScore: number | string;
-  homePoints?: number | string;
-  awayPoints?: number | string;
-};
+interface MatchScoreData {
+  homeScore: string | number;
+  awayScore: string | number;
+  homePoints: string | number;
+  awayPoints: string | number;
+}
 
-type SetScore = {
-  home: number | string; // Use string for input binding
-  away: number | string;
-};
+interface SetScore {
+  home: string | number | null;
+  away: string | number | null;
+}
 
-type SetScoresData = {
+interface SetScoresData {
   setScores: SetScore[];
-};
+}
 
 export default function TeamPage() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -367,8 +366,8 @@ export default function TeamPage() {
       const initialSetScores: SetScore[] = Array(maxSets).fill(null).map((_, i) => { // Type the array
         const setNum = i + 1;
         return {
-          home: fixture[`homeSet${setNum}` as keyof Fixture] ?? '', // Use empty string for input binding
-          away: fixture[`awaySet${setNum}` as keyof Fixture] ?? '', // Use empty string for input binding
+          home: (fixture[`homeSet${setNum}` as keyof Fixture] as number | null) ?? '',
+          away: (fixture[`awaySet${setNum}` as keyof Fixture] as number | null) ?? ''
         };
       });
       initialScoreData = { setScores: initialSetScores };
