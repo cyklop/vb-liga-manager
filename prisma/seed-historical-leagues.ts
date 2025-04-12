@@ -273,7 +273,7 @@ export async function main() {
             const seasonStartYear = seasonStartYearMatch ? parseInt(seasonStartYearMatch[1], 10) : 0;
 
             // Ermittle ScoreEntryType basierend auf den Daten im ersten Fixture
-            let detectedScoreEntryType = ScoreEntryType.SET_SCORES; // Standardwert
+            let detectedScoreEntryType: ScoreEntryType = ScoreEntryType.SET_SCORES; // Standardwert mit explizitem Typ
             const firstFixture = fixturesData[0];
             if (firstFixture) {
                 const hasSetScores = firstFixture.S1H !== null && firstFixture.S1H !== undefined && String(firstFixture.S1H).trim() !== '' ||
