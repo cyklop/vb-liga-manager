@@ -642,19 +642,19 @@ export default function TeamPage() {
                   <dl>
                     <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                       <dt className="text-sm font-medium text-gray-500">Name</dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.name}</dd>
+                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{selectedTeam.name}</dd>
                     </div>
                     <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                       <dt className="text-sm font-medium text-gray-500">Ort</dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.location}</dd>
+                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{selectedTeam.location}</dd>
                     </div>
                     <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                       <dt className="text-sm font-medium text-gray-500">Hallenadresse</dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.hallAddress}</dd>
+                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{selectedTeam.hallAddress}</dd>
                     </div>
                     <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                       <dt className="text-sm font-medium text-gray-500">Trainingszeiten</dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{team.trainingTimes}</dd>
+                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{selectedTeam.trainingTimes}</dd>
                     </div>
                   </dl>
                 </div>
@@ -667,10 +667,10 @@ export default function TeamPage() {
               <div className="flex justify-center items-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
               </div>
-            ) : homeFixtures[team.id] && homeFixtures[team.id].length > 0 ? (
+            ) : homeFixtures[selectedTeam.id] && homeFixtures[selectedTeam.id].length > 0 ? (
               <div className="bg-white shadow overflow-hidden sm:rounded-md mb-8">
                 <ul className="divide-y divide-gray-200">
-                  {homeFixtures[team.id].map((fixture) => (
+                  {homeFixtures[selectedTeam.id].map((fixture) => (
                 <li key={fixture.id} className="px-4 py-4 sm:px-6">
                   {editingFixture?.id === fixture.id ? (
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -899,7 +899,7 @@ export default function TeamPage() {
           </div>
             ) : (
               <div className="bg-white shadow overflow-hidden sm:rounded-md p-6 text-center text-gray-500 mb-8">
-                Keine Heimspiele für {team.name} gefunden.
+                Keine Heimspiele für {selectedTeam.name} gefunden.
               </div>
             )}
             </div>
