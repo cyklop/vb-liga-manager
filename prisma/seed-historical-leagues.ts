@@ -367,36 +367,17 @@ export async function main() {
                 const homeSets = safeParseInt(fix.EndH);
                 const awaySets = safeParseInt(fix.EndG);
                 // Nimm Punkte direkt aus dem Sheet, da Regeln variieren könnten
-                // const homeMatchPoints = safeParseInt(fix.PktH); // Nicht im Schema?
-                // const awayMatchPoints = safeParseInt(fix.PktG); // Nicht im Schema?
+                const homeMatchPoints = safeParseInt(fix.PktH);
+                const awayMatchPoints = safeParseInt(fix.PktG);
 
                 // Prüfe, ob Sätze und Punkte konsistent sind (optional)
-                // if (homeSets !== null && awaySets !== null && homeMatchPoints !== null && awayMatchPoints !== null) {
-                //     const calculatedPoints = calculateMatchPoints(homeSets, awaySets, pointsConfig); // Funktion müsste definiert werden
-                //     if (calculatedPoints.home !== homeMatchPoints || calculatedPoints.away !== awayMatchPoints) {
-                //         console.warn(`      Points mismatch for ${homeTeamName} vs ${awayTeamName}: Sheet (${homeMatchPoints}:${awayMatchPoints}), Calculated (${calculatedPoints.home}:${calculatedPoints.away})`);
-                //     }
-                // }
-
-                // Fixtures erstellen für diese Liga
-                let createdCount = 0;
-                let skippedCount = 0;
-                let order = 1;
-                for (const fix of fixturesData) {
-                    const homeTeamName = normalizeTeamName(fix.Heimmannschaft);
-                    const awayTeamName = normalizeTeamName(fix.Gastmannschaft);
-
-                    const homeTeamId = globalTeamMap[homeTeamName];
-                    const awayTeamId = globalTeamMap[awayTeamName];
-
-                    if (!homeTeamId || !awayTeamId) {
-                        console.warn(`      Skipping fixture: Could not find team ID for "${homeTeamName}" or "${awayTeamName}" in global map.`);
-                        skippedCount++;
-                        continue;
+                if (homeSets !== null && awaySets !== null && homeMatchPoints !== null && awayMatchPoints !== null) {
+                    // Einfache Konsistenzprüfung - Gewinner sollte mehr Punkte haben
+                    if ((homeSets > awaySets && homeMatchPoints <= awayMatchPoints) || 
+                        (homeSets < awaySets && homeMatchPoints >= awayMatchPoints)) {
+                        console.warn(`      Points mismatch for ${homeTeamName} vs ${awayTeamName}: Sets (${homeSets}:${awaySets}), Points (${homeMatchPoints}:${awayMatchPoints})`);
                     }
-
-                    const fixtureDate = parseDateTime(fix.Datum, fix.Uhrzeit);
-                    const matchday = safeParseInt(fix.Spieltag);
+                }
                     // Die Felder homeSets, awaySets, homeMatchPoints, awayMatchPoints scheinen nicht im Schema zu sein.
                     // const homeSets = safeParseInt(fix.EndH);
                     // const awaySets = safeParseInt(fix.EndG);
@@ -414,7 +395,7 @@ export async function main() {
                             league: { connect: { id: league.id } },
                             homeTeam: { connect: { id: homeTeamId } },
                             awayTeam: { connect: { id: awayTeamId } },
-                            // Einzelne Sätze (falls Schema sie hat)
+                            // Einzelne Sätze
                             homeSet1: safeParseInt(fix.S1H),
                             awaySet1: safeParseInt(fix.S1G),
                             homeSet2: safeParseInt(fix.S2H),
@@ -425,11 +406,12 @@ export async function main() {
                             awaySet4: safeParseInt(fix.S4G),
                             homeSet5: safeParseInt(fix.S5H),
                             awaySet5: safeParseInt(fix.S5G),
-                            // homeSets: homeSets, // Feld existiert nicht im Schema
-                            // awaySets: awaySets, // Feld existiert nicht im Schema
-                            // homeMatchPoints: homeMatchPoints, // Feld existiert nicht im Schema
-                            // awayMatchPoints: awayMatchPoints, // Feld existiert nicht im Schema
-                            // notes: fix.Anmerkungen || null, // Feld existiert nicht im Schema
+                            // Gesamtergebnisse
+                            homeScore: homeSets,
+                            awayScore: awaySets,
+                            homeMatchPoints: homeMatchPoints,
+                            awayMatchPoints: awayMatchPoints,
+                            notes: fix.Anmerkungen || null,
                         };
 
                         await prisma.fixture.create({ data: fixtureInputData });

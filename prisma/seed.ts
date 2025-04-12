@@ -32,10 +32,13 @@ async function main() {
   }
 
   // 2. Seed Historical League Data
-  console.log('Seeding historical league data ...')
-  await seedHistoricalData() // Rufe die importierte Funktion auf
-  console.log('✅ Historical league data seeding finished.')
-
+  try {
+    console.log('\n--- Starting historical leagues seeding ---')
+    await seedHistoricalData() // Rufe die importierte Funktion auf
+    console.log('--- Historical leagues seeding completed ---')
+  } catch (error) {
+    console.error('❌ Error seeding historical leagues:', error)
+  }
 
   console.log('Seeding finished.')
 }
