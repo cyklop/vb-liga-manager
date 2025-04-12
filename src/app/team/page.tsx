@@ -97,6 +97,11 @@ export default function TeamPage() {
     fetchCurrentUser();
   }, []);
 
+  // Log currentUser when it changes
+  useEffect(() => {
+    console.log("Current User Data:", currentUser);
+  }, [currentUser]);
+
   useEffect(() => {
     async function loadTeamData() {
       if (currentUser) {
@@ -177,10 +182,12 @@ export default function TeamPage() {
             processedTeamIds.push(currentUser.team.id);
           }
         }
-      
+       
+        // Log the teams array before setting state
+        console.log("User Teams Processed:", userTeams);
         // Aktualisiere die Teams-Liste
         setTeams(userTeams);
-        
+         
         // Setze das erste Team als ausgewähltes Team, wenn noch keines ausgewählt ist
         if (userTeams.length > 0 && !selectedTeamId) {
           setSelectedTeamId(userTeams[0].id);
@@ -510,9 +517,11 @@ export default function TeamPage() {
   return (
     <>
       <Navigation />
+      {/* Log the teams state during render */}
+      {console.log("Teams state in render:", teams)}
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">Meine Mannschaften</h1>
-        
+         
         {/* Team-Auswahl Dropdown, wenn Teams vorhanden sind */}
         {teams.length > 0 && (
           <div className="mb-6">
