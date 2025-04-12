@@ -124,12 +124,9 @@ function generateRoundRobinFixtures(teams: TeamWithTrainingTime[], hasReturnMatc
         round: round + 1,
         matchday: round + 1,
         fixtureDate: null,
-        homeScore: null,
+        homeScore: null, // Keep homeScore/awayScore as null initially
         awayScore: null,
-        homeSets: null,
-        awaySets: null,
-        homePoints: null,
-        awayPoints: null,
+        // Remove deprecated fields
         homeMatchPoints: null,
         awayMatchPoints: null,
       });
@@ -195,12 +192,9 @@ function generateRoundRobinFixtures(teams: TeamWithTrainingTime[], hasReturnMatc
           round: round + 1,
           matchday: round + 1,
           fixtureDate: null,
-          homeScore: null,
+          homeScore: null, // Keep homeScore/awayScore as null initially
           awayScore: null,
-          homeSets: null,
-          awaySets: null,
-          homePoints: null,
-          awayPoints: null,
+          // Remove deprecated fields
           homeMatchPoints: null,
           awayMatchPoints: null,
         });
