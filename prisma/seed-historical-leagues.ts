@@ -255,16 +255,22 @@ export async function main() {
             let pointsConfig: Partial<Prisma.LeagueCreateInput> = {};
             if (isLastSeason) {
                 // Detaillierte Regeln für die letzte Saison (Annahme: 3/2/1/0)
+                // Passe dies an dein tatsächliches Schema an, falls die Felder anders heißen
                 pointsConfig = {
                     pointsWin30: 3, pointsWin31: 3, pointsWin32: 2,
-                    pointsLoss32: 1, pointsLoss13: 0, pointsLoss03: 0,
+                    pointsLoss32: 1,
+                    // pointsLoss13: 0, // Feld existiert nicht im Schema
+                    // pointsLoss03: 0, // Feld existiert nicht im Schema
                 };
                  console.log("   Using detailed point system (3/2/1/0) for last season.");
             } else {
                 // Einfache Regeln für historische Saisons (2/0)
+                // Mappe 2/0 auf die vorhandenen Felder
                 pointsConfig = {
                     pointsWin30: 2, pointsWin31: 2, pointsWin32: 2,
-                    pointsLoss32: 0, pointsLoss13: 0, pointsLoss03: 0,
+                    pointsLoss32: 0,
+                    // pointsLoss13: 0, // Feld existiert nicht im Schema
+                    // pointsLoss03: 0, // Feld existiert nicht im Schema
                 };
                 console.log("   Using simple point system (2/0) for historical season.");
             }
@@ -342,10 +348,10 @@ export async function main() {
                             homeTeamId: homeTeamId,
                             awayTeamId: awayTeamId,
                             fixtureDate: fixtureDate,
-                            homeSets: homeSets,
-                            awaySets: awaySets,
-                            homeMatchPoints: homeMatchPoints,
-                            awayMatchPoints: awayMatchPoints,
+                            // homeSets: homeSets, // Feld existiert nicht im Schema
+                            // awaySets: awaySets, // Feld existiert nicht im Schema
+                            // homeMatchPoints: homeMatchPoints, // Feld existiert nicht im Schema
+                            // awayMatchPoints: awayMatchPoints, // Feld existiert nicht im Schema
                             notes: fix.Anmerkungen || null,
                             // Einzelne Sätze (falls Schema sie hat)
                             homeSet1: safeParseInt(fix.S1H),
