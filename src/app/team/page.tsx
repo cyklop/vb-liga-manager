@@ -533,13 +533,22 @@ export default function TeamPage() {
             </select>
           </div>
         )}
-        
-        {/* Zeige nur das ausgewählte Team an oder das erste Team, wenn keines ausgewählt ist */}
-        {teams
-          .filter(team => selectedTeamId ? team.id === selectedTeamId : true)
-          .map(team => (
-          <div key={team.id} className="mb-12">
-            <h2 className="text-xl font-semibold mb-4">{team.name}</h2>
+         
+        {/* Finde das ausgewählte Team */}
+        {(() => {
+          const selectedTeam = teams.find(team => team.id === selectedTeamId);
+          // Wenn kein Team ausgewählt ist oder die ID ungültig ist, zeige nichts oder eine Nachricht an
+          if (!selectedTeam) {
+            // Optional: Zeige eine Nachricht an, wenn Teams vorhanden sind, aber keines ausgewählt ist
+            if (teams.length > 0) {
+               return <div className="text-center text-gray-500 mt-8">Bitte wählen Sie eine Mannschaft aus.</div>;
+            }
+            return null; // Oder zeige das erste Team standardmäßig an, falls gewünscht
+          }
+          // Zeige die Details des ausgewählten Teams an
+          return (
+            <div key={selectedTeam.id} className="mb-12">
+              <h2 className="text-xl font-semibold mb-4">{selectedTeam.name}</h2>
             
             {/* Mannschaftsdetails */}
             <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
@@ -882,8 +891,9 @@ export default function TeamPage() {
                 Keine Heimspiele für {team.name} gefunden.
               </div>
             )}
-          </div>
-        ))}
+            </div>
+          );
+        })()}
       </div>
     </>
   );
