@@ -64,6 +64,12 @@ export async function GET(
             id: true,
             name: true
           }
+        },
+        league: { // Include league details needed for score display
+          select: {
+            scoreEntryType: true,
+            setsToWin: true,
+          }
         }
       },
       orderBy: [

@@ -18,6 +18,12 @@ export async function GET(request: Request, { params }: { params: { id: string }
       include: {
         homeTeam: { select: { id: true, name: true } },
         awayTeam: { select: { id: true, name: true } },
+        league: { // Include league details needed for score display
+          select: {
+            scoreEntryType: true,
+            setsToWin: true,
+          }
+        }
       },
       orderBy: [
         { matchday: 'asc' },
