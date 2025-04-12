@@ -352,7 +352,7 @@ export async function main() {
                             // awaySets: awaySets, // Feld existiert nicht im Schema
                             // homeMatchPoints: homeMatchPoints, // Feld existiert nicht im Schema
                             // awayMatchPoints: awayMatchPoints, // Feld existiert nicht im Schema
-                            notes: fix.Anmerkungen || null,
+                            // notes: fix.Anmerkungen || null, // Feld existiert nicht im Schema
                             // Einzelne Sätze (falls Schema sie hat)
                             homeSet1: safeParseInt(fix.S1H),
                             awaySet1: safeParseInt(fix.S1G),
