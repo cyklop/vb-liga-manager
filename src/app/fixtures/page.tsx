@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Navigation from '@/components/Navbar';
+import { ScoreEntryType } from '@prisma/client'; // Import the enum
 
 interface Team {
   id: number;
@@ -18,20 +19,39 @@ interface Fixture {
   awayTeamId: number;
   awayTeam: Team;
   fixtureDate?: string | null;
-  homeSets?: number | null;
-  awaySets?: number | null;
-  homePoints?: number | null;
-  awayPoints?: number | null;
+  fixtureTime?: string | null; // Add fixtureTime
+
+  // Final Score (Sets Won) - Always populated when result is known
+  homeScore?: number | null;
+  awayScore?: number | null;
+
+  // Individual Set Scores (only used if league.scoreEntryType == SET_SCORES)
+  homeSet1?: number | null; awaySet1?: number | null;
+  homeSet2?: number | null; awaySet2?: number | null;
+  homeSet3?: number | null; awaySet3?: number | null;
+  homeSet4?: number | null; awaySet4?: number | null; // For Bo5
+  homeSet5?: number | null; awaySet5?: number | null; // For Bo5
+
+  // Calculated match points based on league rules
   homeMatchPoints?: number | null;
   awayMatchPoints?: number | null;
-  fixtureTime?: string | null; // Add fixtureTime
+
+  // Deprecated / To be reviewed fields (consider removing if not used)
+  homeSets?: number | null; // DEPRECATED - Use homeScore
+  awaySets?: number | null; // DEPRECATED - Use awayScore
+  homePoints?: number | null; // DEPRECATED - Maybe useful for tie-breakers?
+  awayPoints?: number | null; // DEPRECATED - Maybe useful for tie-breakers?
+
   order: number;
 }
- 
+
 interface League {
   id: number;
   name: string;
   teams: Team[];
+  // Add score entry config fields to interface (assuming API provides them)
+  scoreEntryType?: ScoreEntryType; // Make optional for now as API might not send it yet
+  setsToWin?: number; // Make optional for now
 }
 
 export default function FixturesPage() {
