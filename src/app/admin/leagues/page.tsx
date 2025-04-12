@@ -384,7 +384,15 @@ export default function LeaguesPage() {
       }
     }
 
+    // Validate that home and away teams are different
+    if (editingFixture.homeTeamId && editingFixture.awayTeamId && editingFixture.homeTeamId === editingFixture.awayTeamId) {
+       toast.error('Heim- und Auswärtsteam dürfen nicht identisch sein.');
+       return;
+    }
+
     const bodyPayload = {
+      homeTeamId: editingFixture.homeTeamId ? Number(editingFixture.homeTeamId) : null, // Send updated team IDs
+      awayTeamId: editingFixture.awayTeamId ? Number(editingFixture.awayTeamId) : null, // Send updated team IDs
       fixtureDate: editingFixture.fixtureDate || null,
       fixtureTime: editingFixture.fixtureTime || null,
       ...(scorePayload && { scoreData: scorePayload }) // Only include scoreData if it's not null
@@ -1056,11 +1064,42 @@ export default function LeaguesPage() {
       <Modal isOpen={isFixtureModalOpen} onClose={() => { setIsFixtureModalOpen(false); setEditingFixture(null); setScoreInputData(null); setEditingLeagueContext(null); }} title="Spielpaarung bearbeiten/Ergebnis eintragen">
         {editingFixture && editingLeagueContext && scoreInputData && (
           <form onSubmit={handleUpdateFixture} className="space-y-4">
-            {/* Display Teams (Readonly) */}
-            <div className="p-3 bg-gray-100 dark:bg-muted/50 rounded-md border border-gray-200 dark:border-border">
-              <p className="text-center font-semibold text-gray-800 dark:text-foreground">
-                {editingFixture.homeTeam?.name || 'N/A'} <span className="font-normal">vs</span> {editingFixture.awayTeam?.name || 'N/A'}
-              </p>
+            {/* Team Selection (Enabled) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="homeTeamId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Heimteam</label>
+                <select
+                  id="homeTeamId"
+                  name="homeTeamId"
+                  value={editingFixture.homeTeamId || ''}
+                  onChange={handleFixtureInputChange}
+                  required
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                >
+                  <option value="" disabled>Wählen...</option>
+                  {/* Filter teams to only those in the current league */}
+                  {editingLeagueContext?.teams.map(team => (
+                    <option key={team.id} value={team.id}>{team.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="awayTeamId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Auswärtsteam</label>
+                <select
+                  id="awayTeamId"
+                  name="awayTeamId"
+                  value={editingFixture.awayTeamId || ''}
+                  onChange={handleFixtureInputChange}
+                  required
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                >
+                  <option value="" disabled>Wählen...</option>
+                  {/* Filter teams to only those in the current league */}
+                  {editingLeagueContext?.teams.map(team => (
+                    <option key={team.id} value={team.id}>{team.name}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             {/* Fixture Date */}

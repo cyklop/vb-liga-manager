@@ -75,8 +75,13 @@ export async function PUT(
     const {
       fixtureDate,
       fixtureTime,
-      scoreData // Expecting { homeScore, awayScore } OR { setScores: [{home, away}, ...] }
+      scoreData, // Expecting { homeScore, awayScore } OR { setScores: [{home, away}, ...] }
+      // Add team IDs to expected body
+      homeTeamId,
+      awayTeamId
     }: {
+      homeTeamId?: number | null; // Add team IDs
+      awayTeamId?: number | null; // Add team IDs
       fixtureDate?: string | null;
       fixtureTime?: string | null;
       scoreData?: {
@@ -88,9 +93,22 @@ export async function PUT(
       } | null;
     } = await request.json();
 
+    // --- Validation for Team IDs ---
+    if (homeTeamId !== undefined && awayTeamId !== undefined && homeTeamId !== null && awayTeamId !== null && homeTeamId === awayTeamId) {
+      return NextResponse.json({ message: 'Heim- und Auswärtsteam dürfen nicht identisch sein' }, { status: 400 });
+    }
+    // Ensure team IDs are provided if attempting to update them
+    if ((homeTeamId !== undefined && homeTeamId === null) || (awayTeamId !== undefined && awayTeamId === null)) {
+       return NextResponse.json({ message: 'Heim- und Auswärtsteam müssen ausgewählt werden' }, { status: 400 });
+    }
+
+
     // --- Prepare Update Data ---
     // Use Partial<Fixture> for type safety
     const updateData: Partial<Fixture> = {
+      // Update teams if provided
+      homeTeamId: homeTeamId !== undefined ? Number(homeTeamId) : undefined,
+      awayTeamId: awayTeamId !== undefined ? Number(awayTeamId) : undefined,
       // Update date/time if provided
       fixtureDate: fixtureDate !== undefined ? (fixtureDate ? new Date(fixtureDate) : null) : undefined,
       fixtureTime: fixtureTime !== undefined ? (fixtureTime || null) : undefined,
