@@ -349,6 +349,23 @@ export async function main() {
                 // }
 
                 try {
+                    // --- Logging hinzugefügt ---
+                    const logData = {
+                        file: filename,
+                        home: homeTeamName,
+                        away: awayTeamName,
+                        dateStr: fix.Datum,
+                        timeStr: fix.Uhrzeit,
+                        parsedDate: fixtureDate?.toISOString() || 'null',
+                        set1H: safeParseInt(fix.S1H),
+                        set1G: safeParseInt(fix.S1G),
+                    };
+                    // Logge nur für das erste Spiel jeder Datei oder wenn das Datum null ist
+                    if (order === 1 || fixtureDate === null) {
+                         console.log(`      DEBUG Fixture Data: ${JSON.stringify(logData)}`);
+                    }
+                    // --- Ende Logging ---
+
                     await prisma.fixture.create({
                         data: {
                             leagueId: league.id,
