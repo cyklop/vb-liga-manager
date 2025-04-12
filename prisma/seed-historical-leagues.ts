@@ -276,8 +276,6 @@ export async function main() {
                     pointsWin30: 3, pointsWin31: 3, pointsWin32: 2,
                     pointsLoss32: 1,
                     // pointsLoss13: 0, // Feld existiert nicht im Schema
-                    pointsLoss32: 1,
-                    // pointsLoss13: 0, // Feld existiert nicht im Schema
                     // pointsLoss03: 0, // Feld existiert nicht im Schema
                 };
                 console.log(`   Using detailed point system (3/2/1/0) and ScoreEntryType.MATCH_SCORE for season ${seasonYear}.`);
@@ -287,8 +285,6 @@ export async function main() {
                 // Einfache Regeln für historische Saisons (2/0)
                 pointsConfig = {
                     pointsWin30: 2, pointsWin31: 2, pointsWin32: 2,
-                    pointsLoss32: 0,
-                    // pointsLoss13: 0, // Feld existiert nicht im Schema
                     pointsLoss32: 0,
                     // pointsLoss13: 0, // Feld existiert nicht im Schema
                     // pointsLoss03: 0, // Feld existiert nicht im Schema
