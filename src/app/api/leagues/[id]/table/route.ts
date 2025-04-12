@@ -49,10 +49,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
     const fixtureQuery: any = {
       where: {
         leagueId,
-        // Only include fixtures with results
+        // Only include fixtures with results (use homeScore/awayScore)
         AND: [
-          { homeSets: { not: null } },
-          { awaySets: { not: null } },
+          { homeScore: { not: null } },
+          { awayScore: { not: null } },
         ],
       },
       include: {
