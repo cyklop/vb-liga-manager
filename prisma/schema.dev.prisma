@@ -110,6 +110,10 @@ model Fixture {
   homeSet5     Int?      // Needed for Bo5 (tie-break)
   awaySet5     Int?
 
+  // Optional total points (balls) - Can be useful even with set scores for tie-breakers?
+  homePoints        Int?
+  awayPoints        Int?
+
   // Calculated match points based on league rules
   homeMatchPoints   Int?
   awayMatchPoints   Int?
