@@ -27,6 +27,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { toast } from 'react-toastify';
 import DeleteConfirmation from '@/components/DeleteConfirmation'; // Import hinzufügen
+import { ScoreEntryType } from '@prisma/client'; // Import the enum
 
 
 // Define interfaces
@@ -85,6 +86,9 @@ interface League {
   pointsWin31: number
   pointsWin32: number
   pointsLoss32: number
+  // Add score entry config fields to interface
+  scoreEntryType: ScoreEntryType
+  setsToWin: number
 }
 
 // Define the component
@@ -107,6 +111,9 @@ export default function LeaguesPage() {
     pointsWin31: 3,
     pointsWin32: 2,
     pointsLoss32: 1,
+    // Add new fields to state with defaults
+    scoreEntryType: ScoreEntryType.MATCH_SCORE,
+    setsToWin: 3,
   })
   const [editingLeague, setEditingLeague] = useState<League | null>(null)
   // Ensure editingFixture state includes new fields
@@ -430,6 +437,9 @@ export default function LeaguesPage() {
           pointsWin31: 3,
           pointsWin32: 2,
           pointsLoss32: 1,
+          // Reset new fields as well
+          scoreEntryType: ScoreEntryType.MATCH_SCORE,
+          setsToWin: 3,
          });
         setIsModalOpen(false);
        fetchLeagues(); // Refetch all leagues
@@ -475,6 +485,9 @@ export default function LeaguesPage() {
           pointsWin31: 3,
           pointsWin32: 2,
           pointsLoss32: 1,
+          // Reset new fields as well
+          scoreEntryType: ScoreEntryType.MATCH_SCORE,
+          setsToWin: 3,
          });
         setIsModalOpen(false);
         setEditingLeague(null);
@@ -559,6 +572,9 @@ export default function LeaguesPage() {
                 pointsWin31: 3,
                 pointsWin32: 2,
                 pointsLoss32: 1,
+                // Reset new fields when opening for add
+                scoreEntryType: ScoreEntryType.MATCH_SCORE,
+                setsToWin: 3,
               });
               setIsModalOpen(true);
             }}
@@ -610,6 +626,9 @@ export default function LeaguesPage() {
                             pointsWin31: league.pointsWin31,
                             pointsWin32: league.pointsWin32,
                             pointsLoss32: league.pointsLoss32,
+                            // Load existing score config when editing
+                            scoreEntryType: league.scoreEntryType,
+                            setsToWin: league.setsToWin,
                           });
                           setIsModalOpen(true);
                         }}
@@ -641,6 +660,9 @@ export default function LeaguesPage() {
                             pointsWin31: league.pointsWin31,
                             pointsWin32: league.pointsWin32,
                             pointsLoss32: league.pointsLoss32,
+                            // Load existing score config when editing (for toggle active)
+                            scoreEntryType: league.scoreEntryType,
+                            setsToWin: league.setsToWin,
                           });
                           setIsModalOpen(true);
                         }}
@@ -843,7 +865,43 @@ export default function LeaguesPage() {
                   </div>
               </div>
           </fieldset>
-          
+
+          {/* Score Entry Configuration Section */}
+          <fieldset className="border border-gray-300 p-3 rounded-md">
+            <legend className="text-sm font-medium text-gray-700 px-1">Ergebniseingabe</legend>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-1">
+              {/* Score Entry Type */}
+              <div>
+                <label htmlFor="scoreEntryType" className="block text-xs font-medium text-gray-600">Art der Eingabe</label>
+                <select
+                  id="scoreEntryType"
+                  name="scoreEntryType"
+                  value={newLeague.scoreEntryType}
+                  onChange={(e) => setNewLeague({ ...newLeague, scoreEntryType: e.target.value as ScoreEntryType })}
+                  className="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+                >
+                  <option value={ScoreEntryType.MATCH_SCORE}>Gesamtergebnis (z.B. 3:1)</option>
+                  <option value={ScoreEntryType.SET_SCORES}>Satzergebnisse (z.B. 25:20, ...)</option>
+                </select>
+              </div>
+              {/* Sets to Win */}
+              <div>
+                <label htmlFor="setsToWin" className="block text-xs font-medium text-gray-600">Gewinnsätze</label>
+                <select
+                  id="setsToWin"
+                  name="setsToWin"
+                  value={newLeague.setsToWin}
+                  onChange={(e) => setNewLeague({ ...newLeague, setsToWin: parseInt(e.target.value) || 3 })}
+                  className="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+                >
+                  <option value={2}>2 (Best-of-3)</option>
+                  <option value={3}>3 (Best-of-5)</option>
+                  {/* Add more options if needed */}
+                </select>
+              </div>
+            </div>
+          </fieldset>
+
           {/* Assign Teams */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
