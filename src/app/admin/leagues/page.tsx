@@ -75,6 +75,10 @@ interface Fixture {
   homeMatchPoints?: number | null // Points for the league table
   awayMatchPoints?: number | null // Points for the league table
 
+  // Optional total points (balls)
+  homePoints?: number | null;
+  awayPoints?: number | null;
+
   order: number
 }
 
@@ -324,6 +328,8 @@ export default function LeaguesPage() {
       setScoreInputData({
         homeScore: fixture.homeScore ?? '', // Use empty string for input binding
         awayScore: fixture.awayScore ?? '', // Use empty string for input binding
+        homePoints: fixture.homePoints ?? '', // Add points
+        awayPoints: fixture.awayPoints ?? '', // Add points
       });
     }
     setEditingLeagueContext(league); // Store league context for the modal
@@ -439,10 +445,10 @@ export default function LeaguesPage() {
       };
       setScoreInputData({ setScores: updatedSetScores });
     } else if (editingLeagueContext.scoreEntryType === ScoreEntryType.MATCH_SCORE) {
-      // Update homeScore or awayScore
+      // Update homeScore, awayScore, homePoints, or awayPoints
       setScoreInputData({
         ...scoreInputData,
-        [name]: processedValue, // name will be 'homeScore' or 'awayScore'
+        [name]: processedValue, // name will be 'homeScore', 'awayScore', 'homePoints', or 'awayPoints'
       });
     }
   };
@@ -1111,6 +1117,36 @@ export default function LeaguesPage() {
                         placeholder={`0-${editingLeagueContext.setsToWin}`}
                         className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                       />
+                      </div>
+                    </div>
+                    {/* Total Points (Balls) */}
+                    <div className="flex space-x-4">
+                      <div className="flex-1">
+                        <label htmlFor="homePoints" className="block text-xs font-medium text-gray-600 dark:text-gray-400">Bälle Heim</label>
+                        <input
+                          type="number"
+                          id="homePoints"
+                          name="homePoints"
+                          min="0"
+                          value={scoreInputData.homePoints ?? ''}
+                          onChange={(e) => handleScoreInputChange(e)}
+                          placeholder="Gesamtbälle"
+                          className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <label htmlFor="awayPoints" className="block text-xs font-medium text-gray-600 dark:text-gray-400">Bälle Gast</label>
+                        <input
+                          type="number"
+                          id="awayPoints"
+                          name="awayPoints"
+                          min="0"
+                          value={scoreInputData.awayPoints ?? ''}
+                          onChange={(e) => handleScoreInputChange(e)}
+                          placeholder="Gesamtbälle"
+                          className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        />
+                      </div>
                     </div>
                   </div>
                 )}

@@ -82,6 +82,8 @@ export async function PUT(
       scoreData?: {
         homeScore?: number | null;
         awayScore?: number | null;
+        homePoints?: number | null; // Add total points
+        awayPoints?: number | null; // Add total points
         setScores?: Array<{ home: number | null, away: number | null }> | null;
       } | null;
     } = await request.json();
@@ -114,9 +116,10 @@ export async function PUT(
 
       // --- Case 1: MATCH_SCORE ---
       if (scoreEntryType === ScoreEntryType.MATCH_SCORE) {
-        const { homeScore, awayScore } = scoreData;
-
-        // Validate input scores
+        // Include homePoints and awayPoints
+        const { homeScore, awayScore, homePoints, awayPoints } = scoreData;
+ 
+        // Validate input scores (sets)
         if (homeScore === null || homeScore === undefined || awayScore === null || awayScore === undefined) {
           return NextResponse.json({ message: 'Bei Eingabe des Gesamtergebnisses müssen beide Werte (Heim/Gast) angegeben werden.' }, { status: 400 });
         }
@@ -131,7 +134,28 @@ export async function PUT(
 
         finalHomeScore = hs;
         finalAwayScore = as;
-        // Clear individual set scores
+
+        // Validate and add total points if provided
+        if (homePoints !== null && homePoints !== undefined) {
+           const hp = Number(homePoints);
+           if (isNaN(hp) || hp < 0 || !Number.isInteger(hp)) {
+              return NextResponse.json({ message: 'Ungültiger Wert für Bälle Heim. Nur positive ganze Zahlen erlaubt.' }, { status: 400 });
+           }
+           updateData.homePoints = hp;
+        } else {
+           updateData.homePoints = null; // Ensure it's null if not provided/invalid
+        }
+        if (awayPoints !== null && awayPoints !== undefined) {
+           const ap = Number(awayPoints);
+           if (isNaN(ap) || ap < 0 || !Number.isInteger(ap)) {
+              return NextResponse.json({ message: 'Ungültiger Wert für Bälle Gast. Nur positive ganze Zahlen erlaubt.' }, { status: 400 });
+           }
+           updateData.awayPoints = ap;
+        } else {
+           updateData.awayPoints = null; // Ensure it's null if not provided/invalid
+        }
+
+        // Clear individual set scores when MATCH_SCORE is used
         for (let i = 1; i <= 5; i++) {
           updateData[`homeSet${i}` as keyof Fixture] = null;
           updateData[`awaySet${i}` as keyof Fixture] = null;
@@ -257,6 +281,9 @@ export async function PUT(
            updateData[`homeSet${i}` as keyof Fixture] = null;
            updateData[`awaySet${i}` as keyof Fixture] = null;
         }
+        // Clear total points when SET_SCORES is used (they could be calculated if needed, but not stored directly)
+        updateData.homePoints = null;
+        updateData.awayPoints = null;
 
       } else {
         return NextResponse.json({ message: 'Unbekannter scoreEntryType für die Liga.' }, { status: 500 });

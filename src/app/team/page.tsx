@@ -66,6 +66,9 @@ interface Fixture {
     scoreEntryType: ScoreEntryType;
     setsToWin: number;
   };
+  // Optional total points (balls)
+  homePoints?: number | null;
+  awayPoints?: number | null;
 }
 
 export default function TeamPage() {
@@ -349,9 +352,10 @@ export default function TeamPage() {
       initialScoreData = {
         homeScore: fixture.homeScore ?? '', // Use empty string for input binding
         awayScore: fixture.awayScore ?? '', // Use empty string for input binding
+        homePoints: fixture.homePoints ?? '', // Add points
+        awayPoints: fixture.awayPoints ?? '', // Add points
       };
     }
-
     setFormData({
       fixtureDate: fixture.fixtureDate ? new Date(fixture.fixtureDate).toISOString().split('T')[0] : '',
       fixtureTime: fixture.fixtureTime || '',
@@ -387,12 +391,12 @@ export default function TeamPage() {
       };
       setFormData({ ...formData, scoreData: { setScores: updatedSetScores } });
     } else if (leagueType === ScoreEntryType.MATCH_SCORE) {
-      // Update homeScore or awayScore
+      // Update homeScore, awayScore, homePoints, or awayPoints
       setFormData({
         ...formData,
         scoreData: {
           ...formData.scoreData,
-          [name]: processedValue, // name is 'homeScore' or 'awayScore'
+          [name]: processedValue, // name is 'homeScore', 'awayScore', 'homePoints', or 'awayPoints'
         }
       });
     }
@@ -414,11 +418,14 @@ export default function TeamPage() {
           // Construct scoreData payload based on current formData.scoreData
           ...(formData.scoreData && {
             scoreData: editingFixture.league?.scoreEntryType === ScoreEntryType.MATCH_SCORE
-              ? {
+              ? { // MATCH_SCORE payload
                   homeScore: formData.scoreData.homeScore === '' || formData.scoreData.homeScore === null ? null : Number(formData.scoreData.homeScore),
-                  awayScore: formData.scoreData.awayScore === '' || formData.scoreData.awayScore === null ? null : Number(formData.scoreData.awayScore)
+                  awayScore: formData.scoreData.awayScore === '' || formData.scoreData.awayScore === null ? null : Number(formData.scoreData.awayScore),
+                  // Add points to payload
+                  homePoints: formData.scoreData.homePoints === '' || formData.scoreData.homePoints === null ? null : Number(formData.scoreData.homePoints),
+                  awayPoints: formData.scoreData.awayPoints === '' || formData.scoreData.awayPoints === null ? null : Number(formData.scoreData.awayPoints)
                 }
-              : {
+              : { // SET_SCORES payload
                   setScores: formData.scoreData.setScores
                     ?.map((set: { home: string | number | null, away: string | number | null }) => ({
                       home: set.home === '' || set.home === null ? null : Number(set.home),
@@ -694,9 +701,11 @@ export default function TeamPage() {
                         <div className="mt-2 space-y-3">
                           {/* Case 1: MATCH_SCORE */}
                           {editingFixture.league?.scoreEntryType === ScoreEntryType.MATCH_SCORE && formData.scoreData && (
-                            <div className="flex space-x-4">
-                              <div className="flex-1">
-                                <label htmlFor="homeScore" className="block text-xs font-medium text-gray-600">Sätze Heim</label>
+                            <div className="space-y-3"> {/* Wrap in div for spacing */}
+                              {/* Set Scores */}
+                              <div className="flex space-x-4">
+                                <div className="flex-1">
+                                  <label htmlFor="homeScore" className="block text-xs font-medium text-gray-600">Sätze Heim</label>
                                 <input
                                   type="number"
                                   id="homeScore"
@@ -720,6 +729,36 @@ export default function TeamPage() {
                                   placeholder={`0-${editingFixture.league.setsToWin}`}
                                   className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 rounded-md"
                                 />
+                                </div>
+                              </div>
+                              {/* Total Points (Balls) */}
+                              <div className="flex space-x-4">
+                                <div className="flex-1">
+                                  <label htmlFor="homePoints" className="block text-xs font-medium text-gray-600">Bälle Heim</label>
+                                  <input
+                                    type="number"
+                                    id="homePoints"
+                                    name="homePoints"
+                                    min="0"
+                                    value={formData.scoreData.homePoints ?? ''}
+                                    onChange={(e) => handleInputChange(e)}
+                                    placeholder="Gesamtbälle"
+                                    className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 rounded-md"
+                                  />
+                                </div>
+                                <div className="flex-1">
+                                  <label htmlFor="awayPoints" className="block text-xs font-medium text-gray-600">Bälle Gast</label>
+                                  <input
+                                    type="number"
+                                    id="awayPoints"
+                                    name="awayPoints"
+                                    min="0"
+                                    value={formData.scoreData.awayPoints ?? ''}
+                                    onChange={(e) => handleInputChange(e)}
+                                    placeholder="Gesamtbälle"
+                                    className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 rounded-md"
+                                  />
+                                </div>
                               </div>
                             </div>
                           )}
