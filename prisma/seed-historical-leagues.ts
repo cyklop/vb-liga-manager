@@ -378,53 +378,41 @@ export async function main() {
                 //     }
                 // }
 
-                try {
-                    const fixtureInputData: Prisma.FixtureCreateInput = {
-                        leagueId: league.id,
-                        order: order++,
-                        matchday: matchday,
-                        round: matchday, // Annahme: Runde = Spieltag
-                        homeTeamId: homeTeamId,
-                        awayTeamId: awayTeamId,
-                        fixtureDate: fixtureDate,
-                        // homeSets: homeSets, // Feld existiert nicht im Schema
-                        // awaySets: awaySets, // Feld existiert nicht im Schema
-                        // homeMatchPoints: homeMatchPoints, // Feld existiert nicht im Schema
-                        // awayMatchPoints: awayMatchPoints, // Feld existiert nicht im Schema
-                        // notes: fix.Anmerkungen || null, // Feld existiert nicht im Schema
-                        // Einzelne Sätze (falls Schema sie hat)
-                        homeSet1: safeParseInt(fix.S1H),
-                        awaySet1: safeParseInt(fix.S1G),
-                        homeSet2: safeParseInt(fix.S2H),
-                        awaySet2: safeParseInt(fix.S2G),
-                        homeSet3: safeParseInt(fix.S3H),
-                        awaySet3: safeParseInt(fix.S3G),
-                        homeSet4: safeParseInt(fix.S4H),
-                        awaySet4: safeParseInt(fix.S4G),
-                        homeSet5: safeParseInt(fix.S5H),
-                        awaySet5: safeParseInt(fix.S5G),
-                    };
+                // Fixtures erstellen
+                let createdCount = 0;
+                let skippedCount = 0;
+                let order = 1;
+                for (const fix of fixturesData) {
+                    const homeTeamName = normalizeTeamName(fix.Heimmannschaft);
+                    const awayTeamName = normalizeTeamName(fix.Gastmannschaft);
 
-                    // --- Gezieltes Logging für 2015-16 ---
-                    if (filename === '2015-16.json' && order <= 2) { // Logge nur die ersten paar Einträge zur Übersicht
-                        console.log(`      DEBUG Fixture Input Data for ${filename} (Order ${order-1}): ${JSON.stringify(fixtureInputData)}`);
+                    const homeTeamId = globalTeamMap[homeTeamName];
+                    const awayTeamId = globalTeamMap[awayTeamName];
+
+                    if (!homeTeamId || !awayTeamId) {
+                        console.warn(`      Skipping fixture: Could not find team ID for "${homeTeamName}" or "${awayTeamName}" in global map.`);
+                        skippedCount++;
+                        continue;
                     }
-                    // --- Ende Logging ---
 
-                    await prisma.fixture.create({ data: fixtureInputData });
-                    createdCount++;
-                } catch (fixtureError) {
-                     console.error(`      Error creating fixture for ${homeTeamName} vs ${awayTeamName}:`, fixtureError);
+                    const fixtureDate = parseDateTime(fix.Datum, fix.Uhrzeit);
+                    const matchday = safeParseInt(fix.Spieltag);
+                    // Die Felder homeSets, awaySets, homeMatchPoints, awayMatchPoints scheinen nicht im Schema zu sein.
+                    // const homeSets = safeParseInt(fix.EndH);
+                    // const awaySets = safeParseInt(fix.EndG);
+                    // const homeMatchPoints = safeParseInt(fix.PktH);
+                    // const awayMatchPoints = safeParseInt(fix.PktG);
+
+                    try {
+                        const fixtureInputData: Prisma.FixtureCreateInput = {
+                            order: order, // order wird nach erfolgreichem Create erhöht
                             matchday: matchday,
                             round: matchday, // Annahme: Runde = Spieltag
-                            homeTeamId: homeTeamId,
-                            awayTeamId: awayTeamId,
                             fixtureDate: fixtureDate,
-                            // homeSets: homeSets, // Feld existiert nicht im Schema
-                            // awaySets: awaySets, // Feld existiert nicht im Schema
-                            // homeMatchPoints: homeMatchPoints, // Feld existiert nicht im Schema
-                            // awayMatchPoints: awayMatchPoints, // Feld existiert nicht im Schema
-                            // notes: fix.Anmerkungen || null, // Feld existiert nicht im Schema
+                            // Verknüpfungen über connect herstellen
+                            league: { connect: { id: league.id } },
+                            homeTeam: { connect: { id: homeTeamId } },
+                            awayTeam: { connect: { id: awayTeamId } },
                             // Einzelne Sätze (falls Schema sie hat)
                             homeSet1: safeParseInt(fix.S1H),
                             awaySet1: safeParseInt(fix.S1G),
@@ -436,35 +424,48 @@ export async function main() {
                             awaySet4: safeParseInt(fix.S4G),
                             homeSet5: safeParseInt(fix.S5H),
                             awaySet5: safeParseInt(fix.S5G),
-                        }
-                    });
-                    createdCount++;
-                } catch (fixtureError) {
-                     console.error(`      Error creating fixture for ${homeTeamName} vs ${awayTeamName}:`, fixtureError);
-                     console.error(`      Fixture data:`, JSON.stringify(fix));
-                     skippedCount++;
-                     // Entscheide, ob hier abgebrochen werden soll oder nur dieses übersprungen wird
-                     // throw fixtureError; // Abbruch
-                }
-            }
-            console.log(`   Created ${createdCount} fixtures, skipped ${skippedCount}.`);
+                            // homeSets: homeSets, // Feld existiert nicht im Schema
+                            // awaySets: awaySets, // Feld existiert nicht im Schema
+                            // homeMatchPoints: homeMatchPoints, // Feld existiert nicht im Schema
+                            // awayMatchPoints: awayMatchPoints, // Feld existiert nicht im Schema
+                            // notes: fix.Anmerkungen || null, // Feld existiert nicht im Schema
+                        };
 
-        } catch (error) {
-            console.error(`❌ Error processing file ${filename}:`, error);
-            throw error; // Wirft den Fehler weiter, um den Prozess in seed.ts zu stoppen
+                        // --- Gezieltes Logging für 2015-16 (ENTFERNT, da fehlerhaft eingefügt) ---
+                        // if (filename === '2015-16.json' && order <= 2) {
+                        //     console.log(`      DEBUG Fixture Input Data for ${filename} (Order ${order}): ${JSON.stringify(fixtureInputData)}`);
+                        // }
+                        // --- Ende Logging ---
+
+                        await prisma.fixture.create({ data: fixtureInputData });
+                        order++; // Erhöhe Order nur bei Erfolg
+                        createdCount++;
+                    } catch (fixtureError) {
+                        console.error(`      Error creating fixture for ${homeTeamName} vs ${awayTeamName}:`, fixtureError);
+                        console.error(`      Fixture data:`, JSON.stringify(fix));
+                        skippedCount++;
+                        // Entscheide, ob hier abgebrochen werden soll oder nur dieses übersprungen wird
+                        // throw fixtureError; // Abbruch
+                    }
+                }
+                console.log(`   Created ${createdCount} fixtures, skipped ${skippedCount}.`);
+
+            } catch (error) {
+                console.error(`❌ Error processing file ${filename}:`, error);
+                throw error; // Wirft den Fehler weiter, um den Prozess in seed.ts zu stoppen
+            }
         }
     }
-}
 
-// Führe main aus, wenn das Skript direkt aufgerufen wird (optional, da es von seed.ts importiert wird)
-if (require.main === module) {
-  main()
-    .catch(async (e) => {
-      console.error(e);
-      await prisma.$disconnect();
-      process.exit(1);
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
-}
+    // Führe main aus, wenn das Skript direkt aufgerufen wird (optional, da es von seed.ts importiert wird)
+    if (require.main === module) {
+    main()
+        .catch(async (e) => {
+        console.error(e);
+        await prisma.$disconnect();
+        process.exit(1);
+        })
+        .finally(async () => {
+        await prisma.$disconnect();
+        });
+    }
