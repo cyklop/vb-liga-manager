@@ -20,7 +20,7 @@
     "prisma:seed:all": "npm run prisma:seed:base && npm run prisma:seed:assign-teams && npm run prisma:seed:fixtures"
   },
   "prisma": {
-    "seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts --schema=prisma/schema.prod.prisma"
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
