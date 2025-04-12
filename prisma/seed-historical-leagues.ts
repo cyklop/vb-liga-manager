@@ -261,30 +261,39 @@ export async function main() {
             const hasReturnMatches = totalPairings > 0 && (pairingsWithReturn / totalPairings > 0.5);
             console.log(`   Return Match Analysis: ${pairingsWithReturn} of ${totalPairings} pairings occur >= 2 times. hasReturnMatches=${hasReturnMatches}`);
 
-            // Punktregeln definieren
+            // Punktregeln und ScoreEntryType definieren
             let pointsConfig: Partial<Prisma.LeagueCreateInput> = {};
-            if (isLastSeason) {
-                // Detaillierte Regeln für die letzte Saison (Annahme: 3/2/1/0)
-                // Passe dies an dein tatsächliches Schema an, falls die Felder anders heißen
+            // Extrahiere das Startjahr der Saison aus dem Dateinamen (z.B. 2015 aus "2015-16.json")
+            const seasonStartYearMatch = filename.match(/^(\d{4})/);
+            const seasonStartYear = seasonStartYearMatch ? parseInt(seasonStartYearMatch[1], 10) : 0;
+
+            // Setze ScoreEntryType basierend auf dem Jahr
+            if (seasonStartYear >= 2022) {
+                // Ab Saison 2022/23 -> MATCH_SCORE (Gesamtpunkte/Bälle relevant, auch wenn wir sie nicht speichern)
+                pointsConfig.scoreEntryType = ScoreEntryType.MATCH_SCORE;
+                // Punktregeln für neuere Saisons (Annahme: 3/2/1/0)
                 pointsConfig = {
                     pointsWin30: 3, pointsWin31: 3, pointsWin32: 2,
                     pointsLoss32: 1,
                     // pointsLoss13: 0, // Feld existiert nicht im Schema
+                    pointsLoss32: 1,
+                    // pointsLoss13: 0, // Feld existiert nicht im Schema
                     // pointsLoss03: 0, // Feld existiert nicht im Schema
                 };
-                pointsConfig.scoreEntryType = ScoreEntryType.MATCH_SCORE; // Korrigiert: Enum-Wert für letzte Saison
-                 console.log("   Using detailed point system (3/2/1/0) and ScoreEntryType.MATCH_SCORE for last season.");
+                console.log(`   Using detailed point system (3/2/1/0) and ScoreEntryType.MATCH_SCORE for season ${seasonYear}.`);
             } else {
+                // Vor Saison 2022/23 -> SET_SCORES (Einzelsätze relevant)
+                pointsConfig.scoreEntryType = ScoreEntryType.SET_SCORES;
                 // Einfache Regeln für historische Saisons (2/0)
-                // Mappe 2/0 auf die vorhandenen Felder
                 pointsConfig = {
                     pointsWin30: 2, pointsWin31: 2, pointsWin32: 2,
                     pointsLoss32: 0,
                     // pointsLoss13: 0, // Feld existiert nicht im Schema
+                    pointsLoss32: 0,
+                    // pointsLoss13: 0, // Feld existiert nicht im Schema
                     // pointsLoss03: 0, // Feld existiert nicht im Schema
                 };
-                pointsConfig.scoreEntryType = ScoreEntryType.SET_SCORES; // Korrigiert: Enum-Wert für historische Saisons
-                console.log("   Using simple point system (2/0) and ScoreEntryType.SET_SCORES for historical season.");
+                console.log(`   Using simple point system (2/0) and ScoreEntryType.SET_SCORES for season ${seasonYear}.`);
             }
 
             // Liga erstellen/aktualisieren
@@ -351,27 +360,7 @@ export async function main() {
                 // }
 
                 try {
-                    // --- Logging hinzugefügt ---
-                    const logData = {
-                        file: filename,
-                        home: homeTeamName,
-                        away: awayTeamName,
-                        dateStr: fix.Datum,
-                        timeStr: fix.Uhrzeit,
-                        parsedDate: fixtureDate?.toISOString() || 'null', // Zeigt Datum+Zeit in UTC
-                        set1H: safeParseInt(fix.S1H),
-                        set1G: safeParseInt(fix.S1G),
-                        set2H: safeParseInt(fix.S2H), // Logge mehr Sätze zum Debuggen
-                        set2G: safeParseInt(fix.S2G),
-                        set3H: safeParseInt(fix.S3H),
-                        set3G: safeParseInt(fix.S3G),
-                    };
-                    // Logge nur für das erste Spiel jeder Datei oder wenn das Datum/Sätze null sind
-                    if (order === 1 || fixtureDate === null || logData.set1H === null) {
-                         console.log(`      DEBUG Fixture Data (order ${order}): ${JSON.stringify(logData)}`);
-                    }
-                    // --- Ende Logging ---
-
+                    // Debug-Logging entfernt, da Ursache für fehlende Sätze klar ist.
                     await prisma.fixture.create({
                         data: {
                             leagueId: league.id,
