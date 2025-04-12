@@ -340,14 +340,14 @@ export default function TeamPage() {
     }
 
     setEditingFixture(fixture);
-
+ 
     // Initialize formData based on league type and existing fixture data
-    let initialScoreData = null;
+    let initialScoreData: MatchScoreData | SetScoresData | null = null; // Explicitly type initialScoreData
     const league = fixture.league;
     const maxSets = 2 * league.setsToWin - 1;
-
+ 
     if (league.scoreEntryType === ScoreEntryType.SET_SCORES) {
-      const initialSetScores = Array(maxSets).fill(null).map((_, i) => {
+      const initialSetScores: SetScore[] = Array(maxSets).fill(null).map((_, i) => { // Type the array
         const setNum = i + 1;
         return {
           home: fixture[`homeSet${setNum}` as keyof Fixture] ?? '', // Use empty string for input binding
@@ -369,11 +369,17 @@ export default function TeamPage() {
       scoreData: initialScoreData
     });
   };
-
+ 
   const handleCancelEdit = () => {
     setEditingFixture(null);
+    // Reset formData as well
+    setFormData({
+      fixtureDate: '',
+      fixtureTime: '',
+      scoreData: null
+    });
   };
-
+ 
   // Updated handler for score input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index?: number) => {
     const { name, value } = e.target;
@@ -452,6 +458,12 @@ export default function TeamPage() {
           fetchHomeFixtures(editingFixture.homeTeamId);
         }
         setEditingFixture(null);
+        // Reset formData after successful submission
+        setFormData({
+          fixtureDate: '',
+          fixtureTime: '',
+          scoreData: null
+        });
         toast.success('Spielergebnis erfolgreich gespeichert!'); // Erfolgs-Toast
       } else {
         const error = await response.json();
