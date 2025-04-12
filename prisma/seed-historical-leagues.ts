@@ -379,11 +379,42 @@ export async function main() {
                 // }
 
                 try {
-                    // Debug-Logging entfernt, da Ursache für fehlende Sätze klar ist.
-                    await prisma.fixture.create({
-                        data: {
-                            leagueId: league.id,
-                            order: order++,
+                    const fixtureInputData: Prisma.FixtureCreateInput = {
+                        leagueId: league.id,
+                        order: order++,
+                        matchday: matchday,
+                        round: matchday, // Annahme: Runde = Spieltag
+                        homeTeamId: homeTeamId,
+                        awayTeamId: awayTeamId,
+                        fixtureDate: fixtureDate,
+                        // homeSets: homeSets, // Feld existiert nicht im Schema
+                        // awaySets: awaySets, // Feld existiert nicht im Schema
+                        // homeMatchPoints: homeMatchPoints, // Feld existiert nicht im Schema
+                        // awayMatchPoints: awayMatchPoints, // Feld existiert nicht im Schema
+                        // notes: fix.Anmerkungen || null, // Feld existiert nicht im Schema
+                        // Einzelne Sätze (falls Schema sie hat)
+                        homeSet1: safeParseInt(fix.S1H),
+                        awaySet1: safeParseInt(fix.S1G),
+                        homeSet2: safeParseInt(fix.S2H),
+                        awaySet2: safeParseInt(fix.S2G),
+                        homeSet3: safeParseInt(fix.S3H),
+                        awaySet3: safeParseInt(fix.S3G),
+                        homeSet4: safeParseInt(fix.S4H),
+                        awaySet4: safeParseInt(fix.S4G),
+                        homeSet5: safeParseInt(fix.S5H),
+                        awaySet5: safeParseInt(fix.S5G),
+                    };
+
+                    // --- Gezieltes Logging für 2015-16 ---
+                    if (filename === '2015-16.json' && order <= 2) { // Logge nur die ersten paar Einträge zur Übersicht
+                        console.log(`      DEBUG Fixture Input Data for ${filename} (Order ${order-1}): ${JSON.stringify(fixtureInputData)}`);
+                    }
+                    // --- Ende Logging ---
+
+                    await prisma.fixture.create({ data: fixtureInputData });
+                    createdCount++;
+                } catch (fixtureError) {
+                     console.error(`      Error creating fixture for ${homeTeamName} vs ${awayTeamName}:`, fixtureError);
                             matchday: matchday,
                             round: matchday, // Annahme: Runde = Spieltag
                             homeTeamId: homeTeamId,
