@@ -50,11 +50,25 @@ interface Fixture {
   homeSets?: number | null;
   awaySets?: number | null;
   homePoints?: number | null;
-  awayPoints?: number | null;
+  awayPoints?: number | null; // Keep for now
   homeMatchPoints?: number | null;
   awayMatchPoints?: number | null;
   fixtureTime?: string | null; // Add fixtureTime
   order: number;
+  // Add individual set scores
+  homeSet1?: number | null; awaySet1?: number | null;
+  homeSet2?: number | null; awaySet2?: number | null;
+  homeSet3?: number | null; awaySet3?: number | null;
+  homeSet4?: number | null; awaySet4?: number | null; // For Bo5
+  homeSet5?: number | null; awaySet5?: number | null; // For Bo5
+  // Add final score in sets
+  homeScore?: number | null;
+  awayScore?: number | null;
+  // Assume league context might be added to fixture data by API later
+  league?: {
+    scoreEntryType: ScoreEntryType;
+    setsToWin: number;
+  };
 }
 
 export default function TeamPage() {
@@ -709,21 +723,39 @@ export default function TeamPage() {
                           {formatDate(fixture.fixtureDate)}
                         </div>
                       </div>
-                      
                       <div className="flex items-center">
-                        {fixture.homeSets !== null && fixture.awaySets !== null ? (
+                        {/* Conditional Score Display */}
+                        {fixture.homeScore !== null && fixture.awayScore !== null ? (
                           <div className="text-sm font-semibold mr-4">
-                            {fixture.homeSets} : {fixture.awaySets}
-                            {fixture.homePoints !== null && fixture.awayPoints !== null && (
-                              <span className="ml-2 text-xs text-gray-500">
-                                (Bälle: {fixture.homePoints} : {fixture.awayPoints})
+                            {/* Assume fixture.league exists or default to match score */}
+                            {(() => {
+                              const displayType = fixture.league?.scoreEntryType ?? ScoreEntryType.MATCH_SCORE;
+                              if (displayType === ScoreEntryType.SET_SCORES) {
+                                // Display set scores
+                                return [1, 2, 3, 4, 5]
+                                  .map(setNum => ({
+                                    home: fixture[`homeSet${setNum}` as keyof Fixture],
+                                    away: fixture[`awaySet${setNum}` as keyof Fixture],
+                                  }))
+                                  .filter(set => set.home !== null && set.away !== null)
+                                  .map(set => `${set.home}:${set.away}`)
+                                  .join(', ');
+                              } else {
+                                // Display match score
+                                return `${fixture.homeScore} : ${fixture.awayScore}`;
+                              }
+                            })()}
+                            {/* Display Match Points */}
+                            {(fixture.homeMatchPoints !== null && fixture.awayMatchPoints !== null) && (
+                              <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                                (P: {fixture.homeMatchPoints}:{fixture.awayMatchPoints})
                               </span>
                             )}
                           </div>
                         ) : (
-                          <div className="text-sm text-gray-500 mr-4">Ergebnis ausstehend</div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400 mr-4">Ergebnis ausstehend</div>
                         )}
-                        
+
                         <button
                           onClick={() => handleEditFixture(fixture)}
                           className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded dark:text-foreground dark:hover:bg-muted"

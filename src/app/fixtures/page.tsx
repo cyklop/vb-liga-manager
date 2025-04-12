@@ -249,20 +249,42 @@ export default function FixturesPage() {
                           </div>
                         </div>
                         <div className="flex flex-col items-end">
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-gray-500 dark:text-gray-400">
                             {formatDateTime(fixture.fixtureDate, fixture.fixtureTime)} {/* Use new function */}
                           </div>
-                          {fixture.homeSets !== null && fixture.awaySets !== null ? (
+                          {/* Conditional Score Display */}
+                          {fixture.homeScore !== null && fixture.awayScore !== null ? (
                             <div className="mt-1 text-sm font-semibold">
-                              {fixture.homeSets} : {fixture.awaySets}
-                              {fixture.homePoints !== null && fixture.awayPoints !== null && (
-                                <span className="ml-2 text-xs text-gray-500">
-                                  (Bälle: {fixture.homePoints} : {fixture.awayPoints})
+                              {/* Find the league context for this fixture */}
+                              {(() => {
+                                const currentLeague = leagues.find(l => l.id === fixture.leagueId);
+                                // Default to MATCH_SCORE display if league context or type is missing
+                                const displayType = currentLeague?.scoreEntryType ?? ScoreEntryType.MATCH_SCORE;
+
+                                if (displayType === ScoreEntryType.SET_SCORES) {
+                                  // Display set scores
+                                  return [1, 2, 3, 4, 5]
+                                    .map(setNum => ({
+                                      home: fixture[`homeSet${setNum}` as keyof Fixture],
+                                      away: fixture[`awaySet${setNum}` as keyof Fixture],
+                                    }))
+                                    .filter(set => set.home !== null && set.away !== null)
+                                    .map(set => `${set.home}:${set.away}`)
+                                    .join(', ');
+                                } else {
+                                  // Display match score (homeScore:awayScore)
+                                  return `${fixture.homeScore} : ${fixture.awayScore}`;
+                                }
+                              })()}
+                              {/* Display Match Points */}
+                              {(fixture.homeMatchPoints !== null && fixture.awayMatchPoints !== null) && (
+                                <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                                  (P: {fixture.homeMatchPoints}:{fixture.awayMatchPoints})
                                 </span>
                               )}
                             </div>
                           ) : (
-                            <div className="mt-1 text-sm text-gray-500">Ergebnis ausstehend</div>
+                            <div className="mt-1 text-sm text-gray-500 dark:text-gray-400">Ergebnis ausstehend</div>
                           )}
                         </div>
                       </div>

@@ -24,10 +24,19 @@ interface Fixture {
   homeSets?: number | null
   awaySets?: number | null
   homePoints?: number | null
-  awayPoints?: number | null
+  awayPoints?: number | null // Keep for now
   homeMatchPoints?: number | null
   awayMatchPoints?: number | null
   fixtureTime?: string | null // Add fixtureTime
+  // Add individual set scores
+  homeSet1?: number | null; awaySet1?: number | null;
+  homeSet2?: number | null; awaySet2?: number | null;
+  homeSet3?: number | null; awaySet3?: number | null;
+  homeSet4?: number | null; awaySet4?: number | null; // For Bo5
+  homeSet5?: number | null; awaySet5?: number | null; // For Bo5
+  // Add final score in sets
+  homeScore?: number | null;
+  awayScore?: number | null;
 }
 
 interface League {
@@ -40,6 +49,9 @@ interface League {
   pointsWin31: number
   pointsWin32: number
   pointsLoss32: number
+  // Add score entry config fields to interface (API should provide these)
+  scoreEntryType: ScoreEntryType
+  setsToWin: number
 }
 
 interface TableEntry {
@@ -230,10 +242,27 @@ export default function PublicLeaguePage() {
                           {formatDateTime(fixture.fixtureDate, fixture.fixtureTime)} {/* Use new function */}
                         </td>
                         <td className="py-2 px-4">{fixture.homeTeam.name}</td>
-                        <td className="py-2 px-4 text-center">
-                          {fixture.homeSets !== null && fixture.awaySets !== null
-                            ? `${fixture.homeSets}:${fixture.awaySets}`
+                        <td className="py-2 px-4 text-center font-semibold">
+                          {/* Conditional Score Display */}
+                          {fixture.homeScore !== null && fixture.awayScore !== null
+                            ? (league.scoreEntryType === ScoreEntryType.SET_SCORES
+                                ? [1, 2, 3, 4, 5] // Max 5 sets
+                                    .map(setNum => ({
+                                      home: fixture[`homeSet${setNum}` as keyof Fixture],
+                                      away: fixture[`awaySet${setNum}` as keyof Fixture],
+                                    }))
+                                    .filter(set => set.home !== null && set.away !== null) // Only show played sets
+                                    .map(set => `${set.home}:${set.away}`)
+                                    .join(', ')
+                                : `${fixture.homeScore}:${fixture.awayScore}` // Show match score
+                              )
                             : '-:-'}
+                           {/* Optional: Display Match Points */}
+                           {(fixture.homeMatchPoints !== null && fixture.awayMatchPoints !== null) && (
+                             <span className="ml-2 text-xs text-gray-500 dark:text-gray-400 font-normal">
+                               (P: {fixture.homeMatchPoints}:{fixture.awayMatchPoints})
+                             </span>
+                           )}
                         </td>
                         <td className="py-2 px-4">{fixture.awayTeam.name}</td>
                       </tr>
