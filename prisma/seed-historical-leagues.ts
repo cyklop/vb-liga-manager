@@ -112,6 +112,11 @@ function parseDateTime(dateStr: string | null | undefined, timeStr: string | nul
             return null;
         }
 
+        // Das resultierende Date-Objekt repräsentiert den korrekten Zeitpunkt.
+        // Die .toISOString()-Methode gibt immer UTC ('Z') zurück,
+        // aber der zugrunde liegende Zeitpunkt ist korrekt.
+        // Prisma speichert DateTime-Werte typischerweise als UTC in der DB.
+        // Die korrekte Anzeige in der lokalen Zeitzone ist Aufgabe des Frontends.
         return dateObj;
 
     } catch (error) {
@@ -267,10 +272,30 @@ export async function main() {
             const seasonStartYearMatch = filename.match(/^(\d{4})/);
             const seasonStartYear = seasonStartYearMatch ? parseInt(seasonStartYearMatch[1], 10) : 0;
 
-            // Setze ScoreEntryType basierend auf dem Jahr
+            // Ermittle ScoreEntryType basierend auf den Daten im ersten Fixture
+            let detectedScoreEntryType = ScoreEntryType.SET_SCORES; // Standardwert
+            const firstFixture = fixturesData[0];
+            if (firstFixture) {
+                const hasSetScores = firstFixture.S1H !== null && firstFixture.S1H !== undefined && String(firstFixture.S1H).trim() !== '' ||
+                                     firstFixture.S1G !== null && firstFixture.S1G !== undefined && String(firstFixture.S1G).trim() !== '';
+                const hasBallScores = firstFixture.hasOwnProperty('BälleH') || firstFixture.hasOwnProperty('BälleG'); // Prüfe ob Schlüssel existiert
+
+                if (hasSetScores) {
+                    detectedScoreEntryType = ScoreEntryType.SET_SCORES;
+                    console.log(`   Detected ScoreEntryType.SET_SCORES based on S1H/S1G in first fixture.`);
+                } else if (hasBallScores) {
+                    detectedScoreEntryType = ScoreEntryType.MATCH_SCORE;
+                    console.log(`   Detected ScoreEntryType.MATCH_SCORE based on BälleH/BälleG in first fixture.`);
+                } else {
+                    console.warn(`   Could not reliably detect ScoreEntryType for ${filename}. Defaulting to SET_SCORES.`);
+                }
+            } else {
+                 console.warn(`   Could not read first fixture to detect ScoreEntryType for ${filename}. Defaulting to SET_SCORES.`);
+            }
+            pointsConfig.scoreEntryType = detectedScoreEntryType; // Setze den ermittelten Typ
+
+            // Setze Punktregeln basierend auf dem Jahr (unabhängig vom ScoreEntryType)
             if (seasonStartYear >= 2022) {
-                // Ab Saison 2022/23 -> MATCH_SCORE (Gesamtpunkte/Bälle relevant, auch wenn wir sie nicht speichern)
-                pointsConfig.scoreEntryType = ScoreEntryType.MATCH_SCORE;
                 // Punktregeln für neuere Saisons (Annahme: 3/2/1/0)
                 pointsConfig = {
                     pointsWin30: 3, pointsWin31: 3, pointsWin32: 2,
@@ -278,10 +303,8 @@ export async function main() {
                     // pointsLoss13: 0, // Feld existiert nicht im Schema
                     // pointsLoss03: 0, // Feld existiert nicht im Schema
                 };
-                console.log(`   Using detailed point system (3/2/1/0) and ScoreEntryType.MATCH_SCORE for season ${seasonYear}.`);
+                console.log(`   Using detailed point system (3/2/1/0) for season ${seasonYear}.`);
             } else {
-                // Vor Saison 2022/23 -> SET_SCORES (Einzelsätze relevant)
-                pointsConfig.scoreEntryType = ScoreEntryType.SET_SCORES;
                 // Einfache Regeln für historische Saisons (2/0)
                 pointsConfig = {
                     pointsWin30: 2, pointsWin31: 2, pointsWin32: 2,
@@ -289,7 +312,7 @@ export async function main() {
                     // pointsLoss13: 0, // Feld existiert nicht im Schema
                     // pointsLoss03: 0, // Feld existiert nicht im Schema
                 };
-                console.log(`   Using simple point system (2/0) and ScoreEntryType.SET_SCORES for season ${seasonYear}.`);
+                console.log(`   Using simple point system (2/0) for season ${seasonYear}.`);
             }
 
             // Liga erstellen/aktualisieren
