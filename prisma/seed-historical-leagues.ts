@@ -272,8 +272,8 @@ export async function main() {
                     // pointsLoss13: 0, // Feld existiert nicht im Schema
                     // pointsLoss03: 0, // Feld existiert nicht im Schema
                 };
-                pointsConfig.scoreEntryType = ScoreEntryType.POINTS; // Setze ScoreEntryType für letzte Saison
-                 console.log("   Using detailed point system (3/2/1/0) and ScoreEntryType.POINTS for last season.");
+                pointsConfig.scoreEntryType = ScoreEntryType.MATCH_SCORE; // Korrigiert: Enum-Wert für letzte Saison
+                 console.log("   Using detailed point system (3/2/1/0) and ScoreEntryType.MATCH_SCORE for last season.");
             } else {
                 // Einfache Regeln für historische Saisons (2/0)
                 // Mappe 2/0 auf die vorhandenen Felder
@@ -283,8 +283,8 @@ export async function main() {
                     // pointsLoss13: 0, // Feld existiert nicht im Schema
                     // pointsLoss03: 0, // Feld existiert nicht im Schema
                 };
-                pointsConfig.scoreEntryType = ScoreEntryType.SETS; // Setze ScoreEntryType für historische Saisons
-                console.log("   Using simple point system (2/0) and ScoreEntryType.SETS for historical season.");
+                pointsConfig.scoreEntryType = ScoreEntryType.SET_SCORES; // Korrigiert: Enum-Wert für historische Saisons
+                console.log("   Using simple point system (2/0) and ScoreEntryType.SET_SCORES for historical season.");
             }
 
             // Liga erstellen/aktualisieren
