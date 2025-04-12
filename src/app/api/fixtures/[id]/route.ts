@@ -177,7 +177,26 @@ export async function PUT(
           if (isNaN(homePoints) || isNaN(awayPoints) || homePoints < 0 || awayPoints < 0 || !Number.isInteger(homePoints) || !Number.isInteger(awayPoints)) {
             return NextResponse.json({ message: `Satz ${setIndex}: Ungültige Punktwerte. Nur positive ganze Zahlen erlaubt.` }, { status: 400 });
           }
-          // TODO: Add more specific volleyball score validation if needed (e.g., min 25 points, 2 point difference, tie-break rules)
+
+          // Volleyball Score Validation
+          const isTieBreak = setIndex === (2 * setsToWin - 1); // e.g., 5th set in Bo5, 3rd set in Bo3
+          const minPoints = isTieBreak ? 15 : 25;
+          const winnerPoints = Math.max(homePoints, awayPoints);
+          const loserPoints = Math.min(homePoints, awayPoints);
+
+          if (winnerPoints < minPoints) {
+            // Winner must reach minimum points
+            return NextResponse.json({ message: `Satz ${setIndex}: Das siegreiche Team muss mindestens ${minPoints} Punkte erreichen.` }, { status: 400 });
+          }
+          if (winnerPoints === minPoints && loserPoints > winnerPoints - 2) {
+             // If winner reached exactly minPoints, loser must have max minPoints - 2
+             return NextResponse.json({ message: `Satz ${setIndex}: Bei ${minPoints} Punkten muss der Unterschied mindestens 2 Punkte betragen.` }, { status: 400 });
+          }
+          if (winnerPoints > minPoints && winnerPoints - loserPoints !== 2) {
+            // If winner has more than minPoints, difference must be exactly 2
+            return NextResponse.json({ message: `Satz ${setIndex}: Bei über ${minPoints} Punkten muss der Unterschied genau 2 Punkte betragen.` }, { status: 400 });
+          }
+          // End Volleyball Score Validation
 
           updateData[`homeSet${setIndex}` as keyof Fixture] = homePoints;
           updateData[`awaySet${setIndex}` as keyof Fixture] = awayPoints;

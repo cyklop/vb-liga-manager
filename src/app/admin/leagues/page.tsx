@@ -75,12 +75,6 @@ interface Fixture {
   homeMatchPoints?: number | null // Points for the league table
   awayMatchPoints?: number | null // Points for the league table
 
-  // Deprecated / To be reviewed fields (consider removing if not used)
-  homeSets?: number | null // DEPRECATED - Use homeScore
-  awaySets?: number | null // DEPRECATED - Use awayScore
-  homePoints?: number | null // DEPRECATED - Maybe useful for tie-breakers?
-  awayPoints?: number | null // DEPRECATED - Maybe useful for tie-breakers?
-
   order: number
 }
 

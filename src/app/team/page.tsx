@@ -48,10 +48,6 @@ interface Fixture {
     name: string;
   };
   fixtureDate?: string | null;
-  homeSets?: number | null;
-  awaySets?: number | null;
-  homePoints?: number | null;
-  awayPoints?: number | null; // Keep for now
   homeMatchPoints?: number | null;
   awayMatchPoints?: number | null;
   fixtureTime?: string | null; // Add fixtureTime
