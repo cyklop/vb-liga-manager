@@ -378,61 +378,55 @@ export async function main() {
                         console.warn(`      Points mismatch for ${homeTeamName} vs ${awayTeamName}: Sets (${homeSets}:${awaySets}), Points (${homeMatchPoints}:${awayMatchPoints})`);
                     }
                 }
-                    // Die Felder homeSets, awaySets, homeMatchPoints, awayMatchPoints scheinen nicht im Schema zu sein.
-                    // const homeSets = safeParseInt(fix.EndH);
-                    // const awaySets = safeParseInt(fix.EndG);
-                    // const homeMatchPoints = safeParseInt(fix.PktH);
-                    // const awayMatchPoints = safeParseInt(fix.PktG);
+                try {
+                    // Datenobjekt für Prisma erstellen
+                    const fixtureInputData = {
+                        order: order, // order wird nach erfolgreichem Create erhöht
+                        matchday: matchday,
+                        round: matchday, // Annahme: Runde = Spieltag
+                        fixtureDate: fixtureDate,
+                        // Verknüpfungen über connect herstellen
+                        league: { connect: { id: league.id } },
+                        homeTeam: { connect: { id: homeTeamId } },
+                        awayTeam: { connect: { id: awayTeamId } },
+                        // Einzelne Sätze
+                        homeSet1: safeParseInt(fix.S1H),
+                        awaySet1: safeParseInt(fix.S1G),
+                        homeSet2: safeParseInt(fix.S2H),
+                        awaySet2: safeParseInt(fix.S2G),
+                        homeSet3: safeParseInt(fix.S3H),
+                        awaySet3: safeParseInt(fix.S3G),
+                        homeSet4: safeParseInt(fix.S4H),
+                        awaySet4: safeParseInt(fix.S4G),
+                        homeSet5: safeParseInt(fix.S5H),
+                        awaySet5: safeParseInt(fix.S5G),
+                        // Gesamtergebnisse
+                        homeScore: homeSets,
+                        awayScore: awaySets,
+                        homeMatchPoints: homeMatchPoints,
+                        awayMatchPoints: awayMatchPoints,
+                        notes: fix.Anmerkungen || null,
+                    };
 
-                    try {
-                        // Datenobjekt für Prisma erstellen
-                        const fixtureInputData = {
-                            order: order, // order wird nach erfolgreichem Create erhöht
-                            matchday: matchday,
-                            round: matchday, // Annahme: Runde = Spieltag
-                            fixtureDate: fixtureDate,
-                            // Verknüpfungen über connect herstellen
-                            league: { connect: { id: league.id } },
-                            homeTeam: { connect: { id: homeTeamId } },
-                            awayTeam: { connect: { id: awayTeamId } },
-                            // Einzelne Sätze
-                            homeSet1: safeParseInt(fix.S1H),
-                            awaySet1: safeParseInt(fix.S1G),
-                            homeSet2: safeParseInt(fix.S2H),
-                            awaySet2: safeParseInt(fix.S2G),
-                            homeSet3: safeParseInt(fix.S3H),
-                            awaySet3: safeParseInt(fix.S3G),
-                            homeSet4: safeParseInt(fix.S4H),
-                            awaySet4: safeParseInt(fix.S4G),
-                            homeSet5: safeParseInt(fix.S5H),
-                            awaySet5: safeParseInt(fix.S5G),
-                            // Gesamtergebnisse
-                            homeScore: homeSets,
-                            awayScore: awaySets,
-                            homeMatchPoints: homeMatchPoints,
-                            awayMatchPoints: awayMatchPoints,
-                            notes: fix.Anmerkungen || null,
-                        };
+                    await prisma.fixture.create({ data: fixtureInputData });
+                    order++; // Erhöhe Order nur bei Erfolg
+                    createdCount++;
+                } catch (fixtureError) {
+                    console.error(`      Error creating fixture for ${homeTeamName} vs ${awayTeamName}:`, fixtureError);
+                    console.error(`      Fixture data:`, JSON.stringify(fix));
+                    skippedCount++;
+                    // Entscheide, ob hier abgebrochen werden soll oder nur dieses übersprungen wird
+                    // throw fixtureError; // Abbruch
+                }
+            } // Ende der for-Schleife für Fixtures
+            console.log(`   Created ${createdCount} fixtures, skipped ${skippedCount}.`);
 
-                        await prisma.fixture.create({ data: fixtureInputData });
-                        order++; // Erhöhe Order nur bei Erfolg
-                        createdCount++;
-                    } catch (fixtureError) {
-                        console.error(`      Error creating fixture for ${homeTeamName} vs ${awayTeamName}:`, fixtureError);
-                        console.error(`      Fixture data:`, JSON.stringify(fix));
-                        skippedCount++;
-                        // Entscheide, ob hier abgebrochen werden soll oder nur dieses übersprungen wird
-                        // throw fixtureError; // Abbruch
-                    }
-                } // Ende der for-Schleife für Fixtures
-                console.log(`   Created ${createdCount} fixtures, skipped ${skippedCount}.`);
-
-            } catch (error) { // Catch für Fehler beim Verarbeiten der Saison-Datei (Lesen, Parsen, Liga erstellen)
-                console.error(`❌ Error processing file ${filename}:`, error);
-                throw error; // Wirft den Fehler weiter, um den Prozess in seed.ts zu stoppen
-            }
-        } // Ende der for-Schleife für Saison-Dateien
-    } // Ende der main Funktion
+        } catch (error) { // Catch für Fehler beim Verarbeiten der Saison-Datei (Lesen, Parsen, Liga erstellen)
+            console.error(`❌ Error processing file ${filename}:`, error);
+            throw error; // Wirft den Fehler weiter, um den Prozess in seed.ts zu stoppen
+        }
+    } // Ende der for-Schleife für Saison-Dateien
+} // Ende der main Funktion
 
     // Führe main aus, wenn das Skript direkt aufgerufen wird (optional, da es von seed.ts importiert wird)
     if (require.main === module) {
