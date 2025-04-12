@@ -71,6 +71,23 @@ interface Fixture {
   awayPoints?: number | null;
 }
 
+// Define types for the score data structures within formData
+type MatchScoreData = {
+  homeScore: number | string; // Use string for input binding
+  awayScore: number | string;
+  homePoints?: number | string;
+  awayPoints?: number | string;
+};
+
+type SetScore = {
+  home: number | string; // Use string for input binding
+  away: number | string;
+};
+
+type SetScoresData = {
+  setScores: SetScore[];
+};
+
 export default function TeamPage() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [teams, setTeams] = useState<Team[]>([]);
