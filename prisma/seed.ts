@@ -1,9 +1,15 @@
 import * as bcrypt from 'bcrypt'
-import { prisma } from '../src/lib/prisma'
+import { PrismaClient } from '@prisma/client' // Importiere PrismaClient direkt
+import { main as seedHistoricalData } from './seed-historical-leagues' // Importiere die Hauptfunktion des neuen Skripts
+
+const prisma = new PrismaClient()
 
 async function main() {
-  const superAdminEmail = 'superadmin@example.com'
-  const superAdminPassword = 'superadmin123' // Bitte ändern Sie dies in ein sicheres Passwort
+  console.log('Start seeding ...')
+
+  // 1. Create Super Admin User (if not exists)
+  const superAdminEmail = process.env.SUPERADMIN_EMAIL || 'superadmin@example.com'
+  const superAdminPassword = process.env.SUPERADMIN_PASSWORD || 'superadmin123' // Change this!
 
   const existingSuperAdmin = await prisma.user.findUnique({
     where: { email: superAdminEmail },
@@ -11,7 +17,6 @@ async function main() {
 
   if (!existingSuperAdmin) {
     const hashedPassword = await bcrypt.hash(superAdminPassword, 10)
-
     await prisma.user.create({
       data: {
         email: superAdminEmail,
@@ -21,53 +26,24 @@ async function main() {
         isSuperAdmin: true,
       },
     })
-
-    console.log('Superadmin-Benutzer wurde erfolgreich erstellt.')
+    console.log(`✅ Superadmin user "${superAdminEmail}" created.`)
   } else {
-    console.log('Superadmin-Benutzer existiert bereits.')
+    console.log(`ℹ️ Superadmin user "${superAdminEmail}" already exists.`)
   }
 
-  // Create demo teams if they don't exist
-  const demoTeams = [
-    { name: 'TSV Musterstadt', location: 'Musterstadt', hallAddress: 'Musterhalle 1', trainingTimes: 'Di 18-20 Uhr' },
-    { name: 'VfL Beispielhausen', location: 'Beispielhausen', hallAddress: 'Beispielsporthalle', trainingTimes: 'Mi 19-21 Uhr' },
-    { name: 'SG Testdorf', location: 'Testdorf', hallAddress: 'Alte Turnhalle', trainingTimes: 'Do 20-22 Uhr' },
-    { name: 'FC Probestadt', location: 'Probestadt', hallAddress: 'Neubauhalle', trainingTimes: 'Fr 17-19 Uhr' },
-    { name: 'Eintracht Demostadt', location: 'Demostadt', hallAddress: 'Schulsporthalle Ost', trainingTimes: 'Mo 18:30-20:30 Uhr' },
-    { name: 'Blau-Weiss Fiktivlingen', location: 'Fiktivlingen', hallAddress: 'Mehrzweckhalle', trainingTimes: 'Di 20-22 Uhr' },
-  ];
+  // 2. Seed Historical League Data
+  console.log('Seeding historical league data ...')
+  await seedHistoricalData() // Rufe die importierte Funktion auf
+  console.log('✅ Historical league data seeding finished.')
 
-  // Füge die spezifischen Hobbyliga-Teams hinzu
-  const hobbyLigaTeams = [
-    { name: 'TSV Bad Berneck', location: 'Bad Berneck', hallAddress: 'Klang 15, 95460 Bad Berneck', trainingTimes: 'Dienstag 18:45-22:00' },
-    { name: 'BSV H5', location: 'Bayreuth', hallAddress: 'Sporthalle BSZ, Adolf-Wächter-Str.', trainingTimes: 'Mittwoch 19:30-22:00' },
-    { name: 'TSV Kirchenlaibach', location: 'Speichersdorf', hallAddress: 'Sportarena Speichersdorf', trainingTimes: 'Donnerstag 19:30-22:00' },
-    { name: 'MTV/SG Pegnitz', location: 'Pegnitz', hallAddress: 'Gymnasium Pegnitz', trainingTimes: 'Montag 20:00-22:00' },
-    { name: 'USC Bayreuth 1', location: 'Bayreuth', hallAddress: 'Uni-Sportzentrum', trainingTimes: 'Mittwoch 19:00-20:30' },
-    { name: 'USC Bayreuth 2', location: 'Bayreuth', hallAddress: 'Uni-Sportzentrum', trainingTimes: 'Freitag 20:00-22:00' },
-    { name: 'CVJM Naila', location: 'Naila', hallAddress: 'Frankenhalle Naila', trainingTimes: 'Freitag 20:00-22:00' },
-  ];
 
-  const allTeamsToSeed = [...demoTeams, ...hobbyLigaTeams];
-
-  console.log('Erstelle/Überprüfe Mannschaften...');
-  for (const teamData of allTeamsToSeed) {
-    await prisma.team.upsert({
-      where: { name: teamData.name },
-      update: {}, // No update needed if exists
-      create: teamData,
-    });
-    console.log(`- Mannschaft "${teamData.name}" erstellt oder bereits vorhanden.`);
-  }
-  console.log('Demo-Mannschaften erfolgreich erstellt/überprüft.');
-
-  // Ende der Basis-Seed-Logik (Admin + Teams)
+  console.log('Seeding finished.')
 }
 
 main()
-  .catch((e) => {
-    // Stelle sicher, dass Prisma auch bei Fehlern in den Sub-Skripten getrennt wird
-    console.error('Ein Fehler ist während des Seedings aufgetreten:', e)
+  .catch(async (e) => {
+    console.error('❌ Seeding failed:', e)
+    await prisma.$disconnect() // Ensure disconnect on error
     process.exit(1)
   })
   .finally(async () => {
