@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Navigation from '@/components/Navbar';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { ScoreEntryType } from '@prisma/client'; // Import the enum
 
 interface User {
   id: number;
@@ -86,14 +87,11 @@ export default function TeamPage() {
   });
   const router = useRouter();
 
-  // Form state for editing fixture results
-  const [formData, setFormData] = useState({
-    homeSets: '',
-    awaySets: '',
-    homePoints: '',
-    awayPoints: '',
+  // Form state for editing fixture results - will hold score data dynamically
+  const [formData, setFormData] = useState<any>({
     fixtureDate: '',
-    fixtureTime: '' // Add fixtureTime to form state
+    fixtureTime: '',
+    scoreData: null // Will hold { homeScore, awayScore } or { setScores: [...] }
   });
 
   useEffect(() => {
@@ -329,14 +327,39 @@ export default function TeamPage() {
   };
 
   const handleEditFixture = (fixture: Fixture) => {
+    // Check if league context exists
+    if (!fixture.league) {
+      toast.error("Ligakonfiguration für dieses Spiel fehlt. Ergebnis kann nicht bearbeitet werden.");
+      return;
+    }
+
     setEditingFixture(fixture);
+
+    // Initialize formData based on league type and existing fixture data
+    let initialScoreData = null;
+    const league = fixture.league;
+    const maxSets = 2 * league.setsToWin - 1;
+
+    if (league.scoreEntryType === ScoreEntryType.SET_SCORES) {
+      const initialSetScores = Array(maxSets).fill(null).map((_, i) => {
+        const setNum = i + 1;
+        return {
+          home: fixture[`homeSet${setNum}` as keyof Fixture] ?? '', // Use empty string for input binding
+          away: fixture[`awaySet${setNum}` as keyof Fixture] ?? '', // Use empty string for input binding
+        };
+      });
+      initialScoreData = { setScores: initialSetScores };
+    } else { // MATCH_SCORE
+      initialScoreData = {
+        homeScore: fixture.homeScore ?? '', // Use empty string for input binding
+        awayScore: fixture.awayScore ?? '', // Use empty string for input binding
+      };
+    }
+
     setFormData({
-      homeSets: fixture.homeSets?.toString() || '',
-      awaySets: fixture.awaySets?.toString() || '',
-      homePoints: fixture.homePoints?.toString() || '',
-      awayPoints: fixture.awayPoints?.toString() || '',
-      fixtureDate: fixture.fixtureDate ? new Date(fixture.fixtureDate).toISOString().split('T')[0] : '', // Format date for input
-      fixtureTime: fixture.fixtureTime || '' // Add fixtureTime
+      fixtureDate: fixture.fixtureDate ? new Date(fixture.fixtureDate).toISOString().split('T')[0] : '',
+      fixtureTime: fixture.fixtureTime || '',
+      scoreData: initialScoreData
     });
   };
 
@@ -344,12 +367,39 @@ export default function TeamPage() {
     setEditingFixture(null);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Updated handler for score input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index?: number) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+
+    if (name === 'fixtureDate' || name === 'fixtureTime') {
+      setFormData({ ...formData, [name]: value });
+      return;
+    }
+
+    // Handle score inputs
+    if (!formData.scoreData || !editingFixture?.league) return;
+
+    const processedValue = value.trim() === '' ? '' : value;
+    const leagueType = editingFixture.league.scoreEntryType;
+
+    if (leagueType === ScoreEntryType.SET_SCORES && index !== undefined && formData.scoreData.setScores) {
+      // Update specific set score
+      const updatedSetScores = [...formData.scoreData.setScores];
+      updatedSetScores[index] = {
+        ...updatedSetScores[index],
+        [name]: processedValue, // name is 'home' or 'away'
+      };
+      setFormData({ ...formData, scoreData: { setScores: updatedSetScores } });
+    } else if (leagueType === ScoreEntryType.MATCH_SCORE) {
+      // Update homeScore or awayScore
+      setFormData({
+        ...formData,
+        scoreData: {
+          ...formData.scoreData,
+          [name]: processedValue, // name is 'homeScore' or 'awayScore'
+        }
+      });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -363,14 +413,25 @@ export default function TeamPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          homeTeamId: editingFixture.homeTeamId,
-          awayTeamId: editingFixture.awayTeamId,
-          homeSets: formData.homeSets ? parseInt(formData.homeSets) : null,
-          awaySets: formData.awaySets ? parseInt(formData.awaySets) : null,
-          homePoints: formData.homePoints ? parseInt(formData.homePoints) : null,
-          awayPoints: formData.awayPoints ? parseInt(formData.awayPoints) : null,
           fixtureDate: formData.fixtureDate || null,
-          fixtureTime: formData.fixtureTime || null // Send fixtureTime
+          fixtureTime: formData.fixtureTime || null,
+          // Construct scoreData payload based on current formData.scoreData
+          ...(formData.scoreData && {
+            scoreData: editingFixture.league?.scoreEntryType === ScoreEntryType.MATCH_SCORE
+              ? {
+                  homeScore: formData.scoreData.homeScore === '' || formData.scoreData.homeScore === null ? null : Number(formData.scoreData.homeScore),
+                  awayScore: formData.scoreData.awayScore === '' || formData.scoreData.awayScore === null ? null : Number(formData.scoreData.awayScore)
+                }
+              : {
+                  setScores: formData.scoreData.setScores
+                    ?.map((set: { home: string | number | null, away: string | number | null }) => ({
+                      home: set.home === '' || set.home === null ? null : Number(set.home),
+                      away: set.away === '' || set.away === null ? null : Number(set.away),
+                    }))
+                    // Filter out sets where both scores are null AFTER conversion
+                    .filter((set: { home: number | null, away: number | null }) => set.home !== null || set.away !== null)
+                }
+          })
         }),
       });
 
@@ -602,7 +663,8 @@ export default function TeamPage() {
                           )}
                         </div>
                       </div>
-                      
+
+                      {/* Date and Time Inputs */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -628,69 +690,77 @@ export default function TeamPage() {
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                           />
                         </div>
- 
-                        <div className="grid grid-cols-2 gap-4 md:col-span-2"> {/* Span across columns */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Sätze Heim
-                            </label>
-                            <input
-                              type="number"
-                              name="homeSets"
-                              min="0"
-                              max="3"
-                              value={formData.homeSets}
-                              onChange={handleInputChange}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Sätze Gast
-                            </label>
-                            <input
-                              type="number"
-                              name="awaySets"
-                              min="0"
-                              max="3"
-                              value={formData.awaySets}
-                              onChange={handleInputChange}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            />
-                          </div>
-                        </div>
                       </div>
- 
-                      <div className="grid grid-cols-2 gap-4 md:col-span-2"> {/* Span across columns */}
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Bälle Heim
-                          </label>
-                          <input
-                            type="number"
-                            name="homePoints"
-                            min="0"
-                            value={formData.homePoints}
-                            onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                          />
+
+                      {/* Conditional Score Inputs */}
+                      <fieldset className="border border-gray-200 p-3 rounded-md">
+                        <legend className="text-sm font-medium text-gray-600 px-1">Ergebnis</legend>
+                        <div className="mt-2 space-y-3">
+                          {/* Case 1: MATCH_SCORE */}
+                          {editingFixture.league?.scoreEntryType === ScoreEntryType.MATCH_SCORE && formData.scoreData && (
+                            <div className="flex space-x-4">
+                              <div className="flex-1">
+                                <label htmlFor="homeScore" className="block text-xs font-medium text-gray-600">Sätze Heim</label>
+                                <input
+                                  type="number"
+                                  id="homeScore"
+                                  name="homeScore" // Use 'homeScore'
+                                  min="0" max={editingFixture.league.setsToWin}
+                                  value={formData.scoreData.homeScore ?? ''}
+                                  onChange={(e) => handleInputChange(e)}
+                                  placeholder={`0-${editingFixture.league.setsToWin}`}
+                                  className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 rounded-md"
+                                />
+                              </div>
+                              <div className="flex-1">
+                                <label htmlFor="awayScore" className="block text-xs font-medium text-gray-600">Sätze Gast</label>
+                                <input
+                                  type="number"
+                                  id="awayScore"
+                                  name="awayScore" // Use 'awayScore'
+                                  min="0" max={editingFixture.league.setsToWin}
+                                  value={formData.scoreData.awayScore ?? ''}
+                                  onChange={(e) => handleInputChange(e)}
+                                  placeholder={`0-${editingFixture.league.setsToWin}`}
+                                  className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 rounded-md"
+                                />
+                              </div>
+                            </div>
+                          )}
+                          {/* Case 2: SET_SCORES */}
+                          {editingFixture.league?.scoreEntryType === ScoreEntryType.SET_SCORES && formData.scoreData?.setScores && (
+                            <div className="space-y-2">
+                              {formData.scoreData.setScores.map((set: any, index: number) => (
+                                <div key={index} className="flex items-center space-x-2">
+                                  <label className="w-12 text-sm font-medium text-gray-600 text-right">Satz {index + 1}:</label>
+                                  <input
+                                    type="number"
+                                    name="home" // Use 'home'
+                                    min="0"
+                                    value={set.home ?? ''}
+                                    onChange={(e) => handleInputChange(e, index)}
+                                    placeholder="Heim"
+                                    className="flex-1 block w-full px-2 py-1 text-base border-gray-300 rounded-md"
+                                  />
+                                  <span className="text-gray-500">:</span>
+                                  <input
+                                    type="number"
+                                    name="away" // Use 'away'
+                                    min="0"
+                                    value={set.away ?? ''}
+                                    onChange={(e) => handleInputChange(e, index)}
+                                    placeholder="Gast"
+                                    className="flex-1 block w-full px-2 py-1 text-base border-gray-300 rounded-md"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Bälle Gast
-                          </label>
-                          <input
-                            type="number"
-                            name="awayPoints"
-                            min="0"
-                            value={formData.awayPoints}
-                            onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                          />
-                        </div>
-                      </div>
-                      
-                      <div className="flex justify-end space-x-3">
+                      </fieldset>
+
+                      {/* Action Buttons */}
+                      <div className="flex justify-end space-x-3 pt-2">
                         <button
                           type="button"
                           onClick={handleCancelEdit}
