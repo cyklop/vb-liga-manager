@@ -116,8 +116,10 @@ export default function LeaguesPage() {
     setsToWin: 3,
   })
   const [editingLeague, setEditingLeague] = useState<League | null>(null)
-  // Ensure editingFixture state includes new fields
-  const [editingFixture, setEditingFixture] = useState<Partial<Fixture> | null>(null) // Use Partial for flexibility during editing
+  const [editingFixture, setEditingFixture] = useState<Partial<Fixture> | null>(null)
+  // State to hold the score input data for the modal
+  const [scoreInputData, setScoreInputData] = useState<any>(null); // Will hold { homeScore, awayScore } or { setScores: [...] }
+  const [editingLeagueContext, setEditingLeagueContext] = useState<League | null>(null); // Store the league context for the fixture modal
   const [isFixtureModalOpen, setIsFixtureModalOpen] = useState(false)
   const [isOrderChanged, setIsOrderChanged] = useState(false)
   // State für Spielplan-Generierungsbestätigung
@@ -297,39 +299,94 @@ export default function LeaguesPage() {
       awaySets: fixture.awaySets,
       homePoints: fixture.homePoints,
       awayPoints: fixture.awayPoints,
-      fixtureTime: fixture.fixtureTime, // Add fixtureTime
+      fixtureTime: fixture.fixtureTime || '', // Ensure it's a string or empty string
     });
+
+    // Initialize scoreInputData based on league type and existing fixture data
+    const maxSets = 2 * league.setsToWin - 1;
+    if (league.scoreEntryType === ScoreEntryType.SET_SCORES) {
+      const initialSetScores = Array(maxSets).fill(null).map((_, i) => {
+        const setNum = i + 1;
+        return {
+          home: fixture[`homeSet${setNum}` as keyof Fixture] ?? '', // Use empty string for input binding
+          away: fixture[`awaySet${setNum}` as keyof Fixture] ?? '', // Use empty string for input binding
+        };
+      });
+      setScoreInputData({ setScores: initialSetScores });
+    } else { // MATCH_SCORE
+      setScoreInputData({
+        homeScore: fixture.homeScore ?? '', // Use empty string for input binding
+        awayScore: fixture.awayScore ?? '', // Use empty string for input binding
+      });
+    }
+    setEditingLeagueContext(league); // Store league context for the modal
     setIsFixtureModalOpen(true);
   };
 
   const handleUpdateFixture = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingFixture) return;
+    if (!editingFixture || !editingLeagueContext || !scoreInputData) return;
+
+    // Prepare scoreData based on league type
+    let scorePayload = null;
+    if (editingLeagueContext.scoreEntryType === ScoreEntryType.MATCH_SCORE) {
+      // Convert empty strings/null to null, otherwise convert to number
+      const homeScore = scoreInputData.homeScore === '' || scoreInputData.homeScore === null ? null : Number(scoreInputData.homeScore);
+      const awayScore = scoreInputData.awayScore === '' || scoreInputData.awayScore === null ? null : Number(scoreInputData.awayScore);
+
+      // Only include scoreData if at least one score is entered
+      if (homeScore !== null || awayScore !== null) {
+         // Basic validation: if one is entered, both must be
+         if (homeScore === null || awayScore === null) {
+            toast.error('Bei Eingabe des Gesamtergebnisses müssen beide Werte (Heim/Gast) angegeben werden.');
+            return;
+         }
+         scorePayload = { homeScore, awayScore };
+      }
+
+    } else { // SET_SCORES
+      // Convert set scores, filter out completely empty sets
+      const setScores = scoreInputData.setScores
+        .map((set: { home: string | number | null, away: string | number | null }) => ({
+          home: set.home === '' || set.home === null ? null : Number(set.home),
+          away: set.away === '' || set.away === null ? null : Number(set.away),
+        }))
+        .filter((set: { home: number | null, away: number | null }) => set.home !== null || set.away !== null); // Keep sets where at least one score is entered
+
+      // Only include scoreData if at least one set score is entered
+      if (setScores.length > 0) {
+         // Basic validation: if one score in a set is entered, the other must be too
+         for (let i = 0; i < setScores.length; i++) {
+             if ((setScores[i].home === null && setScores[i].away !== null) || (setScores[i].home !== null && setScores[i].away === null)) {
+                 toast.error(`Satz ${i + 1}: Beide Punktwerte (Heim/Gast) müssen angegeben werden, wenn der Satz gespielt wurde.`);
+                 return;
+             }
+         }
+         scorePayload = { setScores };
+      }
+    }
+
+    const bodyPayload = {
+      fixtureDate: editingFixture.fixtureDate || null,
+      fixtureTime: editingFixture.fixtureTime || null,
+      ...(scorePayload && { scoreData: scorePayload }) // Only include scoreData if it's not null
+    };
 
     try {
       const response = await fetch(`/api/fixtures/${editingFixture.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          homeTeamId: editingFixture.homeTeamId,
-          awayTeamId: editingFixture.awayTeamId,
-          fixtureDate: editingFixture.fixtureDate || null,
-          // Send new score fields
-          homeSets: editingFixture.homeSets !== null && String(editingFixture.homeSets).trim() !== '' ? Number(editingFixture.homeSets) : null,
-          awaySets: editingFixture.awaySets !== null && String(editingFixture.awaySets).trim() !== '' ? Number(editingFixture.awaySets) : null,
-          homePoints: editingFixture.homePoints !== null && String(editingFixture.homePoints).trim() !== '' ? Number(editingFixture.homePoints) : null,
-          awayPoints: editingFixture.awayPoints !== null && String(editingFixture.awayPoints).trim() !== '' ? Number(editingFixture.awayPoints) : null,
-          fixtureTime: editingFixture.fixtureTime || null, // Send fixtureTime
-          // homeScore/awayScore are calculated/set on the backend now
-        }),
+        body: JSON.stringify(bodyPayload),
       });
- 
+
       if (response.ok) {
         setIsFixtureModalOpen(false);
         setEditingFixture(null);
-       fetchLeagues(selectedLeagueId); // Refetch to show updated fixture
-       toast.success('Spielpaarung erfolgreich aktualisiert!');
-     } else {
+        setScoreInputData(null); // Reset score input state
+        setEditingLeagueContext(null); // Reset league context
+        fetchLeagues(selectedLeagueId); // Refetch to show updated fixture
+        toast.success('Spielpaarung erfolgreich aktualisiert!');
+      } else {
        const errorData = await response.json();
        toast.error(`Fehler: ${errorData.message || 'Spielpaarung konnte nicht aktualisiert werden.'}`, { autoClose: 8000 }); // Fehler-Toast bleibt länger
      }
@@ -356,6 +413,29 @@ export default function LeaguesPage() {
       setEditingFixture({
         ...editingFixture,
         [name]: value,
+      });
+    }
+  };
+
+  // Handler for score input changes
+  const handleScoreInputChange = (e: React.ChangeEvent<HTMLInputElement>, index?: number) => {
+    if (!scoreInputData || !editingLeagueContext) return;
+    const { name, value } = e.target;
+    const processedValue = value.trim() === '' ? '' : value; // Keep empty string for input binding
+
+    if (editingLeagueContext.scoreEntryType === ScoreEntryType.SET_SCORES && index !== undefined) {
+      // Update specific set score in the array
+      const updatedSetScores = [...scoreInputData.setScores];
+      updatedSetScores[index] = {
+        ...updatedSetScores[index],
+        [name]: processedValue, // name will be 'home' or 'away'
+      };
+      setScoreInputData({ setScores: updatedSetScores });
+    } else if (editingLeagueContext.scoreEntryType === ScoreEntryType.MATCH_SCORE) {
+      // Update homeScore or awayScore
+      setScoreInputData({
+        ...scoreInputData,
+        [name]: processedValue, // name will be 'homeScore' or 'awayScore'
       });
     }
   };
@@ -722,10 +802,11 @@ export default function LeaguesPage() {
                         <ul className="space-y-2">
                           {selectedLeagueFixtures.map((fixture) => (
                             // Use SortableItem component defined below
-                            <SortableFixtureItem 
-                              key={fixture.id} 
-                              fixture={fixture} 
-                              onEditClick={(fixture) => handleEditFixtureClick(fixture, league)} 
+                            <SortableFixtureItem
+                              key={fixture.id}
+                              fixture={fixture}
+                              league={league} // Pass league context
+                              onEditClick={(fixture) => handleEditFixtureClick(fixture, league)}
                               isLeagueActive={league.isActive}
                             />
                           ))}
@@ -1013,77 +1094,85 @@ export default function LeaguesPage() {
                 name="fixtureTime"
                 value={editingFixture.fixtureTime || ''}
                 onChange={handleFixtureInputChange}
-                className="mt-1 block w-full pl-3 pr-3 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                className="mt-1 block w-full pl-3 pr-3 py-2 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
               />
             </div>
- 
-            {/* Sets */}
-            <div className="flex space-x-4">
-              <div className="flex-1">
-                <label htmlFor="homeSets" className="block text-sm font-medium text-gray-700">Sätze Heim</label>
-                <input
-                  type="number"
-                  id="homeSets"
-                  name="homeSets"
-                  min="0" max="3"
-                  value={editingFixture.homeSets ?? ''} 
-                  onChange={handleFixtureInputChange}
-                  placeholder="0-3"
-                  className="mt-1 block w-full px-3 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                />
-              </div>
-              <div className="flex-1">
-                <label htmlFor="awaySets" className="block text-sm font-medium text-gray-700">Sätze Auswärts</label>
-                <input
-                  type="number"
-                  id="awaySets"
-                  name="awaySets"
-                  min="0" max="3"
-                  value={editingFixture.awaySets ?? ''} 
-                  onChange={handleFixtureInputChange}
-                  placeholder="0-3"
-                  className="mt-1 block w-full px-3 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                />
-              </div>
-            </div>
 
-             {/* Points (Balls) - Optional */}
-            <div className="flex space-x-4">
-              <div className="flex-1">
-                <label htmlFor="homePoints" className="block text-sm font-medium text-gray-700">Punkte Heim (Bälle)</label>
-                <input
-                  type="number"
-                  id="homePoints"
-                  name="homePoints"
-                  min="0"
-                  value={editingFixture.homePoints ?? ''} 
-                  onChange={handleFixtureInputChange}
-                  placeholder="Gesamtbälle"
-                  className="mt-1 block w-full px-3 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                />
-              </div>
-              <div className="flex-1">
-                <label htmlFor="awayPoints" className="block text-sm font-medium text-gray-700">Punkte Auswärts (Bälle)</label>
-                <input
-                  type="number"
-                  id="awayPoints"
-                  name="awayPoints"
-                  min="0"
-                  value={editingFixture.awayPoints ?? ''} 
-                  onChange={handleFixtureInputChange}
-                  placeholder="Gesamtbälle"
-                  className="mt-1 block w-full px-3 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                />
-              </div>
-            </div>
+            {/* --- Score Input Section (Conditional) --- */}
+            <fieldset className="border border-gray-300 dark:border-border p-3 rounded-md">
+              <legend className="text-sm font-medium text-gray-700 dark:text-gray-300 px-1">Ergebnis</legend>
+              <div className="mt-2 space-y-3">
 
+                {/* Case 1: MATCH_SCORE */}
+                {editingLeagueContext.scoreEntryType === ScoreEntryType.MATCH_SCORE && (
+                  <div className="flex space-x-4">
+                    <div className="flex-1">
+                      <label htmlFor="homeScore" className="block text-xs font-medium text-gray-600 dark:text-gray-400">Sätze Heim</label>
+                      <input
+                        type="number"
+                        id="homeScore"
+                        name="homeScore"
+                        min="0" max={editingLeagueContext.setsToWin}
+                        value={scoreInputData.homeScore ?? ''}
+                        onChange={(e) => handleScoreInputChange(e)}
+                        placeholder={`0-${editingLeagueContext.setsToWin}`}
+                        className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label htmlFor="awayScore" className="block text-xs font-medium text-gray-600 dark:text-gray-400">Sätze Gast</label>
+                      <input
+                        type="number"
+                        id="awayScore"
+                        name="awayScore"
+                        min="0" max={editingLeagueContext.setsToWin}
+                        value={scoreInputData.awayScore ?? ''}
+                        onChange={(e) => handleScoreInputChange(e)}
+                        placeholder={`0-${editingLeagueContext.setsToWin}`}
+                        className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Case 2: SET_SCORES */}
+                {editingLeagueContext.scoreEntryType === ScoreEntryType.SET_SCORES && (
+                  <div className="space-y-2">
+                    {scoreInputData.setScores.map((set: any, index: number) => (
+                      <div key={index} className="flex items-center space-x-2">
+                        <label className="w-12 text-sm font-medium text-gray-600 dark:text-gray-400 text-right">Satz {index + 1}:</label>
+                        <input
+                          type="number"
+                          name="home"
+                          min="0"
+                          value={set.home ?? ''}
+                          onChange={(e) => handleScoreInputChange(e, index)}
+                          placeholder="Heim"
+                          className="flex-1 block w-full px-2 py-1 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        />
+                        <span className="text-gray-500">:</span>
+                        <input
+                          type="number"
+                          name="away"
+                          min="0"
+                          value={set.away ?? ''}
+                          onChange={(e) => handleScoreInputChange(e, index)}
+                          placeholder="Gast"
+                          className="flex-1 block w-full px-2 py-1 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </fieldset>
 
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-primary dark:hover:bg-primary/90"
             >
-              Spielpaarung aktualisieren
+              Speichern
             </button>
           </form>
         )}
@@ -1115,11 +1204,12 @@ export default function LeaguesPage() {
 // --- Sortable Fixture Item Component ---
 interface SortableFixtureItemProps {
   fixture: Fixture;
+  league: League; // Add league context
   onEditClick: (fixture: Fixture) => void;
   isLeagueActive: boolean;
 }
 
-function SortableFixtureItem({ fixture, onEditClick, isLeagueActive }: SortableFixtureItemProps) {
+function SortableFixtureItem({ fixture, league, onEditClick, isLeagueActive }: SortableFixtureItemProps) {
   const {
     attributes,
     listeners,
@@ -1161,18 +1251,30 @@ function SortableFixtureItem({ fixture, onEditClick, isLeagueActive }: SortableF
           {fixture.fixtureTime ? ` ${fixture.fixtureTime}` : ''} {/* Display time if available */}
         </span>
       </div>
-      {/* Score (Sets and Match Points) */}
+      {/* Score Display (Conditional) */}
       <div className="flex items-center mx-4 space-x-3">
-          <span className="font-semibold w-12 text-center text-base">
-            {fixture.homeSets !== null && fixture.awaySets !== null
-              ? `${fixture.homeSets} : ${fixture.awaySets}`
-              : '- : -'}
-          </span>
-           <span className="font-normal w-12 text-center text-gray-600 text-xs">
-            (P: {fixture.homeMatchPoints !== null && fixture.awayMatchPoints !== null
-              ? `${fixture.homeMatchPoints} : ${fixture.awayMatchPoints}`
-              : '- : -'})
-          </span>
+        {/* Main Score Display */}
+        <span className="font-semibold w-auto text-center text-base">
+          {fixture.homeScore !== null && fixture.awayScore !== null
+            ? (league.scoreEntryType === ScoreEntryType.SET_SCORES
+                ? [1, 2, 3, 4, 5] // Max 5 sets
+                    .map(setNum => ({
+                      home: fixture[`homeSet${setNum}` as keyof Fixture],
+                      away: fixture[`awaySet${setNum}` as keyof Fixture],
+                    }))
+                    .filter(set => set.home !== null && set.away !== null) // Only show played sets
+                    .map(set => `${set.home}:${set.away}`)
+                    .join(', ')
+                : `${fixture.homeScore} : ${fixture.awayScore}` // Show match score for MATCH_SCORE type
+              )
+            : '- : -'}
+        </span>
+        {/* Match Points Display */}
+        <span className="font-normal w-auto text-center text-gray-600 dark:text-gray-400 text-xs">
+          (P: {fixture.homeMatchPoints !== null && fixture.awayMatchPoints !== null
+            ? `${fixture.homeMatchPoints} : ${fixture.awayMatchPoints}`
+            : '- : -'})
+        </span>
       </div>
       {/* Action Buttons Container */}
       <div className="flex items-center space-x-1 ml-2">
