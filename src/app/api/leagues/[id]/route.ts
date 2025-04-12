@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { ScoreEntryType } from '@prisma/client' // Import the enum
 import { createSlug, isValidSlug } from '@/lib/slugify'
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
@@ -27,10 +28,13 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     teamIds,
     isActive,
     // Add point rules
-    pointsWin30, 
-    pointsWin31, 
-    pointsWin32, 
-    pointsLoss32 
+    pointsWin30,
+    pointsWin31,
+    pointsWin32,
+    pointsLoss32,
+    // Add score entry config fields
+    scoreEntryType,
+    setsToWin
   } = await request.json()
 
   try {
@@ -41,7 +45,23 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         { status: 400 }
       )
     }
-    
+
+    // Validate scoreEntryType if provided
+    if (scoreEntryType !== undefined && !Object.values(ScoreEntryType).includes(scoreEntryType)) {
+      return NextResponse.json(
+        { message: 'Ungültiger Wert für scoreEntryType' },
+        { status: 400 }
+      )
+    }
+
+    // Validate setsToWin if provided (basic check)
+    if (setsToWin !== undefined && (typeof setsToWin !== 'number' || setsToWin <= 0 || !Number.isInteger(setsToWin))) {
+      return NextResponse.json(
+        { message: 'setsToWin muss eine positive ganze Zahl sein' },
+        { status: 400 }
+      )
+    }
+
     // Aktuelle Liga abrufen
     const currentLeague = await prisma.league.findUnique({
       where: { id }
@@ -113,9 +133,12 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         pointsWin31: pointsWin31 !== undefined ? Number(pointsWin31) : undefined,
         pointsWin32: pointsWin32 !== undefined ? Number(pointsWin32) : undefined,
         pointsLoss32: pointsLoss32 !== undefined ? Number(pointsLoss32) : undefined,
+        // Update score entry config only if provided
+        scoreEntryType: scoreEntryType !== undefined ? scoreEntryType : undefined,
+        setsToWin: setsToWin !== undefined ? Number(setsToWin) : undefined,
         ...(teamIds && teamIds.length > 0 && {
           teams: {
-            connect: teamIds.map((teamId: number) => ({ id: teamId }))
+            connect: teamIds.map((teamId: number) => ({ id: Number(teamId) })) // Ensure team IDs are numbers
           }
         })
       },

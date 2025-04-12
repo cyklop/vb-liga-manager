@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import prisma from '../../../lib/prisma' // Import the singleton instance
+import { ScoreEntryType } from '@prisma/client' // Import the enum
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../../../lib/auth' // Corrected import path
 import { createSlug, isValidSlug } from '../../../../src/lib/slugify'
@@ -102,10 +103,13 @@ export async function POST(request: Request) {
     hasReturnMatches, 
     teamIds,
     // Add point rules, defaulting if not provided
-    pointsWin30 = 3, 
-    pointsWin31 = 3, 
-    pointsWin32 = 2, 
-    pointsLoss32 = 1 
+    pointsWin30 = 3,
+    pointsWin31 = 3,
+    pointsWin32 = 2,
+    pointsLoss32 = 1,
+    // New fields for score entry configuration
+    scoreEntryType = ScoreEntryType.MATCH_SCORE, // Default to match score
+    setsToWin = 3 // Default to 3 sets to win (Best-of-5)
   } = await request.json()
 
   try {
@@ -116,7 +120,23 @@ export async function POST(request: Request) {
         { status: 400 }
       )
     }
-    
+
+    // Validate scoreEntryType
+    if (!Object.values(ScoreEntryType).includes(scoreEntryType)) {
+      return NextResponse.json(
+        { message: 'Ungültiger Wert für scoreEntryType' },
+        { status: 400 }
+      )
+    }
+
+    // Validate setsToWin (basic check)
+    if (typeof setsToWin !== 'number' || setsToWin <= 0 || !Number.isInteger(setsToWin)) {
+      return NextResponse.json(
+        { message: 'setsToWin muss eine positive ganze Zahl sein' },
+        { status: 400 }
+      )
+    }
+
     // Slug generieren oder validieren
     let finalSlug = providedSlug ? providedSlug.trim() : createSlug(name)
     
@@ -150,13 +170,15 @@ export async function POST(request: Request) {
         slug: finalSlug,
         numberOfTeams,
         hasReturnMatches,
-        pointsWin30,
-        pointsWin31,
-        pointsWin32,
-        pointsLoss32,
+        pointsWin30: Number(pointsWin30), // Ensure numbers
+        pointsWin31: Number(pointsWin31),
+        pointsWin32: Number(pointsWin32),
+        pointsLoss32: Number(pointsLoss32),
+        scoreEntryType, // Add new field
+        setsToWin: Number(setsToWin), // Add new field, ensure number
         ...(teamIds && teamIds.length > 0 && {
           teams: {
-            connect: teamIds.map((id: number) => ({ id }))
+            connect: teamIds.map((id: number) => ({ id: Number(id) })) // Ensure team IDs are numbers
           }
         })
       },
