@@ -11,14 +11,11 @@ const SEED_DATA_DIR = path.join(__dirname, 'seed-data') // Ordner für JSON-Date
 const SEASON_FILES = [
     '2015-16.json',
     '2016-17.json',
-    // '2017-18.json', // Füge weitere Jahre hinzu, falls vorhanden
-    // '2018-19.json',
-    // '2019-20.json',
-    // '2020-21.json',
-    // '2021-22.json',
-    // '2022-23.json',
-    // '2023-24.json',
-    // '2024-25.json', // Die letzte Datei bestimmt die aktive Liga
+    '2017-18.json',
+    '2018-19.json',
+    '2022-23.json',
+    '2023-24.json',
+    '2024-25.json', // Die letzte Datei bestimmt die aktive Liga
 ];
 // --- Ende Konfiguration ---
 
