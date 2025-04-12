@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from '@prisma/client'
+import { PrismaClient, Prisma, ScoreEntryType } from '@prisma/client' // Importiere ScoreEntryType
 import { createSlug } from '../src/lib/slugify' // Passe den Pfad ggf. an
 import fs from 'fs'
 import path from 'path'
@@ -272,7 +272,8 @@ export async function main() {
                     // pointsLoss13: 0, // Feld existiert nicht im Schema
                     // pointsLoss03: 0, // Feld existiert nicht im Schema
                 };
-                 console.log("   Using detailed point system (3/2/1/0) for last season.");
+                pointsConfig.scoreEntryType = ScoreEntryType.POINTS; // Setze ScoreEntryType für letzte Saison
+                 console.log("   Using detailed point system (3/2/1/0) and ScoreEntryType.POINTS for last season.");
             } else {
                 // Einfache Regeln für historische Saisons (2/0)
                 // Mappe 2/0 auf die vorhandenen Felder
@@ -282,7 +283,8 @@ export async function main() {
                     // pointsLoss13: 0, // Feld existiert nicht im Schema
                     // pointsLoss03: 0, // Feld existiert nicht im Schema
                 };
-                console.log("   Using simple point system (2/0) for historical season.");
+                pointsConfig.scoreEntryType = ScoreEntryType.SETS; // Setze ScoreEntryType für historische Saisons
+                console.log("   Using simple point system (2/0) and ScoreEntryType.SETS for historical season.");
             }
 
             // Liga erstellen/aktualisieren
@@ -356,13 +358,17 @@ export async function main() {
                         away: awayTeamName,
                         dateStr: fix.Datum,
                         timeStr: fix.Uhrzeit,
-                        parsedDate: fixtureDate?.toISOString() || 'null',
+                        parsedDate: fixtureDate?.toISOString() || 'null', // Zeigt Datum+Zeit in UTC
                         set1H: safeParseInt(fix.S1H),
                         set1G: safeParseInt(fix.S1G),
+                        set2H: safeParseInt(fix.S2H), // Logge mehr Sätze zum Debuggen
+                        set2G: safeParseInt(fix.S2G),
+                        set3H: safeParseInt(fix.S3H),
+                        set3G: safeParseInt(fix.S3G),
                     };
-                    // Logge nur für das erste Spiel jeder Datei oder wenn das Datum null ist
-                    if (order === 1 || fixtureDate === null) {
-                         console.log(`      DEBUG Fixture Data: ${JSON.stringify(logData)}`);
+                    // Logge nur für das erste Spiel jeder Datei oder wenn das Datum/Sätze null sind
+                    if (order === 1 || fixtureDate === null || logData.set1H === null) {
+                         console.log(`      DEBUG Fixture Data (order ${order}): ${JSON.stringify(logData)}`);
                     }
                     // --- Ende Logging ---
 
