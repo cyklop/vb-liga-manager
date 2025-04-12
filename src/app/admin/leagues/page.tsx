@@ -1096,9 +1096,11 @@ export default function LeaguesPage() {
 
                 {/* Case 1: MATCH_SCORE */}
                 {editingLeagueContext.scoreEntryType === ScoreEntryType.MATCH_SCORE && (
-                  <div className="flex space-x-4">
-                    <div className="flex-1">
-                      <label htmlFor="homeScore" className="block text-xs font-medium text-gray-600 dark:text-gray-400">Sätze Heim</label>
+                  <div className="space-y-3"> {/* Wrap in a div for spacing */}
+                    {/* Set Scores */}
+                    <div className="flex space-x-4">
+                      <div className="flex-1">
+                        <label htmlFor="homeScore" className="block text-xs font-medium text-gray-600 dark:text-gray-400">Sätze Heim</label>
                       <input
                         type="number"
                         id="homeScore"

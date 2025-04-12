@@ -102,6 +102,8 @@ export async function PUT(
       homeSet3: null, awaySet3: null,
       homeSet4: null, awaySet4: null,
       homeSet5: null, awaySet5: null,
+      homePoints: null, // Initialize points
+      awayPoints: null, // Initialize points
       homeMatchPoints: null,
       awayMatchPoints: null,
     };
