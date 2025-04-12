@@ -54,6 +54,12 @@ model UserTeam {
   @@id([userId, teamId])
 }
 
+// Enum to define how scores are entered for a league
+enum ScoreEntryType {
+  MATCH_SCORE // Only the final match score (e.g., 3:1) is entered
+  SET_SCORES  // Individual set scores (e.g., 25:20, 23:25, ...) are entered
+}
+
 model League {
   id                Int       @id @default(autoincrement())
   name              String    @unique
@@ -64,11 +70,11 @@ model League {
   fixtures          Fixture[]
   isActive          Boolean   @default(true) // Flag to mark league as active/inactive
   createdAt         DateTime  @default(now()) // Track creation date
-  trackSetScores    Boolean   @default(false) // Track individual set scores instead of just total sets/points
-  setsToWin         Int       @default(2)     // Number of sets needed to win a match (e.g., 2 for Bo3, 3 for Bo5)
+  scoreEntryType    ScoreEntryType @default(MATCH_SCORE) // How scores are entered (match vs sets)
+  setsToWin         Int       @default(3)     // Number of sets needed to win a match (e.g., 2 for Bo3, 3 for Bo5)
 
-  // Point rules for the league
-  pointsWin30       Int       @default(3) // Points for winning 3:0
+  // Point rules for the league - These depend on the final set score (e.g., 3:0, 3:1, 3:2)
+  pointsWin30       Int       @default(3) // Points for winning 3:0 (or 2:0 if setsToWin=2)
   pointsWin31       Int       @default(3) // Points for winning 3:1
   pointsWin32       Int       @default(2) // Points for winning 3:2
   pointsLoss32      Int       @default(1) // Points for losing 2:3
@@ -91,11 +97,12 @@ model Fixture {
   homeScore    Int?      // DEPRECATED - Will be replaced by sets/points. Keep for migration, remove later? Or rename? Let's rename for clarity.
   awayScore    Int?      // DEPRECATED - Will be replaced by sets/points. Keep for migration, remove later? Or rename? Let's rename for clarity.
 
-  // Detailed score
-  homeSets          Int?      // Sets won by home team
-  awaySets          Int?      // Sets won by away team
-  homePoints        Int?      // Total points/balls scored by home team (optional)
-  awayPoints        Int?      // Total points/balls scored by away team (optional)
+  // Deprecated / To be reviewed fields (consider removing if not used)
+  setScores    Json?     // Optional: Store individual set scores, e.g., [{"home": 25, "away": 21}, ...] - Potentially redundant now?
+  homeSets          Int?      // DEPRECATED - Use homeScore
+  awaySets          Int?      // DEPRECATED - Use awayScore
+  homePoints        Int?      // Total points/balls scored by home team (optional, might be useful for tie-breakers)
+  awayPoints        Int?      // Total points/balls scored by away team (optional, might be useful for tie-breakers)
 
   // Calculated match points based on league rules
   homeMatchPoints   Int?
