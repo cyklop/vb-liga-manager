@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import prisma, { Prisma } from '../../../../../lib/prisma'; // Importiere Prisma für Typen
+import { Prisma } from '@prisma/client'; // Importiere Prisma für Typen
+import { prisma } from '@/lib/prisma';
 // Verwende Pfad-Alias für besseren Import
 import { calculateTable, CalculationLeague, CalculationFixture, TableEntry } from '@/lib/table-calculation';
 

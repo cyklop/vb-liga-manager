@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import prisma from '../../../lib/prisma' // Import the singleton instance
+import prisma from '@/lib/prisma' // Import the singleton instance
 
 export async function GET() {
   try {

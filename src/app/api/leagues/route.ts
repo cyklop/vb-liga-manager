@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
-import prisma from '../../../lib/prisma' // Import the singleton instance
+import prisma from '@/lib/prisma'; // Import the singleton instance
 import { ScoreEntryType } from '@prisma/client' // Import the enum
 import { getServerSession } from 'next-auth'
-import { authOptions } from '../../../lib/auth' // Corrected import path
-import { createSlug, isValidSlug } from '../../../../src/lib/slugify'
+import { authOptions } from '@/lib/auth' // Corrected import path
+import { createSlug, isValidSlug } from '@/lib/slugify'
 
 export async function GET(request: Request) {
   // URL-Parameter auslesen

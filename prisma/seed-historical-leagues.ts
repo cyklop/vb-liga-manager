@@ -1,5 +1,5 @@
 import { PrismaClient, Prisma, ScoreEntryType } from '@prisma/client' // Importiere ScoreEntryType
-import { createSlug } from '../src/lib/slugify' // Passe den Pfad ggf. an
+import { createSlug } from '@/lib/slugify' // Passe den Pfad ggf. an
 import fs from 'fs'
 import path from 'path'
 

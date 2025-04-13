@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import prisma from '../../../../../lib/prisma' // Import the singleton instance
+import { prisma } from '@/lib/prisma'
 
 // Helper function to extract the first HH:MM or approximate HH:00 time from a string
 function extractTimeFromString(text: string | null | undefined): string | null {
@@ -407,7 +407,7 @@ interface Fixture {
 
 
 import { getServerSession } from 'next-auth'
-import { authOptions } from '../../../../../lib/auth' // Corrected import path
+import { authOptions } from '@/lib/auth' // Corrected import path
 
 export async function POST(request: Request, { params: { id } }: { params: { id: string } }) {
   // Destructure id directly from params

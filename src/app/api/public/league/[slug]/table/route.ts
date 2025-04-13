@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '../../../../../../lib/prisma';
+import prisma from '@/lib/prisma';
 // Verwende Pfad-Alias für besseren Import
 import { calculateTable, CalculationLeague, CalculationFixture, TableEntry } from '@/lib/table-calculation';
 
