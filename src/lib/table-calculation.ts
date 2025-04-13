@@ -128,8 +128,15 @@ export function calculateTable(league: CalculationLeague, fixtures: CalculationF
           if (awaySets === 3 && homeSets === 0) tableEntries[awayTeamId].points += league.pointsWin30 ?? 0;
           else if (awaySets === 3 && homeSets === 1) tableEntries[awayTeamId].points += league.pointsWin31 ?? 0;
           else if (awaySets === 3 && homeSets === 2) {
-            tableEntries[awayTeamId].points += league.pointsWin32 ?? 0;
-            tableEntries[homeTeamId].points += league.pointsLoss32 ?? 0;
+            const awayTeamIdForLog = awayTeamId; // Kopiere ID für Logging
+            const homeTeamIdForLog = homeTeamId; // Kopiere ID für Logging
+            const pointsToAddAway = league.pointsWin32 ?? 0;
+            const pointsToAddHome = league.pointsLoss32 ?? 0;
+            // console.log(`DEBUG (Fixture ${fixture.id}): Applying 3:2 Away Win. Away Team (${awayTeamIdForLog}) gets ${pointsToAddAway}. Home Team (${homeTeamIdForLog}) gets ${pointsToAddHome}.`);
+            // console.log(`  -> Before: Away Points = ${tableEntries[awayTeamIdForLog].points}, Home Points = ${tableEntries[homeTeamIdForLog].points}`);
+            tableEntries[awayTeamIdForLog].points += pointsToAddAway;
+            tableEntries[homeTeamIdForLog].points += pointsToAddHome;
+            // console.log(`  -> After: Away Points = ${tableEntries[awayTeamIdForLog].points}, Home Points = ${tableEntries[homeTeamIdForLog].points}`);
           }
         }
       } else if (league.scoreEntryType === ScoreEntryType.MATCH_SCORE) {
