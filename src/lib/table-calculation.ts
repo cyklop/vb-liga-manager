@@ -168,7 +168,7 @@ export function calculateTable(league: CalculationLeague, fixtures: CalculationF
     });
 
     // DEBUG: Log the state of tableEntries *after* processing all fixtures
-    // console.log("DEBUG: tableEntries state before calculating derived stats:", JSON.stringify(tableEntries, null, 2));
+    console.log("DEBUG: tableEntries state before calculating derived stats:", JSON.stringify(tableEntries, null, 2));
 
 
     // 3. Abgeleitete Statistiken berechnen
