@@ -1,7 +1,8 @@
-import { PrismaClient, Prisma, ScoreEntryType } from '@prisma/client'
+import { PrismaClient, Prisma } from '@prisma/client'
 import { createSlug } from '../src/lib/slugify'
 
 const prisma = new PrismaClient()
+const { ScoreEntryType } = Prisma // ScoreEntryType aus Prisma extrahieren
 
 // Hilfsfunktion zum Normalisieren von Teamnamen
 function normalizeTeamName(name: string | null | undefined): string {
@@ -677,7 +678,7 @@ export async function main() {
     const pointsConfig = {
         pointsWin30: 2, pointsWin31: 2, pointsWin32: 2,
         pointsLoss32: 0,
-        scoreEntryType: ScoreEntryType.SET_SCORES
+        scoreEntryType: Prisma.ScoreEntryType.SET_SCORES // Korrekter Zugriff über Prisma
     };
 
     // Liga erstellen/aktualisieren
