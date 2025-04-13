@@ -69,8 +69,17 @@ export async function GET(request: Request, { params }: { params: { id: string }
         awayTeamId: true,
         homeScore: true,
         awayScore: true,
-        homeSets: true,
-        awaySets: true,
+        // Remove homeSets/awaySets, add individual sets
+        homeSet1: true,
+        awaySet1: true,
+        homeSet2: true,
+        awaySet2: true,
+        homeSet3: true,
+        awaySet3: true,
+        homeSet4: true,
+        awaySet4: true,
+        homeSet5: true,
+        awaySet5: true,
         homePoints: true, // League points for home team
         awayPoints: true, // League points for away team
         homePointsTotal: true, // Ball points for home team
@@ -137,8 +146,17 @@ export async function GET(request: Request, { params }: { params: { id: string }
       tableEntries[awayTeamId].pointsLost += homeBallPoints;
 
       if (league.scoreEntryType === 'SET_SCORES') {
-        const homeSets = fixture.homeSets || 0;
-        const awaySets = fixture.awaySets || 0;
+        // Calculate total sets won from individual set scores
+        let homeSets = 0;
+        let awaySets = 0;
+        for (let i = 1; i <= 5; i++) {
+          const hs = fixture[`homeSet${i}` as keyof typeof fixture] as number | null;
+          const as = fixture[`awaySet${i}` as keyof typeof fixture] as number | null;
+          if (hs !== null && as !== null) {
+            if (hs > as) homeSets++;
+            else if (as > hs) awaySets++;
+          }
+        }
 
         // Update sets
         tableEntries[homeTeamId].setsWon += homeSets;
