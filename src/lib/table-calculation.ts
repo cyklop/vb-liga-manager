@@ -112,22 +112,24 @@ export function calculateTable(league: CalculationLeague, fixtures: CalculationF
           tableEntries[awayTeamId].lost++;
           tableEntries[homeTeamId].directComparisonWins++;
           tableEntries[awayTeamId].directComparisonLosses++;
-          if (homeSets === 3 && awaySets === 0) tableEntries[homeTeamId].points += league.pointsWin30;
-          else if (homeSets === 3 && awaySets === 1) tableEntries[homeTeamId].points += league.pointsWin31;
+          // Add null checks for point assignment
+          if (homeSets === 3 && awaySets === 0) tableEntries[homeTeamId].points += league.pointsWin30 ?? 0;
+          else if (homeSets === 3 && awaySets === 1) tableEntries[homeTeamId].points += league.pointsWin31 ?? 0;
           else if (homeSets === 3 && awaySets === 2) {
-            tableEntries[homeTeamId].points += league.pointsWin32;
-            tableEntries[awayTeamId].points += league.pointsLoss32;
+            tableEntries[homeTeamId].points += league.pointsWin32 ?? 0;
+            tableEntries[awayTeamId].points += league.pointsLoss32 ?? 0;
           }
         } else if (awaySets > homeSets) {
           tableEntries[awayTeamId].won++;
           tableEntries[homeTeamId].lost++;
           tableEntries[awayTeamId].directComparisonWins++;
           tableEntries[homeTeamId].directComparisonLosses++;
-          if (awaySets === 3 && homeSets === 0) tableEntries[awayTeamId].points += league.pointsWin30;
-          else if (awaySets === 3 && homeSets === 1) tableEntries[awayTeamId].points += league.pointsWin31;
+          // Add null checks for point assignment
+          if (awaySets === 3 && homeSets === 0) tableEntries[awayTeamId].points += league.pointsWin30 ?? 0;
+          else if (awaySets === 3 && homeSets === 1) tableEntries[awayTeamId].points += league.pointsWin31 ?? 0;
           else if (awaySets === 3 && homeSets === 2) {
-            tableEntries[awayTeamId].points += league.pointsWin32;
-            tableEntries[homeTeamId].points += league.pointsLoss32;
+            tableEntries[awayTeamId].points += league.pointsWin32 ?? 0;
+            tableEntries[homeTeamId].points += league.pointsLoss32 ?? 0;
           }
         }
       } else if (league.scoreEntryType === ScoreEntryType.MATCH_SCORE) {
