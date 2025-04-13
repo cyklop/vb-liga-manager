@@ -34,14 +34,19 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
   try {
     // Get the league with its teams and point rules
+    // Get the league with its teams, point rules and score entry type
     const league = await prisma.league.findUnique({
       where: { id: leagueId },
       include: {
-        teams: true,
+        teams: true, // Include teams associated with the league
       },
+      // Select specific fields including point rules and score entry type
+      // Prisma includes all scalar fields by default, so explicit select might not be needed
+      // unless you want to limit data transfer. For clarity, ensure these are available:
+      // select: { id: true, name: true, teams: true, scoreEntryType: true, pointsWin30: true, ... }
     });
 
-    if (!league) {
+    if (!league || !league.scoreEntryType) { // Check if league and scoreEntryType exist
       return NextResponse.json({ message: 'Liga nicht gefunden' }, { status: 404 });
     }
 
@@ -59,8 +64,26 @@ export async function GET(request: Request, { params }: { params: { id: string }
         homeTeam: { select: { id: true, name: true } },
         awayTeam: { select: { id: true, name: true } },
       },
+      // Ensure all necessary fields are included for both score types
+      select: {
+        id: true,
+        leagueId: true,
+        homeTeamId: true,
+        awayTeamId: true,
+        homeScore: true,
+        awayScore: true,
+        homeSets: true,
+        awaySets: true,
+        homePoints: true, // League points for home team
+        awayPoints: true, // League points for away team
+        homePointsTotal: true, // Ball points for home team
+        awayPointsTotal: true, // Ball points for away team
+        matchday: true,
+        homeTeam: { select: { id: true, name: true } },
+        awayTeam: { select: { id: true, name: true } },
+      }
     };
-    
+
     // Add matchday filter if specified
     if (matchday !== undefined) {
       fixtureQuery.where.AND.push({ matchday: { lte: matchday } });
@@ -104,66 +127,93 @@ export async function GET(request: Request, { params }: { params: { id: string }
         return; // Verwende 'return' statt 'continue' in forEach
       }
 
-      const homeSets = fixture.homeSets || 0;
-      const awaySets = fixture.awaySets || 0;
-      const homePoints = fixture.homePoints || 0;
-      const awayPoints = fixture.awayPoints || 0;
-      
-      // Update played matches
+      // --- Start Conditional Logic based on ScoreEntryType ---
       tableEntries[homeTeamId].played++;
       tableEntries[awayTeamId].played++;
-      
-      // Update sets
-      tableEntries[homeTeamId].setsWon += homeSets;
-      tableEntries[homeTeamId].setsLost += awaySets;
-      tableEntries[awayTeamId].setsWon += awaySets;
-      tableEntries[awayTeamId].setsLost += homeSets;
-      
-      // Update points (balls)
-      tableEntries[homeTeamId].pointsWon += homePoints;
-      tableEntries[homeTeamId].pointsLost += awayPoints;
-      tableEntries[awayTeamId].pointsWon += awayPoints;
-      tableEntries[awayTeamId].pointsLost += homePoints;
-      
-      // Determine match result and award league points
-      if (homeSets > awaySets) {
-        tableEntries[homeTeamId].won++;
-        tableEntries[awayTeamId].lost++;
-        
-        // Direct comparison tracking
-        tableEntries[homeTeamId].directComparisonWins++;
-        tableEntries[awayTeamId].directComparisonLosses++;
-        
-        // Award points based on the score
-        if (homeSets === 3 && awaySets === 0) {
-          tableEntries[homeTeamId].points += league.pointsWin30;
-        } else if (homeSets === 3 && awaySets === 1) {
-          tableEntries[homeTeamId].points += league.pointsWin31;
-        } else if (homeSets === 3 && awaySets === 2) {
-          tableEntries[homeTeamId].points += league.pointsWin32;
-          tableEntries[awayTeamId].points += league.pointsLoss32;
+
+      // Ball points are always tracked, regardless of score entry type
+      const homeBallPoints = fixture.homePointsTotal || 0;
+      const awayBallPoints = fixture.awayPointsTotal || 0;
+      tableEntries[homeTeamId].pointsWon += homeBallPoints;
+      tableEntries[homeTeamId].pointsLost += awayBallPoints;
+      tableEntries[awayTeamId].pointsWon += awayBallPoints;
+      tableEntries[awayTeamId].pointsLost += homeBallPoints;
+
+      if (league.scoreEntryType === 'SET_SCORES') {
+        const homeSets = fixture.homeSets || 0;
+        const awaySets = fixture.awaySets || 0;
+
+        // Update sets
+        tableEntries[homeTeamId].setsWon += homeSets;
+        tableEntries[homeTeamId].setsLost += awaySets;
+        tableEntries[awayTeamId].setsWon += awaySets;
+        tableEntries[awayTeamId].setsLost += homeSets;
+
+        // Determine match result and award league points based on SETS
+        if (homeSets > awaySets) {
+          tableEntries[homeTeamId].won++;
+          tableEntries[awayTeamId].lost++;
+          tableEntries[homeTeamId].directComparisonWins++;
+          tableEntries[awayTeamId].directComparisonLosses++;
+
+          // Award points based on the set score
+          if (homeSets === 3 && awaySets === 0) {
+            tableEntries[homeTeamId].points += league.pointsWin30;
+          } else if (homeSets === 3 && awaySets === 1) {
+            tableEntries[homeTeamId].points += league.pointsWin31;
+          } else if (homeSets === 3 && awaySets === 2) {
+            tableEntries[homeTeamId].points += league.pointsWin32;
+            tableEntries[awayTeamId].points += league.pointsLoss32;
+          }
+        } else if (awaySets > homeSets) {
+          tableEntries[awayTeamId].won++;
+          tableEntries[homeTeamId].lost++;
+          tableEntries[awayTeamId].directComparisonWins++;
+          tableEntries[homeTeamId].directComparisonLosses++;
+
+          // Award points based on the set score
+          if (awaySets === 3 && homeSets === 0) {
+            tableEntries[awayTeamId].points += league.pointsWin30;
+          } else if (awaySets === 3 && homeSets === 1) {
+            tableEntries[awayTeamId].points += league.pointsWin31;
+          } else if (awaySets === 3 && homeSets === 2) {
+            tableEntries[awayTeamId].points += league.pointsWin32;
+            tableEntries[homeTeamId].points += league.pointsLoss32;
+          }
         }
-      } else if (awaySets > homeSets) {
-        tableEntries[awayTeamId].won++;
-        tableEntries[homeTeamId].lost++;
-        
-        // Direct comparison tracking
-        tableEntries[awayTeamId].directComparisonWins++;
-        tableEntries[homeTeamId].directComparisonLosses++;
-        
-        // Award points based on the score
-        if (awaySets === 3 && homeSets === 0) {
-          tableEntries[awayTeamId].points += league.pointsWin30;
-        } else if (awaySets === 3 && homeSets === 1) {
-          tableEntries[awayTeamId].points += league.pointsWin31;
-        } else if (awaySets === 3 && homeSets === 2) {
-          tableEntries[awayTeamId].points += league.pointsWin32;
-          tableEntries[homeTeamId].points += league.pointsLoss32;
+      } else if (league.scoreEntryType === 'MATCH_SCORE') {
+        const homeMatchScore = fixture.homeScore || 0;
+        const awayMatchScore = fixture.awayScore || 0;
+        const homeLeaguePoints = fixture.homePoints || 0; // League points already calculated
+        const awayLeaguePoints = fixture.awayPoints || 0; // League points already calculated
+
+        // Update "sets" (using match score for table display)
+        tableEntries[homeTeamId].setsWon += homeMatchScore;
+        tableEntries[homeTeamId].setsLost += awayMatchScore;
+        tableEntries[awayTeamId].setsWon += awayMatchScore;
+        tableEntries[awayTeamId].setsLost += homeMatchScore;
+
+        // Update league points directly from fixture
+        tableEntries[homeTeamId].points += homeLeaguePoints;
+        tableEntries[awayTeamId].points += awayLeaguePoints;
+
+        // Determine match result based on MATCH SCORE
+        if (homeMatchScore > awayMatchScore) {
+          tableEntries[homeTeamId].won++;
+          tableEntries[awayTeamId].lost++;
+          tableEntries[homeTeamId].directComparisonWins++;
+          tableEntries[awayTeamId].directComparisonLosses++;
+        } else if (awayMatchScore > homeMatchScore) {
+          tableEntries[awayTeamId].won++;
+          tableEntries[homeTeamId].lost++;
+          tableEntries[awayTeamId].directComparisonWins++;
+          tableEntries[homeTeamId].directComparisonLosses++;
         }
       }
+      // --- End Conditional Logic ---
     });
 
-    // Calculate derived statistics
+    // Calculate derived statistics (remains the same)
     Object.values(tableEntries).forEach(entry => {
       entry.setsDiff = entry.setsWon - entry.setsLost;
       entry.setsQuotient = entry.setsLost === 0 ? entry.setsWon : parseFloat((entry.setsWon / entry.setsLost).toFixed(3));
