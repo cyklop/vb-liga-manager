@@ -60,11 +60,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
           { awayScore: { not: null } },
         ],
       },
-      include: {
-        homeTeam: { select: { id: true, name: true } },
-        awayTeam: { select: { id: true, name: true } },
-      },
       // Ensure all necessary fields are included for both score types
+      // REMOVED include block as select is used below
       select: {
         id: true,
         leagueId: true,
