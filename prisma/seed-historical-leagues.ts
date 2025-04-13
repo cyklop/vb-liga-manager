@@ -39,6 +39,8 @@ interface SheetFixture {
     EndG: string | number; // Endstand Sätze Gast
     PktH: string | number; // Punkte Heim
     PktG: string | number; // Punkte Gast
+    BälleH?: string | number | null; // Gesamtbälle Heim (für MATCH_SCORE)
+    BälleG?: string | number | null; // Gesamtbälle Gast (für MATCH_SCORE)
     Anmerkungen?: string | null; // Erlaube null
 }
 
@@ -381,6 +383,42 @@ export async function main() {
                         console.warn(`      Points mismatch for ${homeTeamName} vs ${awayTeamName}: Sets (${homeSets}:${awaySets}), Points (${homeMatchPoints}:${awayMatchPoints})`);
                     }
                 }
+
+                // Berechne/Lese Gesamt-Ballpunkte
+                let homeTotalBallPoints: number | null = null;
+                let awayTotalBallPoints: number | null = null;
+
+                if (detectedScoreEntryType === ScoreEntryType.SET_SCORES) {
+                    let homeSum = 0;
+                    let awaySum = 0;
+                    let hasAnySetScore = false;
+                    for (let i = 1; i <= 5; i++) {
+                        const hs = safeParseInt(fix[`S${i}H` as keyof SheetFixture]);
+                        const as = safeParseInt(fix[`S${i}G` as keyof SheetFixture]);
+                        if (hs !== null) {
+                            homeSum += hs;
+                            hasAnySetScore = true;
+                        }
+                        if (as !== null) {
+                            awaySum += as;
+                            hasAnySetScore = true;
+                        }
+                    }
+                    if (hasAnySetScore) {
+                        homeTotalBallPoints = homeSum;
+                        awayTotalBallPoints = awaySum;
+                    }
+                } else if (detectedScoreEntryType === ScoreEntryType.MATCH_SCORE) {
+                    // Lese Bälle direkt aus den Daten (achte auf korrekte Schlüssel)
+                    homeTotalBallPoints = safeParseInt(fix['BälleH' as keyof SheetFixture]);
+                    awayTotalBallPoints = safeParseInt(fix['BälleG' as keyof SheetFixture]);
+                    // Warnung, wenn Gesamtbälle fehlen, aber erwartet werden
+                    if (homeTotalBallPoints === null || awayTotalBallPoints === null) {
+                         console.warn(`      Missing total ball points (BälleH/BälleG) for MATCH_SCORE fixture: ${homeTeamName} vs ${awayTeamName}`);
+                    }
+                }
+
+
                 try {
                     // Datenobjekt für Prisma erstellen
                     const fixtureInputData = {
@@ -409,6 +447,8 @@ export async function main() {
                         awayScore: awaySets,
                         homeMatchPoints: homeMatchPoints,
                         awayMatchPoints: awayMatchPoints,
+                        homePoints: homeTotalBallPoints, // Gesamt-Ballpunkte Heim
+                        awayPoints: awayTotalBallPoints, // Gesamt-Ballpunkte Gast
                         notes: fix.Anmerkungen || null,
                     };
 
