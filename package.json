@@ -17,6 +17,7 @@
     "prisma:seed:base": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts",
     "prisma:seed:assign-teams": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/assign-teams-to-league.ts",
     "prisma:seed:fixtures": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed-fixtures.ts",
+    "prisma:seed:historical:2015-16": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed-historical-leagues-direct.ts",
     "prisma:seed:all": "npm run prisma:seed:base && npm run prisma:seed:assign-teams && npm run prisma:seed:fixtures"
   },
   "prisma": {
