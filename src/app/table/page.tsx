@@ -254,25 +254,25 @@ export default function TablePage() {
                     Spiele
                   </th>
                   <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    S
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     N
                   </th>
                   <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Punkte
+                    S
                   </th>
                   <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Sätze
+                    Summe {/* Sätze */}
                   </th>
                   <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Diff.
+                    Diff(Sätze)
                   </th>
                   <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Bälle
                   </th>
                   <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Diff.
+                    Diff(Bälle)
+                  </th>
+                   <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Punkte
                   </th>
                 </tr>
               </thead>
@@ -289,25 +289,25 @@ export default function TablePage() {
                       {entry.played}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                      {entry.won}
+                      {entry.lost} {/* N */}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                      {entry.lost}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-center">
-                      {entry.points}
+                      {entry.won} {/* S */}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                      {entry.setsWon}:{entry.setsLost}
+                      {entry.setsWon}:{entry.setsLost} {/* Summe (Sätze) */}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                      {entry.setsDiff > 0 ? '+' : ''}{entry.setsDiff}
+                      {entry.setsDiff > 0 ? '+' : ''}{entry.setsDiff} {/* Diff(Sätze) */}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                      {entry.pointsWon}:{entry.pointsLost}
+                      {entry.pointsWon}:{entry.pointsLost} {/* Bälle */}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                      {entry.pointsDiff > 0 ? '+' : ''}{entry.pointsDiff}
+                      {entry.pointsDiff > 0 ? '+' : ''}{entry.pointsDiff} {/* Diff(Bälle) */}
+                    </td>
+                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-center">
+                      {entry.points} {/* Punkte */}
                     </td>
                   </tr>
                 ))}
