@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '../../../../../../lib/prisma';
-import { calculateTable, CalculationLeague, CalculationFixture, TableEntry } from '../../../../../lib/table-calculation'; // Importiere die zentrale Funktion und Typen
+// Korrigierter Import-Pfad (6 Ebenen nach oben)
+import { calculateTable, CalculationLeague, CalculationFixture, TableEntry } from '../../../../../../lib/table-calculation';
 
 export async function GET(
   request: NextRequest,

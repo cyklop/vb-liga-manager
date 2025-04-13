@@ -1,22 +1,9 @@
 import { NextResponse } from 'next/server';
 import prisma, { Prisma } from '../../../../../lib/prisma'; // Importiere Prisma für Typen
-import { calculateTable, CalculationLeague, CalculationFixture, TableEntry } from '../../../../../lib/table-calculation'; // Importiere die zentrale Funktion und Typen
-  teamName: string;
-  played: number;
-  won: number;
-  lost: number;
-  points: number;
-  setsWon: number;
-  setsLost: number;
-  setsDiff: number;
-  setsQuotient: number;
-  pointsWon: number;
-  pointsLost: number;
-  pointsDiff: number;
-  pointsQuotient: number;
-  // For direct comparison
-  directComparisonWins: number;
-// Interface TableEntry wurde entfernt, da sie jetzt aus der Utility-Datei importiert wird
+// Korrigierter Import-Pfad (6 Ebenen nach oben)
+import { calculateTable, CalculationLeague, CalculationFixture, TableEntry } from '../../../../../../lib/table-calculation';
+
+// Entferne die übrig gebliebene Interface-Definition
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   const leagueId = parseInt(params.id);
