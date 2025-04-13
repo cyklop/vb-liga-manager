@@ -321,23 +321,6 @@ export async function main() {
             // Liga erstellen/aktualisieren
             const league = await prisma.league.upsert({
                 where: { slug: leagueSlug },
-                    // pointsLoss03: 0, // Feld existiert nicht im Schema
-                };
-                console.log(`   Using detailed point system (3/2/1/0) for season ${seasonYear}.`);
-            } else {
-                // Einfache Regeln für historische Saisons (2/0)
-                pointsConfig = {
-                    pointsWin30: 2, pointsWin31: 2, pointsWin32: 2,
-                    pointsLoss32: 0,
-                    // pointsLoss13: 0, // Feld existiert nicht im Schema
-                    // pointsLoss03: 0, // Feld existiert nicht im Schema
-                };
-                console.log(`   Using simple point system (2/0) for season ${seasonYear}.`);
-            }
-
-            // Liga erstellen/aktualisieren
-            const league = await prisma.league.upsert({
-                where: { slug: leagueSlug },
                 update: {
                     name: leagueName, // Stelle sicher, dass der Name aktuell ist
                     numberOfTeams: currentSeasonTeamNames.size,
