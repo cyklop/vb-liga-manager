@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql" // Statischer Provider für lokale SQLite-Entwicklung
+  provider = "mysql" // Statischer Provider für lokale MYSQL-Entwicklung
   url      = env("DATABASE_URL")      // URL aus Umgebungsvariable lesen
 }
 
