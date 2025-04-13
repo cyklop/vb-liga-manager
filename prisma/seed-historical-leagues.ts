@@ -51,9 +51,7 @@ function normalizeTeamName(name: string | null | undefined): string {
     let normalized = name.trim().replace(/\s+/g, ' '); // Grundlegende Bereinigung
 
     // Spezifische Ersetzungen für bekannte Duplikate/Varianten
-    if (normalized === 'TV Helmbrechts') {
-        normalized = 'TSV Helmbrechts';
-    } else if (normalized === 'MTV Pegnitz/FSV Schnabelwaid') {
+    if (normalized === 'MTV Pegnitz/FSV Schnabelwaid') {
         normalized = 'MTV/SG Pegnitz';
     } else if (normalized === 'USC Bayreuth') {
         normalized = 'USC Bayreuth 1';

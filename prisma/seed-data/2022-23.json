@@ -1,6 +1,6 @@
 [
   {
-    "Spieltag": 1, "Datum": "27. Feb 2023", "Uhrzeit": "20:00 Uhr", "Spielort": "Pegnitz", "Heimmannschaft": "MTV Pegnitz/FSV Schnabelwaid", "Gastmannschaft": "BSV H5",
+    "Spieltag": 1, "Datum": "27. Feb 2023", "Uhrzeit": "20:00 Uhr", "Spielort": "Pegnitz", "Heimmannschaft": "MTV/SG Pegnitz", "Gastmannschaft": "BSV H5",
     "EndH": 2, "EndG": 3, "BälleH": 110, "BälleG": 105, "PktH": 1, "PktG": 2, "Anmerkungen": ""
   },
   {
@@ -8,7 +8,7 @@
     "EndH": 1, "EndG": 3, "BälleH": 81, "BälleG": 98, "PktH": 0, "PktG": 3, "Anmerkungen": ""
   },
   {
-    "Spieltag": 2, "Datum": "23. Mär 2023", "Uhrzeit": "19:30 Uhr", "Spielort": "Speichersdorf", "Heimmannschaft": "TSV Kirchenlaibach", "Gastmannschaft": "MTV Pegnitz/FSV Schnabelwaid",
+    "Spieltag": 2, "Datum": "23. Mär 2023", "Uhrzeit": "19:30 Uhr", "Spielort": "Speichersdorf", "Heimmannschaft": "TSV Kirchenlaibach", "Gastmannschaft": "MTV/SG Pegnitz",
     "EndH": 3, "EndG": 2, "BälleH": 104, "BälleG": 106, "PktH": 2, "PktG": 1, "Anmerkungen": ""
   },
   {
@@ -16,7 +16,7 @@
     "EndH": 2, "EndG": 3, "BälleH": 99, "BälleG": 105, "PktH": 1, "PktG": 2, "Anmerkungen": ""
   },
   {
-    "Spieltag": 3, "Datum": "18. Apr 2023", "Uhrzeit": "19:00 Uhr", "Spielort": "Bad Berneck", "Heimmannschaft": "TSV Bad Berneck", "Gastmannschaft": "MTV Pegnitz/FSV Schnabelwaid",
+    "Spieltag": 3, "Datum": "18. Apr 2023", "Uhrzeit": "19:00 Uhr", "Spielort": "Bad Berneck", "Heimmannschaft": "TSV Bad Berneck", "Gastmannschaft": "MTV/SG Pegnitz",
     "EndH": 3, "EndG": 1, "BälleH": 94, "BälleG": 77, "PktH": 3, "PktG": 0, "Anmerkungen": ""
   },
   {
@@ -24,7 +24,7 @@
     "EndH": 2, "EndG": 3, "BälleH": 109, "BälleG": 111, "PktH": 1, "PktG": 2, "Anmerkungen": ""
   },
   {
-    "Spieltag": 4, "Datum": "21. Jun 2023", "Uhrzeit": "19:30 Uhr", "Spielort": "Bayreuth", "Heimmannschaft": "BSV H5", "Gastmannschaft": "MTV Pegnitz/FSV Schnabelwaid",
+    "Spieltag": 4, "Datum": "21. Jun 2023", "Uhrzeit": "19:30 Uhr", "Spielort": "Bayreuth", "Heimmannschaft": "BSV H5", "Gastmannschaft": "MTV/SG Pegnitz",
     "EndH": 3, "EndG": 1, "BälleH": 96, "BälleG": 94, "PktH": 3, "PktG": 0, "Anmerkungen": ""
   },
   {
@@ -32,7 +32,7 @@
     "EndH": 0, "EndG": 3, "BälleH": 62, "BälleG": 75, "PktH": 0, "PktG": 3, "Anmerkungen": ""
   },
   {
-    "Spieltag": 5, "Datum": "10. Jul 2023", "Uhrzeit": "20:00 Uhr", "Spielort": "Pegnitz", "Heimmannschaft": "MTV Pegnitz/FSV Schnabelwaid", "Gastmannschaft": "TSV Kirchenlaibach",
+    "Spieltag": 5, "Datum": "10. Jul 2023", "Uhrzeit": "20:00 Uhr", "Spielort": "Pegnitz", "Heimmannschaft": "MTV/SG Pegnitz", "Gastmannschaft": "TSV Kirchenlaibach",
     "EndH": 3, "EndG": 0, "BälleH": 76, "BälleG": 57, "PktH": 3, "PktG": 0, "Anmerkungen": ""
   },
   {
@@ -40,7 +40,7 @@
     "EndH": 3, "EndG": 1, "BälleH": 109, "BälleG": 81, "PktH": 3, "PktG": 0, "Anmerkungen": ""
   },
   {
-    "Spieltag": 6, "Datum": "25. Sep 2023", "Uhrzeit": "20:00 Uhr", "Spielort": "Pegnitz", "Heimmannschaft": "MTV Pegnitz/FSV Schnabelwaid", "Gastmannschaft": "TSV Bad Berneck",
+    "Spieltag": 6, "Datum": "25. Sep 2023", "Uhrzeit": "20:00 Uhr", "Spielort": "Pegnitz", "Heimmannschaft": "MTV/SG Pegnitz", "Gastmannschaft": "TSV Bad Berneck",
     "EndH": 0, "EndG": 3, "BälleH": 49, "BälleG": 75, "PktH": 0, "PktG": 3, "Anmerkungen": ""
   },
   {
