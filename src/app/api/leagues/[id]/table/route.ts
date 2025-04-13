@@ -80,10 +80,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
         awaySet4: true,
         homeSet5: true,
         awaySet5: true,
-        homePoints: true, // League points for home team
-        awayPoints: true, // League points for away team
-        homePointsTotal: true, // Ball points for home team
-        awayPointsTotal: true, // Ball points for away team
+        homePoints: true, // Ball points for home team
+        awayPoints: true, // Ball points for away team
+        homeMatchPoints: true, // League points for home team (calculated)
+        awayMatchPoints: true, // League points for away team (calculated)
         matchday: true,
         homeTeam: { select: { id: true, name: true } },
         awayTeam: { select: { id: true, name: true } },
@@ -138,8 +138,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
       tableEntries[awayTeamId].played++;
 
       // Ball points are always tracked, regardless of score entry type
-      const homeBallPoints = fixture.homePointsTotal || 0;
-      const awayBallPoints = fixture.awayPointsTotal || 0;
+      const homeBallPoints = fixture.homePoints || 0; // Correct field for ball points
+      const awayBallPoints = fixture.awayPoints || 0; // Correct field for ball points
       tableEntries[homeTeamId].pointsWon += homeBallPoints;
       tableEntries[homeTeamId].pointsLost += awayBallPoints;
       tableEntries[awayTeamId].pointsWon += awayBallPoints;
@@ -199,8 +199,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
       } else if (league.scoreEntryType === 'MATCH_SCORE') {
         const homeMatchScore = fixture.homeScore || 0;
         const awayMatchScore = fixture.awayScore || 0;
-        const homeLeaguePoints = fixture.homePoints || 0; // League points already calculated
-        const awayLeaguePoints = fixture.awayPoints || 0; // League points already calculated
+        const homeLeaguePoints = fixture.homeMatchPoints || 0; // Use calculated league points
+        const awayLeaguePoints = fixture.awayMatchPoints || 0; // Use calculated league points
 
         // Update "sets" (using match score for table display)
         tableEntries[homeTeamId].setsWon += homeMatchScore;
