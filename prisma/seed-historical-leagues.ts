@@ -53,9 +53,13 @@ function normalizeTeamName(name: string | null | undefined): string {
     // Spezifische Ersetzungen für bekannte Duplikate/Varianten
     if (normalized === 'MTV Pegnitz/FSV Schnabelwaid') {
         normalized = 'MTV/SG Pegnitz';
-    } else if (normalized === 'USC Bayreuth') {
+    } else if (normalized === 'USC Bayreuth') { // Annahme: USC Bayreuth ohne Nummer ist Team 1
         normalized = 'USC Bayreuth 1';
     }
+    // Entferne die Normalisierung für TV/TSV Helmbrechts, da es unterschiedliche Teams sind
+    // else if (normalized === 'TV Helmbrechts') {
+    //     normalized = 'TSV Helmbrechts';
+    // }
     // Füge hier bei Bedarf weitere Ersetzungen hinzu
 
     return normalized;
