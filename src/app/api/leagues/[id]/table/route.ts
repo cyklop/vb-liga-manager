@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma, { Prisma } from '../../../../../lib/prisma'; // Importiere Prisma für Typen
-// Korrigierter Import-Pfad (6 Ebenen nach oben)
-import { calculateTable, CalculationLeague, CalculationFixture, TableEntry } from '../../../../../../lib/table-calculation';
-
-// Entferne die übrig gebliebene Interface-Definition
+// Verwende Pfad-Alias für besseren Import
+import { calculateTable, CalculationLeague, CalculationFixture, TableEntry } from '@/lib/table-calculation';
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   const leagueId = parseInt(params.id);

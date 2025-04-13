@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '../../../../../../lib/prisma';
-// Korrigierter Import-Pfad (6 Ebenen nach oben)
-import { calculateTable, CalculationLeague, CalculationFixture, TableEntry } from '../../../../../../lib/table-calculation';
+// Verwende Pfad-Alias für besseren Import
+import { calculateTable, CalculationLeague, CalculationFixture, TableEntry } from '@/lib/table-calculation';
 
 export async function GET(
   request: NextRequest,
