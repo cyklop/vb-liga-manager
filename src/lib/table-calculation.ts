@@ -70,7 +70,7 @@ export function calculateTable(league: CalculationLeague, fixtures: CalculationF
     // 2. Fixtures verarbeiten
     fixtures.forEach(fixture => {
       // DEBUG: Log points for team 30 at the start of each iteration
-      // console.log(`DEBUG (Fixture ${fixture.id}) Start: Team 30 points = ${tableEntries[30]?.points}`);
+      //// console.log(`DEBUG (Fixture ${fixture.id}) Start: Team 30 points = ${tableEntries[30]?.points}`);
 
       const homeTeamId = fixture.homeTeamId;
       const awayTeamId = fixture.awayTeamId;
@@ -136,11 +136,11 @@ export function calculateTable(league: CalculationLeague, fixtures: CalculationF
             const pointsToAddAway = league.pointsWin32 ?? 0;
             const pointsToAddHome = league.pointsLoss32 ?? 0;
             // Logge auch den Wert aus dem league-Objekt
-            console.log(`DEBUG (Fixture ${fixture.id}): Applying 3:2 Away Win. Away Team (${awayTeamIdForLog}) gets ${pointsToAddAway} (league.pointsWin32=${league.pointsWin32}). Home Team (${homeTeamIdForLog}) gets ${pointsToAddHome} (league.pointsLoss32=${league.pointsLoss32}).`);
-            console.log(`  -> Before: Away Points = ${tableEntries[awayTeamIdForLog].points}, Home Points = ${tableEntries[homeTeamIdForLog].points}`);
+            // console.log(`DEBUG (Fixture ${fixture.id}): Applying 3:2 Away Win. Away Team (${awayTeamIdForLog}) gets ${pointsToAddAway} (league.pointsWin32=${league.pointsWin32}). Home Team (${homeTeamIdForLog}) gets ${pointsToAddHome} (league.pointsLoss32=${league.pointsLoss32}).`);
+            // console.log(`  -> Before: Away Points = ${tableEntries[awayTeamIdForLog].points}, Home Points = ${tableEntries[homeTeamIdForLog].points}`);
             tableEntries[awayTeamIdForLog].points += pointsToAddAway;
             tableEntries[homeTeamIdForLog].points += pointsToAddHome;
-            console.log(`  -> After: Away Points = ${tableEntries[awayTeamIdForLog].points}, Home Points = ${tableEntries[homeTeamIdForLog].points}`);
+            // console.log(`  -> After: Away Points = ${tableEntries[awayTeamIdForLog].points}, Home Points = ${tableEntries[homeTeamIdForLog].points}`);
           }
         }
       } else if (league.scoreEntryType === ScoreEntryType.MATCH_SCORE) {
@@ -170,13 +170,13 @@ export function calculateTable(league: CalculationLeague, fixtures: CalculationF
         }
       }
       // DEBUG: Log points for team 30 at the end of the iteration if involved
-      // if (homeTeamId === 30 || awayTeamId === 30) {
-      //   console.log(`DEBUG (Fixture ${fixture.id}) End: Team 30 points = ${tableEntries[30]?.points}`);
-      // }
+      //// if (homeTeamId === 30 || awayTeamId === 30) {
+      ////   console.log(`DEBUG (Fixture ${fixture.id}) End: Team 30 points = ${tableEntries[30]?.points}`);
+      //// }
     });
 
     // DEBUG: Log the state of tableEntries *after* processing all fixtures
-    console.log("DEBUG: tableEntries state before calculating derived stats:", JSON.stringify(tableEntries, null, 2));
+    // console.log("DEBUG: tableEntries state before calculating derived stats:", JSON.stringify(tableEntries, null, 2));
 
 
     // 3. Abgeleitete Statistiken berechnen
