@@ -69,6 +69,9 @@ export function calculateTable(league: CalculationLeague, fixtures: CalculationF
 
     // 2. Fixtures verarbeiten
     fixtures.forEach(fixture => {
+      // DEBUG: Log points for team 30 at the start of each iteration
+      // console.log(`DEBUG (Fixture ${fixture.id}) Start: Team 30 points = ${tableEntries[30]?.points}`);
+
       const homeTeamId = fixture.homeTeamId;
       const awayTeamId = fixture.awayTeamId;
 
@@ -166,13 +169,16 @@ export function calculateTable(league: CalculationLeague, fixtures: CalculationF
           tableEntries[homeTeamId].directComparisonLosses++;
         }
       }
+      // DEBUG: Log points for team 30 at the end of the iteration if involved
+      // if (homeTeamId === 30 || awayTeamId === 30) {
+      //   console.log(`DEBUG (Fixture ${fixture.id}) End: Team 30 points = ${tableEntries[30]?.points}`);
+      // }
     });
 
     // DEBUG: Log the state of tableEntries *after* processing all fixtures
     console.log("DEBUG: tableEntries state before calculating derived stats:", JSON.stringify(tableEntries, null, 2));
 
-    // --- TEMPORARY DEBUGGING: Skip derived stats and sorting ---
-    /*
+
     // 3. Abgeleitete Statistiken berechnen
     Object.values(tableEntries).forEach(entry => {
       entry.setsDiff = entry.setsWon - entry.setsLost;
@@ -206,11 +212,9 @@ export function calculateTable(league: CalculationLeague, fixtures: CalculationF
       return a.teamName.localeCompare(b.teamName);
     });
 
-    return Object.values(tableEntries); // Return unsorted entries for debugging
-    */
-    // --- END TEMPORARY DEBUGGING ---
+    // */ // End of temporary debugging block comment
 
-    // Original code (currently commented out):
+    // Original code (now active again):
      // 3. Abgeleitete Statistiken berechnen
      Object.values(tableEntries).forEach(entry => {
        entry.setsDiff = entry.setsWon - entry.setsLost;
@@ -244,5 +248,5 @@ export function calculateTable(league: CalculationLeague, fixtures: CalculationF
        return a.teamName.localeCompare(b.teamName);
      });
 
-     return sortedTable; // Return the sorted table in normal operation
+     return sortedTable;
 }
