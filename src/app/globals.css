@@ -1,0 +1,446 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Spezifische Stile für Tabellen im Dark Mode */
+.dark table {
+  @apply bg-card border-border;
+}
+
+.dark th,
+.dark td {
+  @apply border-border text-foreground;
+}
+
+.dark thead th {
+  @apply bg-muted text-foreground;
+}
+
+.dark tbody tr {
+  @apply text-foreground;
+}
+
+.dark tbody tr.bg-white,
+.dark tbody tr:nth-child(odd) {
+  @apply bg-card;
+}
+
+.dark tbody tr.bg-gray-50,
+.dark tbody tr:nth-child(even) {
+  @apply bg-muted;
+}
+
+.dark tbody tr:hover {
+  @apply bg-muted/80;
+}
+
+/* Spezifische Stile für Tabellen-Container */
+.dark .table-container,
+.dark .table-wrapper,
+.dark .table-responsive,
+.dark div:has(> table) {
+  @apply bg-card;
+}
+
+/* Fixtures-spezifische Stile */
+.dark div.bg-white {
+  @apply bg-card;
+}
+
+.dark div.bg-indigo-50 {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
+}
+
+/* Info-Bereiche unter Tabellen */
+.dark .info-section,
+.dark .info-container,
+.dark .table-info,
+.dark .table-footer,
+.dark .info-panel,
+.dark .sort-info,
+.dark .help-text,
+.dark div[x-show="showSortInfo"],
+.dark div.mt-2.p-4.text-sm.text-gray-600.bg-gray-50.rounded-md.border.border-gray-200,
+.dark div.bg-gray-50 {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.375rem;
+  padding: 0.5rem;
+}
+
+/* Listen in Info-Bereichen */
+.dark ol,
+.dark ul {
+  @apply text-foreground;
+}
+
+.dark ol li,
+.dark ul li {
+  @apply text-foreground;
+}
+
+/* Label-Elemente im Dark Mode */
+.dark label {
+  @apply text-foreground;
+}
+
+/* Stile für Formulare im Light und Dark Mode */
+input,
+select,
+textarea {
+  border: 1px solid hsl(var(--input));
+  position: relative;
+  z-index: 0;
+}
+
+.dark input,
+.dark select,
+.dark textarea,
+.dark .form-input,
+.dark .form-select,
+.dark .form-textarea,
+.dark .MuiInputBase-input {
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground));
+  z-index: 1;
+}
+
+/* Stile für Label-Elemente */
+label {
+  position: relative;
+  z-index: 2;
+}
+
+/* Spezifische Stile für Material-UI und andere Formular-Frameworks */
+.dark .MuiInputLabel-root,
+.dark .MuiFormLabel-root,
+.dark .form-label,
+.dark .input-label {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .MuiInputLabel-root.Mui-focused,
+.dark .MuiFormLabel-root.Mui-focused,
+.dark .form-label.focused,
+.dark .input-label.focused {
+  color: hsl(var(--foreground)) !important;
+  background-color: transparent !important;
+}
+
+/* Stile für Formular-Wrapper */
+.dark .form-group,
+.dark .input-group,
+.dark .form-control-wrapper,
+.dark .MuiFormControl-root {
+  position: relative;
+}
+
+.dark input:focus,
+.dark select:focus,
+.dark textarea:focus {
+  @apply border-primary ring-primary/30;
+}
+
+/* Floating Label Stile */
+.dark .floating-label,
+.dark label[for]:focus-within,
+.dark input:focus ~ label,
+.dark select:focus ~ label,
+.dark textarea:focus ~ label,
+.dark input:not(:placeholder-shown) ~ label,
+.dark select:not(:placeholder-shown) ~ label,
+.dark textarea:not(:placeholder-shown) ~ label,
+.dark .form-input:focus ~ .form-label,
+.dark .form-input:not(:placeholder-shown) ~ .form-label,
+.dark .form-select:focus ~ .form-label,
+.dark .form-textarea:focus ~ .form-label {
+  color: hsl(var(--foreground)) !important;
+  background-color: transparent !important;
+  padding: 0 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1;
+  z-index: 5;
+}
+
+/* Dropdown-Stile im Dark Mode */
+.dark select,
+.dark [role="combobox"],
+.dark .dropdown-toggle,
+.dark .select-container {
+  border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--card));
+  color: hsl(var(--foreground));
+}
+
+.dark select:hover,
+.dark [role="combobox"]:hover,
+.dark .dropdown-toggle:hover,
+.dark .select-container:hover {
+  @apply border-primary/50;
+}
+
+/* Stile für Buttons im Dark Mode */
+.dark button:not(.material-button) {
+  @apply text-foreground;
+}
+
+/* Bearbeiten-Button Stile */
+.dark button.edit-button,
+.dark button[aria-label="Bearbeiten"],
+.dark button:has(svg.h-5.w-5),
+.dark button:has(svg.w-4.h-4) {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+.dark button.edit-button:hover,
+.dark button[aria-label="Bearbeiten"]:hover,
+.dark button:has(svg.h-5.w-5):hover,
+.dark button:has(svg.w-4.h-4):hover {
+  background-color: hsl(var(--card));
+}
+
+/* Spezifische Stile für Info-Buttons und deren Container */
+.dark button.info-button,
+.dark button.toggle-button,
+.dark button.accordion-button,
+.dark button.flex {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+.dark button.info-button:hover,
+.dark button.toggle-button:hover,
+.dark button.accordion-button:hover,
+.dark button.flex:hover {
+  background-color: hsl(var(--card));
+}
+
+/* Stile für Karten/Cards im Dark Mode */
+.dark .card,
+.dark div[role="dialog"],
+.dark .dashboard-card,
+.dark .dashboard-item,
+.dark .card-container,
+.dark .MuiPaper-root,
+.dark .MuiCard-root {
+  @apply bg-card border-border text-foreground;
+}
+
+/* Dashboard-spezifische Elemente */
+.dark .dashboard-icon,
+.dark .dashboard-stat,
+.dark .stat-icon,
+.dark .stat-value,
+.dark .stat-label,
+.dark span,
+.dark dd {
+  @apply text-foreground;
+}
+
+/* Dashboard Flex-Elemente und Links */
+.dark a.flex,
+.dark .dashboard-link,
+.dark .stat-card,
+.dark .dashboard-tile {
+  @apply bg-card text-foreground border-border;
+}
+
+.dark a.flex:hover,
+.dark .dashboard-link:hover,
+.dark .stat-card:hover,
+.dark .dashboard-tile:hover {
+  @apply bg-muted;
+}
+
+/* Stile für Icons im Dark Mode */
+.dark svg {
+  @apply text-foreground;
+}
+
+/* Stile für Modals im Dark Mode */
+.dark .modal-content {
+  @apply bg-card border-border;
+}
+
+.dark .modal-header {
+  @apply border-border;
+}
+
+/* Stile für Navigationsleisten im Dark Mode */
+.dark nav,
+.dark header,
+.dark .navbar,
+.dark .app-bar,
+.dark .MuiAppBar-root {
+  @apply bg-card border-border;
+}
+
+.dark nav a,
+.dark .nav-link,
+.dark .menu-item {
+  @apply text-foreground hover:bg-muted;
+}
+
+.dark nav a.active,
+.dark .active-link {
+  @apply bg-muted;
+}
+
+/* Dropdown-Menüs in der Navigation */
+.dark .dropdown-menu,
+.dark .submenu,
+.dark .MuiMenu-paper,
+.dark .MuiPopover-paper,
+.dark div:has(> a.dropdown-item),
+.dark div:has(> a.submenu-item),
+.dark .group:hover div {
+  @apply bg-card border-border text-foreground;
+}
+
+.dark .dropdown-item,
+.dark .submenu-item,
+.dark .MuiMenuItem-root {
+  @apply text-foreground hover:bg-muted;
+}
+
+/* Header-Bereiche */
+.dark .page-header,
+.dark .section-header,
+.dark .header-container,
+.dark .title-section,
+.dark header {
+  @apply bg-card text-foreground border-border;
+}
+
+.dark h1, 
+.dark h2, 
+.dark h3, 
+.dark h4, 
+.dark h5, 
+.dark h6,
+.dark .heading {
+  @apply text-foreground;
+}
+
+/* Stile für Dropdown-Menüs im Dark Mode */
+.dark [role="menu"],
+.dark [role="listbox"],
+.dark .MuiList-root {
+  @apply bg-card border-border;
+}
+
+.dark [role="menuitem"],
+.dark [role="option"],
+.dark .MuiListItem-root {
+  @apply text-foreground hover:bg-muted;
+}
+
+/* Material UI spezifische Komponenten */
+.dark .MuiPaper-root {
+  @apply bg-card text-foreground;
+}
+
+.dark .MuiTypography-root {
+  @apply text-foreground;
+}
+
+.dark .MuiButton-root {
+  @apply text-foreground;
+}
+
+.dark .MuiIconButton-root {
+  @apply text-foreground;
+}
+
+.dark .MuiInputBase-root {
+  @apply bg-card text-foreground border-border;
+}
+
+.dark .MuiOutlinedInput-notchedOutline {
+  @apply border-border;
+}
+
+/* Allgemeine Container */
+.dark .container,
+.dark .content-container,
+.dark .page-container,
+.dark .section-container {
+  @apply bg-background text-foreground;
+}

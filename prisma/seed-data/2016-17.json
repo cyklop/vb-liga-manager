@@ -1,0 +1,380 @@
+[
+  {
+    "Spieltag": 1,
+    "Datum": "18. Okt 2016",
+    "Uhrzeit": "19:00 Uhr",
+    "Heimmannschaft": "TSV Bad Berneck",
+    "Gastmannschaft": "SJR Hof",
+    "S1H": 28, "S1G": 30, "S2H": 25, "S2G": 23, "S3H": 9, "S3G": 25, "S4H": 21, "S4G": 25, "S5H": null, "S5G": null,
+    "EndH": 1, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": "Saaletalhalle Oberkotzau"
+  },
+  {
+    "Spieltag": 1,
+    "Datum": "15. Nov 2016",
+    "Uhrzeit": "19:30 Uhr",
+    "Heimmannschaft": "ATSV Oberkotzau",
+    "Gastmannschaft": "TV Kirchenlamitz",
+    "S1H": 19, "S1G": 25, "S2H": 18, "S2G": 25, "S3H": 25, "S3G": 27, "S4H": null, "S4G": null, "S5H": null, "S5G": null,
+    "EndH": 0, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 1,
+    "Datum": "13. Okt 2016",
+    "Uhrzeit": "20:15 Uhr",
+    "Heimmannschaft": "TSV Thurnau",
+    "Gastmannschaft": "TSV Helmbrechts",
+    "S1H": 19, "S1G": 25, "S2H": 16, "S2G": 25, "S3H": 21, "S3G": 25, "S4H": null, "S4G": null, "S5H": null, "S5G": null,
+    "EndH": 0, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": "Termin wurde vom 11.10. auf 08.11. verschoben!"
+  },
+  {
+    "Spieltag": 2,
+    "Datum": "8. Nov 2016",
+    "Uhrzeit": "20:00 Uhr",
+    "Heimmannschaft": "TV Kirchenlamitz",
+    "Gastmannschaft": "TSV Speichersdorf",
+    "S1H": 25, "S1G": 22, "S2H": 14, "S2G": 25, "S3H": 26, "S3G": 24, "S4H": 25, "S4G": 22, "S5H": null, "S5G": null,
+    "EndH": 3, "EndG": 1, "PktH": 2, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 2,
+    "Datum": "27. Okt 2016",
+    "Uhrzeit": "20:15 Uhr",
+    "Heimmannschaft": "TSV Thurnau",
+    "Gastmannschaft": "SJR Hof",
+    "S1H": 24, "S1G": 26, "S2H": 17, "S2G": 25, "S3H": 25, "S3G": 16, "S4H": 19, "S4G": 25, "S5H": null, "S5G": null,
+    "EndH": 1, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 2,
+    "Datum": "24. Okt 2016",
+    "Uhrzeit": "20:00 Uhr",
+    "Heimmannschaft": "TSV Helmbrechts",
+    "Gastmannschaft": "ATSV Oberkotzau",
+    "S1H": 25, "S1G": 14, "S2H": 25, "S2G": 19, "S3H": 25, "S3G": 12, "S4H": null, "S4G": null, "S5H": null, "S5G": null,
+    "EndH": 3, "EndG": 0, "PktH": 2, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 3,
+    "Datum": "10. Nov 2016",
+    "Uhrzeit": "20:15 Uhr",
+    "Heimmannschaft": "TSV Thurnau",
+    "Gastmannschaft": "TSV Bad Berneck",
+    "S1H": 21, "S1G": 25, "S2H": 18, "S2G": 25, "S3H": 25, "S3G": 16, "S4H": 17, "S4G": 25, "S5H": null, "S5G": null,
+    "EndH": 1, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": "Termin wurde vom 10.11. auf 17.11. verschoben!"
+  },
+  {
+    "Spieltag": 3,
+    "Datum": "10. Nov 2016",
+    "Uhrzeit": "19:30 Uhr",
+    "Heimmannschaft": "TSV Speichersdorf",
+    "Gastmannschaft": "TSV Helmbrechts",
+    "S1H": 22, "S1G": 25, "S2H": 24, "S2G": 13, "S3H": 25, "S3G": 19, "S4H": 25, "S4G": 13, "S5H": null, "S5G": null,
+    "EndH": 3, "EndG": 1, "PktH": 2, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 3,
+    "Datum": "13. Nov 2016",
+    "Uhrzeit": "13:00 Uhr",
+    "Heimmannschaft": "SJR Hof",
+    "Gastmannschaft": "ATSV Oberkotzau",
+    "S1H": 25, "S1G": 11, "S2H": 25, "S2G": 8, "S3H": 25, "S3G": 8, "S4H": null, "S4G": null, "S5H": null, "S5G": null,
+    "EndH": 3, "EndG": 0, "PktH": 2, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 4,
+    "Datum": "21. Nov 2016",
+    "Uhrzeit": "20:00 Uhr",
+    "Heimmannschaft": "TSV Helmbrechts",
+    "Gastmannschaft": "TV Kirchenlamitz",
+    "S1H": 25, "S1G": 15, "S2H": 25, "S2G": 16, "S3H": 21, "S3G": 25, "S4H": 25, "S4G": 23, "S5H": null, "S5G": null,
+    "EndH": 3, "EndG": 1, "PktH": 2, "PktG": 0, "Anmerkungen": "Saaletalhalle Oberkotzau"
+  },
+  {
+    "Spieltag": 4,
+    "Datum": "22. Nov 2016",
+    "Uhrzeit": "19:15 Uhr",
+    "Heimmannschaft": "ATSV Oberkotzau",
+    "Gastmannschaft": "TSV Bad Berneck",
+    "S1H": 25, "S1G": 17, "S2H": 13, "S2G": 25, "S3H": 18, "S3G": 25, "S4H": 21, "S4G": 25, "S5H": null, "S5G": null,
+    "EndH": 1, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 4,
+    "Datum": "24. Nov 2016",
+    "Uhrzeit": "19:30 Uhr",
+    "Heimmannschaft": "TSV Speichersdorf",
+    "Gastmannschaft": "SJR Hof",
+    "S1H": 17, "S1G": 25, "S2H": 18, "S2G": 25, "S3H": 21, "S3G": 25, "S4H": null, "S4G": null, "S5H": null, "S5G": null,
+    "EndH": 0, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": "Nachholtermin 16.02.2017"
+  },
+  {
+    "Spieltag": 5,
+    "Datum": "16. Feb 2017",
+    "Uhrzeit": "19:00 Uhr",
+    "Heimmannschaft": "ATSV Oberkotzau",
+    "Gastmannschaft": "TSV Thurnau",
+    "S1H": 18, "S1G": 25, "S2H": 22, "S2G": 25, "S3H": 27, "S3G": 25, "S4H": 25, "S4G": 21, "S5H": 16, "S5G": 15,
+    "EndH": 2, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": "(Anm: Ergebnis 2:3 Sätze lt. Scores, Punkte 0:2 lt. Quelle)"
+  },
+  {
+    "Spieltag": 5,
+    "Datum": "29. Nov 2016",
+    "Uhrzeit": "20:00 Uhr",
+    "Heimmannschaft": "TV Kirchenlamitz",
+    "Gastmannschaft": "SJR Hof",
+    "S1H": 25, "S1G": 21, "S2H": 16, "S2G": 25, "S3H": 20, "S3G": 25, "S4H": 25, "S4G": 20, "S5H": 8, "S5G": 15,
+    "EndH": 2, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": "Termin wurde auf den 20.04.2017 verschoben!"
+  },
+  {
+    "Spieltag": 5,
+    "Datum": "8. Dez 2016",
+    "Uhrzeit": "19:30 Uhr",
+    "Heimmannschaft": "TSV Speichersdorf",
+    "Gastmannschaft": "TSV Bad Berneck",
+    "S1H": 19, "S1G": 25, "S2H": 25, "S2G": 10, "S3H": 23, "S3G": 25, "S4H": 25, "S4G": 14, "S5H": 15, "S5G": 10,
+    "EndH": 3, "EndG": 2, "PktH": 2, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 6,
+    "Datum": "22. Jan 2017",
+    "Uhrzeit": "13:00 Uhr",
+    "Heimmannschaft": "SJR Hof",
+    "Gastmannschaft": "TSV Helmbrechts",
+    "S1H": 26, "S1G": 24, "S2H": 19, "S2G": 25, "S3H": 20, "S3G": 25, "S4H": 16, "S4G": 25, "S5H": null, "S5G": null,
+    "EndH": 1, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 6,
+    "Datum": "19. Jan 2017",
+    "Uhrzeit": "19:30 Uhr",
+    "Heimmannschaft": "TSV Speichersdorf",
+    "Gastmannschaft": "TSV Thurnau",
+    "S1H": 25, "S1G": 20, "S2H": 25, "S2G": 9, "S3H": 26, "S3G": 24, "S4H": null, "S4G": null, "S5H": null, "S5G": null,
+    "EndH": 3, "EndG": 0, "PktH": 2, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 6,
+    "Datum": "17. Jan 2017",
+    "Uhrzeit": "19:00 Uhr",
+    "Heimmannschaft": "TSV Bad Berneck",
+    "Gastmannschaft": "TV Kirchenlamitz",
+    "S1H": 25, "S1G": 20, "S2H": 15, "S2G": 25, "S3H": 11, "S3G": 25, "S4H": 25, "S4G": 23, "S5H": 16, "S5G": 14,
+    "EndH": 3, "EndG": 2, "PktH": 2, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 7,
+    "Datum": "2. Feb 2017",
+    "Uhrzeit": "19:30 Uhr",
+    "Heimmannschaft": "TSV Speichersdorf",
+    "Gastmannschaft": "ATSV Oberkotzau",
+    "S1H": 26, "S1G": 24, "S2H": 20, "S2G": 25, "S3H": 19, "S3G": 25, "S4H": 25, "S4G": 13, "S5H": 10, "S5G": 15,
+    "EndH": 2, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 7,
+    "Datum": "31. Jan 2017",
+    "Uhrzeit": "19:00 Uhr",
+    "Heimmannschaft": "TSV Bad Berneck",
+    "Gastmannschaft": "TSV Helmbrechts",
+    "S1H": 25, "S1G": 27, "S2H": 25, "S2G": 21, "S3H": 17, "S3G": 25, "S4H": 23, "S4G": 25, "S5H": null, "S5G": null,
+    "EndH": 1, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": "Nachholtermin"
+  },
+  {
+    "Spieltag": 7,
+    "Datum": "21. Mär 2017",
+    "Uhrzeit": "20:00 Uhr",
+    "Heimmannschaft": "TV Kirchenlamitz",
+    "Gastmannschaft": "TSV Thurnau",
+    "S1H": 23, "S1G": 25, "S2H": 25, "S2G": 16, "S3H": 25, "S3G": 16, "S4H": 21, "S4G": 25, "S5H": 15, "S5G": 10,
+    "EndH": 3, "EndG": 2, "PktH": 2, "PktG": 0, "Anmerkungen": "Ersatztermin"
+  },
+  {
+    "Spieltag": 8,
+    "Datum": "19. Mär 2017",
+    "Uhrzeit": "13:00 Uhr",
+    "Heimmannschaft": "SJR Hof",
+    "Gastmannschaft": "TSV Bad Berneck",
+    "S1H": 25, "S1G": 19, "S2H": 25, "S2G": 19, "S3H": 23, "S3G": 25, "S4H": 25, "S4G": 16, "S5H": null, "S5G": null,
+    "EndH": 3, "EndG": 1, "PktH": 2, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 8,
+    "Datum": "11. Apr 2017",
+    "Uhrzeit": "20:00 Uhr",
+    "Heimmannschaft": "TV Kirchenlamitz",
+    "Gastmannschaft": "ATSV Oberkotzau",
+    "S1H": 22, "S1G": 25, "S2H": 25, "S2G": 19, "S3H": 25, "S3G": 21, "S4H": 25, "S4G": 12, "S5H": null, "S5G": null,
+    "EndH": 3, "EndG": 1, "PktH": 2, "PktG": 0, "Anmerkungen": "Absagt - kein Ersatztermin"
+  },
+  {
+    "Spieltag": 8,
+    "Datum": "13. Feb 2017",
+    "Uhrzeit": "20:00 Uhr",
+    "Heimmannschaft": "TSV Helmbrechts",
+    "Gastmannschaft": "TSV Thurnau",
+    "S1H": 25, "S1G": 0, "S2H": 25, "S2G": 0, "S3H": 25, "S3G": 0, "S4H": null, "S4G": null, "S5H": null, "S5G": null,
+    "EndH": 3, "EndG": 0, "PktH": 2, "PktG": 0, "Anmerkungen": "Wurde auf den 23.03. verschoben!"
+  },
+  {
+    "Spieltag": 9,
+    "Datum": "9. Mär 2017",
+    "Uhrzeit": "19:30 Uhr",
+    "Heimmannschaft": "TSV Speichersdorf",
+    "Gastmannschaft": "TV Kirchenlamitz",
+    "S1H": 25, "S1G": 19, "S2H": 25, "S2G": 21, "S3H": 22, "S3G": 25, "S4H": 25, "S4G": 18, "S5H": null, "S5G": null,
+    "EndH": 3, "EndG": 1, "PktH": 2, "PktG": 0, "Anmerkungen": "verschoben"
+  },
+  {
+    "Spieltag": 9,
+    "Datum": "12. Mär 2017",
+    "Uhrzeit": "12:00 Uhr",
+    "Heimmannschaft": "SJR Hof",
+    "Gastmannschaft": "TSV Thurnau",
+    "S1H": 25, "S1G": 15, "S2H": 25, "S2G": 13, "S3H": 25, "S3G": 20, "S4H": null, "S4G": null, "S5H": null, "S5G": null,
+    "EndH": 3, "EndG": 0, "PktH": 2, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 9,
+    "Datum": "13. Mär 2017",
+    "Uhrzeit": "19:15 Uhr",
+    "Heimmannschaft": "ATSV Oberkotzau",
+    "Gastmannschaft": "TSV Helmbrechts",
+    "S1H": 11, "S1G": 25, "S2H": 21, "S2G": 25, "S3H": 25, "S3G": 19, "S4H": 16, "S4G": 25, "S5H": null, "S5G": null,
+    "EndH": 1, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": "Nachholspiel eventuell am 09.05"
+  },
+  {
+    "Spieltag": 10,
+    "Datum": "28. Mär 2017",
+    "Uhrzeit": "19:00 Uhr",
+    "Heimmannschaft": "TSV Bad Berneck",
+    "Gastmannschaft": "TSV Thurnau",
+    "S1H": 25, "S1G": 17, "S2H": 25, "S2G": 15, "S3H": 25, "S3G": 15, "S4H": null, "S4G": null, "S5H": null, "S5G": null,
+    "EndH": 3, "EndG": 0, "PktH": 2, "PktG": 0, "Anmerkungen": "HEIMSPIEL Speichersdorf"
+  },
+  {
+    "Spieltag": 10,
+    "Datum": "4. Mai 2017",
+    "Uhrzeit": "19:30 Uhr",
+    "Heimmannschaft": "TSV Helmbrechts",
+    "Gastmannschaft": "TSV Speichersdorf",
+    "S1H": 9, "S1G": 25, "S2H": 25, "S2G": 18, "S3H": 25, "S3G": 21, "S4H": 16, "S4G": 25, "S5H": 13, "S5G": 15,
+    "EndH": 2, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 10,
+    "Datum": "23. Mär 2017",
+    "Uhrzeit": "19:00 Uhr",
+    "Heimmannschaft": "ATSV Oberkotzau",
+    "Gastmannschaft": "SJR Hof",
+    "S1H": 21, "S1G": 25, "S2H": 19, "S2G": 25, "S3H": 13, "S3G": 25, "S4H": null, "S4G": null, "S5H": null, "S5G": null,
+    "EndH": 0, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 11,
+    "Datum": "4. Apr 2017",
+    "Uhrzeit": "20:00 Uhr",
+    "Heimmannschaft": "TV Kirchenlamitz",
+    "Gastmannschaft": "TSV Helmbrechts",
+    "S1H": 25, "S1G": 23, "S2H": 25, "S2G": 17, "S3H": 19, "S3G": 25, "S4H": 23, "S4G": 25, "S5H": 15, "S5G": 7,
+    "EndH": 3, "EndG": 2, "PktH": 2, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 11,
+    "Datum": "4. Apr 2017",
+    "Uhrzeit": "19:00 Uhr",
+    "Heimmannschaft": "TSV Bad Berneck",
+    "Gastmannschaft": "ATSV Oberkotzau",
+    "S1H": 25, "S1G": 17, "S2H": 25, "S2G": 20, "S3H": 25, "S3G": 22, "S4H": null, "S4G": null, "S5H": null, "S5G": null,
+    "EndH": 3, "EndG": 0, "PktH": 2, "PktG": 0, "Anmerkungen": "HEIMSPIEL Speichersdorf"
+  },
+  {
+    "Spieltag": 11,
+    "Datum": "6. Apr 2017",
+    "Uhrzeit": "19:30 Uhr",
+    "Heimmannschaft": "SJR Hof",
+    "Gastmannschaft": "TSV Speichersdorf",
+    "S1H": 19, "S1G": 25, "S2H": 25, "S2G": 21, "S3H": 23, "S3G": 25, "S4H": 21, "S4G": 25, "S5H": null, "S5G": null,
+    "EndH": 1, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 12,
+    "Datum": "27. Apr 2017",
+    "Uhrzeit": "20:15 Uhr",
+    "Heimmannschaft": "TSV Thurnau",
+    "Gastmannschaft": "ATSV Oberkotzau",
+    "S1H": 25, "S1G": 18, "S2H": 25, "S2G": 16, "S3H": 22, "S3G": 25, "S4H": 16, "S4G": 15, "S5H": 15, "S5G": 13,
+    "EndH": 3, "EndG": 2, "PktH": 2, "PktG": 0, "Anmerkungen": "(Anm: Satz 4 Ergebnis 16:15 unplausibel)"
+  },
+  {
+    "Spieltag": 12,
+    "Datum": "10. Mai 2017",
+    "Uhrzeit": "18:30 Uhr",
+    "Heimmannschaft": "SJR Hof",
+    "Gastmannschaft": "TV Kirchenlamitz",
+    "S1H": 25, "S1G": 15, "S2H": 25, "S2G": 16, "S3H": 25, "S3G": 18, "S4H": null, "S4G": null, "S5H": null, "S5G": null,
+    "EndH": 3, "EndG": 0, "PktH": 2, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 12,
+    "Datum": "25. Apr 2017",
+    "Uhrzeit": "19:00 Uhr",
+    "Heimmannschaft": "TSV Bad Berneck",
+    "Gastmannschaft": "TSV Speichersdorf",
+    "S1H": 25, "S1G": 20, "S2H": 20, "S2G": 25, "S3H": 19, "S3G": 25, "S4H": 16, "S4G": 25, "S5H": null, "S5G": null,
+    "EndH": 1, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": "TSV Bad Berneck Turnhalle"
+  },
+  {
+    "Spieltag": 13,
+    "Datum": "20. Mai 2017",
+    "Uhrzeit": "10:00 Uhr",
+    "Heimmannschaft": "TSV Helmbrechts",
+    "Gastmannschaft": "SJR Hof",
+    "S1H": 15, "S1G": 25, "S2H": 12, "S2G": 25, "S3H": 25, "S3G": 10, "S4H": 28, "S4G": 26, "S5H": 15, "S5G": 13,
+    "EndH": 3, "EndG": 2, "PktH": 2, "PktG": 0, "Anmerkungen": "TSV Bad Berneck Turnhalle"
+  },
+  {
+    "Spieltag": 13,
+    "Datum": "20. Mai 2017",
+    "Uhrzeit": "10:00 Uhr",
+    "Heimmannschaft": "TSV Thurnau",
+    "Gastmannschaft": "TSV Speichersdorf",
+    "S1H": 16, "S1G": 25, "S2H": 15, "S2G": 25, "S3H": 13, "S3G": 25, "S4H": null, "S4G": null, "S5H": null, "S5G": null,
+    "EndH": 0, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": "TSV Bad Berneck Turnhalle"
+  },
+  {
+    "Spieltag": 13,
+    "Datum": "20. Mai 2017",
+    "Uhrzeit": "10:00 Uhr",
+    "Heimmannschaft": "TV Kirchenlamitz",
+    "Gastmannschaft": "TSV Bad Berneck",
+    "S1H": 25, "S1G": 17, "S2H": 16, "S2G": 25, "S3H": 25, "S3G": 13, "S4H": 16, "S4G": 25, "S5H": 12, "S5G": 15,
+    "EndH": 2, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": "TSV Bad Berneck Turnhalle"
+  },
+  {
+    "Spieltag": 14,
+    "Datum": "20. Mai 2017",
+    "Uhrzeit": "10:00 Uhr",
+    "Heimmannschaft": "ATSV Oberkotzau",
+    "Gastmannschaft": "TSV Speichersdorf",
+    "S1H": 12, "S1G": 25, "S2H": 9, "S2G": 25, "S3H": 25, "S3G": 21, "S4H": 26, "S4G": 24, "S5H": 13, "S5G": 15,
+    "EndH": 2, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": "TSV Bad Berneck Turnhalle"
+  },
+  {
+    "Spieltag": 14,
+    "Datum": "20. Mai 2017",
+    "Uhrzeit": "10:00 Uhr",
+    "Heimmannschaft": "TSV Helmbrechts",
+    "Gastmannschaft": "TSV Bad Berneck",
+    "S1H": 24, "S1G": 26, "S2H": 25, "S2G": 27, "S3H": 25, "S3G": 20, "S4H": 18, "S4G": 25, "S5H": null, "S5G": null,
+    "EndH": 1, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": "TSV Bad Berneck Turnhalle"
+  },
+  {
+    "Spieltag": 14,
+    "Datum": "20. Mai 2017",
+    "Uhrzeit": "10:00 Uhr",
+    "Heimmannschaft": "TSV Thurnau",
+    "Gastmannschaft": "TV Kirchenlamitz",
+    "S1H": 11, "S1G": 25, "S2H": 26, "S2G": 28, "S3H": 15, "S3G": 25, "S4H": null, "S4G": null, "S5H": null, "S5G": null,
+    "EndH": 0, "EndG": 3, "PktH": 0, "PktG": 2, "Anmerkungen": ""
+  }
+]
