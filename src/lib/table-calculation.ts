@@ -132,11 +132,11 @@ export function calculateTable(league: CalculationLeague, fixtures: CalculationF
             const homeTeamIdForLog = homeTeamId; // Kopiere ID für Logging
             const pointsToAddAway = league.pointsWin32 ?? 0;
             const pointsToAddHome = league.pointsLoss32 ?? 0;
-            // console.log(`DEBUG (Fixture ${fixture.id}): Applying 3:2 Away Win. Away Team (${awayTeamIdForLog}) gets ${pointsToAddAway}. Home Team (${homeTeamIdForLog}) gets ${pointsToAddHome}.`);
-            // console.log(`  -> Before: Away Points = ${tableEntries[awayTeamIdForLog].points}, Home Points = ${tableEntries[homeTeamIdForLog].points}`);
+            console.log(`DEBUG (Fixture ${fixture.id}): Applying 3:2 Away Win. Away Team (${awayTeamIdForLog}) gets ${pointsToAddAway}. Home Team (${homeTeamIdForLog}) gets ${pointsToAddHome}.`);
+            console.log(`  -> Before: Away Points = ${tableEntries[awayTeamIdForLog].points}, Home Points = ${tableEntries[homeTeamIdForLog].points}`);
             tableEntries[awayTeamIdForLog].points += pointsToAddAway;
             tableEntries[homeTeamIdForLog].points += pointsToAddHome;
-            // console.log(`  -> After: Away Points = ${tableEntries[awayTeamIdForLog].points}, Home Points = ${tableEntries[homeTeamIdForLog].points}`);
+            console.log(`  -> After: Away Points = ${tableEntries[awayTeamIdForLog].points}, Home Points = ${tableEntries[homeTeamIdForLog].points}`);
           }
         }
       } else if (league.scoreEntryType === ScoreEntryType.MATCH_SCORE) {
