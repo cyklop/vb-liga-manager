@@ -61,6 +61,9 @@ interface TableEntry {
   setsWon: number
   setsLost: number
   setsDiff: number
+  pointsWon: number // Ball points won
+  pointsLost: number // Ball points lost
+  pointsDiff: number // Ball points difference
 }
 
 export default function PublicLeaguePage() {
@@ -169,6 +172,8 @@ export default function PublicLeaguePage() {
                       <th className="py-2 px-4 border-b text-center">S</th>
                       <th className="py-2 px-4 border-b text-center">N</th>
                       <th className="py-2 px-4 border-b text-center">Sätze</th>
+                      <th className="py-2 px-4 border-b text-center">Bälle</th>
+                      <th className="py-2 px-4 border-b text-center">Diff.</th>
                       <th className="py-2 px-4 border-b text-center">Punkte</th>
                     </tr>
                   </thead>
@@ -181,6 +186,8 @@ export default function PublicLeaguePage() {
                         <td className="py-2 px-4 text-center">{entry.won}</td>
                         <td className="py-2 px-4 text-center">{entry.lost}</td>
                         <td className="py-2 px-4 text-center">{entry.setsWon}:{entry.setsLost}</td>
+                        <td className="py-2 px-4 text-center">{entry.pointsWon}:{entry.pointsLost}</td>
+                        <td className="py-2 px-4 text-center">{entry.pointsDiff > 0 ? `+${entry.pointsDiff}` : entry.pointsDiff}</td>
                         <td className="py-2 px-4 text-center font-bold">{entry.points}</td>
                       </tr>
                     ))}
