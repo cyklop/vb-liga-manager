@@ -354,6 +354,8 @@ export async function main() {
             let createdCount = 0;
             let skippedCount = 0;
             let order = 1;
+            const processedPairings = new Map<string, number>(); // Map to track pairing counts { 'teamId1|teamId2': count }
+
             for (const fix of fixturesData) {
                 const homeTeamName = normalizeTeamName(fix.Heimmannschaft);
                 const awayTeamName = normalizeTeamName(fix.Gastmannschaft);
@@ -366,6 +368,28 @@ export async function main() {
                     skippedCount++;
                     continue;
                 }
+
+                // Skip self-play fixtures after normalization
+                if (homeTeamId === awayTeamId) {
+                    console.warn(`      Skipping self-play fixture: ${homeTeamName} vs ${awayTeamName}`);
+                    skippedCount++;
+                    continue;
+                }
+
+                // Create canonical pairing key (sorted IDs)
+                const pairingKey = [homeTeamId, awayTeamId].sort((a, b) => a - b).join('|');
+                const currentPairingCount = processedPairings.get(pairingKey) || 0;
+
+                // Skip if this pairing already occurred twice (Hin- und Rückspiel)
+                if (currentPairingCount >= 2) {
+                    console.warn(`      Skipping duplicate pairing (already processed >= 2 times): ${homeTeamName} vs ${awayTeamName} (Key: ${pairingKey})`);
+                    skippedCount++;
+                    continue;
+                }
+
+                // Increment pairing count
+                processedPairings.set(pairingKey, currentPairingCount + 1);
+
 
                 const fixtureDate = parseDateTime(fix.Datum, fix.Uhrzeit);
                 const matchday = safeParseInt(fix.Spieltag);
