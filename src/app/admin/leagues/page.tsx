@@ -862,9 +862,10 @@ export default function LeaguesPage() {
       {/* Add/Edit League Modal - Increase width using max-w- class */}
       {/* Add padding (py-6) to the modal content area and make the form scrollable */}
       <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingLeague(null); }} title={editingLeague ? "Liga bearbeiten" : "Neue Liga hinzufügen"} maxWidth="max-w-2xl">
-        {/* Wrap form in a scrollable div with max height and padding */}
-        <div className="max-h-[80vh] overflow-y-auto p-1 pr-4"> 
-          <form onSubmit={editingLeague ? handleEditLeague : handleAddLeague} className="space-y-4">
+        {/* Wrap form in a scrollable div with slightly reduced max height, remove internal padding */}
+        <div className="max-h-[75vh] overflow-y-auto"> {/* Reduced max-height, removed p-1 pr-4 */}
+          {/* Add padding directly to the form instead */}
+          <form onSubmit={editingLeague ? handleEditLeague : handleAddLeague} className="space-y-4 p-4"> 
             {/* League Name */}
             <div>
               <label htmlFor="leagueName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Liganame</label>
