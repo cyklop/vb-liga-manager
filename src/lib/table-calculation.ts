@@ -179,42 +179,6 @@ export function calculateTable(league: CalculationLeague, fixtures: CalculationF
     // console.log("DEBUG: tableEntries state before calculating derived stats:", JSON.stringify(tableEntries, null, 2));
 
 
-    // 3. Abgeleitete Statistiken berechnen
-    Object.values(tableEntries).forEach(entry => {
-      entry.setsDiff = entry.setsWon - entry.setsLost;
-      // Handle division by zero for quotients
-      entry.setsQuotient = entry.setsLost === 0 ? (entry.setsWon > 0 ? Infinity : 0) : parseFloat((entry.setsWon / entry.setsLost).toFixed(3));
-      entry.pointsDiff = entry.pointsWon - entry.pointsLost;
-      entry.pointsQuotient = entry.pointsLost === 0 ? (entry.pointsWon > 0 ? Infinity : 0) : parseFloat((entry.pointsWon / entry.pointsLost).toFixed(3));
-    });
-
-    // 4. Tabelle sortieren
-    const sortedTable = Object.values(tableEntries).sort((a, b) => {
-      // 1. Punkte
-      if (a.points !== b.points) return b.points - a.points;
-      // 2. Siege (optional, manchmal verwendet)
-      if (a.won !== b.won) return b.won - a.won;
-      // 3. Satzdifferenz
-      if (a.setsDiff !== b.setsDiff) return b.setsDiff - a.setsDiff;
-      // 4. Satzquotient (handle Infinity)
-      if (a.setsQuotient === Infinity && b.setsQuotient !== Infinity) return -1;
-      if (a.setsQuotient !== Infinity && b.setsQuotient === Infinity) return 1;
-      if (a.setsQuotient !== b.setsQuotient) return b.setsQuotient - a.setsQuotient;
-      // 5. Direkter Vergleich (vereinfacht) - TODO: Ggf. verbessern
-      // if (a.directComparisonWins !== b.directComparisonWins) return b.directComparisonWins - a.directComparisonWins;
-      // 6. Ballpunktdifferenz
-      if (a.pointsDiff !== b.pointsDiff) return b.pointsDiff - a.pointsDiff;
-      // 7. Ballpunktquotient (handle Infinity)
-      if (a.pointsQuotient === Infinity && b.pointsQuotient !== Infinity) return -1;
-      if (a.pointsQuotient !== Infinity && b.pointsQuotient === Infinity) return 1;
-      if (a.pointsQuotient !== b.pointsQuotient) return b.pointsQuotient - a.pointsQuotient;
-      // 8. Alphabetisch nach Teamnamen
-      return a.teamName.localeCompare(b.teamName);
-    });
-
-    // */ // End of temporary debugging block comment
-
-    // Original code (now active again):
      // 3. Abgeleitete Statistiken berechnen
      Object.values(tableEntries).forEach(entry => {
        entry.setsDiff = entry.setsWon - entry.setsLost;
