@@ -169,11 +169,12 @@ export default function PublicLeaguePage() {
                       <th className="py-2 px-4 border-b text-left">Platz</th>
                       <th className="py-2 px-4 border-b text-left">Team</th>
                       <th className="py-2 px-4 border-b text-center">Spiele</th>
-                      <th className="py-2 px-4 border-b text-center">S</th>
-                      <th className="py-2 px-4 border-b text-center">N</th>
-                      <th className="py-2 px-4 border-b text-center">Sätze</th>
+                      <th className="py-2 px-4 border-b text-center">N</th> {/* Niederlagen */}
+                      <th className="py-2 px-4 border-b text-center">S</th> {/* Siege */}
+                      <th className="py-2 px-4 border-b text-center">Summe</th> {/* Sätze */}
+                      <th className="py-2 px-4 border-b text-center">Diff(Sätze)</th> {/* Satzdifferenz */}
                       <th className="py-2 px-4 border-b text-center">Bälle</th>
-                      <th className="py-2 px-4 border-b text-center">Diff.</th>
+                      <th className="py-2 px-4 border-b text-center">Diff(Bälle)</th> {/* Balldifferenz */}
                       <th className="py-2 px-4 border-b text-center">Punkte</th>
                     </tr>
                   </thead>
@@ -183,11 +184,12 @@ export default function PublicLeaguePage() {
                         <td className="py-2 px-4">{index + 1}</td>
                         <td className="py-2 px-4">{entry.teamName}</td>
                         <td className="py-2 px-4 text-center">{entry.played}</td>
-                        <td className="py-2 px-4 text-center">{entry.won}</td>
-                        <td className="py-2 px-4 text-center">{entry.lost}</td>
-                        <td className="py-2 px-4 text-center">{entry.setsWon}:{entry.setsLost}</td>
-                        <td className="py-2 px-4 text-center">{entry.pointsWon}:{entry.pointsLost}</td>
-                        <td className="py-2 px-4 text-center">{entry.pointsDiff > 0 ? `+${entry.pointsDiff}` : entry.pointsDiff}</td>
+                        <td className="py-2 px-4 text-center">{entry.lost}</td> {/* N */}
+                        <td className="py-2 px-4 text-center">{entry.won}</td> {/* S */}
+                        <td className="py-2 px-4 text-center">{entry.setsWon}:{entry.setsLost}</td> {/* Summe (Sätze) */}
+                        <td className="py-2 px-4 text-center">{entry.setsDiff > 0 ? `+${entry.setsDiff}` : entry.setsDiff}</td> {/* Diff(Sätze) */}
+                        <td className="py-2 px-4 text-center">{entry.pointsWon}:{entry.pointsLost}</td> {/* Bälle */}
+                        <td className="py-2 px-4 text-center">{entry.pointsDiff > 0 ? `+${entry.pointsDiff}` : entry.pointsDiff}</td> {/* Diff(Bälle) */}
                         <td className="py-2 px-4 text-center font-bold">{entry.points}</td>
                       </tr>
                     ))}
