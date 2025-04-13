@@ -860,12 +860,11 @@ export default function LeaguesPage() {
       </div>
  
       {/* Add/Edit League Modal - Increase width using max-w- class */}
-      {/* Add padding (py-6) to the modal content area and make the form scrollable */}
+      {/* Modal component now handles internal scrolling */}
       <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingLeague(null); }} title={editingLeague ? "Liga bearbeiten" : "Neue Liga hinzufügen"} maxWidth="max-w-2xl">
-        {/* Wrap form in a scrollable div with slightly reduced max height, remove internal padding */}
-        <div className="max-h-[75vh] overflow-y-auto"> {/* Reduced max-height, removed p-1 pr-4 */}
-          {/* Add padding directly to the form instead */}
-          <form onSubmit={editingLeague ? handleEditLeague : handleAddLeague} className="space-y-4 p-4"> 
+          {/* Removed the wrapping div with max-h and overflow-y */}
+          {/* Add padding directly to the form */}
+          <form onSubmit={editingLeague ? handleEditLeague : handleAddLeague} className="space-y-4 p-4">
             {/* League Name */}
             <div>
               <label htmlFor="leagueName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Liganame</label>
@@ -1072,7 +1071,7 @@ export default function LeaguesPage() {
             {editingLeague ? "Liga aktualisieren" : "Liga hinzufügen"}
           </button>
         </form>
-       </div> {/* Close the scrollable div */}
+       {/* Removed the closing tag for the scrollable div */}
       </Modal>
 
       {/* Edit Fixture Modal */}

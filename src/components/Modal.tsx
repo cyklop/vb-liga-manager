@@ -25,7 +25,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, maxWidt
             </svg>
           </button>
         </div>
-        {children}
+        {/* Wrap children in a scrollable container */}
+        <div className="max-h-[70vh] overflow-y-auto p-1 pr-2"> {/* Adjust max-height as needed, add slight padding */}
+          {children}
+        </div>
       </div>
     </div>
   );
