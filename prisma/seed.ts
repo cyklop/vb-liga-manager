@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt'
 import { PrismaClient } from '@prisma/client' // Importiere PrismaClient direkt
-import { main as seedHistoricalData } from './seed-historical-leagues' // Importiere die Hauptfunktion des neuen Skripts
+// Entferne den Import für das historische Seeding
 
 const prisma = new PrismaClient()
 
@@ -31,14 +31,7 @@ async function main() {
     console.log(`ℹ️ Superadmin user "${superAdminEmail}" already exists.`)
   }
 
-  // 2. Seed Historical League Data
-  try {
-    console.log('\n--- Starting historical leagues seeding ---')
-    await seedHistoricalData() // Rufe die importierte Funktion auf
-    console.log('--- Historical leagues seeding completed ---')
-  } catch (error) {
-    console.error('❌ Error seeding historical leagues:', error)
-  }
+  // Historisches Seeding wurde entfernt und in ein separates Skript ausgelagert.
 
   console.log('Seeding finished.')
 }
