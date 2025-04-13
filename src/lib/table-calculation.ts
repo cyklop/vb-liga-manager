@@ -132,7 +132,8 @@ export function calculateTable(league: CalculationLeague, fixtures: CalculationF
             const homeTeamIdForLog = homeTeamId; // Kopiere ID für Logging
             const pointsToAddAway = league.pointsWin32 ?? 0;
             const pointsToAddHome = league.pointsLoss32 ?? 0;
-            console.log(`DEBUG (Fixture ${fixture.id}): Applying 3:2 Away Win. Away Team (${awayTeamIdForLog}) gets ${pointsToAddAway}. Home Team (${homeTeamIdForLog}) gets ${pointsToAddHome}.`);
+            // Logge auch den Wert aus dem league-Objekt
+            console.log(`DEBUG (Fixture ${fixture.id}): Applying 3:2 Away Win. Away Team (${awayTeamIdForLog}) gets ${pointsToAddAway} (league.pointsWin32=${league.pointsWin32}). Home Team (${homeTeamIdForLog}) gets ${pointsToAddHome} (league.pointsLoss32=${league.pointsLoss32}).`);
             console.log(`  -> Before: Away Points = ${tableEntries[awayTeamIdForLog].points}, Home Points = ${tableEntries[homeTeamIdForLog].points}`);
             tableEntries[awayTeamIdForLog].points += pointsToAddAway;
             tableEntries[homeTeamIdForLog].points += pointsToAddHome;
