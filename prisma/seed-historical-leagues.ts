@@ -292,15 +292,35 @@ export async function main() {
             } else {
                  console.warn(`   Could not read first fixture to detect ScoreEntryType for ${filename}. Defaulting to SET_SCORES.`);
             }
-            pointsConfig.scoreEntryType = detectedScoreEntryType; // Setze den ermittelten Typ
+            // pointsConfig.scoreEntryType = detectedScoreEntryType; // Setze den ermittelten Typ - Wird unten zusammengeführt
 
             // Setze Punktregeln basierend auf dem Jahr (unabhängig vom ScoreEntryType)
+            let specificPoints = {};
             if (seasonStartYear >= 2022) {
                 // Punktregeln für neuere Saisons (Annahme: 3/2/1/0)
-                pointsConfig = {
+                specificPoints = {
                     pointsWin30: 3, pointsWin31: 3, pointsWin32: 2,
                     pointsLoss32: 1,
-                    // pointsLoss13: 0, // Feld existiert nicht im Schema
+                };
+                console.log(`   Using detailed point system (3/2/1/0) for season ${seasonYear}.`);
+            } else {
+                // Einfache Regeln für historische Saisons (2/0)
+                specificPoints = {
+                    pointsWin30: 2, pointsWin31: 2, pointsWin32: 2,
+                    pointsLoss32: 0,
+                };
+                console.log(`   Using simple point system (2/0) for season ${seasonYear}.`);
+            }
+
+            // Kombiniere Punktregeln und ScoreEntryType für das Upsert
+            pointsConfig = {
+                ...specificPoints,
+                scoreEntryType: detectedScoreEntryType, // Füge den ermittelten Typ hier hinzu
+            };
+
+            // Liga erstellen/aktualisieren
+            const league = await prisma.league.upsert({
+                where: { slug: leagueSlug },
                     // pointsLoss03: 0, // Feld existiert nicht im Schema
                 };
                 console.log(`   Using detailed point system (3/2/1/0) for season ${seasonYear}.`);
