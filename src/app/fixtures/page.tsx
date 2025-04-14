@@ -52,7 +52,7 @@ export default function FixturesPage() {
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
   const [leagues, setLeagues] = useState<League[]>([]);
   const [activeLeagueId, setActiveLeagueId] = useState<number | null>(null);
-  const [showOnlyUpcoming, setShowOnlyUpcoming] = useState(true);
+  const [showOnlyUpcoming, setShowOnlyUpcoming] = useState(false); // Standardmäßig alle Spiele anzeigen
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
