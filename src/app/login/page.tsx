@@ -189,7 +189,7 @@ export default function Login() {
       {/* Das eigentliche Login-Formular (Card) bleibt im Vordergrund */}
       {/* Stelle sicher, dass die Card einen höheren z-index hat oder relativ positioniert ist */}
       {/* Entferne color="white", füge bg-white/75 für Light Mode hinzu, passe Dark Mode an */}
-      <Card shadow={false} className="bg-white/75 dark:bg-gray-800/75 backdrop-blur-md p-6 relative z-10 rounded-lg" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+      <Card shadow={false} className="bg-white dark:bg-gray-800/75 backdrop-blur-lg p-6 relative z-10 rounded-lg " placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
         <Typography variant="h4" color="blue-gray" className="dark:text-gray-100" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
           Anmelden
         </Typography>
