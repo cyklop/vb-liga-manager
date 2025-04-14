@@ -1,9 +1,9 @@
 @import 'tailwindcss';
 
-/* Import Plugins */
-@import '@tailwindcss/forms';
-@import '@tailwindcss/aspect-ratio';
-@import '@tailwindcss/typography';
+/* Import Plugins using @plugin */
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/aspect-ratio';
+@plugin '@tailwindcss/typography';
 
 /* Define Theme Colors using CSS Variables */
 @theme {
