@@ -1,9 +1,6 @@
 @import 'tailwindcss';
 
-/* Import Plugins using @plugin */
-@plugin '@tailwindcss/forms';
-@plugin '@tailwindcss/aspect-ratio';
-@plugin '@tailwindcss/typography';
+/* Plugins are now loaded via tailwind.config.js */
 
 /* Define Theme Colors using CSS Variables */
 @theme {

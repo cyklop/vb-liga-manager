@@ -15,7 +15,11 @@ module.exports = {
     },
   },
   plugins: [
-    // Plugins are now primarily handled in CSS via @import
-    // Keep this empty unless needed for specific JS-based plugins
+    // Add plugins back here
+    require('@tailwindcss/forms')({
+      strategy: 'class', // Keep strategy if it was used before
+    }),
+    require('@tailwindcss/aspect-ratio'),
+    require('@tailwindcss/typography'),
   ],
 };
