@@ -1,5 +1,6 @@
 .aider*
 .next*
+~/
 node_modules
 .env*
 key_github
