@@ -113,7 +113,7 @@ export default function Login() {
       },
       color: {
         // Farben an das Theme anpassen (Beispiel: Indigo/Blau und Weiß/Grau)
-        value: ["#4f46e5", "#a5b4fc", "#ffffff", "#e5e7eb"]
+        value: ["#8b86d9", "#a5b4fc", "#ffffff", "#e5e7eb"]
       },
       shape: {
         type: "circle", // Einfachere Form, oft performanter
@@ -168,7 +168,7 @@ export default function Login() {
     },
     detectRetina: true, // 'retina_detect' heißt jetzt 'detectRetina'
     background: { // Hintergrund der Partikel-Canvas (transparent)
-        color: 'transparent',
+        color: '#3948ab',
     }
   };
 
@@ -188,7 +188,7 @@ export default function Login() {
 
       {/* Das eigentliche Login-Formular (Card) bleibt im Vordergrund */}
       {/* Stelle sicher, dass die Card einen höheren z-index hat oder relativ positioniert ist */}
-      <Card color="transparent" shadow={false} className="dark:bg-gray-800/60 backdrop-blur-sm p-6 relative z-10" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+      <Card color="white" shadow={false} className="dark:bg-gray-800/60 backdrop-blur-sm p-6 relative z-10" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
         <Typography variant="h4" color="blue-gray" className="dark:text-gray-100" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
           Anmelden
         </Typography>
