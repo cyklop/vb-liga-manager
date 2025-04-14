@@ -175,7 +175,7 @@ export default function Login() {
 
   return (
     // Hintergrundfarben beibehalten, overflow-hidden hinzufügen
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
        {/* Particles Komponente */}
        {init && (
          <Particles
@@ -189,11 +189,11 @@ export default function Login() {
       {/* Das eigentliche Login-Formular (Card) bleibt im Vordergrund */}
       {/* Stelle sicher, dass die Card einen höheren z-index hat oder relativ positioniert ist */}
       {/* Entferne color="white", füge bg-white/75 für Light Mode hinzu, passe Dark Mode an */}
-      <Card shadow={false} className="bg-white dark:bg-gray-800/75 backdrop-blur-lg p-6 relative z-10 rounded-lg " placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-        <Typography variant="h4" color="blue-gray" className="dark:text-gray-100" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+      <Card shadow={false} className="bg-white backdrop-blur-lg p-6 relative z-10 rounded-lg " placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+        <Typography variant="h4" color="blue-gray" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
           Anmelden
         </Typography>
-        <Typography color="gray" className="mt-1 font-normal dark:text-gray-300" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+        <Typography color="gray" className="mt-1 font-normal " placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
           Geben Sie Ihre Anmeldedaten ein, um sich anzumelden.
         </Typography>
         <form onSubmit={handleSubmit} className="mt-8 mb-2 w-80 max-w-(--breakpoint-lg) sm:w-96">
@@ -203,7 +203,6 @@ export default function Login() {
               label="E-Mail"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="dark:text-gray-200 dark:border-gray-500"
               placeholder={undefined}
               crossOrigin={undefined}
               onPointerEnterCapture={undefined}
@@ -215,7 +214,6 @@ export default function Login() {
               label="Passwort"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="dark:text-gray-200 dark:border-gray-500"
               placeholder={undefined}
               crossOrigin={undefined}
               onPointerEnterCapture={undefined}
@@ -227,7 +225,7 @@ export default function Login() {
               <Typography
                 variant="small"
                 color="gray"
-                className="flex items-center font-normal dark:text-gray-300"
+                className="flex items-center font-normal"
                 placeholder={undefined}
                 onPointerEnterCapture={undefined}
                 onPointerLeaveCapture={undefined}
@@ -252,15 +250,15 @@ export default function Login() {
               {error}
             </Typography>
           )}
-          <Button className="mt-6" fullWidth type="submit" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+          <Button className="mt-6 bg-primary text-white" fullWidth type="submit" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             Anmelden
           </Button>
-          <Typography color="gray" className="mt-4 text-center font-normal dark:text-gray-300" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+          <Typography color="gray" className="mt-4 text-center font-normal" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             Passwort vergessen?{" "}
             <button
               type="button" // Verhindert das Absenden des Formulars
               onClick={() => setIsResetModalOpen(true)}
-              className="font-medium text-blue-500 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+              className="font-medium text-blue-500 transition-colors hover:text-blue-700"
             >
               Zurücksetzen
             </button>
@@ -301,7 +299,7 @@ export default function Login() {
               label="E-Mail-Adresse"
               value={resetEmail}
               onChange={(e) => setResetEmail(e.target.value)}
-              className="mb-4 dark:text-gray-200 dark:border-gray-500"
+              className="mb-4"
               placeholder={undefined}
               crossOrigin={undefined}
               onPointerEnterCapture={undefined}
