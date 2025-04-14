@@ -123,7 +123,7 @@ export default function LeaguesPage() {
     pointsWin32: 2,
     pointsLoss32: 1,
     // Add new fields to state with defaults
-    scoreEntryType: ScoreEntryType.MATCH_SCORE as ScoreEntryType,
+    scoreEntryType: 'MATCH_SCORE' as ScoreEntryType, // Use string literal for default
     setsToWin: 3,
   })
   const [editingLeague, setEditingLeague] = useState<League | null>(null)
@@ -554,7 +554,7 @@ export default function LeaguesPage() {
           pointsWin32: 2,
           pointsLoss32: 1,
           // Reset new fields as well
-          scoreEntryType: ScoreEntryType.MATCH_SCORE,
+          scoreEntryType: 'MATCH_SCORE' as ScoreEntryType, // Use string literal
           setsToWin: 3,
          });
         setIsModalOpen(false);
@@ -689,7 +689,7 @@ export default function LeaguesPage() {
                 pointsWin32: 2,
                 pointsLoss32: 1,
                 // Reset new fields when opening for add
-                scoreEntryType: ScoreEntryType.MATCH_SCORE,
+                scoreEntryType: 'MATCH_SCORE' as ScoreEntryType, // Use string literal
                 setsToWin: 3,
               });
               setIsModalOpen(true);

@@ -6,7 +6,7 @@ import { LockClosedIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import Modal from '@/components/Modal'
 import { signIn } from 'next-auth/react'
-import Particles, { initParticlesEngine } from "@tsparticles/react"; // Importiere Particles und initParticlesEngine
+import Particles, { initParticlesEngine } from "react-tsparticles"; // Korrigierter Import-Pfad
 import { loadFull } from "tsparticles"; // Lade das volle Bundle
 import {
   Card,
