@@ -26,9 +26,9 @@ export default function RootLayout({
         <ThemeProvider> {/* ThemeProvider umschließt alles */}
           {/*
             Hauptinhalt der Seite.
-            Kein flex-grow mehr nötig.
+            Kein grow mehr nötig.
           */}
-          <main> {/* flex-grow entfernt */}
+          <main> {/* grow entfernt */}
             {children}
           </main>
           <Footer /> {/* Footer wird durch CSS fixiert */}

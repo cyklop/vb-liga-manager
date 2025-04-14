@@ -209,7 +209,7 @@ export default function TablePage() {
             id="leagueSelect"
             value={activeLeagueId || ''}
             onChange={handleLeagueChange}
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
           >
             <option value="" disabled>Liga auswählen</option>
             {leagues.map(league => (
@@ -226,7 +226,7 @@ export default function TablePage() {
             id="matchdaySelect"
             value={selectedMatchday || ''}
             onChange={handleMatchdayChange}
-            className="block w-40 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            className="block w-40 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
           >
             <option value="">Alle Spieltage</option>
             {matchdays.map(matchday => (
@@ -324,7 +324,7 @@ export default function TablePage() {
         <div className="mt-8">
           <button 
             onClick={() => setShowSortInfo(!showSortInfo)}
-            className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-left text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50"
+            className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-left text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-hidden focus-visible:ring-3 focus-visible:ring-indigo-500 focus-visible:ring-opacity-50"
           >
             <span>Informationen zur Sortierreihenfolge</span>
             <svg 

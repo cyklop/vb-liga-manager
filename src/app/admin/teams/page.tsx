@@ -225,7 +225,7 @@ export default function TeamsPage() {
               setFormData({}) // Reset form data for adding new team
               setIsModalOpen(true)
             }}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 dark:bg-blue-600 dark:hover:bg-blue-800"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm mb-4 dark:bg-blue-600 dark:hover:bg-blue-800"
           >
             Neue Mannschaft hinzufügen
           </button>
@@ -257,7 +257,7 @@ export default function TeamsPage() {
                       setIsModalOpen(false) // Close modal first if already open from another edit
                       setTimeout(() => setIsModalOpen(true), 0) // Then open with new data
                     }}
-                    className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded dark:text-foreground dark:hover:bg-muted mr-2"
+                    className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded-sm dark:text-foreground dark:hover:bg-muted mr-2"
                     title="Mannschaft bearbeiten"
                   >
                     <PencilIcon className="h-5 w-5" />
@@ -266,7 +266,7 @@ export default function TeamsPage() {
                     <button
                       // onClick anpassen, um den Dialog zu öffnen
                       onClick={() => requestDeleteTeam(team)}
-                      className="p-1 text-red-600 hover:text-red-900 hover:bg-red-100 rounded dark:text-red-400 dark:hover:bg-red-900/20"
+                      className="p-1 text-red-600 hover:text-red-900 hover:bg-red-100 rounded-sm dark:text-red-400 dark:hover:bg-red-900/20"
                       title="Mannschaft löschen"
                     >
                       <TrashIcon className="h-5 w-5" />
@@ -286,7 +286,7 @@ export default function TeamsPage() {
             value={formData.name || ''}
             onChange={(e) => setFormData({...formData, name: e.target.value})}
             placeholder="Mannschaftsname"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-2"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300 mb-2"
             required // Add required attribute if name is mandatory
           />
           <input
@@ -294,27 +294,27 @@ export default function TeamsPage() {
             value={formData.location || ''}
             onChange={(e) => setFormData({...formData, location: e.target.value})}
             placeholder="Ort"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-2"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300 mb-2"
           />
           <input
             type="text"
             value={formData.hallAddress || ''}
             onChange={(e) => setFormData({...formData, hallAddress: e.target.value})}
             placeholder="Adresse der Halle"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-2"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300 mb-2"
           />
           <input
             type="text"
             value={formData.trainingTimes || ''}
             onChange={(e) => setFormData({...formData, trainingTimes: e.target.value})}
             placeholder="Trainingszeiten"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-2"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300 mb-2"
           />
           {/* Bind select to formData.teamLeaderId */}
           <select
             value={formData.teamLeaderId || ''}
             onChange={(e) => setFormData({...formData, teamLeaderId: e.target.value})}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 mb-2"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300 mb-2"
           >
             <option value="">Spielleiter auswählen (optional)</option>
             {users.map((user) => (
@@ -323,7 +323,7 @@ export default function TeamsPage() {
           </select>
           <button
             type="submit"
-            className="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-600 dark:hover:bg-blue-800"
+            className="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm dark:bg-blue-600 dark:hover:bg-blue-800"
           >
             {editingTeam ? "Aktualisieren" : "Hinzufügen"}
           </button>

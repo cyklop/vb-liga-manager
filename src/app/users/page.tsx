@@ -96,7 +96,7 @@ export default function UsersPage() {
         <h1 className="text-2xl font-bold mb-4">Benutzer verwalten</h1>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm mb-4"
         >
           Neuen Benutzer hinzufügen
         </button>
@@ -120,7 +120,7 @@ export default function UsersPage() {
                   )}
                   <button
                     onClick={() => handleDeleteUser(user)}
-                    className="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-xs"
+                    className="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-sm text-xs"
                   >
                     Löschen
                   </button>
@@ -137,7 +137,7 @@ export default function UsersPage() {
             value={newUser.email}
             onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
             placeholder="E-Mail"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300"
             required
           />
           <input
@@ -145,7 +145,7 @@ export default function UsersPage() {
             value={newUser.name}
             onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
             placeholder="Name"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300"
             required
           />
           <input
@@ -153,13 +153,13 @@ export default function UsersPage() {
             value={newUser.password}
             onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
             placeholder="Passwort"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300"
             required
           />
           <select
             value={newUser.teamId}
             onChange={(e) => setNewUser({ ...newUser, teamId: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300"
           >
             <option value="">Kein Team</option>
             {teams.map((team) => (
@@ -172,7 +172,7 @@ export default function UsersPage() {
               id="isAdmin"
               checked={newUser.isAdmin}
               onChange={(e) => setNewUser({ ...newUser, isAdmin: e.target.checked })}
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded-sm"
             />
             <label htmlFor="isAdmin" className="ml-2 block text-sm text-gray-900">
               Admin
@@ -180,7 +180,7 @@ export default function UsersPage() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm"
           >
             Hinzufügen
           </button>

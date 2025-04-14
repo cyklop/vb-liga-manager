@@ -562,7 +562,7 @@ export default function TeamPage() {
               id="team-select"
               value={selectedTeamId || ''}
               onChange={(e) => setSelectedTeamId(Number(e.target.value))}
-              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
             >
               {teams.map(team => (
                 <option key={team.id} value={team.id}>
@@ -597,7 +597,7 @@ export default function TeamPage() {
                 {!editingTeam && selectedTeam && (
                   <button
                     onClick={() => handleEditTeam(selectedTeam)}
-                    className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded dark:text-foreground dark:hover:bg-muted"
+                    className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded-sm dark:text-foreground dark:hover:bg-muted"
                     title="Team bearbeiten"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
@@ -620,7 +620,7 @@ export default function TeamPage() {
                         name="location"
                         value={teamFormData.location}
                         onChange={handleTeamInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500"
                       />
                     </div>
                     
@@ -633,7 +633,7 @@ export default function TeamPage() {
                         name="hallAddress"
                         value={teamFormData.hallAddress}
                         onChange={handleTeamInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500"
                       />
                     </div>
                     
@@ -646,7 +646,7 @@ export default function TeamPage() {
                         value={teamFormData.trainingTimes}
                         onChange={handleTeamInputChange}
                         rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500"
                       />
                     </div>
                     
@@ -728,7 +728,7 @@ export default function TeamPage() {
                             name="fixtureDate"
                             value={formData.fixtureDate}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500"
                           />
                         </div>
                         <div>
@@ -740,7 +740,7 @@ export default function TeamPage() {
                             name="fixtureTime"
                             value={formData.fixtureTime}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500"
                           />
                         </div>
                       </div>
@@ -913,7 +913,7 @@ export default function TeamPage() {
 
                         <button
                           onClick={() => handleEditFixture(fixture)}
-                          className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded dark:text-foreground dark:hover:bg-muted"
+                          className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded-sm dark:text-foreground dark:hover:bg-muted"
                           title="Spielpaarung bearbeiten"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">

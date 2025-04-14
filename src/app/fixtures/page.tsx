@@ -214,7 +214,7 @@ export default function FixturesPage() {
               id="leagueSelect"
               value={activeLeagueId || ''}
               onChange={handleLeagueChange}
-              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
             >
               <option value="" disabled>Liga auswählen</option>
               {leagues.map(league => (
@@ -229,7 +229,7 @@ export default function FixturesPage() {
               id="showOnlyUpcoming"
               checked={showOnlyUpcoming}
               onChange={(e) => setShowOnlyUpcoming(e.target.checked)}
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded-sm"
             />
             <label htmlFor="showOnlyUpcoming" className="ml-2 block text-sm text-gray-900">
               Nur anstehende Spiele anzeigen

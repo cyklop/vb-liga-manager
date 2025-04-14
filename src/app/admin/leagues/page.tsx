@@ -694,7 +694,7 @@ export default function LeaguesPage() {
               });
               setIsModalOpen(true);
             }}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm mb-4"
           >
             Neue Liga hinzufügen
           </button>
@@ -748,7 +748,7 @@ export default function LeaguesPage() {
                           });
                           setIsModalOpen(true);
                         }}
-                        className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded"
+                        className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded-sm"
                         title="Liga bearbeiten"
                       >
                         <PencilIcon className="h-5 w-5" />
@@ -756,7 +756,7 @@ export default function LeaguesPage() {
                       <button
                         // onClick anpassen, um den Dialog zu öffnen
                         onClick={() => handleDeleteLeague(league)}
-                        className="p-1 text-red-600 hover:text-red-900 hover:bg-red-100 rounded"
+                        className="p-1 text-red-600 hover:text-red-900 hover:bg-red-100 rounded-sm"
                         title="Liga löschen"
                       >
                         <TrashIcon className="h-5 w-5" />
@@ -782,14 +782,14 @@ export default function LeaguesPage() {
                           });
                           setIsModalOpen(true);
                         }}
-                        className={`p-1 ${league.isActive ? 'text-amber-600 hover:text-amber-900' : 'text-green-600 hover:text-green-900'} hover:bg-gray-100 rounded`}
+                        className={`p-1 ${league.isActive ? 'text-amber-600 hover:text-amber-900' : 'text-green-600 hover:text-green-900'} hover:bg-gray-100 rounded-sm`}
                         title={league.isActive ? "Liga abschließen" : "Liga wieder aktivieren"}
                       >
                         {league.isActive ? <LockClosedIcon className="h-5 w-5" /> : <LockOpenIcon className="h-5 w-5" />}
                       </button>
                       <button
                         onClick={() => handleGenerateFixtures(league.id)}
-                        className={`p-1 ${league.isActive ? 'text-green-600 hover:text-green-900 hover:bg-green-100' : 'text-gray-400 cursor-not-allowed'} rounded`}
+                        className={`p-1 ${league.isActive ? 'text-green-600 hover:text-green-900 hover:bg-green-100' : 'text-gray-400 cursor-not-allowed'} rounded-sm`}
                         title={league.isActive ? "Spielplan generieren" : "Liga ist abgeschlossen"}
                         disabled={!league.isActive}
                       >
@@ -799,7 +799,7 @@ export default function LeaguesPage() {
                   )}
                   <button
                     onClick={() => handleShowFixtures(league.id)}
-                    className="p-1 text-blue-600 hover:text-blue-900 hover:bg-blue-100 rounded"
+                    className="p-1 text-blue-600 hover:text-blue-900 hover:bg-blue-100 rounded-sm"
                     title={selectedLeagueId === league.id ? "Spielplan verbergen" : "Spielplan anzeigen"}
                   >
                     <ArrowsUpDownIcon className="h-5 w-5" />
@@ -816,7 +816,7 @@ export default function LeaguesPage() {
                     {isAdmin && isOrderChanged && (
                        <button
                          onClick={handleSaveFixtureOrder}
-                         className="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-4 rounded text-sm flex items-center shadow-sm transition duration-150 ease-in-out"
+                         className="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-4 rounded-sm text-sm flex items-center shadow-sm transition duration-150 ease-in-out"
                        >
                          <CheckIcon className="h-4 w-4 mr-1" />
                          Reihenfolge speichern
@@ -875,7 +875,7 @@ export default function LeaguesPage() {
               onChange={(e) => setNewLeague({...newLeague, name: e.target.value})}
               placeholder="z.B. Kreisliga A"
               required
-              className="mt-1 w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+              className="mt-1 w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300"
             />
           </div>
           
@@ -891,7 +891,7 @@ export default function LeaguesPage() {
                 value={newLeague.slug}
                 onChange={(e) => setNewLeague({...newLeague, slug: e.target.value})}
                 placeholder={newLeague.name ? createSlug(newLeague.name) : "volleyball-liga-2024"}
-                className="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border border-gray-300 focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+                className="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border border-gray-300 focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300"
               />
             </div>
             <p className="mt-1 text-xs text-gray-500">
@@ -908,7 +908,7 @@ export default function LeaguesPage() {
               value={newLeague.numberOfTeams}
               onChange={(e) => setNewLeague({...newLeague, numberOfTeams: parseInt(e.target.value) || 0})}
               required
-              className="mt-1 w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+              className="mt-1 w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300"
             />
           </div>
           {/* Return Matches Checkbox */}
@@ -918,7 +918,7 @@ export default function LeaguesPage() {
               type="checkbox"
               checked={newLeague.hasReturnMatches}
               onChange={(e) => setNewLeague({...newLeague, hasReturnMatches: e.target.checked})}
-              className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              className="h-4 w-4 text-indigo-600 border-gray-300 rounded-sm focus:ring-indigo-500"
             />
             <label htmlFor="hasReturnMatches" className="ml-2 block text-sm text-gray-900">Hin- und Rückrunde</label>
           </div>
@@ -930,7 +930,7 @@ export default function LeaguesPage() {
               type="checkbox"
               checked={newLeague.isActive}
               onChange={(e) => setNewLeague({...newLeague, isActive: e.target.checked})}
-              className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              className="h-4 w-4 text-indigo-600 border-gray-300 rounded-sm focus:ring-indigo-500"
             />
             <label htmlFor="isActive" className="ml-2 block text-sm text-gray-900">Liga ist aktiv</label>
           </div>
@@ -947,7 +947,7 @@ export default function LeaguesPage() {
                   name="scoreEntryType"
                   value={newLeague.scoreEntryType}
                   onChange={(e) => setNewLeague({ ...newLeague, scoreEntryType: e.target.value as ScoreEntryType })}
-                  className="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+                  className="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300"
                 >
                   <option value={ScoreEntryType.MATCH_SCORE}>Nur Gesamtsätze (z.B. 3:1)</option>
                   <option value={ScoreEntryType.SET_SCORES}>Einzelne Satzergebnisse (z.B. 25:20, 23:25, ...)</option>
@@ -961,7 +961,7 @@ export default function LeaguesPage() {
                   name="setsToWin"
                   value={newLeague.setsToWin}
                   onChange={(e) => setNewLeague({ ...newLeague, setsToWin: parseInt(e.target.value) || 3 })}
-                  className="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+                  className="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300"
                 >
                   <option value={2}>2 (Best-of-3)</option>
                   <option value={3}>3 (Best-of-5)</option>
@@ -1053,7 +1053,7 @@ export default function LeaguesPage() {
                        setNewLeague({ ...newLeague, teamIds: currentTeamIds.filter(id => id !== team.id) });
                       }
                     }}
-                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 disabled:opacity-50"
+                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded-sm focus:ring-indigo-500 disabled:opacity-50"
                   />
                   <label htmlFor={`team-${team.id}`} className="ml-2 block text-sm text-gray-900">{team.name}</label>
                 </div>
@@ -1066,7 +1066,7 @@ export default function LeaguesPage() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             {editingLeague ? "Liga aktualisieren" : "Liga hinzufügen"}
           </button>
@@ -1088,7 +1088,7 @@ export default function LeaguesPage() {
                   value={editingFixture.homeTeamId || ''}
                   onChange={handleFixtureInputChange}
                   required
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                 >
                   <option value="" disabled>Wählen...</option>
                   {/* Filter teams to only those in the current league */}
@@ -1102,7 +1102,7 @@ export default function LeaguesPage() {
                 <button
                   type="button"
                   onClick={handleSwapTeams}
-                  className="p-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-muted rounded"
+                  className="p-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-muted rounded-sm"
                   title="Teams tauschen"
                 >
                   <ArrowsRightLeftIcon className="h-5 w-5" />
@@ -1116,7 +1116,7 @@ export default function LeaguesPage() {
                   value={editingFixture.awayTeamId || ''}
                   onChange={handleFixtureInputChange}
                   required
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                 >
                   <option value="" disabled>Wählen...</option>
                   {/* Filter teams to only those in the current league */}
@@ -1136,7 +1136,7 @@ export default function LeaguesPage() {
                 name="fixtureDate"
                 value={editingFixture.fixtureDate || ''}
                 onChange={handleFixtureInputChange}
-                className="mt-1 block w-full pl-3 pr-3 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                className="mt-1 block w-full pl-3 pr-3 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
               />
             </div>
  
@@ -1149,7 +1149,7 @@ export default function LeaguesPage() {
                 name="fixtureTime"
                 value={editingFixture.fixtureTime || ''}
                 onChange={handleFixtureInputChange}
-                className="mt-1 block w-full pl-3 pr-3 py-2 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                className="mt-1 block w-full pl-3 pr-3 py-2 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
               />
             </div>
 
@@ -1173,7 +1173,7 @@ export default function LeaguesPage() {
                         value={scoreInputData.homeScore ?? ''}
                         onChange={(e) => handleScoreInputChange(e)}
                         placeholder={`0-${editingLeagueContext.setsToWin}`}
-                        className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                       />
                     </div>
                     <div className="flex-1">
@@ -1186,7 +1186,7 @@ export default function LeaguesPage() {
                         value={scoreInputData.awayScore ?? ''}
                         onChange={(e) => handleScoreInputChange(e)}
                         placeholder={`0-${editingLeagueContext.setsToWin}`}
-                        className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                       />
                       </div>
                     </div>
@@ -1202,7 +1202,7 @@ export default function LeaguesPage() {
                           value={scoreInputData.homePoints ?? ''}
                           onChange={(e) => handleScoreInputChange(e)}
                           placeholder="Gesamtbälle"
-                          className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                          className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                         />
                       </div>
                       <div className="flex-1">
@@ -1215,7 +1215,7 @@ export default function LeaguesPage() {
                           value={scoreInputData.awayPoints ?? ''}
                           onChange={(e) => handleScoreInputChange(e)}
                           placeholder="Gesamtbälle"
-                          className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                          className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                         />
                       </div>
                     </div>
@@ -1235,7 +1235,7 @@ export default function LeaguesPage() {
                           value={set.home ?? ''}
                           onChange={(e) => handleScoreInputChange(e, index)}
                           placeholder="Heim"
-                          className="flex-1 block w-full px-2 py-1 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                          className="flex-1 block w-full px-2 py-1 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                         />
                         <span className="text-gray-500">:</span>
                         <input
@@ -1245,7 +1245,7 @@ export default function LeaguesPage() {
                           value={set.away ?? ''}
                           onChange={(e) => handleScoreInputChange(e, index)}
                           placeholder="Gast"
-                          className="flex-1 block w-full px-2 py-1 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                          className="flex-1 block w-full px-2 py-1 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                         />
                       </div>
                     ))}
@@ -1257,7 +1257,7 @@ export default function LeaguesPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-primary dark:hover:bg-primary/90"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-primary dark:hover:bg-primary/90"
             >
               Speichern
             </button>
@@ -1317,7 +1317,7 @@ function SortableFixtureItem({ fixture, league, onEditClick, isLeagueActive }: S
     <li 
       ref={setNodeRef} 
       style={style} 
-      className="flex justify-between items-center text-sm p-2 border rounded bg-white dark:bg-card dark:border-border shadow-sm hover:bg-gray-50 dark:hover:bg-muted"
+      className="flex justify-between items-center text-sm p-2 border rounded-sm bg-white dark:bg-card dark:border-border shadow-sm hover:bg-gray-50 dark:hover:bg-muted"
     >
       {/* Drag Handle */}
        <button 
@@ -1330,7 +1330,7 @@ function SortableFixtureItem({ fixture, league, onEditClick, isLeagueActive }: S
        </button>
 
       {/* Fixture Details */}
-      <div className="flex-grow flex items-center">
+      <div className="grow flex items-center">
         {/* <span className="mr-2 text-gray-500 w-6 text-right">{fixture.order}.</span> */} {/* Order shown implicitly by position */}
         <span>{fixture.homeTeam?.name || 'N/A'} vs {fixture.awayTeam?.name || 'N/A'}</span>
         <span className="ml-4 text-gray-500 text-xs">
@@ -1367,7 +1367,7 @@ function SortableFixtureItem({ fixture, league, onEditClick, isLeagueActive }: S
       <div className="flex items-center space-x-1 ml-2">
         <button
           onClick={() => onEditClick(fixture)}
-          className={`p-1 ${isLeagueActive ? 'text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100' : 'text-gray-400 cursor-not-allowed'} rounded`}
+          className={`p-1 ${isLeagueActive ? 'text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100' : 'text-gray-400 cursor-not-allowed'} rounded-sm`}
           title={isLeagueActive ? "Spielpaarung bearbeiten" : "Liga ist inaktiv"}
           disabled={!isLeagueActive}
         >

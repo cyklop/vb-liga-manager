@@ -156,7 +156,7 @@ export default function UsersPage() {
             setIsEditing(false)
             setIsModalOpen(true)
           }}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 dark:bg-blue-600 dark:hover:bg-blue-800"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm mb-4 dark:bg-blue-600 dark:hover:bg-blue-800"
         >
           Neuen Benutzer hinzufügen
         </button>
@@ -192,14 +192,14 @@ export default function UsersPage() {
                       setIsEditing(true)
                       setIsModalOpen(true)
                     }}
-                    className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded dark:text-foreground dark:hover:bg-muted ml-2"
+                    className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded-sm dark:text-foreground dark:hover:bg-muted ml-2"
                     title="Benutzer bearbeiten"
                   >
                     <PencilIcon className="h-5 w-5" />
                   </button>
                   <button
                     onClick={() => handleDeleteUser(user)}
-                    className="p-1 text-red-600 hover:text-red-900 hover:bg-red-100 rounded dark:text-red-400 dark:hover:bg-red-900/20 ml-2"
+                    className="p-1 text-red-600 hover:text-red-900 hover:bg-red-100 rounded-sm dark:text-red-400 dark:hover:bg-red-900/20 ml-2"
                     title="Benutzer löschen"
                   >
                     <TrashIcon className="h-5 w-5" />
@@ -217,7 +217,7 @@ export default function UsersPage() {
             value={newUser.email}
             onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
             placeholder="E-Mail"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300"
             required
           />
           <input
@@ -225,7 +225,7 @@ export default function UsersPage() {
             value={newUser.name}
             onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
             placeholder="Name"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-input dark:border-border dark:text-foreground" // Dark mode styles hinzugefügt
+            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300 dark:bg-input dark:border-border dark:text-foreground" // Dark mode styles hinzugefügt
             required
           />
           {/* Passwortfeld entfernt */}
@@ -251,7 +251,7 @@ export default function UsersPage() {
                         });
                       }
                     }}
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded-sm"
                   />
                   <label htmlFor={`team-${team.id}`} className="ml-2 block text-sm text-gray-900">
                     {team.name}
@@ -266,7 +266,7 @@ export default function UsersPage() {
               id="isAdmin"
               checked={newUser.isAdmin}
               onChange={(e) => setNewUser({ ...newUser, isAdmin: e.target.checked })}
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded-sm"
             />
             <label htmlFor="isAdmin" className="ml-2 block text-sm text-gray-900">
               Admin
@@ -274,7 +274,7 @@ export default function UsersPage() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-600 dark:hover:bg-blue-800"
+            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm dark:bg-blue-600 dark:hover:bg-blue-800"
           >
             {isEditing ? "Aktualisieren" : "Hinzufügen"}
           </button>
