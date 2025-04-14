@@ -5,9 +5,9 @@ import { authOptions } from '@/lib/auth'
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }>  }
 ) {
-  const teamId = parseInt(params.id)
+  const teamId = parseInt((await params).id)
   if (isNaN(teamId)) {
     return NextResponse.json({ message: 'Ungültige Team-ID' }, { status: 400 })
   }

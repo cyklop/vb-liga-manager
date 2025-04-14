@@ -3,8 +3,8 @@ import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
-  const leagueId = parseInt(params.id)
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }>  }) {
+  const leagueId = parseInt((await params).id)
   if (isNaN(leagueId)) {
     return NextResponse.json({ message: 'Ungültige Liga-ID' }, { status: 400 })
   }

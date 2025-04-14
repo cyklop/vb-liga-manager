@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id)
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }>  }) {
+  const id = parseInt((await params).id)
 
   try {
     // Die UserTeam-Einträge werden automatisch durch onDelete: Cascade gelöscht
@@ -17,8 +17,8 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
   }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id)
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }>  }) {
+  const id = parseInt((await params).id)
   const { email, name, password, isAdmin, teamIds } = await request.json()
 
   try {

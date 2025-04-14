@@ -3,8 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
-  const teamId = parseInt(params.id);
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }>  }) {
+  const teamId = parseInt((await params).id);
   
   if (isNaN(teamId)) {
     return NextResponse.json({ message: 'Ungültige Team-ID' }, { status: 400 });

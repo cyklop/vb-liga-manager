@@ -409,9 +409,9 @@ interface Fixture {
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth' // Corrected import path
 
-export async function POST(request: Request, { params: { id } }: { params: { id: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   // Destructure id directly from params
-  const leagueId = parseInt(id); 
+  const leagueId = parseInt((await params).id); 
   if (isNaN(leagueId)) {
     return NextResponse.json({ message: 'Ungültige Liga-ID' }, { status: 400 });
   }

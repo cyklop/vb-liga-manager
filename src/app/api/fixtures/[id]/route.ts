@@ -7,9 +7,9 @@ import { ScoreEntryType, Fixture } from '@prisma/client' // Import ScoreEntryTyp
 // PUT Handler to update a specific fixture
 export async function PUT(
   request: Request, 
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const id = parseInt(params.id)
+  const id = parseInt((await params).id)
   if (isNaN(id)) {
     return NextResponse.json({ message: 'Ungültige Fixture-ID' }, { status: 400 })
   }
@@ -381,4 +381,4 @@ export async function PUT(
 }
 
 // Optional: DELETE Handler if needed later
-// export async function DELETE(request: Request, { params }: { params: { id: string } }) { ... }
+// export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }>  }) { ... }

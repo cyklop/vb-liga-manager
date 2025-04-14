@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id)
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }>  }) {
+  const id = parseInt((await params).id)
 
   try {
     await prisma.team.delete({
@@ -16,8 +16,8 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
   // No finally block needed for singleton
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id)
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }>  }) {
+  const id = parseInt((await params).id)
   const { name, location, hallAddress, trainingTimes, teamLeaderId } = await request.json()
 
   try {

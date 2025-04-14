@@ -3,8 +3,8 @@ import { prisma } from '@/lib/prisma'
 import { ScoreEntryType } from '@prisma/client' // Import the enum
 import { createSlug, isValidSlug } from '@/lib/slugify'
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id)
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const id = parseInt((await params).id)
 
   try {
     await prisma.league.delete({
@@ -18,8 +18,8 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
   // No finally block needed for singleton
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id)
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }>  }) {
+  const id = parseInt((await params).id)
   const { 
     name, 
     slug: providedSlug,
