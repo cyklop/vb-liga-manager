@@ -1,11 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react' // Import useCallback
 import { useRouter } from 'next/navigation'
 import { LockClosedIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import Modal from '@/components/Modal'
 import { signIn } from 'next-auth/react'
+import Particles, { initParticlesEngine } from "@tsparticles/react"; // Importiere Particles und initParticlesEngine
+import { loadFull } from "tsparticles"; // Lade das volle Bundle
 import {
   Card,
   Input,
@@ -92,9 +94,95 @@ export default function Login() {
     checkLoginStatus();
   }, [router]);
 
+  // Partikel Konfiguration (angepasst)
+  const particleOptions = {
+    fpsLimit: 60,
+    particles: {
+      number: {
+        value: 60, // Anzahl der Partikel
+        density: {
+          enable: true,
+          value_area: 800 // Bereich, in dem die Dichte wirkt
+        }
+      },
+      color: {
+        // Farben an das Theme anpassen (Beispiel: Indigo/Blau und Weiß/Grau)
+        value: ["#4f46e5", "#a5b4fc", "#ffffff", "#e5e7eb"]
+      },
+      shape: {
+        type: "circle", // Einfachere Form, oft performanter
+      },
+      opacity: {
+        value: 0.4, // Etwas transparenter
+        random: true, // Zufällige Opazität
+      },
+      size: {
+        value: 3, // Kleinere Partikel
+        random: true,
+      },
+      links: { // 'line_linked' heißt jetzt 'links'
+        enable: true,
+        distance: 120, // Etwas größere Distanz für Linien
+        color: "#a5b4fc", // Linienfarbe (helles Indigo)
+        opacity: 0.3,
+        width: 1
+      },
+      move: {
+        enable: true,
+        speed: 2, // Langsamere Geschwindigkeit
+        direction: "none",
+        random: true, // Zufällige Richtung
+        straight: false,
+        outModes: { // 'out_mode' heißt jetzt 'outModes'
+            default: "out",
+        },
+        bounce: false,
+      }
+    },
+    interactivity: { // Interaktivität hinzufügen (optional)
+      events: {
+        onHover: {
+          enable: true,
+          mode: "repulse", // Partikel wegstoßen bei Hover
+        },
+        onClick: {
+          enable: true,
+          mode: "push", // Partikel hinzufügen bei Klick
+        },
+      },
+      modes: {
+        repulse: {
+          distance: 100,
+          duration: 0.4,
+        },
+        push: {
+          quantity: 4,
+        },
+      },
+    },
+    detectRetina: true, // 'retina_detect' heißt jetzt 'detectRetina'
+    background: { // Hintergrund der Partikel-Canvas (transparent)
+        color: 'transparent',
+    }
+  };
+
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <Card color="transparent" shadow={false} className="dark:bg-gray-800/30 p-6" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+    // Hintergrundfarben beibehalten, overflow-hidden hinzufügen
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+       {/* Particles Komponente */}
+       {init && (
+         <Particles
+           id="tsparticles"
+           particlesLoaded={particlesLoaded}
+           options={particleOptions as any} // 'as any' um Type-Checking zu umgehen, falls Optionen nicht 100% übereinstimmen
+           className="absolute top-0 left-0 w-full h-full z-0" // Positionierung im Hintergrund
+         />
+       )}
+
+      {/* Das eigentliche Login-Formular (Card) bleibt im Vordergrund */}
+      {/* Stelle sicher, dass die Card einen höheren z-index hat oder relativ positioniert ist */}
+      <Card color="transparent" shadow={false} className="dark:bg-gray-800/60 backdrop-blur-sm p-6 relative z-10" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
         <Typography variant="h4" color="blue-gray" className="dark:text-gray-100" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
           Anmelden
         </Typography>
