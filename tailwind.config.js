@@ -1,55 +1,21 @@
-const withMT = require("@material-tailwind/react/utils/withMT");
-
-module.exports = withMT({
-  darkMode: 'class',
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  darkMode: 'class', // Keep darkMode setting if needed by ThemeProvider logic
   content: [
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}', // Korrigierter Pfad
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    // Add path for material-tailwind if needed and compatible
+    // Example: './node_modules/@material-tailwind/react/components/**/*.{js,ts,jsx,tsx}',
+    // Example: './node_modules/@material-tailwind/react/theme/components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
-      colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-      },
+      // Theme extensions are now primarily handled in CSS via @theme
+      // Keep this minimal or empty unless needed for specific JS-based tooling
     },
   },
   plugins: [
-    require('@tailwindcss/forms')({
-      strategy: 'class',
-    }),
-    require('@tailwindcss/aspect-ratio'),
-    require('@tailwindcss/typography'),
+    // Plugins are now primarily handled in CSS via @import
+    // Keep this empty unless needed for specific JS-based plugins
   ],
-});
+};
