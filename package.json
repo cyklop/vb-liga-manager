@@ -10,18 +10,18 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:migrate:deploy": "prisma migrate deploy",
-    "prisma:reset": "prisma migrate reset",
-    "prisma:seed:base": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts",
-    "prisma:seed:assign-teams": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/assign-teams-to-league.ts",
-    "prisma:seed:fixtures": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed-fixtures.ts",
-    "prisma:seed:historical:all": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed-historical-leagues.ts",
+    "prisma:generate": "dotenv -e .env.local -- prisma generate",
+    "prisma:migrate": "dotenv -e .env.local -- prisma migrate dev",
+    "prisma:migrate:deploy": "dotenv -e .env.local -- prisma migrate deploy",
+    "prisma:reset": "dotenv -e .env.local -- prisma migrate reset",
+    "prisma:seed:base": "dotenv -e .env.local -- ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts",
+    "prisma:seed:assign-teams": "dotenv -e .env.local -- ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/assign-teams-to-league.ts",
+    "prisma:seed:fixtures": "dotenv -e .env.local -- ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed-fixtures.ts",
+    "prisma:seed:historical:all": "dotenv -e .env.local -- ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed-historical-leagues.ts",
     "prisma:seed:all": "npm run prisma:seed:base && npm run prisma:seed:assign-teams && npm run prisma:seed:fixtures"
   },
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "seed": "dotenv -e .env.local -- ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
