@@ -51,19 +51,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [theme, mounted]);
 
-  // Helper function to apply theme to the DOM
+  // Helper function to apply theme to the DOM using data-theme for DaisyUI
   const applyTheme = (currentTheme: Theme) => {
     const root = window.document.documentElement;
-    root.classList.remove('light', 'dark');
+    let themeToApply: 'light' | 'dark';
 
     if (currentTheme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      root.classList.add(systemTheme);
-      root.setAttribute('data-theme', systemTheme);
+      themeToApply = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     } else {
-      root.classList.add(currentTheme);
-      root.setAttribute('data-theme', currentTheme);
+      themeToApply = currentTheme;
     }
+    // Set the data-theme attribute for DaisyUI
+    root.setAttribute('data-theme', themeToApply);
   };
 
   // Auf Änderungen der Systemeinstellung reagieren (nur wenn theme === 'system')
@@ -77,8 +76,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       };
 
       mediaQuery.addEventListener('change', handleChange);
-      // Initial check in case preference changed before listener was added
+      // Initial check needed when component mounts and theme is 'system'
       handleChange();
+
       return () => mediaQuery.removeEventListener('change', handleChange);
     }
   }, [theme, mounted]); // Depend on theme and mounted status

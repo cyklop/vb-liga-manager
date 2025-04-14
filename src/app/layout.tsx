@@ -18,7 +18,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="de" suppressHydrationWarning>
+    // suppressHydrationWarning entfernt, da ThemeProvider das data-theme Attribut verwaltet
+    <html lang="de">
       {/*
         Padding am Body, um Platz für den fixierten Footer zu schaffen.
       */}

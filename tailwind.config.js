@@ -21,5 +21,15 @@ module.exports = {
     }),
     require('@tailwindcss/aspect-ratio'),
     require('@tailwindcss/typography'),
+    require('daisyui'), // DaisyUI Plugin hinzufügen
   ],
+  // DaisyUI Konfiguration hinzufügen
+  daisyui: {
+    themes: ["light", "dark"], // Gewünschte Themes aktivieren (oder andere wie "cupcake", "dracula")
+    darkTheme: "dark", // Explizit das dunkle Theme festlegen
+    base: true, // Grundstile anwenden
+    styled: true, // DaisyUI Komponentenstile anwenden
+    utils: true, // DaisyUI Utility-Klassen anwenden
+    logs: true, // Logs anzeigen (hilfreich beim Debuggen)
+  },
 };
