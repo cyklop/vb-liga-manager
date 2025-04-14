@@ -36,7 +36,7 @@
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.15",
     "bcrypt": "^5.1.1",
-    "bcryptjs": "^2.4.3",
+    "bcryptjs": "^3.0.2",
     "next": "^14.2.0",
     "next-auth": "^4.24.7",
     "nodemailer": "^6.10.0",
@@ -48,7 +48,7 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/bcryptjs": "^2.4.6",
-    "@types/node": "^20.16.10",
+    "@types/node": "^22.14.1",
     "@types/nodemailer": "^6.4.17",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
