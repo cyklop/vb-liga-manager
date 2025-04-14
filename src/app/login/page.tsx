@@ -6,9 +6,9 @@ import { LockClosedIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import Modal from '@/components/Modal'
 import { signIn } from 'next-auth/react'
-import Particles from "@tsparticles/react"; // Use scoped package
-import { initParticlesEngine } from "@tsparticles/engine"; // Use scoped package
-import { loadFull } from "tsparticles"; // Lade das volle Bundle (remains the same)
+import Particles, { initParticlesEngine } from "@tsparticles/react";
+import { Engine } from "@tsparticles/engine"
+import { loadFull } from "tsparticles" 
 import {
   Card,
   Input,
@@ -32,12 +32,17 @@ export default function Login() {
   // Partikel-Engine initialisieren
   useEffect(() => {
     initParticlesEngine(async (engine) => {
+      // you can initiate the tsParticles instance (engine) here, adding custom shapes or presets
+      // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
+      // starting from v2 you can add only the features you need reducing the bundle size
+      //await loadAll(engine);
       await loadFull(engine);
+      //await loadSlim(engine);
+      //await loadBasic(engine);
     }).then(() => {
       setInit(true);
     });
   }, []);
-
   const particlesLoaded = useCallback(async (container: any) => {
     // Optional: Aktionen nach dem Laden der Partikel
     // console.log(container);
