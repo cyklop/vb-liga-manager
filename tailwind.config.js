@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class', // Keep darkMode setting if needed by ThemeProvider logic
+  // darkMode: 'class', // Entfernt, da DaisyUI das Theme über data-theme steuert
   content: [
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
