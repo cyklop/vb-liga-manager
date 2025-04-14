@@ -51,18 +51,24 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [theme, mounted]);
 
+  // Definiere die tatsächlichen Theme-Namen, die in DaisyUI verwendet werden
+  const lightThemeName = 'corporate';
+  const darkThemeName = 'dark';
+
   // Helper function to apply theme to the DOM using data-theme for DaisyUI
   const applyTheme = (currentTheme: Theme) => {
     const root = window.document.documentElement;
-    let themeToApply: 'light' | 'dark';
+    let resolvedThemeState: 'light' | 'dark';
 
     if (currentTheme === 'system') {
-      themeToApply = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      resolvedThemeState = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     } else {
-      themeToApply = currentTheme;
+      resolvedThemeState = currentTheme;
     }
-    // Set the data-theme attribute for DaisyUI
-    root.setAttribute('data-theme', themeToApply);
+
+    // Set the data-theme attribute using the configured theme names
+    const themeNameToApply = resolvedThemeState === 'light' ? lightThemeName : darkThemeName;
+    root.setAttribute('data-theme', themeNameToApply);
   };
 
   // Auf Änderungen der Systemeinstellung reagieren (nur wenn theme === 'system')

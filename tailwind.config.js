@@ -25,7 +25,7 @@ module.exports = {
   ],
   // DaisyUI Konfiguration hinzufügen
   daisyui: {
-    themes: ["light", "dark"], // Gewünschte Themes aktivieren (oder andere wie "cupcake", "dracula")
+    themes: ["corporate", "dark"], // Themes auf 'corporate' (hell) und 'dark' (dunkel) ändern
     darkTheme: "dark", // Explizit das dunkle Theme festlegen
     base: true, // Grundstile anwenden
     styled: true, // DaisyUI Komponentenstile anwenden
