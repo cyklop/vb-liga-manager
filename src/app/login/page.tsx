@@ -6,9 +6,9 @@ import { LockClosedIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import Modal from '@/components/Modal'
 import { signIn } from 'next-auth/react'
-import Particles from "react-tsparticles"; // Import Particles component
-import { initParticlesEngine } from "tsparticles-engine"; // Import engine function from the correct package
-import { loadFull } from "tsparticles"; // Lade das volle Bundle
+import Particles from "@tsparticles/react"; // Use scoped package
+import { initParticlesEngine } from "@tsparticles/engine"; // Use scoped package
+import { loadFull } from "tsparticles"; // Lade das volle Bundle (remains the same)
 import {
   Card,
   Input,

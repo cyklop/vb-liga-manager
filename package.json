@@ -43,6 +43,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-toastify": "^11.0.5",
+    "@tsparticles/react": "^3.0.0", // Add v3 scoped package
+    "@tsparticles/engine": "^3.8.1", // Add v3 scoped package
+    "tsparticles": "^3.8.1", // Keep v3 core package
     "slugify": "^1.6.6"
   },
   "devDependencies": {
