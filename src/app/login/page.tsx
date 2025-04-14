@@ -24,6 +24,21 @@ export default function Login() {
   const [resetError, setResetError] = useState('') // Für Fehlermeldungen im Modal
   const [isResetModalOpen, setIsResetModalOpen] = useState(false)
   const router = useRouter()
+  const [init, setInit] = useState(false); // State für Partikel-Initialisierung
+
+  // Partikel-Engine initialisieren
+  useEffect(() => {
+    initParticlesEngine(async (engine) => {
+      await loadFull(engine);
+    }).then(() => {
+      setInit(true);
+    });
+  }, []);
+
+  const particlesLoaded = useCallback(async (container: any) => {
+    // Optional: Aktionen nach dem Laden der Partikel
+    // console.log(container);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
