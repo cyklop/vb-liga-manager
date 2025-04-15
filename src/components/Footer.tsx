@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react' // useContext entfernt
 import { useTheme } from './ThemeProvider' // Importiere den useTheme Hook
-import { SunIcon, MoonIcon } from '@heroicons/react/24/outline' // Beispiel-Icons
+import { SunIcon, MoonIcon, HeartIcon } from '@heroicons/react/24/outline' // Beispiel-Icons
 
 export function Footer() {
   // Verwende den useTheme Hook statt useContext direkt
@@ -39,21 +39,21 @@ export function Footer() {
   };
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 z-40 w-full border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-background text-gray-500 dark:text-gray-400 text-xs print:hidden"> {/* print:hidden, um im Druck auszublenden */}
+    <footer className="fixed bottom-0 left-0 right-0 z-40 w-full border-t bg-base-100 border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 text-xs print:hidden"> {/* print:hidden, um im Druck auszublenden */}
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         <span>
-          Made with AI {/* Dein gewünschter Text */}
+          Made with AI <HeartIcon className="h-4 w-4 inline" />
         </span>
         <button
           onClick={toggleTheme}
-          className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer"
           aria-label={effectiveTheme === 'dark' ? 'Zum hellen Modus wechseln' : 'Zum dunklen Modus wechseln'}
         >
           {/* Zeige das Icon basierend auf dem effektiven Theme an */}
           {effectiveTheme === 'dark' ? (
-            <SunIcon className="h-4 w-4 text-yellow-400" />
+            <SunIcon className="h-4 w-4 text-yellow-600 hover:text-yellow-300" />
           ) : (
-            <MoonIcon className="h-4 w-4 text-gray-600" />
+            <MoonIcon className="h-4 w-4 text-gray-600 hover:text-white" />
           )}
         </button>
       </div>

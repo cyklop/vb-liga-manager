@@ -2,7 +2,7 @@
 
 import { Fragment, useEffect, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, XMarkIcon, ArrowRightOnRectangleIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation' // useRouter wieder hinzugefügt
 import { signOut } from 'next-auth/react'; // signOut importieren
@@ -96,14 +96,14 @@ export default function Navbar() {
   }
 
   return (
-    <Disclosure as="nav" className="bg-indigo-600">
+    <Disclosure as="nav" className="bg-primary">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div className="relative flex h-16 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 {/* Mobile menu button*/}
-                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-indigo-200 hover:bg-indigo-500 hover:text-white focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white">
+                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-indigo-200 hover:bg-primary-500 hover:text-white focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="sr-only">Open main menu</span>
                   {open ? (
                     <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
@@ -126,8 +126,8 @@ export default function Navbar() {
                         href={item.href}
                         className={classNames(
                           pathname === item.href
-                            ? 'bg-indigo-700 text-white'
-                            : 'text-indigo-200 hover:bg-indigo-500 hover:text-white',
+                            ? 'bg-primary-700 text-white'
+                            : 'text-indigo-200 hover:bg-primary-500 hover:text-white',
                           'rounded-md px-3 py-2 text-sm font-medium'
                         )}
                       >
@@ -141,8 +141,8 @@ export default function Navbar() {
                         href="/team"
                         className={classNames(
                           pathname === '/team'
-                            ? 'bg-indigo-700 text-white'
-                            : 'text-indigo-200 hover:bg-indigo-500 hover:text-white',
+                            ? 'bg-primary-700 text-white'
+                            : 'text-indigo-200 hover:bg-primary-500 hover:text-white',
                           'rounded-md px-3 py-2 text-sm font-medium'
                         )}
                       >
@@ -157,8 +157,8 @@ export default function Navbar() {
                           href="/admin"
                           className={classNames(
                             pathname === '/admin' || pathname.startsWith('/admin/')
-                              ? 'bg-indigo-700 text-white'
-                              : 'text-indigo-200 hover:bg-indigo-500 hover:text-white',
+                              ? 'bg-primary-700 text-white'
+                              : 'text-indigo-200 hover:bg-primary-500 hover:text-white',
                             'rounded-md px-3 py-2 text-sm font-medium inline-flex items-center'
                           )}
                         >
@@ -167,7 +167,7 @@ export default function Navbar() {
                             <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
                           </svg>
                         </Link>
-                        <div className="absolute right-0 z-10 mt-0 w-48 origin-top-right rounded-md bg-white dark:bg-card py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden hidden group-hover:block">
+                        <div className="absolute right-0 z-10 mt-0 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-primary ring-opacity-5 focus:outline-hidden hidden group-hover:block">
                           {adminNavigation.map((item) => (
                             <Link
                               key={item.name}
@@ -193,7 +193,7 @@ export default function Navbar() {
                   <>
                     <Link
                       href="/account"
-                      className="rounded-md bg-indigo-500 p-2 text-sm font-medium text-white hover:bg-indigo-400 mr-2"
+                      className="rounded-md btn btn-ghost bg-primary p-2 text-sm font-medium text-white hover:bg-primary-400 mr-2"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
@@ -201,15 +201,15 @@ export default function Navbar() {
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="rounded-md bg-indigo-500 p-2 text-sm font-medium text-white hover:bg-indigo-400"
+                      className="rounded-md btn btn-ghost p-2 text-sm font-medium text-white hover:bg-neutral hover:border-neutral"
                     >
-                      <ArrowRightOnRectangleIcon className="h-5 w-5" />
+                      <ArrowRightStartOnRectangleIcon className="h-5 w-5" />
                     </button>
                   </>
                 ) : (
                   <Link
                     href="/login"
-                    className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-400"
+                    className="rounded-md bg-primary-500 px-3 py-2 text-sm font-medium text-white hover:bg-primary-400"
                   >
                     Login
                   </Link>
@@ -227,8 +227,8 @@ export default function Navbar() {
                   href={item.href}
                   className={classNames(
                     pathname === item.href
-                      ? 'bg-indigo-700 text-white'
-                      : 'text-indigo-200 hover:bg-indigo-500 hover:text-white',
+                      ? 'bg-primary-700 text-white'
+                      : 'text-indigo-200 hover:bg-primary-500 hover:text-white',
                     'block rounded-md px-3 py-2 text-base font-medium'
                   )}
                 >
@@ -242,8 +242,8 @@ export default function Navbar() {
                   href="/team"
                   className={classNames(
                     pathname === '/team'
-                      ? 'bg-indigo-700 text-white'
-                      : 'text-indigo-200 hover:bg-indigo-500 hover:text-white',
+                      ? 'bg-primary-700 text-white'
+                      : 'text-indigo-200 hover:bg-primary-500 hover:text-white',
                     'block rounded-md px-3 py-2 text-base font-medium'
                   )}
                 >
@@ -259,8 +259,8 @@ export default function Navbar() {
                     href="/admin"
                     className={classNames(
                       pathname === '/admin'
-                        ? 'bg-indigo-700 text-white'
-                        : 'text-indigo-200 hover:bg-indigo-500 hover:text-white',
+                        ? 'bg-primary-700 text-white'
+                        : 'text-indigo-200 hover:bg-primary-500 hover:text-white',
                       'block rounded-md px-3 py-2 text-base font-medium'
                     )}
                   >
@@ -274,8 +274,8 @@ export default function Navbar() {
                       href={item.href}
                       className={classNames(
                         pathname === item.href
-                          ? 'bg-indigo-700 text-white'
-                          : 'text-indigo-200 hover:bg-indigo-500 hover:text-white',
+                          ? 'bg-primary-700 text-white'
+                          : 'text-indigo-200 hover:bg-primary-500 hover:text-white',
                         'block rounded-md px-3 py-2 text-base font-medium pl-6'
                       )}
                     >

@@ -257,7 +257,7 @@ export default function TeamsPage() {
                       setIsModalOpen(false) // Close modal first if already open from another edit
                       setTimeout(() => setIsModalOpen(true), 0) // Then open with new data
                     }}
-                    className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded-sm dark:text-foreground dark:hover:bg-muted mr-2"
+                    className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-primary-100 rounded-sm dark:text-foreground dark:hover:bg-muted mr-2"
                     title="Mannschaft bearbeiten"
                   >
                     <PencilIcon className="h-5 w-5" />

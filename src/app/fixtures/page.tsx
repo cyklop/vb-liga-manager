@@ -207,20 +207,21 @@ export default function FixturesPage() {
         
         <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
           <div className="mb-4 md:mb-0">
-            <label htmlFor="leagueSelect" className="block text-sm font-medium text-gray-700 mb-1">
-              Liga auswählen:
+            <label htmlFor="leagueSelect" className="select w-lg">
+              <span className="label">Liga auswählen:</span>
+                <select
+                id="leagueSelect"
+                value={activeLeagueId || ''}
+                onChange={handleLeagueChange}
+                className="select"
+              >
+                <option value="" disabled>Liga auswählen</option>
+                {leagues.map(league => (
+                  <option key={league.id} value={league.id}>{league.name}</option>
+                ))}
+              </select>
             </label>
-            <select
-              id="leagueSelect"
-              value={activeLeagueId || ''}
-              onChange={handleLeagueChange}
-              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-            >
-              <option value="" disabled>Liga auswählen</option>
-              {leagues.map(league => (
-                <option key={league.id} value={league.id}>{league.name}</option>
-              ))}
-            </select>
+            
           </div>
           
           <div className="flex items-center">
@@ -229,9 +230,9 @@ export default function FixturesPage() {
               id="showOnlyUpcoming"
               checked={showOnlyUpcoming}
               onChange={(e) => setShowOnlyUpcoming(e.target.checked)}
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded-sm"
+              className="checkbox checkbox-primary"
             />
-            <label htmlFor="showOnlyUpcoming" className="ml-2 block text-sm text-gray-900">
+            <label htmlFor="showOnlyUpcoming" className="ml-2 block text-sm">
               Nur anstehende Spiele anzeigen
             </label>
           </div>
@@ -239,15 +240,15 @@ export default function FixturesPage() {
 
         {isLoading ? (
           <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2"></div>
           </div>
         ) : fixtures.length > 0 ? (
           <div className="space-y-6">
             {/* Group fixtures by matchday */}
             {Array.from(new Set(fixtures.map(f => f.matchday))).sort((a, b) => (a || 0) - (b || 0)).map(matchday => (
-              <div key={matchday || 'unknown'} className="bg-white shadow overflow-hidden sm:rounded-md">
-                <div className="bg-indigo-50 px-4 py-2 border-b border-indigo-100">
-                  <h3 className="text-lg font-medium text-indigo-800">
+              <div key={matchday || 'unknown'} className="shadow overflow-hidden sm:rounded-md">
+                <div className="bg-primary-50 px-4 py-2 border-b bg-base-300 border-base-200">
+                  <h3 className="text-lg font-bold">
                     {matchday ? `Spieltag ${matchday}` : 'Spieltag nicht zugeordnet'}
                   </h3>
                 </div>

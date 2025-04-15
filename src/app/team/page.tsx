@@ -5,6 +5,7 @@ import Navigation from '@/components/Navbar';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { ScoreEntryType } from '@prisma/client'; // Import the enum
+import { PencilSquareIcon } from '@heroicons/react/24/outline';
 
 interface User {
   id: number;
@@ -518,7 +519,7 @@ export default function TeamPage() {
         <Navigation />
         <div className="container mx-auto px-4 py-8">
           <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2"></div>
           </div>
         </div>
       </>
@@ -555,14 +556,13 @@ export default function TeamPage() {
         {/* Team-Auswahl Dropdown, wenn Teams vorhanden sind */}
         {teams.length > 0 && (
           <div className="mb-6">
-            <label htmlFor="team-select" className="block text-sm font-medium text-gray-700 mb-1">
-              Mannschaft auswählen:
-            </label>
-            <select
+            <label htmlFor="team-select" className="select w-lg">
+            <span className="label">Mannschaft auswählen:</span>
+              <select
               id="team-select"
               value={selectedTeamId || ''}
               onChange={(e) => setSelectedTeamId(Number(e.target.value))}
-              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              className="select"
             >
               {teams.map(team => (
                 <option key={team.id} value={team.id}>
@@ -570,6 +570,8 @@ export default function TeamPage() {
                 </option>
               ))}
             </select>
+            </label>
+            
           </div>
         )}
          
@@ -591,18 +593,17 @@ export default function TeamPage() {
             
             {/* Mannschaftsdetails */}
             <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
-              <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
-                <h3 className="text-lg leading-6 font-medium text-gray-900">Mannschaftsdetails</h3>
+              <div className="px-4 py-5 sm:px-6 flex justify-between items-center bg-base-200">
+                <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Mannschaftsdetails</h3>
                 {/* Use selectedTeam here */}
                 {!editingTeam && selectedTeam && (
                   <button
                     onClick={() => handleEditTeam(selectedTeam)}
-                    className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded-sm dark:text-foreground dark:hover:bg-muted"
+                    className="p-1 text-primary hover:text-indigo-900 hover:bg-primary-100 rounded-sm dark:text-foreground dark:hover:bg-muted"
                     title="Team bearbeiten"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                    </svg>
+                    <PencilSquareIcon className='h-5 w-5 cursor-pointer'> </PencilSquareIcon>
+                    
                   </button>
                 )}
               </div>
@@ -612,55 +613,57 @@ export default function TeamPage() {
                 <div className="border-t border-gray-200">
                   <form onSubmit={handleTeamSubmit} className="p-4 space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Ort
-                      </label>
-                      <input
+                      <label className="floating-label">
+                        <span>Ort</span>
+                        <input
                         type="text"
                         name="location"
                         value={teamFormData.location}
                         onChange={handleTeamInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden "
                       />
+                      </label>                      
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Hallenadresse
-                      </label>
-                      <input
+                      <label className="floating-label">
+                        <span>Hallenadresse</span>
+                        <input
                         type="text"
                         name="hallAddress"
                         value={teamFormData.hallAddress}
                         onChange={handleTeamInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden"
                       />
+                      </label>
+                      
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Trainingszeiten
-                      </label>
+                      <label className="floating-label">
+                      <span>Trainingszeiten</span>
                       <textarea
                         name="trainingTimes"
                         value={teamFormData.trainingTimes}
                         onChange={handleTeamInputChange}
                         rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden "
                       />
+                      </label>
+                      
                     </div>
                     
                     <div className="flex justify-end space-x-3">
                       <button
                         type="button"
                         onClick={handleCancelTeamEdit}
-                        className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                        className="px-4 py-2 btn border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
                       >
                         Abbrechen
                       </button>
                       <button
                         type="submit"
-                        className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                        className="px-4 py-2 btn btn-primary border border-transparent rounded-md shadow-sm text-sm font-medium"
                       >
                         Speichern
                       </button>
@@ -695,7 +698,7 @@ export default function TeamPage() {
             
             {isLoading ? (
               <div className="flex justify-center items-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2"></div>
               </div>
             ) : homeFixtures[selectedTeam.id] && homeFixtures[selectedTeam.id].length > 0 ? (
               <div className="bg-white shadow overflow-hidden sm:rounded-md mb-8">
@@ -855,7 +858,7 @@ export default function TeamPage() {
                         </button>
                         <button
                           type="submit"
-                          className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                          className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
                         >
                           Speichern
                         </button>
@@ -913,12 +916,10 @@ export default function TeamPage() {
 
                         <button
                           onClick={() => handleEditFixture(fixture)}
-                          className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded-sm dark:text-foreground dark:hover:bg-muted"
+                          className="p-1 text-primary hover:text-indigo-900 hover:bg-primary-100 rounded-sm dark:text-foreground dark:hover:bg-muted"
                           title="Spielpaarung bearbeiten"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                          </svg>
+                          <PencilSquareIcon className='h-5 w-5 cursor-pointer'> </PencilSquareIcon>
                         </button>
                       </div>
                     </div>

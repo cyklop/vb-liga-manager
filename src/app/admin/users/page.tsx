@@ -192,7 +192,7 @@ export default function UsersPage() {
                       setIsEditing(true)
                       setIsModalOpen(true)
                     }}
-                    className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded-sm dark:text-foreground dark:hover:bg-muted ml-2"
+                    className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-primary-100 rounded-sm dark:text-foreground dark:hover:bg-muted ml-2"
                     title="Benutzer bearbeiten"
                   >
                     <PencilIcon className="h-5 w-5" />

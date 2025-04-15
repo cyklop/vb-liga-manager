@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Navigation from '@/components/Navbar';
+import { ArrowDownIcon } from '@heroicons/react/20/solid';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 interface Team {
   id: number;
@@ -202,111 +204,113 @@ export default function TablePage() {
         <h1 className="text-2xl font-bold mb-6">Tabelle</h1>
         
         <div className="mb-6">
-          <label htmlFor="leagueSelect" className="block text-sm font-medium text-gray-700 mb-1">
-            Liga auswählen:
+          <label htmlFor="leagueSelect" className="select w-lg">
+            <span className="label">Liga auswählen:</span>
+          
+            <select
+              id="leagueSelect"
+              value={activeLeagueId || ''}
+              onChange={handleLeagueChange}
+              className="select"
+            >
+              <option value="" disabled>Liga auswählen</option>
+              {leagues.map(league => (
+                <option key={league.id} value={league.id}>{league.name}</option>
+              ))}
+            </select>
           </label>
-          <select
-            id="leagueSelect"
-            value={activeLeagueId || ''}
-            onChange={handleLeagueChange}
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-          >
-            <option value="" disabled>Liga auswählen</option>
-            {leagues.map(league => (
-              <option key={league.id} value={league.id}>{league.name}</option>
-            ))}
-          </select>
         </div>
 
         <div className="mb-6 flex items-center">
-          <label htmlFor="matchdaySelect" className="block text-sm font-medium text-gray-700 mr-2">
-            Spieltag:
+          <label htmlFor="matchdaySelect" className="select">
+            <span className="label">Spieltag:</span>
+            <select
+              id="matchdaySelect"
+              value={selectedMatchday || ''}
+              onChange={handleMatchdayChange}
+              className="block w-40 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            >
+              <option value="">Alle Spieltage</option>
+              {matchdays.map(matchday => (
+                <option key={matchday} value={matchday}>{`Spieltag ${matchday}`}</option>
+              ))}
+            </select>
           </label>
-          <select
-            id="matchdaySelect"
-            value={selectedMatchday || ''}
-            onChange={handleMatchdayChange}
-            className="block w-40 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-          >
-            <option value="">Alle Spieltage</option>
-            {matchdays.map(matchday => (
-              <option key={matchday} value={matchday}>{`Spieltag ${matchday}`}</option>
-            ))}
-          </select>
+          
         </div>
         
         {isLoading ? (
           <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           </div>
         ) : tableData.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-200 table table-zebra table-pin-rows">
+              <thead className="">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Platz
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Team
                   </th>
-                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
                     Spiele
                   </th>
-                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
                     N
                   </th>
-                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
                     S
                   </th>
-                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
                     Summe {/* Sätze */}
                   </th>
-                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
                     Diff(Sätze)
                   </th>
-                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
                     Bälle
                   </th>
-                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
                     Diff(Bälle)
                   </th>
-                   <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                   <th scope="col" className="px-6 py-3 text-center text-xs font-big uppercase tracking-wider">
                     Punkte
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-200">
                 {tableData.map((entry, index) => (
-                  <tr key={entry.teamId} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <tr key={entry.teamId} >
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium ">
                       {index + 1}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm ">
                       {entry.teamName}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
                       {entry.played}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
                       {entry.lost} {/* N */}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
                       {entry.won} {/* S */}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
                       {entry.setsWon}:{entry.setsLost} {/* Summe (Sätze) */}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
                       {entry.setsDiff > 0 ? '+' : ''}{entry.setsDiff} {/* Diff(Sätze) */}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
                       {entry.pointsWon}:{entry.pointsLost} {/* Bälle */}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
                       {entry.pointsDiff > 0 ? '+' : ''}{entry.pointsDiff} {/* Diff(Bälle) */}
                     </td>
-                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-center">
+                     <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-center">
                       {entry.points} {/* Punkte */}
                     </td>
                   </tr>
@@ -315,7 +319,7 @@ export default function TablePage() {
             </table>
           </div>
         ) : (
-          <div className="bg-white shadow overflow-hidden sm:rounded-md p-6 text-center text-gray-500">
+          <div className="shadow overflow-hidden sm:rounded-md p-6 text-center ">
             {activeLeagueId ? 'Keine Tabellendaten verfügbar.' : 'Bitte wählen Sie eine Liga aus.'}
           </div>
         )}
@@ -324,21 +328,15 @@ export default function TablePage() {
         <div className="mt-8">
           <button 
             onClick={() => setShowSortInfo(!showSortInfo)}
-            className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-left text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-hidden focus-visible:ring-3 focus-visible:ring-indigo-500 focus-visible:ring-opacity-50"
+            className="flex items-center justify-between px-4 py-2 text-sm font-medium text-left rounded-lg focus:outline-hidden focus-visible:ring-3 focus-visible:ring-opacity-50 dark:bg-auto"
           >
             <span>Informationen zur Sortierreihenfolge</span>
-            <svg 
-              className={`w-5 h-5 transform ${showSortInfo ? 'rotate-180' : ''}`} 
-              xmlns="http://www.w3.org/2000/svg" 
-              viewBox="0 0 20 20" 
-              fill="currentColor"
-            >
-              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
+            <ChevronDownIcon className={`w-5 h-5 ml-1 transform ${showSortInfo ? 'rotate-180' : ''}`} ></ChevronDownIcon>
+
           </button>
           
           {showSortInfo && (
-            <div className="mt-2 p-4 text-sm text-gray-600 bg-gray-50 rounded-md border border-gray-200">
+            <div className="mt-2 p-4 text-sm rounded-md border w-sm">
               <p className="font-medium mb-2">Die Tabelle wird nach folgenden Kriterien sortiert:</p>
               <ol className="list-decimal list-inside space-y-1">
                 <li>Punkte</li>

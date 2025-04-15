@@ -748,7 +748,7 @@ export default function LeaguesPage() {
                           });
                           setIsModalOpen(true);
                         }}
-                        className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded-sm"
+                        className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-primary-100 rounded-sm"
                         title="Liga bearbeiten"
                       >
                         <PencilIcon className="h-5 w-5" />
@@ -1367,7 +1367,7 @@ function SortableFixtureItem({ fixture, league, onEditClick, isLeagueActive }: S
       <div className="flex items-center space-x-1 ml-2">
         <button
           onClick={() => onEditClick(fixture)}
-          className={`p-1 ${isLeagueActive ? 'text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100' : 'text-gray-400 cursor-not-allowed'} rounded-sm`}
+          className={`p-1 ${isLeagueActive ? 'text-indigo-600 hover:text-indigo-900 hover:bg-primary-100' : 'text-gray-400 cursor-not-allowed'} rounded-sm`}
           title={isLeagueActive ? "Spielpaarung bearbeiten" : "Liga ist inaktiv"}
           disabled={!isLeagueActive}
         >
