@@ -182,19 +182,16 @@ export default function Login() {
          />
        )}
 
-      {/* Das eigentliche Login-Formular (Card) bleibt im Vordergrund */}
-      {/* Stelle sicher, dass die Card einen höheren z-index hat oder relativ positioniert ist */}
-      {/* Entferne color="white", füge bg-white/75 für Light Mode hinzu, passe Dark Mode an */}
-      <Card shadow={false} className="p-6 relative z-10 rounded-lg glass" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-        <Typography variant="h4" color="blue-gray" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+      <Card shadow={false} className="bg-base-100 p-6 relative z-10 rounded-lg" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+        <Typography variant="h4" color="blue-gray" className='text-base-content' placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
           Anmelden
         </Typography>
-        <Typography color="gray" className="mt-1 font-normal " placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+        <Typography color="gray" className="mt-1 font-normal text-base-content/70" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
           Geben Sie Ihre Anmeldedaten ein, um sich anzumelden.
         </Typography>
         <form onSubmit={handleSubmit} className="mt-8 mb-2">
           <div className="mb-4 flex flex-col gap-6">
-            <label htmlFor="email" className='floating-label'>
+            <label htmlFor="email" className='floating-label text-base-content'>
               <span>E-Mail</span>
               <Input 
                 size="lg"
@@ -208,7 +205,7 @@ export default function Login() {
               />
             </label>
 
-            <label htmlFor="password" className='floating-label'>
+            <label htmlFor="password" className='floating-label text-base-content'>
               <span>Passwort</span>
               <Input
                 type="password"
@@ -228,7 +225,7 @@ export default function Login() {
               <Typography
                 variant="small"
                 color="gray"
-                className="flex items-center font-normal"
+                className="text-base-content font-normal fieldset-label"
                 placeholder={undefined}
                 onPointerEnterCapture={undefined}
                 onPointerLeaveCapture={undefined}
@@ -237,7 +234,7 @@ export default function Login() {
               </Typography>
             }
             containerProps={{ className: "-ml-2.5" }}
-            className="checkbox checkbox-primary"
+            className="checkbox checkbox-primary "
             placeholder={undefined}
             id='cookie'
             iconProps={{
@@ -257,7 +254,7 @@ export default function Login() {
           <Button className="mt-6 bg-primary btn btn-primary" fullWidth type="submit" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             Anmelden
           </Button>
-          <Typography color="gray" className="mt-4 text-center font-normal" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+          <Typography color="gray" className="mt-4 text-center text-base-content font-normal" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             Passwort vergessen?{" "}
             <button
               type="button" // Verhindert das Absenden des Formulars

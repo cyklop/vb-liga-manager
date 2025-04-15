@@ -155,7 +155,7 @@ export default function PublicLeaguePage() {
         <h1 className="text-2xl font-bold mb-6">{league.name}</h1>
 
         {/* DaisyUI Tabs Structure */}
-        <div role="tablist" className="tabs tabs-bordered mb-6"> {/* mb-6 für Abstand nach unten */}
+        <div role="tablist" className="tabs tabs-xl tabs-lift mb-6"> {/* mb-6 für Abstand nach unten */}
 
           {/* Tab 1: Tabelle */}
           <input
@@ -221,7 +221,7 @@ export default function PublicLeaguePage() {
                   <Typography
                     variant="small"
                     // color="gray" // Farbe wird durch DaisyUI Theme gesteuert
-                    className="flex items-center font-normal text-base-content/70" // Angepasste Textfarbe
+                    className="flex items-center font-normal fieldset-label text-base-content" // Angepasste Textfarbe
                     placeholder={undefined}
                     onPointerEnterCapture={undefined}
                     onPointerLeaveCapture={undefined}
@@ -235,7 +235,7 @@ export default function PublicLeaguePage() {
                 onPointerLeaveCapture={undefined}
                 crossOrigin={undefined}
                 placeholder={undefined}
-                className="focus:ring-0 focus:ring-offset-0" // MTW Fokus-Styling entfernen
+                className="checkbox checkbox-primary" // MTW Fokus-Styling entfernen
                 // DaisyUI Checkbox Klassen könnten hier hinzugefügt werden, wenn MTW ersetzt wird
                 // z.B. className="checkbox checkbox-primary"
                 iconProps={{
