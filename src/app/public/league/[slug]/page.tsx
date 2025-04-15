@@ -2,7 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
-import { Tabs, TabsHeader, TabsBody, Tab, TabPanel, Checkbox, Typography } from "@material-tailwind/react" // Checkbox und Typography hinzugefügt
+// Entferne Material Tailwind Tabs Imports
+// import { Tabs, TabsHeader, TabsBody, Tab, TabPanel } from "@material-tailwind/react"
+// Behalte Checkbox und Typography, falls sie noch woanders verwendet werden (Checkbox wird noch verwendet)
+import { Checkbox, Typography } from "@material-tailwind/react"
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { ScoreEntryType } from '@prisma/client'
 
@@ -70,7 +73,8 @@ export default function PublicLeaguePage() {
   const { slug } = useParams()
   const [league, setLeague] = useState<League | null>(null)
   const [tableData, setTableData] = useState<TableEntry[]>([])
-  const [activeTab, setActiveTab] = useState("table")
+  // Entferne activeTab State, wird nicht mehr benötigt
+  // const [activeTab, setActiveTab] = useState("table")
   const [showOnlyOpenFixtures, setShowOnlyOpenFixtures] = useState(false); // State für Checkbox
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -149,136 +153,147 @@ export default function PublicLeaguePage() {
     <ThemeProvider>
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">{league.name}</h1>
-        
-        <Tabs value={activeTab}>
-          <TabsHeader placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-            <Tab value="table" onClick={() => setActiveTab("table")} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-              Tabelle
-            </Tab>
-            <Tab value="fixtures" onClick={() => setActiveTab("fixtures")} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-              Spielplan
-            </Tab>
-          </TabsHeader>
-          <TabsBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-            <TabPanel value="table" className={activeTab === "table" ? "block" : "hidden"}>
-              {/* Tabelle */}
-              <div className="overflow-x-auto">
-                <table className="min-w-full table table-zebra">
-                  <thead>
-                    <tr className="">
-                      <th className="py-2 px-4 border-b text-left">Platz</th>
-                      <th className="py-2 px-4 border-b text-left">Team</th>
-                      <th className="py-2 px-4 border-b text-center">Spiele</th>
-                      <th className="py-2 px-4 border-b text-center">N</th> {/* Niederlagen */}
-                      <th className="py-2 px-4 border-b text-center">S</th> {/* Siege */}
-                      <th className="py-2 px-4 border-b text-center">Summe</th> {/* Sätze */}
-                      <th className="py-2 px-4 border-b text-center">Diff(Sätze)</th> {/* Satzdifferenz */}
-                      <th className="py-2 px-4 border-b text-center">Bälle</th>
-                      <th className="py-2 px-4 border-b text-center">Diff(Bälle)</th> {/* Balldifferenz */}
-                      <th className="py-2 px-4 border-b text-center">Punkte</th>
+
+        {/* DaisyUI Tabs Structure */}
+        <div role="tablist" className="tabs tabs-bordered mb-6"> {/* mb-6 für Abstand nach unten */}
+
+          {/* Tab 1: Tabelle */}
+          <input
+            type="radio"
+            name="league_tabs" // Gleicher Name für die Gruppe
+            role="tab"
+            className="tab"
+            aria-label="Tabelle"
+            defaultChecked // Standardmäßig ausgewählt
+          />
+          <div role="tabpanel" className="tab-content bg-base-100 border-base-300 p-4"> {/* Inhalt für Tab 1 */}
+            {/* Tabelle */}
+            <div className="overflow-x-auto">
+              <table className="min-w-full table table-zebra"> {/* DaisyUI Tabellenklasse */}
+                <thead>
+                  <tr> {/* Entferne explizite Hintergrund-/Border-Klassen, nutze DaisyUI table/thead */}
+                    <th className="text-left">Platz</th>
+                    <th className="text-left">Team</th>
+                    <th className="text-center">Spiele</th>
+                    <th className="text-center">N</th> {/* Niederlagen */}
+                    <th className="text-center">S</th> {/* Siege */}
+                    <th className="text-center">Summe</th> {/* Sätze */}
+                    <th className="text-center">Diff(Sätze)</th> {/* Satzdifferenz */}
+                    <th className="text-center">Bälle</th>
+                    <th className="text-center">Diff(Bälle)</th> {/* Balldifferenz */}
+                    <th className="text-center">Punkte</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tableData.map((entry, index) => (
+                    <tr key={entry.teamId}> {/* Entferne explizite Hintergrund-/Border-Klassen */}
+                      <td>{index + 1}</td>
+                      <td>{entry.teamName}</td>
+                      <td className="text-center">{entry.played}</td>
+                      <td className="text-center">{entry.lost}</td> {/* N */}
+                      <td className="text-center">{entry.won}</td> {/* S */}
+                      <td className="text-center">{entry.setsWon}:{entry.setsLost}</td> {/* Summe (Sätze) */}
+                      <td className="text-center">{entry.setsDiff > 0 ? `+${entry.setsDiff}` : entry.setsDiff}</td> {/* Diff(Sätze) */}
+                      <td className="text-center">{entry.pointsWon}:{entry.pointsLost}</td> {/* Bälle */}
+                      <td className="text-center">{entry.pointsDiff > 0 ? `+${entry.pointsDiff}` : entry.pointsDiff}</td> {/* Diff(Bälle) */}
+                      <td className="text-center font-bold">{entry.points}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {tableData.map((entry, index) => (
-                      <tr key={entry.teamId} className="">
-                        <td className="py-2 px-4">{index + 1}</td>
-                        <td className="py-2 px-4">{entry.teamName}</td>
-                        <td className="py-2 px-4 text-center">{entry.played}</td>
-                        <td className="py-2 px-4 text-center">{entry.lost}</td> {/* N */}
-                        <td className="py-2 px-4 text-center">{entry.won}</td> {/* S */}
-                        <td className="py-2 px-4 text-center">{entry.setsWon}:{entry.setsLost}</td> {/* Summe (Sätze) */}
-                        <td className="py-2 px-4 text-center">{entry.setsDiff > 0 ? `+${entry.setsDiff}` : entry.setsDiff}</td> {/* Diff(Sätze) */}
-                        <td className="py-2 px-4 text-center">{entry.pointsWon}:{entry.pointsLost}</td> {/* Bälle */}
-                        <td className="py-2 px-4 text-center">{entry.pointsDiff > 0 ? `+${entry.pointsDiff}` : entry.pointsDiff}</td> {/* Diff(Bälle) */}
-                        <td className="py-2 px-4 text-center font-bold">{entry.points}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </TabPanel>
-            <TabPanel value="fixtures" className={activeTab === "fixtures" ? "block" : "hidden"}>
-              {/* Checkbox zum Filtern offener Spiele */}
-              <div className="my-4">
-                <Checkbox
-                  label={
-                    <Typography
-                      variant="small"
-                      color="gray"
-                      className="flex items-center font-normal text-base-content/50"
-                      placeholder={undefined}
-                      onPointerEnterCapture={undefined}
-                      onPointerLeaveCapture={undefined}
-                    >
-                      Nur offene Spiele anzeigen
-                    </Typography>
-                  }
-                  checked={showOnlyOpenFixtures}
-                  onChange={(e) => setShowOnlyOpenFixtures(e.target.checked)}
-                  onPointerEnterCapture={undefined}
-                  onPointerLeaveCapture={undefined}
-                  crossOrigin={undefined}
-                  placeholder={undefined}
-                  className="focus:ring-0 focus:ring-offset-0"
-                  iconProps={{
-                    className: ""
-                  }}
-                />
-              </div>
-              {/* Spielplan */}
-              <div className="overflow-x-auto">
-                <table className="min-w-full border border-gray-300 dark:border-gray-700">
-                  <thead>
-                    <tr className="bg-gray-100 dark:bg-gray-700">
-                      <th className="py-2 px-4 border-b text-left">Datum</th>
-                      <th className="py-2 px-4 border-b text-left">Heimteam</th>
-                      <th className="py-2 px-4 border-b text-center">Ergebnis</th>
-                      <th className="py-2 px-4 border-b text-left">Auswärtsteam</th>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Tab 2: Spielplan */}
+          <input
+            type="radio"
+            name="league_tabs" // Gleicher Name für die Gruppe
+            role="tab"
+            className="tab"
+            aria-label="Spielplan"
+          />
+          <div role="tabpanel" className="tab-content bg-base-100 border-base-300 p-4"> {/* Inhalt für Tab 2 */}
+            {/* Checkbox zum Filtern offener Spiele */}
+            <div className="my-4">
+              {/* Behalte die MTW Checkbox vorerst, oder ersetze sie durch DaisyUI Checkbox */}
+              <Checkbox
+                label={
+                  <Typography
+                    variant="small"
+                    // color="gray" // Farbe wird durch DaisyUI Theme gesteuert
+                    className="flex items-center font-normal text-base-content/70" // Angepasste Textfarbe
+                    placeholder={undefined}
+                    onPointerEnterCapture={undefined}
+                    onPointerLeaveCapture={undefined}
+                  >
+                    Nur offene Spiele anzeigen
+                  </Typography>
+                }
+                checked={showOnlyOpenFixtures}
+                onChange={(e) => setShowOnlyOpenFixtures(e.target.checked)}
+                onPointerEnterCapture={undefined}
+                onPointerLeaveCapture={undefined}
+                crossOrigin={undefined}
+                placeholder={undefined}
+                className="focus:ring-0 focus:ring-offset-0" // MTW Fokus-Styling entfernen
+                // DaisyUI Checkbox Klassen könnten hier hinzugefügt werden, wenn MTW ersetzt wird
+                // z.B. className="checkbox checkbox-primary"
+                iconProps={{
+                  className: "" // MTW Icon Styling entfernen
+                }}
+              />
+            </div>
+            {/* Spielplan */}
+            <div className="overflow-x-auto">
+              <table className="min-w-full table table-zebra"> {/* DaisyUI Tabellenklasse */}
+                <thead>
+                  <tr> {/* Entferne explizite Hintergrund-/Border-Klassen */}
+                    <th className="text-left">Datum</th>
+                    <th className="text-left">Heimteam</th>
+                    <th className="text-center">Ergebnis</th>
+                    <th className="text-left">Auswärtsteam</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredFixtures.sort((a, b) => {
+                    if (!a.fixtureDate) return 1;
+                    if (!b.fixtureDate) return -1;
+                    return new Date(a.fixtureDate).getTime() - new Date(b.fixtureDate).getTime();
+                  }).map((fixture) => (
+                    <tr key={fixture.id}> {/* Entferne explizite Hintergrund-/Border-Klassen */}
+                      <td>
+                        {formatDateTime(fixture.fixtureDate, fixture.fixtureTime)}
+                      </td>
+                      <td>{fixture.homeTeam.name}</td>
+                      <td className="text-center font-semibold">
+                        {fixture.homeScore !== null && fixture.awayScore !== null
+                          ? (league.scoreEntryType === ScoreEntryType.SET_SCORES
+                              ? [1, 2, 3, 4, 5]
+                                  .map(setNum => ({
+                                    home: fixture[`homeSet${setNum}` as keyof Fixture],
+                                    away: fixture[`awaySet${setNum}` as keyof Fixture],
+                                  }))
+                                  .filter(set => set.home !== null && set.away !== null)
+                                  .map(set => `${set.home}:${set.away}`)
+                                  .join(', ')
+                              : `${fixture.homeScore}:${fixture.awayScore}`
+                            )
+                          : '-:-'}
+                         {(fixture.homeMatchPoints !== null && fixture.awayMatchPoints !== null) && (
+                           <span className="ml-2 text-xs text-base-content/50 font-normal"> {/* Angepasste Textfarbe */}
+                             (P: {fixture.homeMatchPoints}:{fixture.awayMatchPoints})
+                           </span>
+                         )}
+                      </td>
+                      <td>{fixture.awayTeam.name}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {filteredFixtures.sort((a, b) => { // Verwende filteredFixtures statt league.fixtures
-                      // Nach Datum sortieren, null-Werte am Ende
-                      if (!a.fixtureDate) return 1;
-                      if (!b.fixtureDate) return -1;
-                      return new Date(a.fixtureDate).getTime() - new Date(b.fixtureDate).getTime();
-                    }).map((fixture) => (
-                      <tr key={fixture.id} className="border-b dark:border-gray-700">
-                        <td className="py-2 px-4">
-                          {formatDateTime(fixture.fixtureDate, fixture.fixtureTime)} {/* Use new function */}
-                        </td>
-                        <td className="py-2 px-4">{fixture.homeTeam.name}</td>
-                        <td className="py-2 px-4 text-center font-semibold">
-                          {/* Conditional Score Display */}
-                          {fixture.homeScore !== null && fixture.awayScore !== null
-                            ? (league.scoreEntryType === ScoreEntryType.SET_SCORES
-                                ? [1, 2, 3, 4, 5] // Max 5 sets
-                                    .map(setNum => ({
-                                      home: fixture[`homeSet${setNum}` as keyof Fixture],
-                                      away: fixture[`awaySet${setNum}` as keyof Fixture],
-                                    }))
-                                    .filter(set => set.home !== null && set.away !== null) // Only show played sets
-                                    .map(set => `${set.home}:${set.away}`)
-                                    .join(', ')
-                                : `${fixture.homeScore}:${fixture.awayScore}` // Show match score
-                              )
-                            : '-:-'}
-                           {/* Optional: Display Match Points */}
-                           {(fixture.homeMatchPoints !== null && fixture.awayMatchPoints !== null) && (
-                             <span className="ml-2 text-xs text-gray-500 dark:text-gray-400 font-normal">
-                               (P: {fixture.homeMatchPoints}:{fixture.awayMatchPoints})
-                             </span>
-                           )}
-                        </td>
-                        <td className="py-2 px-4">{fixture.awayTeam.name}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </TabPanel>
-          </TabsBody>
-        </Tabs>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div> {/* Ende des DaisyUI Tabs Containers */}
       </div>
     </ThemeProvider>
   )
