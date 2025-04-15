@@ -163,9 +163,9 @@ export default function PublicLeaguePage() {
             <TabPanel value="table" className={activeTab === "table" ? "block" : "hidden"}>
               {/* Tabelle */}
               <div className="overflow-x-auto">
-                <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700">
+                <table className="min-w-full table table-zebra">
                   <thead>
-                    <tr className="bg-gray-100 dark:bg-gray-700">
+                    <tr className="">
                       <th className="py-2 px-4 border-b text-left">Platz</th>
                       <th className="py-2 px-4 border-b text-left">Team</th>
                       <th className="py-2 px-4 border-b text-center">Spiele</th>
@@ -180,7 +180,7 @@ export default function PublicLeaguePage() {
                   </thead>
                   <tbody>
                     {tableData.map((entry, index) => (
-                      <tr key={entry.teamId} className="border-b dark:border-gray-700">
+                      <tr key={entry.teamId} className="">
                         <td className="py-2 px-4">{index + 1}</td>
                         <td className="py-2 px-4">{entry.teamName}</td>
                         <td className="py-2 px-4 text-center">{entry.played}</td>
@@ -205,7 +205,7 @@ export default function PublicLeaguePage() {
                     <Typography
                       variant="small"
                       color="gray"
-                      className="flex items-center font-normal dark:text-gray-300"
+                      className="flex items-center font-normal text-base-content/50"
                       placeholder={undefined}
                       onPointerEnterCapture={undefined}
                       onPointerLeaveCapture={undefined}
@@ -227,7 +227,7 @@ export default function PublicLeaguePage() {
               </div>
               {/* Spielplan */}
               <div className="overflow-x-auto">
-                <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700">
+                <table className="min-w-full border border-gray-300 dark:border-gray-700">
                   <thead>
                     <tr className="bg-gray-100 dark:bg-gray-700">
                       <th className="py-2 px-4 border-b text-left">Datum</th>

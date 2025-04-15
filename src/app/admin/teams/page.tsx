@@ -225,21 +225,21 @@ export default function TeamsPage() {
               setFormData({}) // Reset form data for adding new team
               setIsModalOpen(true)
             }}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm mb-4 dark:bg-blue-600 dark:hover:bg-blue-800"
+            className="btn btn-primary"
           >
             Neue Mannschaft hinzufügen
           </button>
         )}
-        <ul className="bg-white dark:bg-card shadow overflow-hidden sm:rounded-md">
+        <ul className="shadow overflow-hidden sm:rounded-md mt-2">
           {teams.map((team) => (
             <li key={team.id} className="border-b border-gray-200 dark:border-border last:border-b-0">
               <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
                 <div>
-                  <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">{team.name}</p>
-                  <p className="text-sm text-gray-500 dark:text-foreground">{team.location}</p>
-                  <p className="text-sm text-gray-500 dark:text-foreground">{team.hallAddress}</p>
-                  <p className="text-sm text-gray-500 dark:text-foreground">Trainingszeiten: {team.trainingTimes}</p>
-                  {team.teamLeader && <p className="text-sm text-gray-500 dark:text-foreground">Spielleiter: {team.teamLeader.name}</p>}
+                  <p className="text-sm font-medium truncate">{team.name}</p>
+                  <p className="text-sm text-base-content/50">{team.location}</p>
+                  <p className="text-sm text-base-content/50">{team.hallAddress}</p>
+                  {team.trainingTimes && <p className="text-sm text-base-content/50">Trainingszeiten: {team.trainingTimes}</p>}
+                  {team.teamLeader && <p className="text-sm text-base-content/50">Spielleiter: {team.teamLeader.name}</p>}
                 </div>
                 <div>
                   <button
@@ -257,7 +257,7 @@ export default function TeamsPage() {
                       setIsModalOpen(false) // Close modal first if already open from another edit
                       setTimeout(() => setIsModalOpen(true), 0) // Then open with new data
                     }}
-                    className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-primary-100 rounded-sm dark:text-foreground dark:hover:bg-muted mr-2"
+                    className="p-1 btn btn-sm btn-soft btn-secondary mr-2"
                     title="Mannschaft bearbeiten"
                   >
                     <PencilIcon className="h-5 w-5" />
@@ -266,7 +266,7 @@ export default function TeamsPage() {
                     <button
                       // onClick anpassen, um den Dialog zu öffnen
                       onClick={() => requestDeleteTeam(team)}
-                      className="p-1 text-red-600 hover:text-red-900 hover:bg-red-100 rounded-sm dark:text-red-400 dark:hover:bg-red-900/20"
+                      className="p-1 btn btn-sm btn-soft btn-error"
                       title="Mannschaft löschen"
                     >
                       <TrashIcon className="h-5 w-5" />
@@ -281,49 +281,69 @@ export default function TeamsPage() {
       <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setFormData({}); setEditingTeam(null); }} title={editingTeam ? "Mannschaft bearbeiten" : "Neue Mannschaft hinzufügen"}>
         <form onSubmit={editingTeam ? handleEditTeam : handleAddTeam}>
           {/* Bind inputs to formData state */}
-          <input
-            type="text"
-            value={formData.name || ''}
-            onChange={(e) => setFormData({...formData, name: e.target.value})}
-            placeholder="Mannschaftsname"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300 mb-2"
-            required // Add required attribute if name is mandatory
-          />
-          <input
-            type="text"
-            value={formData.location || ''}
-            onChange={(e) => setFormData({...formData, location: e.target.value})}
-            placeholder="Ort"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300 mb-2"
-          />
-          <input
-            type="text"
-            value={formData.hallAddress || ''}
-            onChange={(e) => setFormData({...formData, hallAddress: e.target.value})}
-            placeholder="Adresse der Halle"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300 mb-2"
-          />
-          <input
-            type="text"
-            value={formData.trainingTimes || ''}
-            onChange={(e) => setFormData({...formData, trainingTimes: e.target.value})}
-            placeholder="Trainingszeiten"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300 mb-2"
-          />
-          {/* Bind select to formData.teamLeaderId */}
-          <select
-            value={formData.teamLeaderId || ''}
-            onChange={(e) => setFormData({...formData, teamLeaderId: e.target.value})}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300 mb-2"
-          >
-            <option value="">Spielleiter auswählen (optional)</option>
-            {users.map((user) => (
-              <option key={user.id} value={user.id}>{user.name}</option>
-            ))}
-          </select>
+          <label htmlFor="team" className='floating-label'>
+            <span>Mannschaftsname</span>
+            <input
+              type="text"
+              value={formData.name || ''}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              placeholder="Mannschaftsname"
+              className="w-full px-3 py-2 placeholder-gray-300 input mb-2"
+              required // Add required attribute if name is mandatory
+            />
+          </label> 
+          
+          <label htmlFor="team" className='floating-label'>
+            <span>Ort</span>
+            <input
+              type="text"
+              value={formData.location || ''}
+              onChange={(e) => setFormData({...formData, location: e.target.value})}
+              placeholder="Ort"
+              className="w-full px-3 py-2 input mb-2"
+            />
+          </label> 
+          
+          <label htmlFor="adress" className='floating-label'>
+            <span>Adresse der Halle</span>
+            <input
+              type="text"
+              value={formData.hallAddress || ''}
+              onChange={(e) => setFormData({...formData, hallAddress: e.target.value})}
+              placeholder="Adresse der Halle"
+              className="w-full px-3 py-2 input mb-2"
+            />
+          </label> 
+          
+          <label htmlFor="time" className='floating-label'>
+            <span>Trainingszeiten</span>
+            <input
+              type="text"
+              value={formData.trainingTimes || ''}
+              onChange={(e) => setFormData({...formData, trainingTimes: e.target.value})}
+              placeholder="Trainingszeiten"
+              className="w-full px-3 py-2 input mb-2"
+            />
+          </label>          
+          
+          <label htmlFor="teamleader" className='select w-full'>
+            <span className='label'>Spielleiter</span>
+            <select
+              value={formData.teamLeaderId || ''}
+              onChange={(e) => setFormData({...formData, teamLeaderId: e.target.value})}
+              className="select"
+              id='teamleader'
+            >
+              <option value="">Spielleiter auswählen (optional)</option>
+              {users.map((user) => (
+                <option key={user.id} value={user.id}>{user.name}</option>
+              ))}
+            </select>
+          </label> 
+          
           <button
             type="submit"
-            className="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm dark:bg-blue-600 dark:hover:bg-blue-800"
+            className="mt-4 w-full btn btn-primary"
           >
             {editingTeam ? "Aktualisieren" : "Hinzufügen"}
           </button>

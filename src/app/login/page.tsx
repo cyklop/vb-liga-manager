@@ -113,7 +113,7 @@ export default function Login() {
       },
       color: {
         // Farben an das Theme anpassen (Beispiel: Indigo/Blau und Weiß/Grau)
-        value: ["#8b86d9", "#a5b4fc", "#ffffff", "#e5e7eb"]
+        value: ["#35b5ff", "#4abfff", "#ffffff", "#0063a6"]
       },
       shape: {
         type: "circle", // Einfachere Form, oft performanter
@@ -146,11 +146,7 @@ export default function Login() {
       }
     },
     interactivity: { // Interaktivität hinzufügen (optional)
-      events: {
-        onHover: {
-          enable: true,
-          mode: "repulse", // Partikel wegstoßen bei Hover
-        },
+      events: {        
         onClick: {
           enable: true,
           mode: "push", // Partikel hinzufügen bei Klick
@@ -168,7 +164,7 @@ export default function Login() {
     },
     detectRetina: true, // 'retina_detect' heißt jetzt 'detectRetina'
     background: { // Hintergrund der Partikel-Canvas (transparent)
-        color: '#3948ab',
+        color: '#0082ce',
     }
   };
 
@@ -189,36 +185,43 @@ export default function Login() {
       {/* Das eigentliche Login-Formular (Card) bleibt im Vordergrund */}
       {/* Stelle sicher, dass die Card einen höheren z-index hat oder relativ positioniert ist */}
       {/* Entferne color="white", füge bg-white/75 für Light Mode hinzu, passe Dark Mode an */}
-      <Card shadow={false} className="bg-white backdrop-blur-lg p-6 relative z-10 rounded-lg " placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+      <Card shadow={false} className="p-6 relative z-10 rounded-lg glass" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
         <Typography variant="h4" color="blue-gray" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
           Anmelden
         </Typography>
         <Typography color="gray" className="mt-1 font-normal " placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
           Geben Sie Ihre Anmeldedaten ein, um sich anzumelden.
         </Typography>
-        <form onSubmit={handleSubmit} className="mt-8 mb-2 w-80 max-w-(--breakpoint-lg) sm:w-96">
+        <form onSubmit={handleSubmit} className="mt-8 mb-2">
           <div className="mb-4 flex flex-col gap-6">
-            <Input 
-              size="lg"
-              label="E-Mail"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={undefined}
-              crossOrigin={undefined}
-              onPointerEnterCapture={undefined}
-              onPointerLeaveCapture={undefined}
-            />
-            <Input
-              type="password"
-              size="lg"
-              label="Passwort"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder={undefined}
-              crossOrigin={undefined}
-              onPointerEnterCapture={undefined}
-              onPointerLeaveCapture={undefined}
-            />
+            <label htmlFor="email" className='floating-label'>
+              <span>E-Mail</span>
+              <Input 
+                size="lg"
+                value={email}
+                className='input'
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={undefined}
+                crossOrigin={undefined}
+                onPointerEnterCapture={undefined}
+                onPointerLeaveCapture={undefined}
+              />
+            </label>
+
+            <label htmlFor="password" className='floating-label'>
+              <span>Passwort</span>
+              <Input
+                type="password"
+                size="lg"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={undefined}
+                crossOrigin={undefined}
+                onPointerEnterCapture={undefined}
+                onPointerLeaveCapture={undefined}
+              />
+            </label>           
+            
           </div>
           <Checkbox
             label={
@@ -234,8 +237,9 @@ export default function Login() {
               </Typography>
             }
             containerProps={{ className: "-ml-2.5" }}
-            className="focus:ring-0 focus:ring-offset-0"
+            className="checkbox checkbox-primary"
             placeholder={undefined}
+            id='cookie'
             iconProps={{
               className: ""
             }}
@@ -250,7 +254,7 @@ export default function Login() {
               {error}
             </Typography>
           )}
-          <Button className="mt-6 bg-primary text-white" fullWidth type="submit" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+          <Button className="mt-6 bg-primary btn btn-primary" fullWidth type="submit" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             Anmelden
           </Button>
           <Typography color="gray" className="mt-4 text-center font-normal" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
@@ -258,7 +262,7 @@ export default function Login() {
             <button
               type="button" // Verhindert das Absenden des Formulars
               onClick={() => setIsResetModalOpen(true)}
-              className="font-medium text-blue-500 transition-colors hover:text-blue-700"
+              className="font-medium link link-primary"
             >
               Zurücksetzen
             </button>
@@ -293,39 +297,37 @@ export default function Login() {
                 {resetMessage}
               </Typography>
             )}
-            <Input
+            
+            <label htmlFor="password" className='floating-label'>
+              <span>E-Mail-Adresse</span>
+              <Input
               type="email"
               size="lg"
-              label="E-Mail-Adresse"
               value={resetEmail}
               onChange={(e) => setResetEmail(e.target.value)}
-              className="mb-4"
+              className="mb-4 mt-2 input"
               placeholder={undefined}
               crossOrigin={undefined}
               onPointerEnterCapture={undefined}
               onPointerLeaveCapture={undefined}
             />
+            </label>   
+            
             {resetError && ( // Fehlermeldung im Modal anzeigen
               <Typography color="red" className="mb-4 text-center text-sm" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                 {resetError}
               </Typography>
             )}
             <div className="flex justify-end gap-2">
-               <Button variant="text" color="red" onClick={() => { setIsResetModalOpen(false); setResetError(''); setResetMessage(''); setResetEmail(''); }} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+               <Button variant="text" className='btn' onClick={() => { setIsResetModalOpen(false); setResetError(''); setResetMessage(''); setResetEmail(''); }} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                  Abbrechen
                </Button>
-               <Button type="submit" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+               <Button type="submit" className='btn btn-primary' placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                  Link senden
                </Button>
             </div>
           </form>
-        </Modal>
-        {/* Erfolgsmeldung wird jetzt im Modal angezeigt, kann hier entfernt werden, wenn nicht gewünscht */}
-        {/* {resetMessage && (
-          <Typography color="green" className="mt-2 text-center text-sm" placeholder={undefined}>
-            {resetMessage}
-          </Typography>
-        )} */}
+        </Modal>        
       </Card>
     </div>
   )

@@ -107,24 +107,26 @@ export default function AccountPage() {
   return (
     <>
       <Navigation />
-      <header className="bg-white dark:bg-card shadow">
+      <header className="shadow">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-foreground">Mein Konto</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Mein Konto</h1>
         </div>
       </header>
       <main>
         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
           <div className="px-4 py-6 sm:px-0">
-            <div className="rounded-lg p-4 bg-white dark:bg-card shadow">
+            <div className="rounded-lg p-4 shadow">
               {user && <UserProfileForm user={user} onUpdate={handleProfileUpdate} />}
               
               <div className="mt-8 border-t dark:border-border pt-6">
-                <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-foreground">Darstellung</h2>
+                <h2 className="text-2xl font-bold mb-4">Darstellung</h2>
                 <div className="mb-4">
-                  <label htmlFor="theme" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-200">
-                    Theme-Einstellung
-                  </label>
-                  {mounted && (
+                  <p className="mt-2 mb-4 text-sm">
+                    Wählen Sie Ihr bevorzugtes Erscheinungsbild für die Anwendung.
+                  </p>
+                  <label htmlFor="theme" className="select w-lg">
+                    <span className='label'>Theme-Einstellung</span>
+                    {mounted && (
                     <select
                       id="theme"
                       value={theme} // Wert aus dem Kontext binden
@@ -133,16 +135,16 @@ export default function AccountPage() {
                         setTheme(newTheme); // Kontext aktualisieren
                         handleProfileUpdate({ theme: newTheme }); // Änderung im Backend speichern
                       }}
-                      className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-500 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md bg-white dark:bg-card text-gray-900 dark:text-foreground"
+                      className=""
                     >
                     <option value="light">Hell</option>
                     <option value="dark">Dunkel</option>
                     <option value="system">System (Browser-Einstellung)</option>
                     </select>
                   )}
-                  <p className="mt-2 mb-4 text-sm text-gray-500 dark:text-gray-200">
-                    Wählen Sie Ihr bevorzugtes Erscheinungsbild für die Anwendung.
-                  </p>
+                  </label>
+                 
+                  
                 </div>
               </div>
             </div>

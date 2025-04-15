@@ -5,6 +5,7 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
+import { Label } from '@headlessui/react';
 
 interface User {
   id: number;
@@ -53,44 +54,59 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ user, onUpdate }) => 
       <Typography variant="h4" color="blue-gray" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
         Profil aktualisieren
       </Typography>
-      <Typography color="gray" className="mt-1 mb-4 font-normal dark:text-gray-200" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+      <Typography color="gray" className="mt-1 mb-4 font-normal" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
         Geben Sie Ihre Details ein, um Ihr Profil zu aktualisieren.
       </Typography>
-      <form onSubmit={handleSubmit} className="mt-8 mb-2 w-80 max-w-(--breakpoint-lg) sm:w-96">
+      <form onSubmit={handleSubmit} className="mt-8 mb-2 w-80 max-w-(--breakpoint-lg) sm:w-lg">
         <div className="mb-4 flex flex-col gap-6">
-          <Input size="lg" label="Name" value={name} onChange={(e) => setName(e.target.value)} placeholder={undefined} className="transform-none!"  crossOrigin={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
-          <Input size="lg" label="Email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={undefined} className="transform-none!"  crossOrigin={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
-          <Input
+          <label htmlFor="Name" className='floating-label'>
+            <span>Name</span>
+            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={undefined} className='input' crossOrigin={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
+          </label>
+          
+          <label htmlFor="Email" className='floating-label'>
+            <span>E-Mail</span>
+            <Input size="lg" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={undefined} className="input"  crossOrigin={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
+          </label>
+          
+          <label htmlFor="password" className='floating-label'>
+            <span>Neues Passwort (optional)</span>
+            <Input
             type="password"
             size="lg"
-            label="Neues Passwort (optional)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder={undefined}
-            className="transform-none!"
+            className="input"
             crossOrigin={undefined}
             onPointerEnterCapture={undefined}
             onPointerLeaveCapture={undefined}
           />
-          <Input
+          </label>
+
+          <label htmlFor="password" className='floating-label'>
+            <span>Passwort bestätigen</span>
+            <Input
             type="password"
             size="lg"
-            label="Passwort bestätigen"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder={undefined}
-            className="transform-none!"
+            className="input"
             crossOrigin={undefined}
             onPointerEnterCapture={undefined}
             onPointerLeaveCapture={undefined}
           />
+          </label>
+          
+          
         </div>
         {error && (
           <Typography color="red" className="mt-2 font-normal" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             {error}
           </Typography>
         )}
-        <Button className="mt-6" fullWidth type="submit" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+        <Button className="mt-6 btn btn-primary" fullWidth type="submit" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
           Profil aktualisieren
         </Button>
       </form>

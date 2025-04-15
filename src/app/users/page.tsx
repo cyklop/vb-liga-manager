@@ -180,7 +180,7 @@ export default function UsersPage() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm"
+            className="w-full btn btn-primary"
           >
             Hinzufügen
           </button>

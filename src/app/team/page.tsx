@@ -592,9 +592,9 @@ export default function TeamPage() {
               <h2 className="text-xl font-semibold mb-4">{selectedTeam.name}</h2>
             
             {/* Mannschaftsdetails */}
-            <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
+            <div className="shadow overflow-hidden sm:rounded-lg mb-8">
               <div className="px-4 py-5 sm:px-6 flex justify-between items-center bg-base-200">
-                <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Mannschaftsdetails</h3>
+                <h3 className="text-lg leading-6 font-medium light:text-gray-900">Mannschaftsdetails</h3>
                 {/* Use selectedTeam here */}
                 {!editingTeam && selectedTeam && (
                   <button
@@ -657,7 +657,7 @@ export default function TeamPage() {
                       <button
                         type="button"
                         onClick={handleCancelTeamEdit}
-                        className="px-4 py-2 btn border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                        className="px-4 py-2 btn border border-gray-300 rounded-md text-sm font-medium"
                       >
                         Abbrechen
                       </button>
@@ -673,21 +673,21 @@ export default function TeamPage() {
               ) : (
                 <div className="border-t border-gray-200">
                   <dl>
-                    <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">Name</dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{selectedTeam.name}</dd>
+                    <div className="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                      <dt className="text-sm font-medium">Name</dt>
+                      <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2">{selectedTeam.name}</dd>
                     </div>
-                    <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">Ort</dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{selectedTeam.location}</dd>
+                    <div className="bg-base-200 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                      <dt className="text-sm font-medium">Ort</dt>
+                      <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2">{selectedTeam.location}</dd>
                     </div>
-                    <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">Hallenadresse</dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{selectedTeam.hallAddress}</dd>
+                    <div className="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                      <dt className="text-sm font-medium">Hallenadresse</dt>
+                      <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2">{selectedTeam.hallAddress}</dd>
                     </div>
-                    <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">Trainingszeiten</dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{selectedTeam.trainingTimes}</dd>
+                    <div className="bg-base-200 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                      <dt className="text-sm font-medium">Trainingszeiten</dt>
+                      <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2">{selectedTeam.trainingTimes}</dd>
                     </div>
                   </dl>
                 </div>
@@ -701,7 +701,7 @@ export default function TeamPage() {
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2"></div>
               </div>
             ) : homeFixtures[selectedTeam.id] && homeFixtures[selectedTeam.id].length > 0 ? (
-              <div className="bg-white shadow overflow-hidden sm:rounded-md mb-8">
+              <div className="shadow overflow-hidden sm:rounded-md mb-8">
                 <ul className="divide-y divide-gray-200">
                   {homeFixtures[selectedTeam.id].map((fixture) => (
                 <li key={fixture.id} className="px-4 py-4 sm:px-6">
@@ -723,34 +723,34 @@ export default function TeamPage() {
                       {/* Date and Time Inputs */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Datum
-                          </label>
-                          <input
+                          <label className="input">
+                            <span>Datum</span>                            
+                            <input
                             type="date"
                             name="fixtureDate"
                             value={formData.fixtureDate}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500"
+                            className=""
                           />
+                          </label>                          
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Uhrzeit
-                          </label>
+                        <label className="input">
+                          <span>Uhrzeit</span>
                           <input
                             type="time"
                             name="fixtureTime"
                             value={formData.fixtureTime}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500"
+                            className="w-full"
                           />
+                          </label>                          
                         </div>
                       </div>
 
                       {/* Conditional Score Inputs */}
                       <fieldset className="border border-gray-200 p-3 rounded-md">
-                        <legend className="text-sm font-medium text-gray-600 px-1">Ergebnis</legend>
+                        <legend className="text-sm font-medium px-1">Ergebnis</legend>
                         <div className="mt-2 space-y-3">
                           {/* Case 1: MATCH_SCORE */}
                           {editingFixture.league?.scoreEntryType === ScoreEntryType.MATCH_SCORE && formData.scoreData && (
@@ -758,37 +758,43 @@ export default function TeamPage() {
                               {/* Set Scores */}
                               <div className="flex space-x-4">
                                 <div className="flex-1">
-                                  <label htmlFor="homeScore" className="block text-xs font-medium text-gray-600">Sätze Heim</label>
-                                <input
-                                  type="number"
-                                  id="homeScore"
-                                  name="homeScore" // Use 'homeScore'
-                                  min="0" max={editingFixture.league.setsToWin}
-                                  value={formData.scoreData.homeScore ?? ''}
-                                  onChange={(e) => handleInputChange(e)}
-                                  placeholder={`0-${editingFixture.league.setsToWin}`}
-                                  className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 rounded-md"
-                                />
+                                  <label htmlFor="homeScore" className="input">
+                                  <span>Sätze Heim</span>                                    
+                                  <input
+                                    type="number"
+                                    id="homeScore"
+                                    name="homeScore" // Use 'homeScore'
+                                    min="0" max={editingFixture.league.setsToWin}
+                                    value={formData.scoreData.homeScore ?? ''}
+                                    onChange={(e) => handleInputChange(e)}
+                                    placeholder={`0-${editingFixture.league.setsToWin}`}
+                                    className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 rounded-md"
+                                  />
+                                  </label>
                               </div>
                               <div className="flex-1">
-                                <label htmlFor="awayScore" className="block text-xs font-medium text-gray-600">Sätze Gast</label>
-                                <input
-                                  type="number"
-                                  id="awayScore"
-                                  name="awayScore" // Use 'awayScore'
-                                  min="0" max={editingFixture.league.setsToWin}
-                                  value={formData.scoreData.awayScore ?? ''}
-                                  onChange={(e) => handleInputChange(e)}
-                                  placeholder={`0-${editingFixture.league.setsToWin}`}
-                                  className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 rounded-md"
-                                />
+                                <label htmlFor="awayScore" className="input">
+                                  <span>Sätze Gast</span>   
+                                  <input
+                                    type="number"
+                                    id="awayScore"
+                                    name="awayScore" // Use 'awayScore'
+                                    min="0" max={editingFixture.league.setsToWin}
+                                    value={formData.scoreData.awayScore ?? ''}
+                                    onChange={(e) => handleInputChange(e)}
+                                    placeholder={`0-${editingFixture.league.setsToWin}`}
+                                    className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 rounded-md"
+                                  />                                  
+                                  </label>
+                                
                                 </div>
                               </div>
                               {/* Total Points (Balls) */}
                               <div className="flex space-x-4">
                                 <div className="flex-1">
-                                  <label htmlFor="homePoints" className="block text-xs font-medium text-gray-600">Bälle Heim</label>
-                                  <input
+                                  <label htmlFor="homePoints" className="input">
+                                    <span>SBälle Heim</span>   
+                                    <input
                                     type="number"
                                     id="homePoints"
                                     name="homePoints"
@@ -798,9 +804,12 @@ export default function TeamPage() {
                                     placeholder="Gesamtbälle"
                                     className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 rounded-md"
                                   />
+                                  </label>
+                                  
                                 </div>
                                 <div className="flex-1">
-                                  <label htmlFor="awayPoints" className="block text-xs font-medium text-gray-600">Bälle Gast</label>
+                                  <label htmlFor="awayPoints" className="input">
+                                  <span>SBälle Gast</span>
                                   <input
                                     type="number"
                                     id="awayPoints"
@@ -811,6 +820,7 @@ export default function TeamPage() {
                                     placeholder="Gesamtbälle"
                                     className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 rounded-md"
                                   />
+                                  </label>                                  
                                 </div>
                               </div>
                             </div>
@@ -820,26 +830,30 @@ export default function TeamPage() {
                             <div className="space-y-2">
                               {formData.scoreData.setScores.map((set: any, index: number) => (
                                 <div key={index} className="flex items-center space-x-2">
-                                  <label className="w-12 text-sm font-medium text-gray-600 text-right">Satz {index + 1}:</label>
-                                  <input
+                                  <label className="text-right input">
+                                    <span >Satz {index + 1}:</span>
+                                    <input
                                     type="number"
                                     name="home" // Use 'home'
                                     min="0"
                                     value={set.home ?? ''}
                                     onChange={(e) => handleInputChange(e, index)}
                                     placeholder="Heim"
-                                    className="flex-1 block w-full px-2 py-1 text-base border-gray-300 rounded-md"
-                                  />
-                                  <span className="text-gray-500">:</span>
-                                  <input
-                                    type="number"
-                                    name="away" // Use 'away'
-                                    min="0"
-                                    value={set.away ?? ''}
-                                    onChange={(e) => handleInputChange(e, index)}
-                                    placeholder="Gast"
-                                    className="flex-1 block w-full px-2 py-1 text-base border-gray-300 rounded-md"
-                                  />
+                                    className="flex-1 block w-full px-2 py-1 text-base text-right border-gray-300 rounded-md"
+                                    />
+                                  </label>
+                                  <span>:</span>
+                                  <label className="text-right input">
+                                    
+                                    <input
+                                      type="number"
+                                      name="away" // Use 'away'
+                                      min="0"
+                                      value={set.away ?? ''}
+                                      onChange={(e) => handleInputChange(e, index)}
+                                      placeholder="Gast"
+                                      className="flex-1 block w-full px-2 py-1 text-base border-gray-300 rounded-md"
+                                    /></label>
                                 </div>
                               ))}
                             </div>
@@ -852,13 +866,13 @@ export default function TeamPage() {
                         <button
                           type="button"
                           onClick={handleCancelEdit}
-                          className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                          className="px-4 py-2 btn"
                         >
                           Abbrechen
                         </button>
                         <button
                           type="submit"
-                          className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
+                          className="px-4 py-2 btn btn-primary"
                         >
                           Speichern
                         </button>

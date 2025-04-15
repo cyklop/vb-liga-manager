@@ -694,22 +694,22 @@ export default function LeaguesPage() {
               });
               setIsModalOpen(true);
             }}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm mb-4"
+            className="btn btn-primary py-2 px-4  mb-4"
           >
             Neue Liga hinzufügen
           </button>
         )}
 
         {/* Leagues List */}
-        <ul className="bg-white dark:bg-card shadow overflow-hidden sm:rounded-md">
+        <ul className="shadow overflow-hidden sm:rounded-md mt-2">
           {leagues.map((league) => (
             <li key={league.id} className="border-b border-gray-200 dark:border-border last:border-b-0">
               {/* League Header */}
               <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
                 <div>
                   <div className="flex items-center">
-                    <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">{league.name}</p>
-                    <span className={`ml-2 px-2 py-0.5 text-xs font-medium rounded-full ${league.isActive ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'}`}>
+                    <p className="text-md font-medium truncate">{league.name}</p>
+                    <span className={`ml-2 badge-xs badge ${league.isActive ? 'badge-success' : 'badge-warning'}`}>
                       {league.isActive ? 'Aktiv' : 'Abgeschlossen'}
                     </span>
                   </div>
@@ -720,7 +720,7 @@ export default function LeaguesPage() {
                     Erstellt am: {new Date(league.createdAt).toLocaleDateString('de-DE')}
                   </p>
                   <p className="text-xs text-gray-400 dark:text-gray-500">
-                    Öffentlicher Link: <a href={`/public/league/${league.slug}`} target="_blank" className="text-blue-500 hover:underline">/public/league/{league.slug}</a>
+                    Öffentlicher Link: <a href={`/public/league/${league.slug}`} target="_blank" className="link link-primary">/public/league/{league.slug}</a>
                   </p>
                 </div>
                 {/* Action Buttons */}
@@ -748,7 +748,7 @@ export default function LeaguesPage() {
                           });
                           setIsModalOpen(true);
                         }}
-                        className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-primary-100 rounded-sm"
+                        className="p-1 btn btn-sm btn-soft btn-secondary"
                         title="Liga bearbeiten"
                       >
                         <PencilIcon className="h-5 w-5" />
@@ -756,7 +756,7 @@ export default function LeaguesPage() {
                       <button
                         // onClick anpassen, um den Dialog zu öffnen
                         onClick={() => handleDeleteLeague(league)}
-                        className="p-1 text-red-600 hover:text-red-900 hover:bg-red-100 rounded-sm"
+                        className="p-1 btn btn-sm btn-soft btn-error"
                         title="Liga löschen"
                       >
                         <TrashIcon className="h-5 w-5" />
@@ -782,14 +782,14 @@ export default function LeaguesPage() {
                           });
                           setIsModalOpen(true);
                         }}
-                        className={`p-1 ${league.isActive ? 'text-amber-600 hover:text-amber-900' : 'text-green-600 hover:text-green-900'} hover:bg-gray-100 rounded-sm`}
+                        className={`p-1 btn btn-sm btn-soft  ${league.isActive ? 'btn-warning' : 'btn-success'} `}
                         title={league.isActive ? "Liga abschließen" : "Liga wieder aktivieren"}
                       >
                         {league.isActive ? <LockClosedIcon className="h-5 w-5" /> : <LockOpenIcon className="h-5 w-5" />}
                       </button>
                       <button
                         onClick={() => handleGenerateFixtures(league.id)}
-                        className={`p-1 ${league.isActive ? 'text-green-600 hover:text-green-900 hover:bg-green-100' : 'text-gray-400 cursor-not-allowed'} rounded-sm`}
+                        className={`p-1 btn btn-sm btn-soft ${league.isActive ? 'btn-success' : 'btn-disabled'} `}
                         title={league.isActive ? "Spielplan generieren" : "Liga ist abgeschlossen"}
                         disabled={!league.isActive}
                       >
@@ -799,7 +799,7 @@ export default function LeaguesPage() {
                   )}
                   <button
                     onClick={() => handleShowFixtures(league.id)}
-                    className="p-1 text-blue-600 hover:text-blue-900 hover:bg-blue-100 rounded-sm"
+                    className="p-1 btn btn-sm btn-soft btn-accent"
                     title={selectedLeagueId === league.id ? "Spielplan verbergen" : "Spielplan anzeigen"}
                   >
                     <ArrowsUpDownIcon className="h-5 w-5" />
@@ -809,9 +809,9 @@ export default function LeaguesPage() {
 
               {/* Fixtures Section (Conditional) */}
               {selectedLeagueId === league.id && (
-                <div className="px-4 py-4 sm:px-6 border-t border-gray-200 dark:border-border bg-gray-50 dark:bg-muted">
+                <div className="px-4 py-4 sm:px-6 border-t border-gray-200 dark:border-border bg-base-content/10">
                   <div className="flex justify-between items-center mb-3">
-                    <h3 className="text-lg font-semibold text-gray-800">Spielplan</h3>
+                    <h3 className="text-lg font-semibold text-base-content/70">Spielplan</h3>
                     {/* Save Order Button - nur für Admins */}
                     {isAdmin && isOrderChanged && (
                        <button
@@ -1075,20 +1075,20 @@ export default function LeaguesPage() {
       </Modal>
 
       {/* Edit Fixture Modal */}
-      <Modal isOpen={isFixtureModalOpen} onClose={() => { setIsFixtureModalOpen(false); setEditingFixture(null); setScoreInputData(null); setEditingLeagueContext(null); }} title="Spielpaarung bearbeiten/Ergebnis eintragen">
+      <Modal isOpen={isFixtureModalOpen} onClose={() => { setIsFixtureModalOpen(false); setEditingFixture(null); setScoreInputData(null); setEditingLeagueContext(null); }} title="Spielpaarung bearbeiten">
         {editingFixture && editingLeagueContext && scoreInputData && (
           <form onSubmit={handleUpdateFixture} className="space-y-4">
             {/* Team Selection (Enabled) with Swap Button */}
             <div className="grid grid-cols-[1fr_auto_1fr] gap-x-2 items-center"> {/* Adjusted grid for swap button */}
               <div>
-                <label htmlFor="homeTeamId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Heimteam</label>
+                <label htmlFor="homeTeamId" className="block text-sm font-medium text-base-content/50">Heimteam</label>
                 <select
                   id="homeTeamId"
                   name="homeTeamId"
                   value={editingFixture.homeTeamId || ''}
                   onChange={handleFixtureInputChange}
                   required
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base select sm:text-sm rounded-md"
                 >
                   <option value="" disabled>Wählen...</option>
                   {/* Filter teams to only those in the current league */}
@@ -1098,25 +1098,25 @@ export default function LeaguesPage() {
                 </select>
               </div>
               {/* Swap Teams Button */}
-              <div className="flex items-end justify-center pb-1"> {/* Align button vertically */}
+              <div className="flex items-end mt-4 justify-baseline pb-1"> {/* Align button vertically */}
                 <button
                   type="button"
                   onClick={handleSwapTeams}
-                  className="p-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-muted rounded-sm"
+                  className="p-1 btn btn-sm btn-soft btn-secondary"
                   title="Teams tauschen"
                 >
                   <ArrowsRightLeftIcon className="h-5 w-5" />
                 </button>
               </div>
               <div>
-                <label htmlFor="awayTeamId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Auswärtsteam</label>
+                <label htmlFor="awayTeamId" className="block text-sm font-medium text-base-content/50">Auswärtsteam</label>
                 <select
                   id="awayTeamId"
                   name="awayTeamId"
                   value={editingFixture.awayTeamId || ''}
                   onChange={handleFixtureInputChange}
                   required
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base select sm:text-sm rounded-md"
                 >
                   <option value="" disabled>Wählen...</option>
                   {/* Filter teams to only those in the current league */}
@@ -1129,28 +1129,33 @@ export default function LeaguesPage() {
 
             {/* Fixture Date */}
             <div>
-              <label htmlFor="fixtureDate" className="block text-sm font-medium text-gray-700">Datum</label>
-              <input
-                type="date"
-                id="fixtureDate"
-                name="fixtureDate"
-                value={editingFixture.fixtureDate || ''}
-                onChange={handleFixtureInputChange}
-                className="mt-1 block w-full pl-3 pr-3 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-              />
+              <label htmlFor="fixtureDate" className="w-full text-sm font-medium input">
+                <span className='label'>Datum</span>
+                <input
+                  type="date"
+                  id="fixtureDate"
+                  name="fixtureDate"
+                  value={editingFixture.fixtureDate || ''}
+                  onChange={handleFixtureInputChange}
+                  className="date"
+                />
+              </label>
             </div>
  
             {/* Fixture Time */}
             <div>
-              <label htmlFor="fixtureTime" className="block text-sm font-medium text-gray-700">Uhrzeit</label>
-              <input
-                type="time"
-                id="fixtureTime"
-                name="fixtureTime"
-                value={editingFixture.fixtureTime || ''}
-                onChange={handleFixtureInputChange}
-                className="mt-1 block w-full pl-3 pr-3 py-2 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-              />
+            <label htmlFor="fixtureTime" className="w-full text-sm font-medium input">
+                <span className='label'>Uhrzeit</span>
+                <input
+                  type="time"
+                  id="fixtureTime"
+                  name="fixtureTime"
+                  value={editingFixture.fixtureTime || ''}
+                  onChange={handleFixtureInputChange}
+                  className="time"
+                />
+              </label>
+              
             </div>
 
             {/* --- Score Input Section (Conditional) --- */}
@@ -1164,7 +1169,7 @@ export default function LeaguesPage() {
                     {/* Set Scores */}
                     <div className="flex space-x-4">
                       <div className="flex-1">
-                        <label htmlFor="homeScore" className="block text-xs font-medium text-gray-600 dark:text-gray-400">Sätze Heim</label>
+                        <label htmlFor="homeScore" className="block text-xs font-medium text-base-content/70">Sätze Heim</label>
                       <input
                         type="number"
                         id="homeScore"
@@ -1173,11 +1178,11 @@ export default function LeaguesPage() {
                         value={scoreInputData.homeScore ?? ''}
                         onChange={(e) => handleScoreInputChange(e)}
                         placeholder={`0-${editingLeagueContext.setsToWin}`}
-                        className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        className="mt-1 block w-full px-3 py-1.5 text-base input sm:text-sm rounded-md"
                       />
                     </div>
                     <div className="flex-1">
-                      <label htmlFor="awayScore" className="block text-xs font-medium text-gray-600 dark:text-gray-400">Sätze Gast</label>
+                      <label htmlFor="awayScore" className="block text-xs font-medium text-base-content/70">Sätze Gast</label>
                       <input
                         type="number"
                         id="awayScore"
@@ -1186,14 +1191,14 @@ export default function LeaguesPage() {
                         value={scoreInputData.awayScore ?? ''}
                         onChange={(e) => handleScoreInputChange(e)}
                         placeholder={`0-${editingLeagueContext.setsToWin}`}
-                        className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        className="mt-1 block w-full px-3 py-1.5 text-base input sm:text-sm rounded-md"
                       />
                       </div>
                     </div>
                     {/* Total Points (Balls) */}
                     <div className="flex space-x-4">
                       <div className="flex-1">
-                        <label htmlFor="homePoints" className="block text-xs font-medium text-gray-600 dark:text-gray-400">Bälle Heim</label>
+                        <label htmlFor="homePoints" className="block text-xs font-medium text-base-content/70">Bälle Heim</label>
                         <input
                           type="number"
                           id="homePoints"
@@ -1202,11 +1207,11 @@ export default function LeaguesPage() {
                           value={scoreInputData.homePoints ?? ''}
                           onChange={(e) => handleScoreInputChange(e)}
                           placeholder="Gesamtbälle"
-                          className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                          className="mt-1 block w-full px-3 py-1.5 text-base input sm:text-sm rounded-md"
                         />
                       </div>
                       <div className="flex-1">
-                        <label htmlFor="awayPoints" className="block text-xs font-medium text-gray-600 dark:text-gray-400">Bälle Gast</label>
+                        <label htmlFor="awayPoints" className="block text-xs font-medium text-base-content/70">Bälle Gast</label>
                         <input
                           type="number"
                           id="awayPoints"
@@ -1215,7 +1220,7 @@ export default function LeaguesPage() {
                           value={scoreInputData.awayPoints ?? ''}
                           onChange={(e) => handleScoreInputChange(e)}
                           placeholder="Gesamtbälle"
-                          className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                          className="mt-1 block w-full px-3 py-1.5 text-base input sm:text-sm rounded-md"
                         />
                       </div>
                     </div>
@@ -1227,7 +1232,7 @@ export default function LeaguesPage() {
                   <div className="space-y-2">
                     {scoreInputData.setScores.map((set: any, index: number) => (
                       <div key={index} className="flex items-center space-x-2">
-                        <label className="w-12 text-sm font-medium text-gray-600 dark:text-gray-400 text-right">Satz {index + 1}:</label>
+                        <label className="w-12 text-sm font-medium text-base-content/70 text-right">Satz {index + 1}:</label>
                         <input
                           type="number"
                           name="home"
@@ -1235,7 +1240,7 @@ export default function LeaguesPage() {
                           value={set.home ?? ''}
                           onChange={(e) => handleScoreInputChange(e, index)}
                           placeholder="Heim"
-                          className="flex-1 block w-full px-2 py-1 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                          className="flex-1 block w-full px-2 py-1 text-base input sm:text-sm rounded-md"
                         />
                         <span className="text-gray-500">:</span>
                         <input
@@ -1245,7 +1250,7 @@ export default function LeaguesPage() {
                           value={set.away ?? ''}
                           onChange={(e) => handleScoreInputChange(e, index)}
                           placeholder="Gast"
-                          className="flex-1 block w-full px-2 py-1 text-base border-gray-300 dark:border-border dark:bg-input dark:text-foreground focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                          className="flex-1 block w-full px-2 py-1 text-base input sm:text-sm rounded-md"
                         />
                       </div>
                     ))}
@@ -1257,7 +1262,7 @@ export default function LeaguesPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-primary dark:hover:bg-primary/90"
+              className="w-full btn btn-primary py-2 px-4 "
             >
               Speichern
             </button>
@@ -1317,13 +1322,13 @@ function SortableFixtureItem({ fixture, league, onEditClick, isLeagueActive }: S
     <li 
       ref={setNodeRef} 
       style={style} 
-      className="flex justify-between items-center text-sm p-2 border rounded-sm bg-white dark:bg-card dark:border-border shadow-sm hover:bg-gray-50 dark:hover:bg-muted"
+      className="flex justify-between items-center text-sm p-2 border rounded-sm shadow-sm bg-base-100 hover:bg-base-200"
     >
       {/* Drag Handle */}
        <button 
           {...attributes} 
           {...listeners} 
-          className="cursor-grab p-1 text-gray-400 hover:text-gray-600 mr-2"
+          className="cursor-grab p-1 mr-2"
           title="Verschieben"
         >
           <GripVerticalIcon className="h-5 w-5" />
@@ -1357,7 +1362,7 @@ function SortableFixtureItem({ fixture, league, onEditClick, isLeagueActive }: S
             : '- : -'}
         </span>
         {/* Match Points Display */}
-        <span className="font-normal w-auto text-center text-gray-600 dark:text-gray-400 text-xs">
+        <span className="font-normal w-auto text-center text-base-content/70 text-xs">
           (P: {fixture.homeMatchPoints !== null && fixture.awayMatchPoints !== null
             ? `${fixture.homeMatchPoints} : ${fixture.awayMatchPoints}`
             : '- : -'})
@@ -1367,7 +1372,7 @@ function SortableFixtureItem({ fixture, league, onEditClick, isLeagueActive }: S
       <div className="flex items-center space-x-1 ml-2">
         <button
           onClick={() => onEditClick(fixture)}
-          className={`p-1 ${isLeagueActive ? 'text-indigo-600 hover:text-indigo-900 hover:bg-primary-100' : 'text-gray-400 cursor-not-allowed'} rounded-sm`}
+          className={`p-1 btn btn-sm btn-soft ${isLeagueActive ? 'btn-secondary' : 'btn-disabled'}`}
           title={isLeagueActive ? "Spielpaarung bearbeiten" : "Liga ist inaktiv"}
           disabled={!isLeagueActive}
         >

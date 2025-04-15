@@ -156,32 +156,28 @@ export default function UsersPage() {
             setIsEditing(false)
             setIsModalOpen(true)
           }}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm mb-4 dark:bg-blue-600 dark:hover:bg-blue-800"
+          className="btn btn-primary"
         >
           Neuen Benutzer hinzufügen
         </button>
-        <ul className="bg-white dark:bg-card shadow overflow-hidden sm:rounded-md">
+        <ul className="shadow overflow-hidden sm:rounded-md mt-2">
           {users.map((user) => (
             <li key={user.id} className="border-b border-gray-200 dark:border-border last:border-b-0">
               <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
                 <div>
-                  <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">{user.name}</p>
-                  <p className="text-sm text-gray-500 dark:text-foreground">{user.email}</p>
+                  <p className="text-sm font-medium truncate">{user.name}</p>
+                  <p className="text-sm">{user.email}</p>
                   {user.teams && user.teams.length > 0 && (
-                    <p className="text-sm text-gray-500 dark:text-foreground">
+                    <p className="text-sm">
                       Teams: {user.teams.map(team => team.name).join(', ')}
                     </p>
                   )}
                 </div>
                 <div className="flex items-center">
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${user.isAdmin ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'}`}>
+                  <span className={`badge badge-dash  ${user.isAdmin ? 'badge-primary' : 'badge-secondary'}`}>
                     {user.isAdmin ? 'Admin' : 'Benutzer'}
                   </span>
-                  {user.isSuperAdmin && (
-                    <span className="ml-2 px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">
-                      Superadmin
-                    </span>
-                  )}
+                  
                   <button
                     onClick={() => {
                       // Konvertiere das teams-Array in ein teamIds-Array für das Formular
@@ -192,14 +188,14 @@ export default function UsersPage() {
                       setIsEditing(true)
                       setIsModalOpen(true)
                     }}
-                    className="p-1 text-indigo-600 hover:text-indigo-900 hover:bg-primary-100 rounded-sm dark:text-foreground dark:hover:bg-muted ml-2"
+                    className="p-1 btn btn-sm btn-secondary btn-soft ml-2"
                     title="Benutzer bearbeiten"
                   >
                     <PencilIcon className="h-5 w-5" />
                   </button>
                   <button
                     onClick={() => handleDeleteUser(user)}
-                    className="p-1 text-red-600 hover:text-red-900 hover:bg-red-100 rounded-sm dark:text-red-400 dark:hover:bg-red-900/20 ml-2"
+                    className="p-1 btn btn-sm btn-error btn-soft  ml-2"
                     title="Benutzer löschen"
                   >
                     <TrashIcon className="h-5 w-5" />
@@ -212,25 +208,32 @@ export default function UsersPage() {
       </div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={isEditing ? "Benutzer bearbeiten" : "Neuen Benutzer hinzufügen"}>
         <form onSubmit={isEditing ? handleEditUser : handleAddUser} className="space-y-4">
-          <input
-            type="email"
-            value={newUser.email}
-            onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-            placeholder="E-Mail"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300"
-            required
-          />
-          <input
-            type="text"
-            value={newUser.name}
-            onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-            placeholder="Name"
-            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300 dark:bg-input dark:border-border dark:text-foreground" // Dark mode styles hinzugefügt
-            required
-          />
+          <label htmlFor="email" className='floating-label'>
+            <span>E-Mail</span>
+            <input
+              type="email"
+              value={newUser.email}
+              onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+              placeholder="E-Mail"
+              className="w-full mt-2 px-3 py-2 input"
+              required
+            />
+          </label> 
+          
+          <label htmlFor="name" className='floating-label'>
+            <span>Name</span>
+            <input
+              type="text"
+              value={newUser.name}
+              onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+              placeholder="Name"
+              className="w-full px-3 py-2 input" // Dark mode styles hinzugefügt
+              required
+            />
+          </label> 
           {/* Passwortfeld entfernt */}
           <div className="w-full">
-            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Teams</label> {/* Dark mode styles hinzugefügt */}
+            <label className="block text-sm font-medium mb-1">Teams</label> {/* Dark mode styles hinzugefügt */}
             <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-md p-2 dark:border-border"> {/* Dark mode styles hinzugefügt */}
               {teams.map((team) => (
                 <div key={team.id} className="flex items-center mb-2">
@@ -251,9 +254,9 @@ export default function UsersPage() {
                         });
                       }
                     }}
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded-sm"
+                    className="h-4 w-4 checkbox checkbox-primary checkbox-xs"
                   />
-                  <label htmlFor={`team-${team.id}`} className="ml-2 block text-sm text-gray-900">
+                  <label htmlFor={`team-${team.id}`} className="ml-2 block text-sm">
                     {team.name}
                   </label>
                 </div>
@@ -266,15 +269,15 @@ export default function UsersPage() {
               id="isAdmin"
               checked={newUser.isAdmin}
               onChange={(e) => setNewUser({ ...newUser, isAdmin: e.target.checked })}
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded-sm"
+              className="checkbox checkbox-sm checkbox-primary"
             />
-            <label htmlFor="isAdmin" className="ml-2 block text-sm text-gray-900">
+            <label htmlFor="isAdmin" className="ml-2 block">
               Admin
             </label>
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm dark:bg-blue-600 dark:hover:bg-blue-800"
+            className="w-full btn btn-primary py-2 px-4"
           >
             {isEditing ? "Aktualisieren" : "Hinzufügen"}
           </button>
