@@ -865,21 +865,21 @@ export default function LeaguesPage() {
           {/* Removed the wrapping div with max-h and overflow-y */}
           {/* Add padding directly to the form */}
           <form onSubmit={editingLeague ? handleEditLeague : handleAddLeague} className="space-y-4 p-1"> {/* Reduced padding */}
-            {/* League Name - DaisyUI Inline Label */}
-            <label className="input input-bordered flex items-center gap-2">
-              Name
+            {/* League Name - DaisyUI Floating Label */}
+            <label className="floating-label">
               <input
                 id="leagueName"
                 type="text"
                 value={newLeague.name}
-                onChange={(e) => setNewLeague({...newLeague, name: e.target.value, slug: newLeague.slug || createSlug(e.target.value) })} // Auto-generate slug if empty
-                placeholder="z.B. Kreisliga A"
+                onChange={(e) => setNewLeague({...newLeague, name: e.target.value, slug: !newLeague.slug || editingLeague?.slug === createSlug(editingLeague?.name || '') ? createSlug(e.target.value) : newLeague.slug })} // Auto-generate slug only if it was empty or auto-generated before
+                placeholder=" " // Placeholder needed for floating label animation
                 required
-                className="grow" // Use grow to fill space
+                className="input input-bordered w-full" // Use w-full
               />
+              <span>Liganame</span>
             </label>
 
-            {/* League Slug - DaisyUI Input Group */}
+            {/* League Slug - DaisyUI Input Group (Keep as is, not compatible with floating label) */}
             <label className="form-control w-full">
               <div className="label">
                 <span className="label-text">URL-Slug</span>
@@ -900,9 +900,8 @@ export default function LeaguesPage() {
               </div>
             </label>
 
-            {/* Number of Teams - DaisyUI Inline Label */}
-            <label className="input input-bordered flex items-center gap-2">
-              Anzahl Teams
+            {/* Number of Teams - DaisyUI Floating Label */}
+            <label className="floating-label">
               <input
                 id="numberOfTeams"
                 type="number"
@@ -910,11 +909,13 @@ export default function LeaguesPage() {
                 value={newLeague.numberOfTeams}
                 onChange={(e) => setNewLeague({...newLeague, numberOfTeams: parseInt(e.target.value) || 0})}
                 required
-                className="grow"
+                placeholder=" " // Placeholder needed
+                className="input input-bordered w-full"
               />
+              <span>Anzahl Teams</span>
             </label>
 
-            {/* Return Matches & Active Status Checkboxes - DaisyUI form-control */}
+            {/* Return Matches & Active Status Checkboxes - DaisyUI form-control (Keep as is) */}
             <div className="flex gap-4">
               <div className="form-control">
                 <label className="label cursor-pointer gap-2">
@@ -941,7 +942,7 @@ export default function LeaguesPage() {
                 </label>
               </div>
             </div>
-          </div>
+            {/* THIS closing div was extra and caused the syntax error. Removed it. */}
  
           {/* Score Entry Configuration Section - DaisyUI */}
           <fieldset className="border border-base-300 p-3 rounded-md">
@@ -988,58 +989,54 @@ export default function LeaguesPage() {
           <fieldset className="border border-base-300 p-3 rounded-md">
               <legend className="text-sm font-medium px-1">Punktregeln</legend>
               <div className="grid grid-cols-2 gap-4 mt-1"> {/* Use gap-4 */}
-                  {/* Point Inputs with DaisyUI form-control and label */}
-                  <label className="form-control w-full">
-                    <div className="label">
-                      <span className="label-text text-xs">Punkte 3:0 / 2:0</span>
-                    </div>
+                  {/* Point Inputs with DaisyUI Floating Label */}
+                  <label className="floating-label">
                     <input
                         id="pointsWin30"
                         type="number"
                         min="0"
                         value={newLeague.pointsWin30}
                         onChange={(e) => setNewLeague({...newLeague, pointsWin30: parseInt(e.target.value) || 0})}
+                        placeholder=" "
                         className="input input-bordered w-full text-sm"
                     />
+                    <span className="text-xs">Punkte 3:0 / 2:0</span>
                   </label>
-                  <label className="form-control w-full">
-                    <div className="label">
-                      <span className="label-text text-xs">Punkte 3:1 / 2:1</span>
-                    </div>
+                  <label className="floating-label">
                     <input
                         id="pointsWin31"
                         type="number"
                         min="0"
                         value={newLeague.pointsWin31}
                         onChange={(e) => setNewLeague({...newLeague, pointsWin31: parseInt(e.target.value) || 0})}
+                        placeholder=" "
                         className="input input-bordered w-full text-sm"
                     />
+                     <span className="text-xs">Punkte 3:1 / 2:1</span>
                   </label>
-                  <label className="form-control w-full">
-                    <div className="label">
-                      <span className="label-text text-xs">Punkte 3:2 (Sieger)</span>
-                    </div>
+                  <label className="floating-label">
                     <input
                         id="pointsWin32"
                         type="number"
                         min="0"
                         value={newLeague.pointsWin32}
                         onChange={(e) => setNewLeague({...newLeague, pointsWin32: parseInt(e.target.value) || 0})}
+                        placeholder=" "
                         className="input input-bordered w-full text-sm"
                     />
+                    <span className="text-xs">Punkte 3:2 (Sieger)</span>
                   </label>
-                  <label className="form-control w-full">
-                    <div className="label">
-                      <span className="label-text text-xs">Punkte 2:3 (Verlierer)</span>
-                    </div>
+                  <label className="floating-label">
                     <input
                         id="pointsLoss32"
                         type="number"
                         min="0"
                         value={newLeague.pointsLoss32}
                         onChange={(e) => setNewLeague({...newLeague, pointsLoss32: parseInt(e.target.value) || 0})}
+                        placeholder=" "
                         className="input input-bordered w-full text-sm"
                     />
+                    <span className="text-xs">Punkte 2:3 (Verlierer)</span>
                   </label>
                   </div>
               </div>
@@ -1156,34 +1153,36 @@ export default function LeaguesPage() {
               </label>
             </div>
 
-            {/* Fixture Date - DaisyUI Inline Label */}
-            <label className="input input-bordered flex items-center gap-2">
-              Datum
+            {/* Fixture Date - DaisyUI Floating Label */}
+            <label className="floating-label">
               <input
                 type="date"
                 id="fixtureDate"
                 name="fixtureDate"
                 value={editingFixture.fixtureDate || ''}
                 onChange={handleFixtureInputChange}
-                className="grow" // Use grow
+                placeholder=" " // Placeholder needed
+                className="input input-bordered w-full"
               />
+              <span>Datum</span>
             </label>
 
-            {/* Fixture Time - DaisyUI Inline Label */}
-            <label className="input input-bordered flex items-center gap-2">
-              Uhrzeit
+            {/* Fixture Time - DaisyUI Floating Label */}
+            <label className="floating-label">
               <input
                 type="time"
                 id="fixtureTime"
                 name="fixtureTime"
                 value={editingFixture.fixtureTime || ''}
                 onChange={handleFixtureInputChange}
-                className="grow" // Use grow
+                placeholder=" " // Placeholder needed
+                className="input input-bordered w-full"
               />
+              <span>Uhrzeit</span>
             </label>
-            </div>
+            {/* Removed extra closing div from previous attempt */}
 
-            {/* --- Score Input Section (Conditional) - DaisyUI --- */}
+            {/* --- Score Input Section (Conditional) - DaisyUI (Keep form-control for complex inputs) --- */}
             <fieldset className="border border-base-300 p-3 rounded-md">
               <legend className="text-sm font-medium px-1">Ergebnis</legend>
               <div className="mt-2 space-y-3">
@@ -1191,12 +1190,9 @@ export default function LeaguesPage() {
                 {/* Case 1: MATCH_SCORE */}
                 {editingLeagueContext.scoreEntryType === ScoreEntryType.MATCH_SCORE && (
                   <div className="space-y-3">
-                    {/* Set Scores */}
+                    {/* Set Scores - Floating Labels */}
                     <div className="flex gap-4">
-                      <label className="form-control w-full">
-                        <div className="label">
-                          <span className="label-text text-xs">Sätze Heim</span>
-                        </div>
+                      <label className="floating-label w-full">
                         <input
                           type="number"
                           id="homeScore"
@@ -1204,14 +1200,12 @@ export default function LeaguesPage() {
                           min="0" max={editingLeagueContext.setsToWin}
                           value={scoreInputData.homeScore ?? ''}
                           onChange={(e) => handleScoreInputChange(e)}
-                          placeholder={`0-${editingLeagueContext.setsToWin}`}
+                          placeholder=" "
                           className="input input-bordered w-full text-sm"
                         />
+                         <span className="text-xs">Sätze Heim</span>
                       </label>
-                      <label className="form-control w-full">
-                        <div className="label">
-                          <span className="label-text text-xs">Sätze Gast</span>
-                        </div>
+                      <label className="floating-label w-full">
                         <input
                           type="number"
                           id="awayScore"
@@ -1219,17 +1213,15 @@ export default function LeaguesPage() {
                           min="0" max={editingLeagueContext.setsToWin}
                           value={scoreInputData.awayScore ?? ''}
                           onChange={(e) => handleScoreInputChange(e)}
-                          placeholder={`0-${editingLeagueContext.setsToWin}`}
+                          placeholder=" "
                           className="input input-bordered w-full text-sm"
                         />
+                        <span className="text-xs">Sätze Gast</span>
                       </label>
                     </div>
-                    {/* Total Points (Balls) */}
+                    {/* Total Points (Balls) - Floating Labels */}
                     <div className="flex gap-4">
-                      <label className="form-control w-full">
-                        <div className="label">
-                          <span className="label-text text-xs">Bälle Heim (Optional)</span>
-                        </div>
+                      <label className="floating-label w-full">
                         <input
                           type="number"
                           id="homePoints"
@@ -1237,14 +1229,12 @@ export default function LeaguesPage() {
                           min="0"
                           value={scoreInputData.homePoints ?? ''}
                           onChange={(e) => handleScoreInputChange(e)}
-                          placeholder="Gesamtbälle"
+                          placeholder=" "
                           className="input input-bordered w-full text-sm"
                         />
+                        <span className="text-xs">Bälle Heim (Optional)</span>
                       </label>
-                      <label className="form-control w-full">
-                        <div className="label">
-                          <span className="label-text text-xs">Bälle Gast (Optional)</span>
-                        </div>
+                      <label className="floating-label w-full">
                         <input
                           type="number"
                           id="awayPoints"
@@ -1252,9 +1242,10 @@ export default function LeaguesPage() {
                           min="0"
                           value={scoreInputData.awayPoints ?? ''}
                           onChange={(e) => handleScoreInputChange(e)}
-                          placeholder="Gesamtbälle"
+                          placeholder=" "
                           className="input input-bordered w-full text-sm"
                         />
+                        <span className="text-xs">Bälle Gast (Optional)</span>
                       </label>
                       </div>
                     </div>
@@ -1262,11 +1253,12 @@ export default function LeaguesPage() {
                 )}
 
                 {/* Case 2: SET_SCORES */}
+                {/* Case 2: SET_SCORES - Keep explicit labels due to complexity */}
                 {editingLeagueContext.scoreEntryType === ScoreEntryType.SET_SCORES && (
                   <div className="space-y-2">
                     {scoreInputData.setScores.map((set: any, index: number) => (
-                      <div key={index} className="flex items-center gap-2"> {/* Use gap */}
-                        <label className="w-16 text-sm font-medium text-right shrink-0">Satz {index + 1}:</label> {/* Fixed width */}
+                      <div key={index} className="flex items-center gap-2">
+                        <label className="w-16 text-sm font-medium text-right shrink-0">Satz {index + 1}:</label>
                         <input
                           type="number"
                           name="home"
@@ -1274,7 +1266,7 @@ export default function LeaguesPage() {
                           value={set.home ?? ''}
                           onChange={(e) => handleScoreInputChange(e, index)}
                           placeholder="Heim"
-                          className="input input-bordered input-sm w-full" // Use input-sm
+                          className="input input-bordered input-sm w-full"
                         />
                         <span className="text-base-content/50">:</span>
                         <input
@@ -1284,7 +1276,7 @@ export default function LeaguesPage() {
                           value={set.away ?? ''}
                           onChange={(e) => handleScoreInputChange(e, index)}
                           placeholder="Gast"
-                          className="input input-bordered input-sm w-full" // Use input-sm
+                          className="input input-bordered input-sm w-full"
                         />
                       </div>
                     ))}
