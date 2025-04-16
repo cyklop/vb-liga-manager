@@ -304,18 +304,19 @@ export default function Login() {
             
             {/* Email Input inside Modal */}
             <div className="form-control mb-4">
-              <label className="label" htmlFor="reset-email">
+              <label className="floating-label" htmlFor="reset-email">
                 <span className="label-text">E-Mail-Adresse</span>
+                  <input
+                  id="reset-email"
+                  type="email"
+                  required
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  className="input input-bordered w-full" // DaisyUI input
+                  placeholder="ihre@email.de"
+                />
               </label>
-              <input
-                id="reset-email"
-                type="email"
-                required
-                value={resetEmail}
-                onChange={(e) => setResetEmail(e.target.value)}
-                className="input input-bordered w-full" // DaisyUI input
-                placeholder="ihre@email.de"
-              />
+              
             </div>   
             
             {/* Error Message inside Modal */}

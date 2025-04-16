@@ -97,12 +97,12 @@ export default function SetInitialPasswordPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder=" " // Required for floating label animation
+                placeholder="Neues Passwort" // Required for floating label animation
                 required
                 className="input input-bordered w-full"
                 disabled={isLoading}
               />
-              <span>Neues Passwort</span>
+              <span className='label-text'>Neues Passwort</span>
             </label>
 
             {/* Confirm Password Input - Floating Label */}
@@ -112,7 +112,7 @@ export default function SetInitialPasswordPage() {
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder=" " // Required for floating label animation
+                placeholder="Passwort bestätigen" // Required for floating label animation
                 required
                 className="input input-bordered w-full"
                 disabled={isLoading}
