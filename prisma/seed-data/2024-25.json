@@ -1,0 +1,170 @@
+[
+  {
+    "Spieltag": 1, "Datum": "4. Nov 2024", "Uhrzeit": "19:30 Uhr", "Spielort": "Bayreuth", "Heimmannschaft": "BSV H5", "Gastmannschaft": "CVJM Naila",
+    "EndH": 3, "EndG": 0, "BälleH": 75, "BälleG": 40, "PktH": 3, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 1, "Datum": "15. Nov 2024", "Uhrzeit": "20:00 Uhr", "Spielort": "Bayreuth", "Heimmannschaft": "USC Bayreuth 2", "Gastmannschaft": "TSV Bad Berneck",
+    "EndH": 0, "EndG": 3, "BälleH": 58, "BälleG": 75, "PktH": 0, "PktG": 3, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 1, "Datum": "4. Nov 2024", "Uhrzeit": "20:00 Uhr", "Spielort": "Pegnitz", "Heimmannschaft": "MTV/SG Pegnitz", "Gastmannschaft": "USC Bayreuth 1",
+    "EndH": 3, "EndG": 0, "BälleH": 75, "BälleG": 37, "PktH": 3, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 2, "Datum": "26. Nov 2024", "Uhrzeit": "18:45 Uhr", "Spielort": "Bad Berneck", "Heimmannschaft": "TSV Bad Berneck", "Gastmannschaft": "TSV Kirchenlaibach",
+    "EndH": 3, "EndG": 0, "BälleH": 75, "BälleG": 45, "PktH": 3, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 2, "Datum": "29. Nov 2024", "Uhrzeit": "20:00 Uhr", "Spielort": "Naila", "Heimmannschaft": "CVJM Naila", "Gastmannschaft": "MTV/SG Pegnitz",
+    "EndH": 0, "EndG": 3, "BälleH": 47, "BälleG": 75, "PktH": 0, "PktG": 3, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 2, "Datum": "29. Nov 2024", "Uhrzeit": "20:00 Uhr", "Spielort": "Bayreuth", "Heimmannschaft": "USC Bayreuth 1", "Gastmannschaft": "USC Bayreuth 2",
+    "EndH": 0, "EndG": 3, "BälleH": 67, "BälleG": 77, "PktH": 0, "PktG": 3, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 3, "Datum": "20. Jan 2025", "Uhrzeit": "20:00 Uhr", "Spielort": "Pegnitz", "Heimmannschaft": "MTV/SG Pegnitz", "Gastmannschaft": "BSV H5",
+    "EndH": 3, "EndG": 2, "BälleH": 106, "BälleG": 108, "PktH": 2, "PktG": 1, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 3, "Datum": "12. Dez 2024", "Uhrzeit": "19:30 Uhr", "Spielort": "Speichersdorf", "Heimmannschaft": "TSV Kirchenlaibach", "Gastmannschaft": "USC Bayreuth 1",
+    "EndH": 2, "EndG": 3, "BälleH": 93, "BälleG": 106, "PktH": 1, "PktG": 2, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 3, "Datum": "13. Dez 2024", "Uhrzeit": "20:00 Uhr", "Spielort": "Bayreuth", "Heimmannschaft": "USC Bayreuth 2", "Gastmannschaft": "CVJM Naila",
+    "EndH": 3, "EndG": 1, "BälleH": 97, "BälleG": 74, "PktH": 3, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 4, "Datum": "8. Jan 2025", "Uhrzeit": "19:00 Uhr", "Spielort": "Bayreuth", "Heimmannschaft": "USC Bayreuth 1", "Gastmannschaft": "TSV Bad Berneck",
+    "EndH": 1, "EndG": 3, "BälleH": 75, "BälleG": 98, "PktH": 0, "PktG": 3, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 4, "Datum": "18. Dez 2024", "Uhrzeit": "19:30 Uhr", "Spielort": "Bayreuth", "Heimmannschaft": "BSV H5", "Gastmannschaft": "USC Bayreuth 2",
+    "EndH": 3, "EndG": 0, "BälleH": 75, "BälleG": 57, "PktH": 3, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 4, "Datum": "10. Jan 2025", "Uhrzeit": "20:00 Uhr", "Spielort": "Naila", "Heimmannschaft": "CVJM Naila", "Gastmannschaft": "TSV Kirchenlaibach",
+    "EndH": 3, "EndG": 2, "BälleH": 107, "BälleG": 107, "PktH": 2, "PktG": 1, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 5, "Datum": "17. Jan 2025", "Uhrzeit": "20:00 Uhr", "Spielort": "Bayreuth", "Heimmannschaft": "USC Bayreuth 2", "Gastmannschaft": "MTV/SG Pegnitz",
+    "EndH": 0, "EndG": 3, "BälleH": 45, "BälleG": 75, "PktH": 0, "PktG": 3, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 5, "Datum": "14. Jan 2025", "Uhrzeit": "18:45 Uhr", "Spielort": "Bad Berneck", "Heimmannschaft": "TSV Bad Berneck", "Gastmannschaft": "CVJM Naila",
+    "EndH": 3, "EndG": 0, "BälleH": 75, "BälleG": 44, "PktH": 3, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 5, "Datum": "16. Jan 2025", "Uhrzeit": "19:30 Uhr", "Spielort": "Speichersdorf", "Heimmannschaft": "TSV Kirchenlaibach", "Gastmannschaft": "BSV H5",
+    "EndH": 0, "EndG": 3, "BälleH": 61, "BälleG": 75, "PktH": 0, "PktG": 3, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 6, "Datum": "7. Feb 2025", "Uhrzeit": "20:00 Uhr", "Spielort": "Naila", "Heimmannschaft": "CVJM Naila", "Gastmannschaft": "USC Bayreuth 1",
+    "EndH": 3, "EndG": 2, "BälleH": 106, "BälleG": 100, "PktH": 2, "PktG": 1, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 6, "Datum": "3. Feb 2025", "Uhrzeit": "20:00 Uhr", "Spielort": "Pegnitz", "Heimmannschaft": "MTV/SG Pegnitz", "Gastmannschaft": "TSV Kirchenlaibach",
+    "EndH": 3, "EndG": 0, "BälleH": 75, "BälleG": 52, "PktH": 3, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 6, "Datum": "5. Feb 2025", "Uhrzeit": "19:30 Uhr", "Spielort": "Bayreuth", "Heimmannschaft": "BSV H5", "Gastmannschaft": "TSV Bad Berneck",
+    "EndH": 3, "EndG": 2, "BälleH": 92, "BälleG": 83, "PktH": 2, "PktG": 1, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 7, "Datum": "20. Mär 2025", "Uhrzeit": "19:30 Uhr", "Spielort": "Speichersdorf", "Heimmannschaft": "TSV Kirchenlaibach", "Gastmannschaft": "USC Bayreuth 2",
+    "EndH": 3, "EndG": 2, "BälleH": 100, "BälleG": 98, "PktH": 2, "PktG": 1, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 7, "Datum": "19. Mai 2025", "Uhrzeit": "19:30 Uhr", "Spielort": "Bayreuth", "Heimmannschaft": "USC Bayreuth 1", "Gastmannschaft": "BSV H5",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Bearbeiten"
+  },
+  {
+    "Spieltag": 7, "Datum": "11. Mär 2025", "Uhrzeit": "18:45 Uhr", "Spielort": "Bad Berneck", "Heimmannschaft": "TSV Bad Berneck", "Gastmannschaft": "MTV/SG Pegnitz",
+    "EndH": 2, "EndG": 3, "BälleH": 104, "BälleG": 106, "PktH": 1, "PktG": 2, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 8, "Datum": "28. Mär 2025", "Uhrzeit": "20:00 Uhr", "Spielort": "Naila", "Heimmannschaft": "CVJM Naila", "Gastmannschaft": "BSV H5",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Bearbeiten"
+  },
+  {
+    "Spieltag": 8, "Datum": "25. Mär 2025", "Uhrzeit": "18:45 Uhr", "Spielort": "Bad Berneck", "Heimmannschaft": "TSV Bad Berneck", "Gastmannschaft": "USC Bayreuth 2",
+    "EndH": 3, "EndG": 0, "BälleH": 75, "BälleG": 55, "PktH": 3, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 8, "Datum": "28. Mär 2025", "Uhrzeit": "20:00 Uhr", "Spielort": "Bayreuth", "Heimmannschaft": "USC Bayreuth 1", "Gastmannschaft": "MTV/SG Pegnitz",
+    "EndH": 1, "EndG": 2, "BälleH": 64, "BälleG": 75, "PktH": 0, "PktG": 0, "Anmerkungen": "Punkte 0:0 inkonsistent / Bearbeiten?"
+  },
+  {
+    "Spieltag": 9, "Datum": "10. Apr 2025", "Uhrzeit": "19:30 Uhr", "Spielort": "Speichersdorf", "Heimmannschaft": "TSV Kirchenlaibach", "Gastmannschaft": "TSV Bad Berneck",
+    "EndH": 1, "EndG": 3, "BälleH": 63, "BälleG": 98, "PktH": 0, "PktG": 3, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 9, "Datum": "7. Apr 2025", "Uhrzeit": "20:00 Uhr", "Spielort": "Pegnitz", "Heimmannschaft": "MTV/SG Pegnitz", "Gastmannschaft": "CVJM Naila",
+    "EndH": 3, "EndG": 0, "BälleH": 75, "BälleG": 48, "PktH": 3, "PktG": 0, "Anmerkungen": ""
+  },
+  {
+    "Spieltag": 9, "Datum": "11. Apr 2025", "Uhrzeit": "20:00 Uhr", "Spielort": "Bayreuth", "Heimmannschaft": "USC Bayreuth 2", "Gastmannschaft": "USC Bayreuth 1",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Bearbeiten"
+  },
+  {
+    "Spieltag": 10, "Datum": "30. Apr 2025", "Uhrzeit": "19:30 Uhr", "Spielort": "Bayreuth", "Heimmannschaft": "BSV H5", "Gastmannschaft": "MTV/SG Pegnitz",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Bearbeiten"
+  },
+  {
+    "Spieltag": 10, "Datum": "2. Mai 2025", "Uhrzeit": "20:00 Uhr", "Spielort": "Bayreuth", "Heimmannschaft": "USC Bayreuth 1", "Gastmannschaft": "TSV Kirchenlaibach",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Bearbeiten"
+  },
+  {
+    "Spieltag": 10, "Datum": "2. Mai 2025", "Uhrzeit": "20:00 Uhr", "Spielort": "Naila", "Heimmannschaft": "CVJM Naila", "Gastmannschaft": "USC Bayreuth 2",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Bearbeiten"
+  },
+  {
+    "Spieltag": 11, "Datum": "13. Mai 2025", "Uhrzeit": "18:45 Uhr", "Spielort": "Bad Berneck", "Heimmannschaft": "TSV Bad Berneck", "Gastmannschaft": "USC Bayreuth 1",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Bearbeiten"
+  },
+  {
+    "Spieltag": 11, "Datum": "16. Mai 2025", "Uhrzeit": "20:00 Uhr", "Spielort": "Bayreuth", "Heimmannschaft": "USC Bayreuth 2", "Gastmannschaft": "BSV H5",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Bearbeiten"
+  },
+  {
+    "Spieltag": 11, "Datum": "22. Mai 2025", "Uhrzeit": "19:30 Uhr", "Spielort": "Speichersdorf", "Heimmannschaft": "TSV Kirchenlaibach", "Gastmannschaft": "CVJM Naila",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Bearbeiten"
+  },
+  {
+    "Spieltag": 12, "Datum": "26. Mai 2025", "Uhrzeit": "20:00 Uhr", "Spielort": "Pegnitz", "Heimmannschaft": "MTV/SG Pegnitz", "Gastmannschaft": "USC Bayreuth 2",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Bearbeiten"
+  },
+  {
+    "Spieltag": 12, "Datum": "30. Mai 2025", "Uhrzeit": "20:00 Uhr", "Spielort": "Naila", "Heimmannschaft": "CVJM Naila", "Gastmannschaft": "TSV Bad Berneck",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Bearbeiten"
+  },
+  {
+    "Spieltag": 12, "Datum": "28. Mai 2025", "Uhrzeit": "19:30 Uhr", "Spielort": "Bayreuth", "Heimmannschaft": "BSV H5", "Gastmannschaft": "TSV Kirchenlaibach",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Bearbeiten"
+  },
+  {
+    "Spieltag": 13, "Datum": null, "Uhrzeit": null, "Spielort": "Bad Berneck", "Heimmannschaft": "USC Bayreuth 1", "Gastmannschaft": "CVJM Naila",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Datum/Zeit fehlt / Bearbeiten"
+  },
+  {
+    "Spieltag": 13, "Datum": null, "Uhrzeit": null, "Spielort": "Bad Berneck", "Heimmannschaft": "TSV Kirchenlaibach", "Gastmannschaft": "MTV/SG Pegnitz",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Datum/Zeit fehlt / Bearbeiten"
+  },
+  {
+    "Spieltag": 13, "Datum": null, "Uhrzeit": null, "Spielort": "Bad Berneck", "Heimmannschaft": "TSV Bad Berneck", "Gastmannschaft": "BSV H5",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Datum/Zeit fehlt / Bearbeiten"
+  },
+  {
+    "Spieltag": 14, "Datum": null, "Uhrzeit": null, "Spielort": "Bad Berneck", "Heimmannschaft": "USC Bayreuth 2", "Gastmannschaft": "TSV Kirchenlaibach",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Datum/Zeit fehlt / Bearbeiten"
+  },
+  {
+    "Spieltag": 14, "Datum": null, "Uhrzeit": null, "Spielort": "Bad Berneck", "Heimmannschaft": "BSV H5", "Gastmannschaft": "USC Bayreuth 1",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Datum/Zeit fehlt / Bearbeiten"
+  },
+  {
+    "Spieltag": 14, "Datum": null, "Uhrzeit": null, "Spielort": "Bad Berneck", "Heimmannschaft": "MTV/SG Pegnitz", "Gastmannschaft": "TSV Bad Berneck",
+    "EndH": null, "EndG": null, "BälleH": null, "BälleG": null, "PktH": null, "PktG": null, "Anmerkungen": "Ergebnis fehlt (:-:) / Datum/Zeit fehlt / Bearbeiten"
+  }
+]

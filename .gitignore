@@ -1,0 +1,29 @@
+.aider*
+.next*
+~/
+node_modules
+.env*
+key_github
+key_github.pub
+
+# Log files
+npm-debug.log*
+yarn-error.log
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Test coverage
+coverage/
+
+#Database
+*.sqlite
+*.db
