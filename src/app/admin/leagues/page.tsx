@@ -1247,9 +1247,9 @@ export default function LeaguesPage() {
                         />
                         <span className="text-xs">Bälle Gast (Optional)</span>
                       </label>
-                      </div>
-                    </div>
-                  </div>
+                      </div> // Closes flex gap-4 for points
+                    </div> // Closes space-y-3 for MATCH_SCORE case
+                  // Removed two extra </div> tags here
                 )}
 
                 {/* Case 2: SET_SCORES - Keep explicit labels due to complexity */}
