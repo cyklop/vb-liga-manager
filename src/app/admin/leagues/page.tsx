@@ -148,38 +148,18 @@ export default function LeaguesPage() {
     })
   );
 
-  // --- User state ---
-  const [currentUser, setCurrentUser] = useState<User | null>(null)
-  const [isAdmin, setIsAdmin] = useState(false)
-  const [userTeamId, setUserTeamId] = useState<number | null>(null)
+  // --- User state (Removed currentUser, isAdmin, userTeamId as middleware handles auth) ---
 
   // --- Fetch initial data ---
   useEffect(() => {
-    fetchCurrentUser()
+    // Removed fetchCurrentUser() call
     fetchLeagues()
     fetchTeams()
   }, [])
 
-  const router = useRouter()
+  const router = useRouter() // Keep router if needed for other purposes
 
-  const fetchCurrentUser = async () => {
-    try {
-      const response = await fetch('/api/users/me')
-      if (response.ok) {
-        const user = await response.json()
-        setCurrentUser(user)
-        setIsAdmin(user.isAdmin || user.isSuperAdmin)
-        setUserTeamId(user.team?.id || null)
-        
-        // Wenn kein Admin, zur Dashboard-Seite umleiten
-        if (!user.isAdmin && !user.isSuperAdmin) {
-          router.push('/dashboard')
-        }
-      }
-    } catch (error) {
-      console.error('Fehler beim Abrufen des aktuellen Benutzers', error)
-    }
-  }
+  // Removed fetchCurrentUser function
 
   // --- Data Fetching Functions ---
   const fetchLeagues = async (selectLeagueId: number | null = null) => {
@@ -290,18 +270,10 @@ export default function LeaguesPage() {
    // Prüfe, ob die Liga aktiv ist
    if (!league.isActive) {
      toast.warn('Spielpaarungen können nur für aktive Ligen bearbeitet werden. Abgeschlossene Ligen müssen zuerst wieder aktiviert werden.');
-     return;
-   }
-
-   // Prüfe Berechtigungen für normale Benutzer
-   if (!isAdmin && userTeamId) {
-     // Normale Benutzer dürfen nur Heimspiele ihrer eigenen Mannschaft bearbeiten
-     if (fixture.homeTeamId !== userTeamId) {
-       toast.warn('Sie können nur Heimspiele Ihrer eigenen Mannschaft bearbeiten.');
-       return;
-     }
     }
     
+    // Removed permission check for non-admins, as only admins can access this page now.
+     
     setEditingFixture({
       ...fixture,
       fixtureDate: fixture.fixtureDate ? new Date(fixture.fixtureDate).toISOString().split('T')[0] : null,
@@ -667,15 +639,15 @@ export default function LeaguesPage() {
     <>
       <Navigation />
       <div className="container mx-auto px-4 py-8">
+        {/* Title is always "Ligen verwalten" now */}
         <h1 className="text-2xl font-bold mb-4">
-          {isAdmin ? "Ligen verwalten" : "Spielpläne anzeigen"}
+          Ligen verwalten
         </h1>
         
-        {/* Add League Button - nur für Admins */}
-        {isAdmin && (
-          <button
-            onClick={() => {
-              setEditingLeague(null);
+        {/* Add League Button - Always shown for admins */}
+        <button
+          onClick={() => {
+            setEditingLeague(null);
               // Reset form with default point rules when adding new
               setNewLeague({
                 name: '',
@@ -698,7 +670,7 @@ export default function LeaguesPage() {
           >
             Neue Liga hinzufügen
           </button>
-        )}
+        {/* Removed closing curly brace for isAdmin check */}
 
         {/* Leagues List */}
         <ul className="shadow overflow-hidden sm:rounded-md mt-2">
@@ -723,13 +695,13 @@ export default function LeaguesPage() {
                     Öffentlicher Link: <a href={`/public/league/${league.slug}`} target="_blank" className="link link-primary">/public/league/{league.slug}</a>
                   </p>
                 </div>
-                {/* Action Buttons */}
+                {/* Action Buttons - Always shown for admins */}
                 <div className="flex space-x-1">
-                  {isAdmin && (
-                    <>
-                      <button
-                        onClick={() => {
-                          setEditingLeague(league);
+                  {/* Removed isAdmin check wrapper */}
+                  <>
+                    <button
+                      onClick={() => {
+                        setEditingLeague(league);
                           setNewLeague({
                             name: league.name,
                             slug: league.slug,
@@ -796,7 +768,7 @@ export default function LeaguesPage() {
                         <CalendarDaysIcon className="h-5 w-5" />
                       </button>
                     </>
-                  )}
+                  {/* Removed closing curly brace for isAdmin check */}
                   <button
                     onClick={() => handleShowFixtures(league.id)}
                     className="p-1 btn btn-sm btn-soft btn-accent"
@@ -812,8 +784,8 @@ export default function LeaguesPage() {
                 <div className="px-4 py-4 sm:px-6 border-t border-gray-200 dark:border-border bg-base-content/10">
                   <div className="flex justify-between items-center mb-3">
                     <h3 className="text-lg font-semibold text-base-content/70">Spielplan</h3>
-                    {/* Save Order Button - nur für Admins - DaisyUI */}
-                    {isAdmin && isOrderChanged && (
+                    {/* Save Order Button - Always shown if order changed */}
+                    {isOrderChanged && (
                        <button
                          onClick={handleSaveFixtureOrder}
                          className="btn btn-sm btn-success" // DaisyUI success button, small size

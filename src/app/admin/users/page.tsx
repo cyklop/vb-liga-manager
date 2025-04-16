@@ -34,10 +34,18 @@ export default function UsersPage() {
   const [userToDelete, setUserToDelete] = useState<User | null>(null)
   const [isEditing, setIsEditing] = useState(false)
 
+  // Removed useEffect hook that fetched current user (middleware handles auth)
+  // useEffect(() => {
+  //   fetchUsers()
+  //   fetchTeams()
+  // }, [])
+
+  // Fetch data directly when component mounts or when needed
   useEffect(() => {
     fetchUsers()
     fetchTeams()
   }, [])
+
 
   const fetchUsers = async () => {
     const response = await fetch('/api/users')

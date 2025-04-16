@@ -48,55 +48,23 @@ export default function TeamsPage() {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [teamToDelete, setTeamToDelete] = useState<Team | null>(null)
 
-  const [currentUser, setCurrentUser] = useState<User | null>(null)
-  const [isAdmin, setIsAdmin] = useState(false)
-  const [userTeamId, setUserTeamId] = useState<number | null>(null)
+  // Removed currentUser, isAdmin, userTeamId states
 
   useEffect(() => {
-    const init = async () => {
-      await fetchCurrentUser()
-      fetchTeams()
-      fetchUsers()
-    }
-    init()
+    // Removed init function and fetchCurrentUser call
+    fetchTeams()
+    fetchUsers()
   }, [])
 
-  const fetchCurrentUser = async () => {
-    try {
-      const response = await fetch('/api/users/me')
-      if (response.ok) {
-        const user = await response.json()
-        setCurrentUser(user)
-        setIsAdmin(user.isAdmin || user.isSuperAdmin)
-        setUserTeamId(user.team?.id || null)
-        
-        // Wenn kein Admin und kein Team, zur Dashboard-Seite umleiten
-        if (!user.isAdmin && !user.isSuperAdmin && !user.team) {
-          router.push('/dashboard')
-        }
-      }
-    } catch (error) {
-      console.error('Fehler beim Abrufen des aktuellen Benutzers', error)
-    }
-  }
+  // Removed fetchCurrentUser function
 
   const fetchTeams = async () => {
     try {
       const response = await fetch('/api/teams')
       if (response.ok) {
         const data = await response.json()
-        
-        // Prüfen, ob der aktuelle Benutzer ein Admin ist
-        const isUserAdmin = currentUser?.isAdmin || currentUser?.isSuperAdmin
-        
-        // Wenn kein Admin, dann nur das eigene Team anzeigen
-        if (!isUserAdmin && currentUser?.team?.id) {
-          const filteredTeams = data.filter((team: Team) => team.id === currentUser.team?.id)
-          setTeams(filteredTeams)
-        } else {
-          // Für Admins oder Super-Admins alle Teams anzeigen
-          setTeams(data)
-        }
+        // Always show all teams now, as only admins access this page
+        setTeams(data)
       }
     } catch (error) {
       console.error('Fehler beim Abrufen der Teams', error)
@@ -215,13 +183,14 @@ export default function TeamsPage() {
     <>
       <Navigation />
       <div className="container mx-auto px-4 py-8">
+        {/* Title is always "Mannschaften verwalten" */}
         <h1 className="text-2xl font-bold mb-4">
-          {isAdmin ? "Mannschaften verwalten" : "Meine Mannschaft"}
+          Mannschaften verwalten
         </h1>
-        {isAdmin && (
-          <button
-            onClick={() => {
-              setEditingTeam(null)
+        {/* Add Team Button - Always shown */}
+        <button
+          onClick={() => {
+            setEditingTeam(null)
               setFormData({}) // Reset form data for adding new team
               setIsModalOpen(true)
             }}
@@ -229,7 +198,7 @@ export default function TeamsPage() {
           >
             Neue Mannschaft hinzufügen
           </button>
-        )}
+        {/* Removed closing curly brace for isAdmin check */}
         <ul className="shadow overflow-hidden sm:rounded-md mt-2">
           {teams.map((team) => (
             <li key={team.id} className="border-b border-gray-200 dark:border-border last:border-b-0">
@@ -262,16 +231,16 @@ export default function TeamsPage() {
                   >
                     <PencilIcon className="h-5 w-5" />
                   </button>
-                  {isAdmin && (
-                    <button
-                      // onClick anpassen, um den Dialog zu öffnen
-                      onClick={() => requestDeleteTeam(team)}
+                  {/* Delete Button - Always shown */}
+                  <button
+                    // onClick anpassen, um den Dialog zu öffnen
+                    onClick={() => requestDeleteTeam(team)}
                       className="p-1 btn btn-sm btn-soft btn-error"
                       title="Mannschaft löschen"
                     >
                       <TrashIcon className="h-5 w-5" />
                     </button>
-                  )}
+                  {/* Removed closing curly brace for isAdmin check */}
                 </div>
               </div>
             </li>
