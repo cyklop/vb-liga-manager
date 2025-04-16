@@ -861,7 +861,7 @@ export default function LeaguesPage() {
  
       {/* Add/Edit League Modal - Increase width using max-w- class */}
       {/* Modal component now handles internal scrolling */}
-      <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingLeague(null); }} title={editingLeague ? "Liga bearbeiten" : "Neue Liga hinzufügen"} maxWidth="max-w-2xl">
+      <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingLeague(null); }} title={editingLeague ? "Liga bearbeiten" : "Neue Liga hinzufügen"} >
           {/* Removed the wrapping div with max-h and overflow-y */}
           {/* Add padding directly to the form */}
           <form onSubmit={editingLeague ? handleEditLeague : handleAddLeague} className="space-y-4 p-1"> {/* Reduced padding */}
@@ -880,11 +880,8 @@ export default function LeaguesPage() {
             </label>
 
             {/* League Slug - DaisyUI Input Group (Keep as is, not compatible with floating label) */}
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text">URL-Slug</span>
-              </div>
-              <div className="join"> {/* Use join for input group */}
+            <label className="form-control">              
+              <div className="join w-full"> {/* Use join for input group */}
                 <span className="btn join-item rounded-l-full pointer-events-none">/public/league/</span> {/* Use btn for styling */}
                 <input
                   id="leagueSlug"
@@ -892,13 +889,13 @@ export default function LeaguesPage() {
                   value={newLeague.slug}
                   onChange={(e) => setNewLeague({...newLeague, slug: createSlug(e.target.value)})} // Ensure slug is always formatted
                   placeholder={newLeague.name ? createSlug(newLeague.name) : "liga-name"}
-                  className="input input-bordered join-item w-full" // Use w-full within join
+                  className="input input-bordered join-item" // Use w-full within join
                 />
-              </div>
-              <div className="label">
-                 <span className="label-text-alt">Nur Kleinbuchstaben, Zahlen, Bindestriche.</span>
-              </div>
+              </div>              
             </label>
+            <div className="label">
+                 <span className="label-text-alt">Nur Kleinbuchstaben, Zahlen, Bindestriche.</span>
+            </div>
 
             {/* Number of Teams - DaisyUI Floating Label */}
             <label className="floating-label">
@@ -982,63 +979,61 @@ export default function LeaguesPage() {
                 </select>
               </label>
               </div>
-            </div>
-          </fieldset>
+            </fieldset>
  
           {/* Point Rules Section - DaisyUI */}
-          <fieldset className="border border-base-300 p-3 rounded-md">
+            <fieldset className="border border-base-300 p-3 rounded-md">
               <legend className="text-sm font-medium px-1">Punktregeln</legend>
               <div className="grid grid-cols-2 gap-4 mt-1"> {/* Use gap-4 */}
                   {/* Point Inputs with DaisyUI Floating Label */}
-                  <label className="floating-label">
-                    <input
-                        id="pointsWin30"
-                        type="number"
-                        min="0"
-                        value={newLeague.pointsWin30}
-                        onChange={(e) => setNewLeague({...newLeague, pointsWin30: parseInt(e.target.value) || 0})}
-                        placeholder=" "
-                        className="input input-bordered w-full text-sm"
-                    />
-                    <span className="text-xs">Punkte 3:0 / 2:0</span>
-                  </label>
-                  <label className="floating-label">
-                    <input
-                        id="pointsWin31"
-                        type="number"
-                        min="0"
-                        value={newLeague.pointsWin31}
-                        onChange={(e) => setNewLeague({...newLeague, pointsWin31: parseInt(e.target.value) || 0})}
-                        placeholder=" "
-                        className="input input-bordered w-full text-sm"
-                    />
-                     <span className="text-xs">Punkte 3:1 / 2:1</span>
-                  </label>
-                  <label className="floating-label">
-                    <input
-                        id="pointsWin32"
-                        type="number"
-                        min="0"
-                        value={newLeague.pointsWin32}
-                        onChange={(e) => setNewLeague({...newLeague, pointsWin32: parseInt(e.target.value) || 0})}
-                        placeholder=" "
-                        className="input input-bordered w-full text-sm"
-                    />
-                    <span className="text-xs">Punkte 3:2 (Sieger)</span>
-                  </label>
-                  <label className="floating-label">
-                    <input
-                        id="pointsLoss32"
-                        type="number"
-                        min="0"
-                        value={newLeague.pointsLoss32}
-                        onChange={(e) => setNewLeague({...newLeague, pointsLoss32: parseInt(e.target.value) || 0})}
-                        placeholder=" "
-                        className="input input-bordered w-full text-sm"
-                    />
-                    <span className="text-xs">Punkte 2:3 (Verlierer)</span>
-                  </label>
-                  </div>
+                <label className="floating-label">
+                  <input
+                      id="pointsWin30"
+                      type="number"
+                      min="0"
+                      value={newLeague.pointsWin30}
+                      onChange={(e) => setNewLeague({...newLeague, pointsWin30: parseInt(e.target.value) || 0})}
+                      placeholder=" "
+                      className="input input-bordered w-full text-sm"
+                  />
+                  <span className="text-xs">Punkte 3:0 / 2:0</span>
+                </label>
+                <label className="floating-label">
+                  <input
+                      id="pointsWin31"
+                      type="number"
+                      min="0"
+                      value={newLeague.pointsWin31}
+                      onChange={(e) => setNewLeague({...newLeague, pointsWin31: parseInt(e.target.value) || 0})}
+                      placeholder=" "
+                      className="input input-bordered w-full text-sm"
+                  />
+                    <span className="text-xs">Punkte 3:1 / 2:1</span>
+                </label>
+                <label className="floating-label">
+                  <input
+                      id="pointsWin32"
+                      type="number"
+                      min="0"
+                      value={newLeague.pointsWin32}
+                      onChange={(e) => setNewLeague({...newLeague, pointsWin32: parseInt(e.target.value) || 0})}
+                      placeholder=" "
+                      className="input input-bordered w-full text-sm"
+                  />
+                  <span className="text-xs">Punkte 3:2 (Sieger)</span>
+                </label>
+                <label className="floating-label">
+                  <input
+                      id="pointsLoss32"
+                      type="number"
+                      min="0"
+                      value={newLeague.pointsLoss32}
+                      onChange={(e) => setNewLeague({...newLeague, pointsLoss32: parseInt(e.target.value) || 0})}
+                      placeholder=" "
+                      className="input input-bordered w-full text-sm"
+                  />
+                  <span className="text-xs">Punkte 2:3 (Verlierer)</span>
+                </label>                  
               </div>
           </fieldset>
  
@@ -1247,9 +1242,9 @@ export default function LeaguesPage() {
                         />
                         <span className="text-xs">Bälle Gast (Optional)</span>
                       </label>
-                      </div> // Closes flex gap-4 for points
-                    </div> // Closes space-y-3 for MATCH_SCORE case
-                  // Removed two extra </div> tags here
+                      </div>
+                    </div>
+                  
                 )}
 
                 {/* Case 2: SET_SCORES - Keep explicit labels due to complexity */}
