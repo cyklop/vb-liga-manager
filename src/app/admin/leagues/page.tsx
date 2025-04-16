@@ -1252,7 +1252,6 @@ export default function LeaguesPage() {
                   </div>
                 )}
 
-                {/* Case 2: SET_SCORES */}
                 {/* Case 2: SET_SCORES - Keep explicit labels due to complexity */}
                 {editingLeagueContext.scoreEntryType === ScoreEntryType.SET_SCORES && (
                   <div className="space-y-2">
