@@ -359,9 +359,7 @@ export default function TeamsPage() {
           </div>
         </form>
       </Modal>
-      {/* DeleteConfirmation Komponente hinzufügen */}
-            className="mt-4 w-full btn btn-primary"
-          >
+
       {/* DeleteConfirmation Komponente hinzufügen */}
       {showDeleteConfirmation && teamToDelete && (
         <DeleteConfirmation
