@@ -812,11 +812,11 @@ export default function LeaguesPage() {
                 <div className="px-4 py-4 sm:px-6 border-t border-gray-200 dark:border-border bg-base-content/10">
                   <div className="flex justify-between items-center mb-3">
                     <h3 className="text-lg font-semibold text-base-content/70">Spielplan</h3>
-                    {/* Save Order Button - nur für Admins */}
+                    {/* Save Order Button - nur für Admins - DaisyUI */}
                     {isAdmin && isOrderChanged && (
                        <button
                          onClick={handleSaveFixtureOrder}
-                         className="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-4 rounded-sm text-sm flex items-center shadow-sm transition duration-150 ease-in-out"
+                         className="btn btn-sm btn-success" // DaisyUI success button, small size
                        >
                          <CheckIcon className="h-4 w-4 mr-1" />
                          Reihenfolge speichern
@@ -864,341 +864,372 @@ export default function LeaguesPage() {
       <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingLeague(null); }} title={editingLeague ? "Liga bearbeiten" : "Neue Liga hinzufügen"} maxWidth="max-w-2xl">
           {/* Removed the wrapping div with max-h and overflow-y */}
           {/* Add padding directly to the form */}
-          <form onSubmit={editingLeague ? handleEditLeague : handleAddLeague} className="space-y-4 p-4">
-            {/* League Name */}
-            <div>
-              <label htmlFor="leagueName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Liganame</label>
-            <input
-              id="leagueName"
-              type="text"
-              value={newLeague.name}
-              onChange={(e) => setNewLeague({...newLeague, name: e.target.value})}
-              placeholder="z.B. Kreisliga A"
-              required
-              className="mt-1 w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300"
-            />
-          </div>
-          
-          <div className="mt-4">
-            <label htmlFor="leagueSlug" className="block text-sm font-medium text-gray-700">URL-Slug</label>
-            <div className="mt-1 flex rounded-md shadow-sm">
-              <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-                /public/league/
-              </span>
+          <form onSubmit={editingLeague ? handleEditLeague : handleAddLeague} className="space-y-4 p-1"> {/* Reduced padding */}
+            {/* League Name - DaisyUI Inline Label */}
+            <label className="input input-bordered flex items-center gap-2">
+              Name
               <input
-                id="leagueSlug"
+                id="leagueName"
                 type="text"
-                value={newLeague.slug}
-                onChange={(e) => setNewLeague({...newLeague, slug: e.target.value})}
-                placeholder={newLeague.name ? createSlug(newLeague.name) : "volleyball-liga-2024"}
-                className="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border border-gray-300 focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300"
+                value={newLeague.name}
+                onChange={(e) => setNewLeague({...newLeague, name: e.target.value, slug: newLeague.slug || createSlug(e.target.value) })} // Auto-generate slug if empty
+                placeholder="z.B. Kreisliga A"
+                required
+                className="grow" // Use grow to fill space
               />
+            </label>
+
+            {/* League Slug - DaisyUI Input Group */}
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">URL-Slug</span>
+              </div>
+              <div className="join"> {/* Use join for input group */}
+                <span className="btn join-item rounded-l-full pointer-events-none">/public/league/</span> {/* Use btn for styling */}
+                <input
+                  id="leagueSlug"
+                  type="text"
+                  value={newLeague.slug}
+                  onChange={(e) => setNewLeague({...newLeague, slug: createSlug(e.target.value)})} // Ensure slug is always formatted
+                  placeholder={newLeague.name ? createSlug(newLeague.name) : "liga-name"}
+                  className="input input-bordered join-item w-full" // Use w-full within join
+                />
+              </div>
+              <div className="label">
+                 <span className="label-text-alt">Nur Kleinbuchstaben, Zahlen, Bindestriche.</span>
+              </div>
+            </label>
+
+            {/* Number of Teams - DaisyUI Inline Label */}
+            <label className="input input-bordered flex items-center gap-2">
+              Anzahl Teams
+              <input
+                id="numberOfTeams"
+                type="number"
+                min="2" // A league needs at least 2 teams
+                value={newLeague.numberOfTeams}
+                onChange={(e) => setNewLeague({...newLeague, numberOfTeams: parseInt(e.target.value) || 0})}
+                required
+                className="grow"
+              />
+            </label>
+
+            {/* Return Matches & Active Status Checkboxes - DaisyUI form-control */}
+            <div className="flex gap-4">
+              <div className="form-control">
+                <label className="label cursor-pointer gap-2">
+                  <span className="label-text">Hin-/Rückrunde</span>
+                  <input
+                    id="hasReturnMatches"
+                    type="checkbox"
+                    checked={newLeague.hasReturnMatches}
+                    onChange={(e) => setNewLeague({...newLeague, hasReturnMatches: e.target.checked})}
+                    className="checkbox checkbox-primary"
+                  />
+                </label>
+              </div>
+              <div className="form-control">
+                <label className="label cursor-pointer gap-2">
+                  <span className="label-text">Liga aktiv</span>
+                  <input
+                    id="isActive"
+                    type="checkbox"
+                    checked={newLeague.isActive}
+                    onChange={(e) => setNewLeague({...newLeague, isActive: e.target.checked})}
+                    className="checkbox checkbox-primary"
+                  />
+                </label>
+              </div>
             </div>
-            <p className="mt-1 text-xs text-gray-500">
-              Dieser Wert wird in der URL verwendet. Nur Kleinbuchstaben, Zahlen und Bindestriche erlaubt. Leer lassen für automatische Generierung aus dem Namen.
-            </p>
-          </div>
-          {/* Number of Teams */}
-          <div>
-            <label htmlFor="numberOfTeams" className="block text-sm font-medium text-gray-700">Anzahl der Mannschaften</label>
-            <input
-              id="numberOfTeams"
-              type="number"
-              min="2" // A league needs at least 2 teams
-              value={newLeague.numberOfTeams}
-              onChange={(e) => setNewLeague({...newLeague, numberOfTeams: parseInt(e.target.value) || 0})}
-              required
-              className="mt-1 w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300"
-            />
-          </div>
-          {/* Return Matches Checkbox */}
-          <div className="flex items-center">
-            <input
-              id="hasReturnMatches"
-              type="checkbox"
-              checked={newLeague.hasReturnMatches}
-              onChange={(e) => setNewLeague({...newLeague, hasReturnMatches: e.target.checked})}
-              className="h-4 w-4 text-indigo-600 border-gray-300 rounded-sm focus:ring-indigo-500"
-            />
-            <label htmlFor="hasReturnMatches" className="ml-2 block text-sm text-gray-900">Hin- und Rückrunde</label>
-          </div>
-          
-          {/* Active Status Checkbox */}
-          <div className="flex items-center">
-            <input
-              id="isActive"
-              type="checkbox"
-              checked={newLeague.isActive}
-              onChange={(e) => setNewLeague({...newLeague, isActive: e.target.checked})}
-              className="h-4 w-4 text-indigo-600 border-gray-300 rounded-sm focus:ring-indigo-500"
-            />
-            <label htmlFor="isActive" className="ml-2 block text-sm text-gray-900">Liga ist aktiv</label>
           </div>
  
-          {/* Score Entry Configuration Section */}
-          <fieldset className="border border-gray-300 p-3 rounded-md">
-            <legend className="text-sm font-medium text-gray-700 px-1">Ergebniseingabe</legend>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-1">
-              {/* Score Entry Type */}
-              <div>
-                <label htmlFor="scoreEntryType" className="block text-xs font-medium text-gray-600">Art der Eingabe</label>
+          {/* Score Entry Configuration Section - DaisyUI */}
+          <fieldset className="border border-base-300 p-3 rounded-md">
+            <legend className="text-sm font-medium px-1">Ergebniseingabe</legend>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-1"> {/* Responsive grid */}
+              {/* Score Entry Type - DaisyUI Select */}
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text">Art der Eingabe</span>
+                </div>
                 <select
                   id="scoreEntryType"
                   name="scoreEntryType"
                   value={newLeague.scoreEntryType}
                   onChange={(e) => setNewLeague({ ...newLeague, scoreEntryType: e.target.value as ScoreEntryType })}
-                  className="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300"
+                  className="select select-bordered w-full"
                 >
                   <option value={ScoreEntryType.MATCH_SCORE}>Nur Gesamtsätze (z.B. 3:1)</option>
-                  <option value={ScoreEntryType.SET_SCORES}>Einzelne Satzergebnisse (z.B. 25:20, 23:25, ...)</option>
+                  <option value={ScoreEntryType.SET_SCORES}>Einzelne Satzergebnisse (z.B. 25:20, ...)</option>
                 </select>
-              </div>
-              {/* Sets to Win */}
-              <div>
-                <label htmlFor="setsToWin" className="block text-xs font-medium text-gray-600">Gewinnsätze</label>
+              </label>
+              {/* Sets to Win - DaisyUI Select */}
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text">Gewinnsätze</span>
+                </div>
                 <select
                   id="setsToWin"
                   name="setsToWin"
                   value={newLeague.setsToWin}
                   onChange={(e) => setNewLeague({ ...newLeague, setsToWin: parseInt(e.target.value) || 3 })}
-                  className="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-hidden focus:ring-3 focus:ring-indigo-100 focus:border-indigo-300"
+                  className="select select-bordered w-full"
                 >
                   <option value={2}>2 (Best-of-3)</option>
                   <option value={3}>3 (Best-of-5)</option>
                   {/* Add more options if needed */}
                 </select>
+              </label>
               </div>
             </div>
           </fieldset>
  
-          {/* Point Rules Section (Moved Here) */}
-          <fieldset className="border border-gray-300 p-3 rounded-md">
-              <legend className="text-sm font-medium text-gray-700 px-1">Punktregeln</legend>
-              <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-1">
-                  <div>
-                      <label htmlFor="pointsWin30" className="block text-xs font-medium text-gray-600">Punkte für 3:0 / 2:0</label> {/* Adjusted label */}
-                      <input
-                          id="pointsWin30"
-                          type="number"
-                          min="0"
-                          value={newLeague.pointsWin30}
-                          onChange={(e) => setNewLeague({...newLeague, pointsWin30: parseInt(e.target.value) || 0})}
-                          className="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
-                      />
-                  </div>
-                   <div>
-                      <label htmlFor="pointsWin31" className="block text-xs font-medium text-gray-600">Punkte für 3:1 / 2:1</label> {/* Adjusted label */}
-                      <input
-                          id="pointsWin31"
-                          type="number"
-                          min="0"
-                          value={newLeague.pointsWin31}
-                          onChange={(e) => setNewLeague({...newLeague, pointsWin31: parseInt(e.target.value) || 0})}
-                          className="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
-                      />
-                  </div>
-                   <div>
-                      <label htmlFor="pointsWin32" className="block text-xs font-medium text-gray-600">Punkte für 3:2 (Sieger)</label>
-                      <input
-                          id="pointsWin32"
-                          type="number"
-                          min="0"
-                          value={newLeague.pointsWin32}
-                          onChange={(e) => setNewLeague({...newLeague, pointsWin32: parseInt(e.target.value) || 0})}
-                          className="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
-                      />
-                  </div>
-                   <div>
-                      <label htmlFor="pointsLoss32" className="block text-xs font-medium text-gray-600">Punkte für 2:3 (Verlierer)</label>
-                      <input
-                          id="pointsLoss32"
-                          type="number"
-                          min="0"
-                          value={newLeague.pointsLoss32}
-                          onChange={(e) => setNewLeague({...newLeague, pointsLoss32: parseInt(e.target.value) || 0})}
-                          className="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
-                      />
+          {/* Point Rules Section - DaisyUI */}
+          <fieldset className="border border-base-300 p-3 rounded-md">
+              <legend className="text-sm font-medium px-1">Punktregeln</legend>
+              <div className="grid grid-cols-2 gap-4 mt-1"> {/* Use gap-4 */}
+                  {/* Point Inputs with DaisyUI form-control and label */}
+                  <label className="form-control w-full">
+                    <div className="label">
+                      <span className="label-text text-xs">Punkte 3:0 / 2:0</span>
+                    </div>
+                    <input
+                        id="pointsWin30"
+                        type="number"
+                        min="0"
+                        value={newLeague.pointsWin30}
+                        onChange={(e) => setNewLeague({...newLeague, pointsWin30: parseInt(e.target.value) || 0})}
+                        className="input input-bordered w-full text-sm"
+                    />
+                  </label>
+                  <label className="form-control w-full">
+                    <div className="label">
+                      <span className="label-text text-xs">Punkte 3:1 / 2:1</span>
+                    </div>
+                    <input
+                        id="pointsWin31"
+                        type="number"
+                        min="0"
+                        value={newLeague.pointsWin31}
+                        onChange={(e) => setNewLeague({...newLeague, pointsWin31: parseInt(e.target.value) || 0})}
+                        className="input input-bordered w-full text-sm"
+                    />
+                  </label>
+                  <label className="form-control w-full">
+                    <div className="label">
+                      <span className="label-text text-xs">Punkte 3:2 (Sieger)</span>
+                    </div>
+                    <input
+                        id="pointsWin32"
+                        type="number"
+                        min="0"
+                        value={newLeague.pointsWin32}
+                        onChange={(e) => setNewLeague({...newLeague, pointsWin32: parseInt(e.target.value) || 0})}
+                        className="input input-bordered w-full text-sm"
+                    />
+                  </label>
+                  <label className="form-control w-full">
+                    <div className="label">
+                      <span className="label-text text-xs">Punkte 2:3 (Verlierer)</span>
+                    </div>
+                    <input
+                        id="pointsLoss32"
+                        type="number"
+                        min="0"
+                        value={newLeague.pointsLoss32}
+                        onChange={(e) => setNewLeague({...newLeague, pointsLoss32: parseInt(e.target.value) || 0})}
+                        className="input input-bordered w-full text-sm"
+                    />
+                  </label>
                   </div>
               </div>
           </fieldset>
  
-          {/* Assign Teams */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Teams zuordnen (max. {newLeague.numberOfTeams || 'N/A'})
+          {/* Assign Teams - DaisyUI */}
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Teams zuordnen (max. {newLeague.numberOfTeams || 'N/A'})</span>
             </label>
-            <div className="mt-1 max-h-40 overflow-y-auto border border-gray-300 rounded-md p-2 space-y-1">
+            <div className="mt-1 max-h-40 overflow-y-auto border border-base-300 rounded-md p-2 space-y-1 bg-base-100"> {/* Added bg-base-100 */}
               {teams.length > 0 ? teams.map(team => (
-                <div key={team.id} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={`team-${team.id}`}
-                    checked={newLeague.teamIds.includes(team.id)}
-                    // Disable adding more teams if the max number is reached and this team is not already selected
-                    disabled={!newLeague.teamIds.includes(team.id) && newLeague.teamIds.length >= newLeague.numberOfTeams} 
-                    onChange={(e) => {
-                      const isChecked = e.target.checked;
-                      const currentTeamIds = newLeague.teamIds;
-                      const maxTeams = newLeague.numberOfTeams;
+                <div key={team.id} className="form-control"> {/* Wrap each checkbox in form-control */}
+                  <label className="label cursor-pointer justify-start gap-2">
+                    <input
+                      type="checkbox"
+                      id={`team-${team.id}`}
+                      checked={newLeague.teamIds.includes(team.id)}
+                      // Disable adding more teams if the max number is reached and this team is not already selected
+                      disabled={!newLeague.teamIds.includes(team.id) && newLeague.teamIds.length >= newLeague.numberOfTeams}
+                      onChange={(e) => {
+                        const isChecked = e.target.checked;
+                        const currentTeamIds = newLeague.teamIds;
+                        const maxTeams = newLeague.numberOfTeams;
 
-                      if (isChecked) {
-                        if (currentTeamIds.length < maxTeams) {
-                          setNewLeague({ ...newLeague, teamIds: [...currentTeamIds, team.id] });
-                       } else {
-                         // Prevent checking if max is reached (though disabled should handle this)
-                         e.target.checked = false;
-                         toast.warn(`Es können maximal ${maxTeams} Teams zugewiesen werden.`);
-                       }
-                     } else {
-                       setNewLeague({ ...newLeague, teamIds: currentTeamIds.filter(id => id !== team.id) });
-                      }
-                    }}
-                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded-sm focus:ring-indigo-500 disabled:opacity-50"
-                  />
-                  <label htmlFor={`team-${team.id}`} className="ml-2 block text-sm text-gray-900">{team.name}</label>
+                        if (isChecked) {
+                          if (currentTeamIds.length < maxTeams) {
+                            setNewLeague({ ...newLeague, teamIds: [...currentTeamIds, team.id] });
+                          } else {
+                            // Prevent checking if max is reached (though disabled should handle this)
+                            e.target.checked = false;
+                            toast.warn(`Es können maximal ${maxTeams} Teams zugewiesen werden.`);
+                          }
+                        } else {
+                          setNewLeague({ ...newLeague, teamIds: currentTeamIds.filter(id => id !== team.id) });
+                        }
+                      }}
+                      className="checkbox checkbox-sm checkbox-primary disabled:opacity-50" // Use checkbox-sm
+                    />
+                    <span className="label-text text-sm">{team.name}</span> {/* Use text-sm */}
+                  </label>
                 </div>
-              )) : <p className="text-sm text-gray-500">Keine Teams verfügbar.</p>}
+              )) : <p className="text-sm text-base-content/70 p-2">Keine Teams verfügbar.</p>} {/* Adjusted text color */}
             </div>
-            <p className="text-sm text-gray-500 mt-1">
-              {newLeague.teamIds.length} von {newLeague.numberOfTeams || 0} Teams ausgewählt
-            </p>
+            <div className="label">
+              <span className="label-text-alt">{newLeague.teamIds.length} von {newLeague.numberOfTeams || 0} Teams ausgewählt</span>
+            </div>
           </div>
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            {editingLeague ? "Liga aktualisieren" : "Liga hinzufügen"}
-          </button>
+          {/* Submit Button - DaisyUI */}
+          <div className="modal-action mt-6"> {/* Use modal-action for button placement */}
+            <button type="button" className="btn btn-ghost" onClick={() => { setIsModalOpen(false); setEditingLeague(null); }}>Abbrechen</button>
+            <button
+              type="submit"
+              className="btn btn-primary" // DaisyUI button classes
+            >
+              {editingLeague ? "Liga aktualisieren" : "Liga hinzufügen"}
+            </button>
+          </div>
         </form>
-       {/* Removed the closing tag for the scrollable div */}
       </Modal>
 
       {/* Edit Fixture Modal */}
       <Modal isOpen={isFixtureModalOpen} onClose={() => { setIsFixtureModalOpen(false); setEditingFixture(null); setScoreInputData(null); setEditingLeagueContext(null); }} title="Spielpaarung bearbeiten">
         {editingFixture && editingLeagueContext && scoreInputData && (
-          <form onSubmit={handleUpdateFixture} className="space-y-4">
-            {/* Team Selection (Enabled) with Swap Button */}
-            <div className="grid grid-cols-[1fr_auto_1fr] gap-x-2 items-center"> {/* Adjusted grid for swap button */}
-              <div>
-                <label htmlFor="homeTeamId" className="block text-sm font-medium text-base-content/50">Heimteam</label>
+          <form onSubmit={handleUpdateFixture} className="space-y-4 p-1"> {/* Reduced padding */}
+            {/* Team Selection (Enabled) with Swap Button - DaisyUI */}
+            <div className="grid grid-cols-[1fr_auto_1fr] gap-x-2 items-end"> {/* Align items to end for button */}
+              {/* Home Team Select */}
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text">Heimteam</span>
+                </div>
                 <select
                   id="homeTeamId"
                   name="homeTeamId"
                   value={editingFixture.homeTeamId || ''}
                   onChange={handleFixtureInputChange}
                   required
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base select sm:text-sm rounded-md"
+                  className="select select-bordered w-full"
                 >
                   <option value="" disabled>Wählen...</option>
-                  {/* Filter teams to only those in the current league */}
                   {editingLeagueContext?.teams.map(team => (
                     <option key={team.id} value={team.id}>{team.name}</option>
                   ))}
                 </select>
-              </div>
+              </label>
               {/* Swap Teams Button */}
-              <div className="flex items-end mt-4 justify-baseline pb-1"> {/* Align button vertically */}
-                <button
-                  type="button"
-                  onClick={handleSwapTeams}
-                  className="p-1 btn btn-sm btn-soft btn-secondary"
-                  title="Teams tauschen"
-                >
-                  <ArrowsRightLeftIcon className="h-5 w-5" />
-                </button>
-              </div>
-              <div>
-                <label htmlFor="awayTeamId" className="block text-sm font-medium text-base-content/50">Auswärtsteam</label>
+              <button
+                type="button"
+                onClick={handleSwapTeams}
+                className="btn btn-square btn-ghost" // Use btn-square for icon button
+                title="Teams tauschen"
+              >
+                <ArrowsRightLeftIcon className="h-5 w-5" />
+              </button>
+              {/* Away Team Select */}
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text">Auswärtsteam</span>
+                </div>
                 <select
                   id="awayTeamId"
                   name="awayTeamId"
                   value={editingFixture.awayTeamId || ''}
                   onChange={handleFixtureInputChange}
                   required
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base select sm:text-sm rounded-md"
+                  className="select select-bordered w-full"
                 >
                   <option value="" disabled>Wählen...</option>
-                  {/* Filter teams to only those in the current league */}
                   {editingLeagueContext?.teams.map(team => (
                     <option key={team.id} value={team.id}>{team.name}</option>
                   ))}
                 </select>
-              </div>
-            </div>
-
-            {/* Fixture Date */}
-            <div>
-              <label htmlFor="fixtureDate" className="w-full text-sm font-medium input">
-                <span className='label'>Datum</span>
-                <input
-                  type="date"
-                  id="fixtureDate"
-                  name="fixtureDate"
-                  value={editingFixture.fixtureDate || ''}
-                  onChange={handleFixtureInputChange}
-                  className="date"
-                />
               </label>
             </div>
- 
-            {/* Fixture Time */}
-            <div>
-            <label htmlFor="fixtureTime" className="w-full text-sm font-medium input">
-                <span className='label'>Uhrzeit</span>
-                <input
-                  type="time"
-                  id="fixtureTime"
-                  name="fixtureTime"
-                  value={editingFixture.fixtureTime || ''}
-                  onChange={handleFixtureInputChange}
-                  className="time"
-                />
-              </label>
-              
+
+            {/* Fixture Date - DaisyUI Inline Label */}
+            <label className="input input-bordered flex items-center gap-2">
+              Datum
+              <input
+                type="date"
+                id="fixtureDate"
+                name="fixtureDate"
+                value={editingFixture.fixtureDate || ''}
+                onChange={handleFixtureInputChange}
+                className="grow" // Use grow
+              />
+            </label>
+
+            {/* Fixture Time - DaisyUI Inline Label */}
+            <label className="input input-bordered flex items-center gap-2">
+              Uhrzeit
+              <input
+                type="time"
+                id="fixtureTime"
+                name="fixtureTime"
+                value={editingFixture.fixtureTime || ''}
+                onChange={handleFixtureInputChange}
+                className="grow" // Use grow
+              />
+            </label>
             </div>
 
-            {/* --- Score Input Section (Conditional) --- */}
-            <fieldset className="border border-gray-300 dark:border-border p-3 rounded-md">
-              <legend className="text-sm font-medium text-gray-700 dark:text-gray-300 px-1">Ergebnis</legend>
+            {/* --- Score Input Section (Conditional) - DaisyUI --- */}
+            <fieldset className="border border-base-300 p-3 rounded-md">
+              <legend className="text-sm font-medium px-1">Ergebnis</legend>
               <div className="mt-2 space-y-3">
 
                 {/* Case 1: MATCH_SCORE */}
                 {editingLeagueContext.scoreEntryType === ScoreEntryType.MATCH_SCORE && (
-                  <div className="space-y-3"> {/* Wrap in a div for spacing */}
+                  <div className="space-y-3">
                     {/* Set Scores */}
-                    <div className="flex space-x-4">
-                      <div className="flex-1">
-                        <label htmlFor="homeScore" className="block text-xs font-medium text-base-content/70">Sätze Heim</label>
-                      <input
-                        type="number"
-                        id="homeScore"
-                        name="homeScore"
-                        min="0" max={editingLeagueContext.setsToWin}
-                        value={scoreInputData.homeScore ?? ''}
-                        onChange={(e) => handleScoreInputChange(e)}
-                        placeholder={`0-${editingLeagueContext.setsToWin}`}
-                        className="mt-1 block w-full px-3 py-1.5 text-base input sm:text-sm rounded-md"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <label htmlFor="awayScore" className="block text-xs font-medium text-base-content/70">Sätze Gast</label>
-                      <input
-                        type="number"
-                        id="awayScore"
-                        name="awayScore"
-                        min="0" max={editingLeagueContext.setsToWin}
-                        value={scoreInputData.awayScore ?? ''}
-                        onChange={(e) => handleScoreInputChange(e)}
-                        placeholder={`0-${editingLeagueContext.setsToWin}`}
-                        className="mt-1 block w-full px-3 py-1.5 text-base input sm:text-sm rounded-md"
-                      />
-                      </div>
+                    <div className="flex gap-4">
+                      <label className="form-control w-full">
+                        <div className="label">
+                          <span className="label-text text-xs">Sätze Heim</span>
+                        </div>
+                        <input
+                          type="number"
+                          id="homeScore"
+                          name="homeScore"
+                          min="0" max={editingLeagueContext.setsToWin}
+                          value={scoreInputData.homeScore ?? ''}
+                          onChange={(e) => handleScoreInputChange(e)}
+                          placeholder={`0-${editingLeagueContext.setsToWin}`}
+                          className="input input-bordered w-full text-sm"
+                        />
+                      </label>
+                      <label className="form-control w-full">
+                        <div className="label">
+                          <span className="label-text text-xs">Sätze Gast</span>
+                        </div>
+                        <input
+                          type="number"
+                          id="awayScore"
+                          name="awayScore"
+                          min="0" max={editingLeagueContext.setsToWin}
+                          value={scoreInputData.awayScore ?? ''}
+                          onChange={(e) => handleScoreInputChange(e)}
+                          placeholder={`0-${editingLeagueContext.setsToWin}`}
+                          className="input input-bordered w-full text-sm"
+                        />
+                      </label>
                     </div>
                     {/* Total Points (Balls) */}
-                    <div className="flex space-x-4">
-                      <div className="flex-1">
-                        <label htmlFor="homePoints" className="block text-xs font-medium text-base-content/70">Bälle Heim</label>
+                    <div className="flex gap-4">
+                      <label className="form-control w-full">
+                        <div className="label">
+                          <span className="label-text text-xs">Bälle Heim (Optional)</span>
+                        </div>
                         <input
                           type="number"
                           id="homePoints"
@@ -1207,11 +1238,13 @@ export default function LeaguesPage() {
                           value={scoreInputData.homePoints ?? ''}
                           onChange={(e) => handleScoreInputChange(e)}
                           placeholder="Gesamtbälle"
-                          className="mt-1 block w-full px-3 py-1.5 text-base input sm:text-sm rounded-md"
+                          className="input input-bordered w-full text-sm"
                         />
-                      </div>
-                      <div className="flex-1">
-                        <label htmlFor="awayPoints" className="block text-xs font-medium text-base-content/70">Bälle Gast</label>
+                      </label>
+                      <label className="form-control w-full">
+                        <div className="label">
+                          <span className="label-text text-xs">Bälle Gast (Optional)</span>
+                        </div>
                         <input
                           type="number"
                           id="awayPoints"
@@ -1220,8 +1253,9 @@ export default function LeaguesPage() {
                           value={scoreInputData.awayPoints ?? ''}
                           onChange={(e) => handleScoreInputChange(e)}
                           placeholder="Gesamtbälle"
-                          className="mt-1 block w-full px-3 py-1.5 text-base input sm:text-sm rounded-md"
+                          className="input input-bordered w-full text-sm"
                         />
+                      </label>
                       </div>
                     </div>
                   </div>
@@ -1231,8 +1265,8 @@ export default function LeaguesPage() {
                 {editingLeagueContext.scoreEntryType === ScoreEntryType.SET_SCORES && (
                   <div className="space-y-2">
                     {scoreInputData.setScores.map((set: any, index: number) => (
-                      <div key={index} className="flex items-center space-x-2">
-                        <label className="w-12 text-sm font-medium text-base-content/70 text-right">Satz {index + 1}:</label>
+                      <div key={index} className="flex items-center gap-2"> {/* Use gap */}
+                        <label className="w-16 text-sm font-medium text-right shrink-0">Satz {index + 1}:</label> {/* Fixed width */}
                         <input
                           type="number"
                           name="home"
@@ -1240,9 +1274,9 @@ export default function LeaguesPage() {
                           value={set.home ?? ''}
                           onChange={(e) => handleScoreInputChange(e, index)}
                           placeholder="Heim"
-                          className="flex-1 block w-full px-2 py-1 text-base input sm:text-sm rounded-md"
+                          className="input input-bordered input-sm w-full" // Use input-sm
                         />
-                        <span className="text-gray-500">:</span>
+                        <span className="text-base-content/50">:</span>
                         <input
                           type="number"
                           name="away"
@@ -1250,7 +1284,7 @@ export default function LeaguesPage() {
                           value={set.away ?? ''}
                           onChange={(e) => handleScoreInputChange(e, index)}
                           placeholder="Gast"
-                          className="flex-1 block w-full px-2 py-1 text-base input sm:text-sm rounded-md"
+                          className="input input-bordered input-sm w-full" // Use input-sm
                         />
                       </div>
                     ))}
@@ -1259,13 +1293,16 @@ export default function LeaguesPage() {
               </div>
             </fieldset>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full btn btn-primary py-2 px-4 "
-            >
-              Speichern
-            </button>
+            {/* Submit Button - DaisyUI */}
+            <div className="modal-action mt-6"> {/* Use modal-action */}
+               <button type="button" className="btn btn-ghost" onClick={() => { setIsFixtureModalOpen(false); setEditingFixture(null); setScoreInputData(null); setEditingLeagueContext(null); }}>Abbrechen</button>
+               <button
+                 type="submit"
+                 className="btn btn-primary"
+               >
+                 Speichern
+               </button>
+            </div>
           </form>
         )}
       </Modal>
