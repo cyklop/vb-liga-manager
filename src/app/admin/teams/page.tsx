@@ -326,29 +326,42 @@ export default function TeamsPage() {
             />
           </label>          
           
-          <label htmlFor="teamleader" className='select w-full'>
-            <span className='label'>Spielleiter</span>
+          {/* Team Leader Select - Using DaisyUI form-control structure */}
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Spielleiter</span>
+            </div>
             <select
+              id="teamleader" // Keep id for association if needed elsewhere
               value={formData.teamLeaderId || ''}
               onChange={(e) => setFormData({...formData, teamLeaderId: e.target.value})}
-              className="select"
-              id='teamleader'
+              className="select select-bordered w-full" // Use select-bordered
             >
               <option value="">Spielleiter auswählen (optional)</option>
               {users.map((user) => (
                 <option key={user.id} value={user.id}>{user.name}</option>
               ))}
             </select>
-          </label> 
+            {/* Optional: Add label-text-alt if needed */}
+            {/* <div className="label">
+              <span className="label-text-alt">Bottom Left label</span>
+            </div> */}
+          </label>
           
-          <button
-            type="submit"
-            className="mt-4 w-full btn btn-primary"
-          >
-            {editingTeam ? "Aktualisieren" : "Hinzufügen"}
-          </button>
+          <div className="modal-action mt-6"> {/* Wrap button in modal-action */}
+            <button type="button" className="btn btn-ghost" onClick={() => { setIsModalOpen(false); setFormData({}); setEditingTeam(null); }}>Abbrechen</button>
+            <button
+              type="submit"
+              className="btn btn-primary" // Removed w-full as modal-action handles alignment
+            >
+              {editingTeam ? "Aktualisieren" : "Hinzufügen"}
+            </button>
+          </div>
         </form>
       </Modal>
+      {/* DeleteConfirmation Komponente hinzufügen */}
+            className="mt-4 w-full btn btn-primary"
+          >
       {/* DeleteConfirmation Komponente hinzufügen */}
       {showDeleteConfirmation && teamToDelete && (
         <DeleteConfirmation
