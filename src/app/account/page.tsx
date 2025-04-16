@@ -156,6 +156,7 @@ export default function AccountPage() {
             </div> {/* Ende card */}
           </div>
         </div>
+        </div>
       </main>
     </>
   )
