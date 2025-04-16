@@ -229,56 +229,51 @@ export default function Login() {
           </div>           
             
           </div>
-          <Checkbox
-            label={
-              <Typography
-                variant="small"
-                color="gray"
-                className="text-base-content font-normal fieldset-label"
-                placeholder={undefined}
-                onPointerEnterCapture={undefined}
-                onPointerLeaveCapture={undefined}
-              >
-                Angemeldet bleiben
-              </Typography>
-            }
-            containerProps={{ className: "-ml-2.5" }}
-            className="checkbox checkbox-primary "
-            placeholder={undefined}
-            id='cookie'
-            iconProps={{
-              className: ""
-            }}
-            checked={rememberMe}
-            onChange={(e) => setRememberMe(e.target.checked)}
-            crossOrigin={undefined}
-            onPointerEnterCapture={undefined}
-            onPointerLeaveCapture={undefined}
-          />
+          {/* Remember Me Checkbox with DaisyUI form-control */}
+          <div className="form-control">
+            <label className="label cursor-pointer justify-start gap-2">
+              <input
+                id="rememberMe" // Changed id to rememberMe for clarity
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="checkbox checkbox-primary" // DaisyUI checkbox classes
+              />
+              <span className="label-text">Angemeldet bleiben</span>
+            </label>
+          </div>
+
+          {/* Error Message */}
           {error && (
-            <Typography color="red" className="mt-2 text-center text-sm" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+            <p className="mt-2 text-center text-sm text-error"> {/* Use text-error for DaisyUI error color */}
               {error}
-            </Typography>
+            </p>
           )}
-          <Button className="mt-6 bg-primary btn btn-primary" fullWidth type="submit" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+
+          {/* Submit Button */}
+          <button className="btn btn-primary w-full mt-6" type="submit"> {/* DaisyUI button */}
             Anmelden
-          </Button>
-          <Typography color="gray" className="mt-4 text-center text-base-content font-normal" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+          </button>
+
+          {/* Forgot Password Link */}
+          <p className="mt-4 text-center text-base-content font-normal">
             Passwort vergessen?{" "}
             <button
-              type="button" // Verhindert das Absenden des Formulars
+              type="button" // Keep type="button"
               onClick={() => setIsResetModalOpen(true)}
-              className="font-medium link link-primary"
+              className="link link-primary font-medium" // DaisyUI link classes
             >
               Zurücksetzen
             </button>
-          </Typography>
+          </p>
         </form>
+
+        {/* Modal Usage (props remain the same, component internally uses DaisyUI now) */}
         <Modal isOpen={isResetModalOpen} onClose={() => { setIsResetModalOpen(false); setResetError(''); setResetMessage(''); setResetEmail(''); }} title="Passwort zurücksetzen">
           <form onSubmit={async (e) => {
             e.preventDefault();
-            setResetError(''); // Fehler zurücksetzen
-            setResetMessage(''); // Erfolgsmeldung zurücksetzen
+            setResetError(''); // Reset error
+            setResetMessage(''); // Reset success message
             try {
               const response = await fetch('/api/auth/request-password-reset', { // Endpunkt aktualisiert
                 method: 'POST',
