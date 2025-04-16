@@ -1,13 +1,17 @@
 'use client'
 
+'use client' // Ensure 'use client' is at the top
+
 import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import {
-  Card,
-  Input,
-  Button,
-  Typography,
-} from "@material-tailwind/react";
+// Remove Material Tailwind imports
+// import {
+//   Card,
+//   Input,
+//   Button,
+//   Typography,
+// } from "@material-tailwind/react";
+import { toast } from 'react-toastify'; // Import toast
 
 export default function ResetPasswordPage() {
   const params = useParams()
@@ -16,27 +20,27 @@ export default function ResetPasswordPage() {
 
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
+  // Remove error and success states
+  // const [error, setError] = useState('')
+  // const [success, setSuccess] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-    setSuccess('')
+    // Remove setError('') and setSuccess('')
 
     if (!token) {
-      setError('Ungültiger oder fehlender Reset-Token.')
+      toast.error('Ungültiger oder fehlender Reset-Token.')
       return
     }
 
     if (password !== confirmPassword) {
-      setError('Die Passwörter stimmen nicht überein.')
+      toast.error('Die Passwörter stimmen nicht überein.')
       return
     }
 
     if (password.length < 6) { // Beispiel: Mindestlänge prüfen
-        setError('Das Passwort muss mindestens 6 Zeichen lang sein.');
+        toast.error('Das Passwort muss mindestens 6 Zeichen lang sein.');
         return;
     }
 
@@ -52,78 +56,80 @@ export default function ResetPasswordPage() {
       const data = await response.json()
 
       if (response.ok) {
-        setSuccess(data.message || 'Dein Passwort wurde erfolgreich zurückgesetzt. Du kannst dich jetzt anmelden.')
+        toast.success(data.message || 'Dein Passwort wurde erfolgreich zurückgesetzt. Du wirst weitergeleitet...')
         // Optional: Leite den Benutzer nach kurzer Verzögerung zur Login-Seite weiter
         setTimeout(() => {
           router.push('/login')
         }, 3000) // 3 Sekunden Verzögerung
       } else {
-        setError(data.message || 'Fehler beim Zurücksetzen des Passworts.')
+        // Use toast for API errors
+        toast.error(data.message || 'Fehler beim Zurücksetzen des Passworts.')
       }
     } catch (error) {
       console.error('Password reset failed:', error)
-      setError('Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut.')
+      // Use toast for network/unexpected errors
+      toast.error('Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut.')
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <Card color="transparent" shadow={false} placeholder={undefined} className="dark:bg-gray-800/30 p-6" onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-        <Typography variant="h4" color="blue-gray" placeholder={undefined} className="dark:text-gray-100" onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-          Neues Passwort festlegen
-        </Typography>
-        <Typography color="gray" className="mt-1 font-normal dark:text-gray-300" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} >
-          Gib dein neues Passwort ein.
-        </Typography>
-        <form onSubmit={handleSubmit} className="mt-8 mb-2 w-80 max-w-(--breakpoint-lg) sm:w-96">
-          {!success ? (
-            <>
-              <div className="mb-4 flex flex-col gap-6">
-                <Input
-                  type="password"
-                  size="lg"
-                  label="Neues Passwort"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder={undefined}
-                  crossOrigin={undefined}
-                  className="dark:text-gray-200 dark:border-gray-500"
-                  disabled={isLoading}
-                  onPointerEnterCapture={undefined}
-                  onPointerLeaveCapture={undefined}
-                />
-                <Input
-                  type="password"
-                  size="lg"
-                  label="Neues Passwort bestätigen"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder={undefined}
-                  crossOrigin={undefined}
-                  className="dark:text-gray-200 dark:border-gray-500"
-                  disabled={isLoading}
-                  onPointerEnterCapture={undefined}
-                  onPointerLeaveCapture={undefined}
-                />
-              </div>
-              {error && (
-                <Typography color="red" className="mt-2 text-center text-sm" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                  {error}
-                </Typography>
-              )}
-              <Button className="mt-6" fullWidth type="submit" placeholder={undefined} disabled={isLoading} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                {isLoading ? 'Wird verarbeitet...' : 'Passwort zurücksetzen'}
-              </Button>
-            </>
-          ) : (
-            <Typography color="green" className="mt-4 text-center text-sm" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-              {success}
-            </Typography>
-          )}
-        </form>
-      </Card>
+    // Use DaisyUI background classes
+    <div className="flex min-h-screen items-center justify-center bg-base-200 py-12 px-4 sm:px-6 lg:px-8">
+      {/* Replace Card with DaisyUI card */}
+      <div className="card w-full max-w-md bg-base-100 shadow-xl">
+        <div className="card-body">
+          {/* Replace Typography with standard HTML */}
+          <h2 className="card-title text-2xl justify-center">Neues Passwort festlegen</h2>
+          <p className="mt-1 text-center text-base-content/70 mb-6">
+            Gib dein neues Passwort ein.
+          </p>
+          {/* Form with DaisyUI elements */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Password Input - Floating Label */}
+            <label className="floating-label">
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder=" " // Required for floating label animation
+                required
+                className="input input-bordered w-full"
+                disabled={isLoading}
+              />
+              <span>Neues Passwort</span>
+            </label>
+
+            {/* Confirm Password Input - Floating Label */}
+            <label className="floating-label">
+              <input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder=" " // Required for floating label animation
+                required
+                className="input input-bordered w-full"
+                disabled={isLoading}
+              />
+              <span>Neues Passwort bestätigen</span>
+            </label>
+
+            {/* Remove conditional rendering for error/success messages */}
+
+            {/* Submit Button */}
+            <button
+              className="btn btn-primary w-full mt-6"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? <span className="loading loading-spinner"></span> : 'Passwort zurücksetzen'}
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   )
 }
