@@ -228,7 +228,6 @@ export default function Login() {
             />
           </div>           
             
-          </div>
           {/* Remember Me Checkbox with DaisyUI form-control */}
           <div className="form-control">
             <label className="label cursor-pointer justify-start gap-2">
