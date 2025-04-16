@@ -203,7 +203,7 @@ export default function Navbar() {
                       onClick={handleLogout}
                       className="rounded-md btn btn-ghost p-2 text-sm font-medium text-white hover:bg-neutral hover:border-neutral"
                     >
-                      <ArrowRightStartOnRectangleIcon className="h-5 w-5" />
+                      <ArrowRightStartOnRectangleIcon className="h-5 w-5" /> Logout
                     </button>
                   </>
                 ) : (
