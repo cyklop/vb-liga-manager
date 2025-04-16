@@ -2,20 +2,24 @@
 
 import { useState, useEffect, useCallback } from 'react' // Import useCallback
 import { useRouter } from 'next/navigation'
-import { LockClosedIcon } from '@heroicons/react/20/solid'
-import Link from 'next/link'
+// Remove LockClosedIcon if not used elsewhere
+// import { LockClosedIcon } from '@heroicons/react/20/solid'
+// Keep Link if needed, otherwise remove (assuming it's used for forgot password or similar)
+import Link from 'next/link' 
 import Modal from '@/components/Modal'
 import { signIn } from 'next-auth/react'
 import Particles, { initParticlesEngine } from "@tsparticles/react";
-import { Engine } from "@tsparticles/engine"
+// Remove Engine if not directly used
+// import { Engine } from "@tsparticles/engine"
 import { loadFull } from "tsparticles" 
-import {
-  Card,
-  Input,
-  Checkbox,
-  Button,
-  Typography,
-} from "@material-tailwind/react";
+// Remove Material Tailwind imports
+// import {
+//   Card,
+//   Input,
+//   Checkbox,
+//   Button,
+//   Typography,
+// } from "@material-tailwind/react";
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -182,42 +186,47 @@ export default function Login() {
          />
        )}
 
-      <Card shadow={false} className="bg-base-100 p-6 relative z-10 rounded-lg" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-        <Typography variant="h4" color="blue-gray" className='text-base-content' placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+      {/* Replace Card with div and DaisyUI card classes */}
+      <div className="card bg-base-100 shadow-xl p-6 relative z-10 w-full max-w-md"> {/* Added max-w-md for sizing */}
+        {/* Replace Typography with standard HTML */}
+        <h2 className="text-2xl font-semibold text-center text-base-content mb-2">
           Anmelden
-        </Typography>
-        <Typography color="gray" className="mt-1 font-normal text-base-content/70" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+        </h2>
+        <p className="mt-1 text-center font-normal text-base-content/70 mb-6">
           Geben Sie Ihre Anmeldedaten ein, um sich anzumelden.
-        </Typography>
-        <form onSubmit={handleSubmit} className="mt-8 mb-2">
-          <div className="mb-4 flex flex-col gap-6">
-            <label htmlFor="email" className='floating-label text-base-content'>
-              <span>E-Mail</span>
-              <Input 
-                size="lg"
-                value={email}
-                className='input'
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={undefined}
-                crossOrigin={undefined}
-                onPointerEnterCapture={undefined}
-                onPointerLeaveCapture={undefined}
-              />
+        </p>
+        <form onSubmit={handleSubmit} className="space-y-6"> {/* Use space-y for gap */}
+          {/* Email Input with DaisyUI form-control */}
+          <div className="form-control">
+            <label className="label" htmlFor="email">
+              <span className="label-text">E-Mail</span>
             </label>
+            <input
+              id="email"
+              type="email"
+              required // Add required attribute for basic validation
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="input input-bordered w-full" // DaisyUI input classes
+              placeholder="ihre@email.de" // Add placeholder
+            />
+          </div>
 
-            <label htmlFor="password" className='floating-label text-base-content'>
-              <span>Passwort</span>
-              <Input
-                type="password"
-                size="lg"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={undefined}
-                crossOrigin={undefined}
-                onPointerEnterCapture={undefined}
-                onPointerLeaveCapture={undefined}
-              />
-            </label>           
+          {/* Password Input with DaisyUI form-control */}
+          <div className="form-control">
+             <label className="label" htmlFor="password">
+               <span className="label-text">Passwort</span>
+             </label>
+            <input
+              id="password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input input-bordered w-full" // DaisyUI input classes
+              placeholder="********" // Add placeholder
+            />
+          </div>           
             
           </div>
           <Checkbox
@@ -289,43 +298,55 @@ export default function Login() {
               setResetError('Fehler beim Anfordern des Passwort-Resets. Bitte versuchen Sie es später erneut.');
             }
           }}>
-            {resetMessage && ( // Erfolgsmeldung im Modal anzeigen
-              <Typography color="green" className="mb-4 text-center text-sm" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                {resetMessage}
-              </Typography>
+            {/* Success Message */}
+            {resetMessage && (
+              <div role="alert" className="alert alert-success mb-4"> {/* DaisyUI alert */}
+                 <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                 <span>{resetMessage}</span>
+              </div>
             )}
             
-            <label htmlFor="password" className='floating-label'>
-              <span>E-Mail-Adresse</span>
-              <Input
-              type="email"
-              size="lg"
-              value={resetEmail}
-              onChange={(e) => setResetEmail(e.target.value)}
-              className="mb-4 mt-2 input"
-              placeholder={undefined}
-              crossOrigin={undefined}
-              onPointerEnterCapture={undefined}
-              onPointerLeaveCapture={undefined}
-            />
-            </label>   
+            {/* Email Input inside Modal */}
+            <div className="form-control mb-4">
+              <label className="label" htmlFor="reset-email">
+                <span className="label-text">E-Mail-Adresse</span>
+              </label>
+              <input
+                id="reset-email"
+                type="email"
+                required
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                className="input input-bordered w-full" // DaisyUI input
+                placeholder="ihre@email.de"
+              />
+            </div>   
             
-            {resetError && ( // Fehlermeldung im Modal anzeigen
-              <Typography color="red" className="mb-4 text-center text-sm" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                {resetError}
-              </Typography>
+            {/* Error Message inside Modal */}
+            {resetError && (
+               <div role="alert" className="alert alert-error mb-4"> {/* DaisyUI alert */}
+                 <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                 <span>{resetError}</span>
+               </div>
             )}
-            <div className="flex justify-end gap-2">
-               <Button variant="text" className='btn' onClick={() => { setIsResetModalOpen(false); setResetError(''); setResetMessage(''); setResetEmail(''); }} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+
+            {/* Modal Action Buttons */}
+            <div className="modal-action mt-4"> {/* Use modal-action for standard button placement */}
+               {/* Cancel Button */}
+               <button
+                 type="button" // Important: type="button" to prevent form submission
+                 className='btn btn-ghost' // DaisyUI button style
+                 onClick={() => { setIsResetModalOpen(false); setResetError(''); setResetMessage(''); setResetEmail(''); }}>
                  Abbrechen
-               </Button>
-               <Button type="submit" className='btn btn-primary' placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+               </button>
+               {/* Submit Button */}
+               <button type="submit" className='btn btn-primary'> {/* DaisyUI button style */}
                  Link senden
-               </Button>
+               </button>
             </div>
           </form>
         </Modal>        
-      </Card>
+      </div> {/* Close the main card div */}
     </div>
   )
 }
