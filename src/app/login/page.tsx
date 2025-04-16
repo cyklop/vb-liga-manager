@@ -198,10 +198,9 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="space-y-6"> {/* Use space-y for gap */}
           {/* Email Input with DaisyUI form-control */}
           <div className="form-control">
-            <label className="label" htmlFor="email">
+            <label className="floating-label" htmlFor="email">
               <span className="label-text">E-Mail</span>
-            </label>
-            <input
+              <input
               id="email"
               type="email"
               required // Add required attribute for basic validation
@@ -210,22 +209,25 @@ export default function Login() {
               className="input input-bordered w-full" // DaisyUI input classes
               placeholder="ihre@email.de" // Add placeholder
             />
+            </label>
+            
           </div>
 
           {/* Password Input with DaisyUI form-control */}
           <div className="form-control">
-             <label className="label" htmlFor="password">
+             <label className="floating-label" htmlFor="password">
                <span className="label-text">Passwort</span>
+               <input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="input input-bordered w-full" // DaisyUI input classes
+                  placeholder="********" // Add placeholder
+                />
              </label>
-            <input
-              id="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="input input-bordered w-full" // DaisyUI input classes
-              placeholder="********" // Add placeholder
-            />
+            
           </div>           
             
           {/* Remember Me Checkbox with DaisyUI form-control */}
