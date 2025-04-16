@@ -26,6 +26,7 @@ export default function AccountPage() {
   const [user, setUser] = useState<User | null>(null)
   const [mounted, setMounted] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState<'profile' | 'appearance'>('profile'); // State für aktiven Tab
   const router = useRouter()
   const { theme, setTheme } = useTheme() // Destrukturieren für einfacheren Zugriff
 
@@ -120,42 +121,68 @@ export default function AccountPage() {
             {/* DaisyUI Card */}
             <div className="card bg-base-100 shadow-xl">
               <div className="card-body"> {/* Innenabstand der Karte */}
-                {user && <UserProfileForm user={user} onUpdate={handleProfileUpdate} />}
 
-                <div className="mt-8 border-t dark:border-border pt-6">
-                  {/* Optional: card-title nutzen */}
-                  <h2 className="text-2xl font-bold mb-4 card-title">Darstellung</h2>
-                  {/* Überflüssiges div entfernt */}
-                  <p className="mt-2 mb-4 text-sm">
-                    Wählen Sie Ihr bevorzugtes Erscheinungsbild für die Anwendung.
-                  </p>
-                  {/* DaisyUI Form Control für Select */}
-                  <div className="form-control w-full max-w-xs"> {/* Container für das Formularelement */}
-                    <label className="label" htmlFor="theme"> {/* Label */}
-                      <span className="label-text">Theme-Einstellung</span>
-                    </label>
-                    {mounted && ( /* mounted Check beibehalten */
-                      <select
-                        id="theme"
-                        className="select select-bordered w-full" /* DaisyUI Klassen */
-                        value={theme}
-                        onChange={(e) => {
-                          const newTheme = e.target.value as 'light' | 'dark' | 'system';
-                          setTheme(newTheme);
-                          handleProfileUpdate({ theme: newTheme });
-                        }}
-                      >
-                        <option value="light">Hell</option>
-                        <option value="dark">Dunkel</option>
-                        <option value="system">System (Browser-Einstellung)</option>
-                      </select>
-                    )}
-                  </div>
-                  {/* Schließendes Tag des überflüssigen div entfernt */}
+                {/* Tab-Container */}
+                <div role="tablist" className="tabs tabs-lifted">
+                  <button
+                    role="tab"
+                    className={`tab ${activeTab === 'profile' ? 'tab-active' : ''}`}
+                    onClick={() => setActiveTab('profile')}
+                  >
+                    Profil
+                  </button>
+                  <button
+                    role="tab"
+                    className={`tab ${activeTab === 'appearance' ? 'tab-active' : ''}`}
+                    onClick={() => setActiveTab('appearance')}
+                  >
+                    Darstellung
+                  </button>
+                </div>
+
+                {/* Tab-Inhalt */}
+                <div className="mt-4"> {/* Abstand zwischen Tabs und Inhalt */}
+                  {/* Profil-Tab Inhalt */}
+                  {activeTab === 'profile' && user && (
+                    <UserProfileForm user={user} onUpdate={handleProfileUpdate} />
+                  )}
+
+                  {/* Darstellungs-Tab Inhalt */}
+                  {activeTab === 'appearance' && (
+                    <div className="pt-6"> {/* Padding für den Inhalt des Tabs */}
+                      <h2 className="text-2xl font-bold mb-4 card-title">Darstellung</h2>
+                      <p className="mt-2 mb-4 text-sm">
+                        Wählen Sie Ihr bevorzugtes Erscheinungsbild für die Anwendung.
+                      </p>
+                      {/* DaisyUI Form Control für Select */}
+                      <div className="form-control w-full max-w-xs"> {/* Container für das Formularelement */}
+                        <label className="label" htmlFor="theme"> {/* Label */}
+                          <span className="label-text">Theme-Einstellung</span>
+                        </label>
+                        {mounted && ( /* mounted Check beibehalten */
+                          <select
+                            id="theme"
+                            className="select select-bordered w-full" /* DaisyUI Klassen */
+                            value={theme}
+                            onChange={(e) => {
+                              const newTheme = e.target.value as 'light' | 'dark' | 'system';
+                              setTheme(newTheme);
+                              handleProfileUpdate({ theme: newTheme });
+                            }}
+                          >
+                            <option value="light">Hell</option>
+                            <option value="dark">Dunkel</option>
+                            <option value="system">System (Browser-Einstellung)</option>
+                          </select>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
               </div> {/* Ende card-body */}
             </div> {/* Ende card */}
           </div>
-        </div>
         </div>
       </main>
     </>
