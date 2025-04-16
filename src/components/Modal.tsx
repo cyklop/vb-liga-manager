@@ -1,36 +1,77 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   children: React.ReactNode;
-  maxWidth?: string; // Add optional maxWidth prop (e.g., 'max-w-md', 'max-w-lg', 'max-w-2xl')
+  // maxWidth prop is removed as DaisyUI modals handle width via modal-box modifiers if needed
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, maxWidth = 'max-w-md' }) => { // Default to 'max-w-md'
-  if (!isOpen) return null;
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+  const modalRef = useRef<HTMLDialogElement>(null);
 
+  useEffect(() => {
+    const modalElement = modalRef.current;
+    if (modalElement) {
+      if (isOpen) {
+        modalElement.showModal();
+      } else {
+        // Check if the modal is still open before trying to close
+        // This prevents errors if the modal was closed by other means (e.g., ESC key)
+        if (modalElement.hasAttribute('open')) {
+          modalElement.close();
+        }
+      }
+    }
+  }, [isOpen]);
+
+  // Handle closing via the backdrop click or ESC key
+  useEffect(() => {
+    const modalElement = modalRef.current;
+    if (modalElement) {
+      const handleCancel = (event: Event) => {
+        event.preventDefault(); // Prevent default dialog cancel behavior if needed
+        onClose();
+      };
+      modalElement.addEventListener('cancel', handleCancel);
+
+      // Optional: Close on backdrop click (default DaisyUI behavior)
+      // If you want to prevent closing on backdrop click, you might need
+      // to add a click handler to the dialog itself and check event.target
+
+      return () => {
+        modalElement.removeEventListener('cancel', handleCancel);
+      };
+    }
+  }, [onClose]);
+
+
+  // We render the dialog structure but control its visibility via useEffect and showModal/close
   return (
-    // Add z-index to the overlay div
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-75 overflow-y-auto h-full w-full flex items-center justify-center z-50"> {/* Increased opacity slightly */}
-      {/* Apply maxWidth prop to the modal container div */}
-      <div className={`bg-white dark:bg-card p-5 rounded-lg shadow-xl w-full ${maxWidth} relative mx-4`}> {/* Use maxWidth prop, dark:bg-card, shadow-xl, mx-4 for small screen padding */}
-        <div className="flex justify-between items-center mb-4 pb-2 border-b dark:border-border"> {/* Added bottom border */}
-          <h3 className="text-lg font-semibold dark:text-foreground">{title}</h3> {/* Adjusted font weight and dark color */}
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"> {/* Adjusted colors */}
-            <span className="sr-only">Schließen</span>
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+    <dialog ref={modalRef} className="modal">
+      <div className="modal-box">
+        {/* Header with Title and Close Button */}
+        <div className="flex justify-between items-center pb-3">
+          <h3 className="font-bold text-lg">{title}</h3>
+          {/* DaisyUI close button */}
+          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={onClose}>✕</button>
         </div>
-        {/* Wrap children in a scrollable container */}
-        <div className="max-h-[70vh] overflow-y-auto p-1 pr-2"> {/* Adjust max-height as needed, add slight padding */}
-          {children}
+        {/* Modal Content */}
+        {/* Add padding or specific styling for content area if needed */}
+        <div className="py-4 max-h-[70vh] overflow-y-auto">
+             {children}
         </div>
+        {/* Modal Actions (optional, usually buttons are placed within children) */}
+        {/* <div className="modal-action"> */}
+        {/*   <button className="btn" onClick={onClose}>Close</button> */}
+        {/* </div> */}
       </div>
-    </div>
+      {/* Optional: Click backdrop to close */}
+      <form method="dialog" className="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
   );
 };
 
