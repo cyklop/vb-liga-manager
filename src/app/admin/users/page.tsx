@@ -275,12 +275,27 @@ export default function UsersPage() {
               Admin
             </label>
           </div>
-          <button
-            type="submit"
-            className="w-full btn btn-primary py-2 px-4"
-          >
-            {isEditing ? "Aktualisieren" : "Hinzufügen"}
-          </button>
+          {/* Modal Actions */}
+          <div className="modal-action mt-6">
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={() => {
+                setIsModalOpen(false);
+                // Reset state when cancelling
+                setNewUser({ id: 0, email: '', name: '', isAdmin: false, teamIds: [] });
+                setIsEditing(false);
+              }}
+            >
+              Abbrechen
+            </button>
+            <button
+              type="submit"
+              className="btn btn-primary" // Removed w-full
+            >
+              {isEditing ? "Aktualisieren" : "Hinzufügen"}
+            </button>
+          </div>
         </form>
       </Modal>
       {showDeleteConfirmation && (
