@@ -125,7 +125,7 @@ export default function AccountPage() {
                 <div className="mt-8 border-t dark:border-border pt-6">
                   {/* Optional: card-title nutzen */}
                   <h2 className="text-2xl font-bold mb-4 card-title">Darstellung</h2>
-                <div className="mb-4">
+                  {/* Überflüssiges div entfernt */}
                   <p className="mt-2 mb-4 text-sm">
                     Wählen Sie Ihr bevorzugtes Erscheinungsbild für die Anwendung.
                   </p>
@@ -151,9 +151,7 @@ export default function AccountPage() {
                       </select>
                     )}
                   </div>
-
-
-                </div>
+                  {/* Schließendes Tag des überflüssigen div entfernt */}
               </div> {/* Ende card-body */}
             </div> {/* Ende card */}
           </div>
