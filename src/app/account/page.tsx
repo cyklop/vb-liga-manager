@@ -91,8 +91,9 @@ export default function AccountPage() {
       <>
         <Navigation />
         <div className="flex items-center justify-center h-screen">
-          <div className="text-center">
-            <p className="text-lg text-gray-600 dark:text-gray-400">Laden...</p>
+          {/* DaisyUI Spinner */}
+          <div className="flex justify-center items-center h-full">
+            <span className="loading loading-spinner loading-lg"></span>
           </div>
         </div>
       </>
@@ -114,40 +115,47 @@ export default function AccountPage() {
       </header>
       <main>
         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+          {/* Padding kann ggf. angepasst werden */}
           <div className="px-4 py-6 sm:px-0">
-            <div className="rounded-lg p-4 shadow">
-              {user && <UserProfileForm user={user} onUpdate={handleProfileUpdate} />}
-              
-              <div className="mt-8 border-t dark:border-border pt-6">
-                <h2 className="text-2xl font-bold mb-4">Darstellung</h2>
+            {/* DaisyUI Card */}
+            <div className="card bg-base-100 shadow-xl">
+              <div className="card-body"> {/* Innenabstand der Karte */}
+                {user && <UserProfileForm user={user} onUpdate={handleProfileUpdate} />}
+
+                <div className="mt-8 border-t dark:border-border pt-6">
+                  {/* Optional: card-title nutzen */}
+                  <h2 className="text-2xl font-bold mb-4 card-title">Darstellung</h2>
                 <div className="mb-4">
                   <p className="mt-2 mb-4 text-sm">
                     Wählen Sie Ihr bevorzugtes Erscheinungsbild für die Anwendung.
                   </p>
-                  <label htmlFor="theme" className="select w-lg">
-                    <span className='label'>Theme-Einstellung</span>
-                    {mounted && (
-                    <select
-                      id="theme"
-                      value={theme} // Wert aus dem Kontext binden
-                      onChange={(e) => {
-                        const newTheme = e.target.value as 'light' | 'dark' | 'system';
-                        setTheme(newTheme); // Kontext aktualisieren
-                        handleProfileUpdate({ theme: newTheme }); // Änderung im Backend speichern
-                      }}
-                      className=""
-                    >
-                    <option value="light">Hell</option>
-                    <option value="dark">Dunkel</option>
-                    <option value="system">System (Browser-Einstellung)</option>
-                    </select>
-                  )}
-                  </label>
-                 
-                  
+                  {/* DaisyUI Form Control für Select */}
+                  <div className="form-control w-full max-w-xs"> {/* Container für das Formularelement */}
+                    <label className="label" htmlFor="theme"> {/* Label */}
+                      <span className="label-text">Theme-Einstellung</span>
+                    </label>
+                    {mounted && ( /* mounted Check beibehalten */
+                      <select
+                        id="theme"
+                        className="select select-bordered w-full" /* DaisyUI Klassen */
+                        value={theme}
+                        onChange={(e) => {
+                          const newTheme = e.target.value as 'light' | 'dark' | 'system';
+                          setTheme(newTheme);
+                          handleProfileUpdate({ theme: newTheme });
+                        }}
+                      >
+                        <option value="light">Hell</option>
+                        <option value="dark">Dunkel</option>
+                        <option value="system">System (Browser-Einstellung)</option>
+                      </select>
+                    )}
+                  </div>
+
+
                 </div>
-              </div>
-            </div>
+              </div> {/* Ende card-body */}
+            </div> {/* Ende card */}
           </div>
         </div>
       </main>
