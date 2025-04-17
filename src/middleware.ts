@@ -4,13 +4,17 @@ import { getToken } from 'next-auth/jwt'
 
 export async function middleware(req: NextRequest) {
   // --- DEBUGGING START ---
+  // --- DEBUGGING START ---
   // Logge den Cookie-Header und den Secret
   const cookieHeader = req.headers.get('cookie');
+  const secretFromEnv = process.env.NEXTAUTH_SECRET;
   console.log('[Middleware] Received Cookie Header:', cookieHeader);
-  console.log('[Middleware] NEXTAUTH_SECRET available:', !!process.env.NEXTAUTH_SECRET); // Logge, ob Secret vorhanden ist
+  console.log('[Middleware] NEXTAUTH_SECRET available:', !!secretFromEnv);
+  // Logge den tatsächlichen Secret-Wert (Vorsicht bei Produktionslogs!)
+  console.log('[Middleware] Actual NEXTAUTH_SECRET value:', secretFromEnv);
   // --- DEBUGGING END ---
 
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+  const token = await getToken({ req, secret: secretFromEnv }) // Verwende die Variable
   const { pathname } = req.nextUrl
 
   // --- DEBUGGING START ---
