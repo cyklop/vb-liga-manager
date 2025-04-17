@@ -824,8 +824,13 @@ export default function LeaguesPage() {
        </div> 
      </div>
 
-     
-     <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingLeague(null); }} title={editingLeague ? "Liga bearbeiten" : "Neue Liga hinzufügen"} >
+     {/* Add/Edit League Modal - Apply width class */}
+     <Modal 
+       isOpen={isModalOpen} 
+       onClose={() => { setIsModalOpen(false); setEditingLeague(null); }} 
+       title={editingLeague ? "Liga bearbeiten" : "Neue Liga hinzufügen"} 
+       className="max-w-3xl" // Set desired max-width here
+     >
          <form onSubmit={editingLeague ? handleEditLeague : handleAddLeague} className="space-y-4 p-1">
            <label className="floating-label w-full">
              <input
