@@ -1,11 +1,10 @@
 'use client'
 
-import { Fragment, useEffect, useState } from 'react'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon, ArrowRightOnRectangleIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
+import { useEffect, useState } from 'react' // Fragment, Disclosure, Menu, Transition removed
+import { Bars3Icon, ArrowRightStartOnRectangleIcon, Cog6ToothIcon } from '@heroicons/react/24/outline' // Adjusted icons, removed XMarkIcon
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation' // useRouter wieder hinzugefügt
-import { signOut } from 'next-auth/react'; // signOut importieren
+import { usePathname, useRouter } from 'next/navigation'
+import { signOut } from 'next-auth/react';
 
 interface User {
   id: number
@@ -32,9 +31,10 @@ const adminNavigation = [
 
 // Navigation für Teamleiter (normale Benutzer mit Teamleiter-Rolle)
 const teamLeaderNavigation = [
-  { name: 'Meine Mannschaft', href: '/admin/teams' },
+  { name: 'Meine Mannschaft', href: '/team' }, // Corrected href for team page
 ]
 
+// Keep classNames for now, might be needed for admin dropdown active state
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
@@ -95,199 +95,121 @@ export default function Navbar() {
     }
   }
 
-  return (
-    <Disclosure as="nav" className="bg-primary">
-      {({ open }) => (
-        <>
-          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-            <div className="relative flex h-16 items-center justify-between">
-              <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                {/* Mobile menu button*/}
-                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-indigo-200 hover:bg-primary-500 hover:text-white focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white">
-                  <span className="sr-only">Open main menu</span>
-                  {open ? (
-                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                  ) : (
-                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                  )}
-                </Disclosure.Button>
-              </div>
-              <div className="flex flex-1 items-center sm:items-stretch sm:justify-start"> {/* justify-center entfernt */}
-                <div className="flex shrink-0 items-center">
-                  <Link href="/dashboard" className="text-2xl font-bold text-white">
-                    Volleyball Liga
-                  </Link>
-                </div>
-                <div className="hidden sm:ml-6 sm:block">
-                  <div className="flex space-x-4">
-                    {navigation.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className={classNames(
-                          pathname === item.href
-                            ? 'bg-primary-700 text-white'
-                            : 'text-indigo-200 hover:bg-primary-500 hover:text-white',
-                          'rounded-md px-3 py-2 text-sm font-medium'
-                        )}
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                    
-                    {/* Zeige Teamleiter-Link für alle Benutzer mit Team */}
-                    {currentUser?.team && (
-                      <Link
-                        href="/team"
-                        className={classNames(
-                          pathname === '/team'
-                            ? 'bg-primary-700 text-white'
-                            : 'text-indigo-200 hover:bg-primary-500 hover:text-white',
-                          'rounded-md px-3 py-2 text-sm font-medium'
-                        )}
-                      >
-                        Meine Mannschaft
-                      </Link>
-                    )}
-                    
-                    {/* Admin-Menü nur für Administratoren anzeigen */}
-                    {(currentUser?.isAdmin || currentUser?.isSuperAdmin) && (
-                      <div className="relative group hover:cursor-pointer">
-                        <Link
-                          href="/admin"
-                          className={classNames(
-                            pathname === '/admin' || pathname.startsWith('/admin/')
-                              ? 'bg-primary-700 text-white'
-                              : 'text-indigo-200 hover:bg-primary-500 hover:text-white',
-                            'rounded-md px-3 py-2 text-sm font-medium inline-flex items-center'
-                          )}
-                        >
-                          Admin
-                          <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
-                          </svg>
-                        </Link>
-                        <div className="absolute right-0 z-10 mt-0 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-primary ring-opacity-5 focus:outline-hidden hidden group-hover:block">
-                          {adminNavigation.map((item) => (
-                            <Link
-                              key={item.name}
-                              href={item.href}
-                              className={classNames(
-                                pathname === item.href 
-                                  ? 'bg-gray-100 text-gray-900 dark:bg-muted dark:text-foreground' 
-                                  : 'text-gray-700 hover:bg-gray-100 dark:text-foreground dark:hover:bg-muted',
-                                'block px-4 py-2 text-sm'
-                              )}
-                            >
-                              {item.name}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                {currentUser ? (
-                  <>
-                    <Link
-                      href="/account"
-                      className="rounded-md btn btn-ghost bg-primary p-2 text-sm font-medium text-white hover:bg-primary-400 mr-2"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
-                      </svg>
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="rounded-md btn btn-ghost p-2 text-sm font-medium text-white hover:bg-neutral hover:border-neutral"
-                    >
-                      <ArrowRightStartOnRectangleIcon className="h-5 w-5" /> Logout
-                    </button>
-                  </>
-                ) : (
-                  <Link
-                    href="/login"
-                    className="rounded-md bg-primary-500 px-3 py-2 text-sm font-medium text-white hover:bg-primary-400"
-                  >
-                    Login
-                  </Link>
-                )}
-              </div>
-            </div>
-          </div>
+  // Determine active state for menu items
+  const isActive = (href: string) => pathname === href;
+  const isAdminActive = (href: string) => pathname.startsWith('/admin') && href === '/admin'; // Special case for top-level admin
 
-          <Disclosure.Panel className="sm:hidden">
-            <div className="space-y-1 px-2 pb-3 pt-2">
-              {navigation.map((item) => (
-                <Disclosure.Button
-                  key={item.name}
-                  as="a"
-                  href={item.href}
-                  className={classNames(
-                    pathname === item.href
-                      ? 'bg-primary-700 text-white'
-                      : 'text-indigo-200 hover:bg-primary-500 hover:text-white',
-                    'block rounded-md px-3 py-2 text-base font-medium'
-                  )}
-                >
+  return (
+    <div className="navbar bg-primary text-primary-content shadow-md"> {/* Use DaisyUI navbar classes */}
+      <div className="navbar-start">
+        {/* Mobile Menu Dropdown */}
+        <div className="dropdown">
+          <label tabIndex={0} className="btn btn-ghost lg:hidden"> {/* Use label for dropdown trigger */}
+            <Bars3Icon className="h-6 w-6" />
+          </label>
+          <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 text-base-content">
+            {navigation.map((item) => (
+              <li key={item.name}>
+                <Link href={item.href} className={isActive(item.href) ? 'active' : ''}>
                   {item.name}
-                </Disclosure.Button>
-              ))}
-              {/* Zeige Teamleiter-Link für alle Benutzer mit Team im mobilen Menü */}
-              {currentUser?.team && (
-                <Disclosure.Button
-                  as="a"
-                  href="/team"
-                  className={classNames(
-                    pathname === '/team'
-                      ? 'bg-primary-700 text-white'
-                      : 'text-indigo-200 hover:bg-primary-500 hover:text-white',
-                    'block rounded-md px-3 py-2 text-base font-medium'
-                  )}
-                >
+                </Link>
+              </li>
+            ))}
+            {currentUser?.team && (
+              <li>
+                <Link href="/team" className={isActive('/team') ? 'active' : ''}>
                   Meine Mannschaft
-                </Disclosure.Button>
-              )}
-              
-              {/* Admin-Menü und Untermenüs für mobile Ansicht */}
-              {(currentUser?.isAdmin || currentUser?.isSuperAdmin) && (
-                <>
-                  <Disclosure.Button
-                    as="a"
-                    href="/admin"
-                    className={classNames(
-                      pathname === '/admin'
-                        ? 'bg-primary-700 text-white'
-                        : 'text-indigo-200 hover:bg-primary-500 hover:text-white',
-                      'block rounded-md px-3 py-2 text-base font-medium'
-                    )}
-                  >
-                    Admin
-                  </Disclosure.Button>
-                  
-                  {adminNavigation.map((item) => (
-                    <Disclosure.Button
-                      key={item.name}
-                      as="a"
-                      href={item.href}
-                      className={classNames(
-                        pathname === item.href
-                          ? 'bg-primary-700 text-white'
-                          : 'text-indigo-200 hover:bg-primary-500 hover:text-white',
-                        'block rounded-md px-3 py-2 text-base font-medium pl-6'
-                      )}
-                    >
+                </Link>
+              </li>
+            )}
+            {(currentUser?.isAdmin || currentUser?.isSuperAdmin) && (
+              <>
+                <li><hr className="my-2 border-base-300" /></li> {/* Divider */}
+                <li>
+                  <Link href="/admin" className={isAdminActive('/admin') ? 'active' : ''}>
+                    Admin Übersicht
+                  </Link>
+                </li>
+                {adminNavigation.map((item) => (
+                  <li key={item.name}>
+                    <Link href={item.href} className={isActive(item.href) ? 'active' : ''}>
                       {item.name}
-                    </Disclosure.Button>
-                  ))}
-                </>
-              )}
-            </div>
-          </Disclosure.Panel>
-        </>
-      )}
-    </Disclosure>
+                    </Link>
+                  </li>
+                ))}
+              </>
+            )}
+          </ul>
+        </div>
+        {/* Brand/Logo */}
+        <Link href="/dashboard" className="btn btn-ghost text-xl normal-case"> {/* Use btn-ghost for clickable area */}
+          Volleyball Liga
+        </Link>
+      </div>
+
+      {/* Desktop Menu Center */}
+      <div className="navbar-center hidden lg:flex">
+        <ul className="menu menu-horizontal px-1">
+          {navigation.map((item) => (
+            <li key={item.name}>
+              <Link href={item.href} className={isActive(item.href) ? 'active' : ''}>
+                {item.name}
+              </Link>
+            </li>
+          ))}
+          {currentUser?.team && (
+            <li>
+              <Link href="/team" className={isActive('/team') ? 'active' : ''}>
+                Meine Mannschaft
+              </Link>
+            </li>
+          )}
+          {/* Admin Dropdown Desktop */}
+          {(currentUser?.isAdmin || currentUser?.isSuperAdmin) && (
+            <li>
+              <div className="dropdown dropdown-hover dropdown-bottom"> {/* Use dropdown for admin */}
+                 {/* Use label or div as trigger */}
+                 <label tabIndex={0} role="button" className={classNames(
+                    pathname.startsWith('/admin') ? 'active' : '',
+                    'inline-flex items-center' // Keep flex for icon alignment
+                  )}>
+                    Admin
+                    <svg className="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                 </label>
+                 <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 text-base-content">
+                   {adminNavigation.map((item) => (
+                     <li key={item.name}>
+                       <Link href={item.href} className={isActive(item.href) ? 'active' : ''}>
+                         {item.name}
+                       </Link>
+                     </li>
+                   ))}
+                 </ul>
+              </div>
+            </li>
+          )}
+        </ul>
+      </div>
+
+      {/* User Actions End */}
+      <div className="navbar-end">
+        {currentUser ? (
+          <>
+            {/* Account Button */}
+            <Link href="/account" className="btn btn-ghost btn-circle" title="Konto"> {/* Added title attribute */}
+              <Cog6ToothIcon className="h-5 w-5" />
+            </Link>
+            {/* Logout Button */}
+            <button onClick={handleLogout} className="btn btn-ghost btn-circle ml-1" title="Logout"> {/* Added title attribute */}
+              <ArrowRightStartOnRectangleIcon className="h-5 w-5" />
+            </button>
+          </>
+        ) : (
+          <Link href="/login" className="btn btn-outline btn-sm border-primary-content text-primary-content hover:bg-primary-content hover:text-primary"> {/* Adjusted login button style */}
+            Login
+          </Link>
+        )}
+      </div>
+    </div>
   )
 }
