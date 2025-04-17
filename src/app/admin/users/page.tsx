@@ -213,6 +213,7 @@ export default function UsersPage() {
                       </button>
                     </div>
                   </div>
+                  </div>
                 </li>
               ))}
             </ul>

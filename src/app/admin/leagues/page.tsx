@@ -781,11 +781,11 @@ export default function LeaguesPage() {
                        // title removed
                      >
                        <ArrowsUpDownIcon className="h-5 w-5" />
-                 </button>
-               </div>
-             </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-             {/* Fixtures Section (Conditional) */}
              {selectedLeagueId === league.id && (
                <div className="px-4 py-4 sm:px-6 border-t border-gray-200 dark:border-border bg-base-content/10">
                  <div className="flex justify-between items-center mb-3">

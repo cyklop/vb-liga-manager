@@ -247,6 +247,7 @@ export default function TeamsPage() {
                    </button>
                </div>
              </div>
+             </div>
            </li>
          ))}
        </ul>
