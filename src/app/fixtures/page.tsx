@@ -244,19 +244,22 @@ export default function FixturesPage() {
 
         {isLoading ? (
           <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2"></div>
+            {/* Verwende DaisyUI loading Komponente */}
+            <span className="loading loading-spinner loading-lg"></span>
           </div>
         ) : fixtures.length > 0 ? (
           <div className="space-y-6">
             {/* Group fixtures by matchday */}
             {Array.from(new Set(fixtures.map(f => f.matchday))).sort((a, b) => (a || 0) - (b || 0)).map(matchday => (
-              <div key={matchday || 'unknown'} className="shadow overflow-hidden sm:rounded-md">
-                <div className="bg-primary-50 px-4 py-2 border-b bg-base-300 border-base-200">
-                  <h3 className="text-lg font-bold">
-                    {matchday ? `Spieltag ${matchday}` : 'Spieltag nicht zugeordnet'}
-                  </h3>
-                </div>
-                <ul className="divide-y divide-gray-200">
+              // Verwende DaisyUI card für jede Spieltagsgruppe
+              <div key={matchday || 'unknown'} className="card card-bordered bg-base-100 shadow-md">
+                <div className="card-body p-0"> {/* Kein Padding für Titel/Liste */}
+                  <div className="px-4 py-3 border-b bg-base-200 rounded-t-lg"> {/* Header-Styling */}
+                    <h3 className="card-title text-lg">
+                      {matchday ? `Spieltag ${matchday}` : 'Spieltag nicht zugeordnet'}
+                    </h3>
+                  </div>
+                  <ul className="divide-y divide-base-200"> {/* Angepasste Trennlinie */}
                   {fixtures.filter(fixture => fixture.matchday === matchday).map((fixture) => (
                     <li key={fixture.id} className="px-4 py-4 sm:px-6">
                       <div className="flex items-center justify-between">
@@ -308,14 +311,17 @@ export default function FixturesPage() {
                         </div>
                       </div>
                     </li>
-                  ))}
-                </ul>
-              </div>
+                    ))}
+                  </ul>
+                </div> {/* Ende card-body */}
+              </div> // Ende card
             ))}
           </div>
         ) : (
-          <div className="bg-white shadow overflow-hidden sm:rounded-md p-6 text-center text-gray-500">
-            {activeLeagueId ? 'Keine Spiele gefunden.' : 'Bitte wählen Sie eine Liga aus.'}
+          // Verwende DaisyUI alert für leeren Zustand
+          <div role="alert" className="alert alert-info">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span>{activeLeagueId ? 'Keine Spiele für die ausgewählte Liga gefunden.' : 'Bitte wählen Sie eine Liga aus.'}</span>
           </div>
         )}
       </div>

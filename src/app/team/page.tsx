@@ -519,7 +519,8 @@ export default function TeamPage() {
         <Navigation />
         <div className="container mx-auto px-4 py-8">
           <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2"></div>
+            {/* Verwende DaisyUI loading Komponente */}
+            <span className="loading loading-spinner loading-lg"></span>
           </div>
         </div>
       </>
@@ -535,8 +536,10 @@ export default function TeamPage() {
         <Navigation />
         <div className="container mx-auto px-4 py-8">
           <h1 className="text-2xl font-bold mb-6">Meine Mannschaften</h1>
-          <div className="bg-white shadow overflow-hidden sm:rounded-md p-6 text-center text-gray-500">
-            Sie sind keiner Mannschaft zugeordnet. Bitte kontaktieren Sie einen Administrator.
+          {/* Verwende DaisyUI alert */}
+          <div role="alert" className="alert alert-warning">
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+            <span>Sie sind keiner Mannschaft zugeordnet. Bitte kontaktieren Sie einen Administrator.</span>
           </div>
         </div>
       </>
@@ -593,24 +596,25 @@ export default function TeamPage() {
             <div key={selectedTeam.id} className="mb-12">
               <h2 className="text-xl font-semibold mb-4">{selectedTeam.name}</h2>
 
-            {/* Mannschaftsdetails */}
-            <div className="shadow overflow-hidden sm:rounded-lg mb-8">
-              <div className="px-4 py-5 sm:px-6 flex justify-between items-center bg-base-200">
-                <h3 className="text-lg leading-6 font-medium light:text-gray-900">Mannschaftsdetails</h3>
+            {/* Mannschaftsdetails - Verwende DaisyUI card */}
+            <div className="card card-bordered bg-base-100 shadow-md mb-8">
+              <div className="card-body p-0"> {/* Entferne Standard-Padding von card-body, da wir eigenes Layout haben */}
+                <div className="px-4 py-3 sm:px-6 flex justify-between items-center bg-base-200 rounded-t-lg"> {/* Header-Styling */}
+                  <h3 className="card-title text-lg">Mannschaftsdetails</h3>
+                  {/* Use selectedTeam here */}
+                  {!editingTeam && selectedTeam && (
+                    <button
+                      onClick={() => handleEditTeam(selectedTeam)}
+                      // Standardisierter Button-Style
+                      className="btn btn-ghost btn-sm btn-square"
+                      title="Team bearbeiten"
+                    >
+                      <PencilSquareIcon className='h-5 w-5'> </PencilSquareIcon>
+                    </button>
+                  )}
+                </div>
+
                 {/* Use selectedTeam here */}
-                {!editingTeam && selectedTeam && (
-                  <button
-                    onClick={() => handleEditTeam(selectedTeam)}
-                    className="p-1 text-primary hover:text-indigo-900 hover:bg-primary-100 rounded-sm dark:text-foreground dark:hover:bg-muted"
-                    title="Team bearbeiten"
-                  >
-                    <PencilSquareIcon className='h-5 w-5 cursor-pointer'> </PencilSquareIcon>
-
-                  </button>
-                )}
-              </div>
-
-              {/* Use selectedTeam here */}
               {editingTeam?.id === selectedTeam.id ? (
                 <div className="border-t border-gray-200">
                   <form onSubmit={handleTeamSubmit} className="p-4 space-y-4">
@@ -698,20 +702,24 @@ export default function TeamPage() {
                   </dl>
                 </div>
               )}
-            </div>
+              </div> {/* Ende von card-body */}
+            </div> {/* Ende von card */}
 
             <h3 className="text-lg font-semibold mb-4">Heimspiele verwalten</h3>
 
             {isLoading ? (
               <div className="flex justify-center items-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2"></div>
+                {/* Verwende DaisyUI loading Komponente */}
+                <span className="loading loading-spinner loading-lg"></span>
               </div>
             ) : homeFixtures[selectedTeam.id] && homeFixtures[selectedTeam.id].length > 0 ? (
-              <div className="shadow overflow-hidden sm:rounded-md mb-8">
-                <ul className="divide-y divide-gray-200">
-                  {homeFixtures[selectedTeam.id].map((fixture) => (
-                <li key={fixture.id} className="px-4 py-4 sm:px-6">
-                  {editingFixture?.id === fixture.id ? (
+              // Verwende DaisyUI card für die Fixture-Liste
+              <div className="card card-bordered bg-base-100 shadow-md mb-8">
+                <div className="card-body p-0"> {/* Kein Padding für die Liste */}
+                  <ul className="divide-y divide-base-200"> {/* Angepasste Trennlinie */}
+                    {homeFixtures[selectedTeam.id].map((fixture) => (
+                      <li key={fixture.id} className="px-4 py-4 sm:px-6">
+                        {editingFixture?.id === fixture.id ? (
                     <form onSubmit={handleSubmit} className="space-y-4">
                       <div className="flex items-center justify-between">
                         <div>
@@ -880,13 +888,13 @@ export default function TeamPage() {
                         <button
                           type="button"
                           onClick={handleCancelEdit}
-                          className="px-4 py-2 btn"
+                          className="btn" // px-4 py-2 entfernt
                         >
                           Abbrechen
                         </button>
                         <button
                           type="submit"
-                          className="px-4 py-2 btn btn-primary"
+                          className="btn btn-primary" // px-4 py-2 entfernt
                         >
                           Speichern
                         </button>
@@ -953,12 +961,15 @@ export default function TeamPage() {
                     </div>
                   )}
                 </li>
-              ))}
-            </ul>
-          </div>
+                    ))}
+                  </ul>
+                </div> {/* Ende card-body */}
+              </div> {/* Ende card */}
             ) : (
-              <div className="bg-white shadow overflow-hidden sm:rounded-md p-6 text-center text-gray-500 mb-8">
-                Keine Heimspiele für {selectedTeam.name} gefunden.
+              // Verwende DaisyUI alert für leeren Zustand
+              <div role="alert" className="alert alert-info mb-8">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span>Keine Heimspiele für {selectedTeam.name} gefunden.</span>
               </div>
             )}
             </div>
