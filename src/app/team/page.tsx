@@ -963,8 +963,8 @@ export default function TeamPage() {
                 </li>
                     ))}
                   </ul>
-                </div> {/* Ende card-body */}
-              </div> {/* Ende card */}
+                </div> 
+              </div> 
             ) : (
               // Verwende DaisyUI alert für leeren Zustand
               <div role="alert" className="alert alert-info mb-8">
