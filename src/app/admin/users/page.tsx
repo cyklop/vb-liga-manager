@@ -317,6 +317,7 @@ export default function UsersPage() {
           message={`Möchten Sie den Benutzer ${userToDelete?.name} wirklich löschen?`}
         />
       )}
+      </div>
     </>
   )
 }
