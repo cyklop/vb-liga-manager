@@ -952,10 +952,11 @@ export default function TeamPage() {
 
                         <button
                           onClick={() => handleEditFixture(fixture)}
-                          className="p-1 text-primary hover:text-indigo-900 hover:bg-primary-100 rounded-sm dark:text-foreground dark:hover:bg-muted"
+                          // Standardisierter Button-Style
+                          className="btn btn-ghost btn-sm btn-square"
                           title="Spielpaarung bearbeiten"
                         >
-                          <PencilSquareIcon className='h-5 w-5 cursor-pointer'> </PencilSquareIcon>
+                          <PencilSquareIcon className='h-5 w-5'> </PencilSquareIcon>
                         </button>
                       </div>
                     </div>
