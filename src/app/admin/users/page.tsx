@@ -195,14 +195,14 @@ export default function UsersPage() {
                           setIsEditing(true)
                           setIsModalOpen(true)
                         }}
-                        className="btn btn-ghost btn-sm btn-square"
+                        className="btn btn-soft btn-sm btn-square"
                         title="Benutzer bearbeiten"
                       >
                         <PencilIcon className="h-5 w-5" />
                       </button>
                       <button
                         onClick={() => handleDeleteUser(user)}
-                        className="btn btn-ghost btn-sm btn-square text-error"
+                        className="btn btn-soft btn-sm btn-square btn-error"
                         title="Benutzer löschen"
                       >
                         <TrashIcon className="h-5 w-5" />
@@ -215,8 +215,7 @@ export default function UsersPage() {
           </div>
         </div>
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={isEditing ? "Benutzer bearbeiten" : "Neuen Benutzer hinzufügen"}>
-          <form onSubmit={isEditing ? handleEditUser : handleAddUser} className="space-y-4">
-            {/* Floating Label for Email */}
+          <form onSubmit={isEditing ? handleEditUser : handleAddUser} className="space-y-4">            
             <label className="floating-label w-full">
               <input
                 type="email"
@@ -227,21 +226,10 @@ export default function UsersPage() {
                 className="input input-bordered w-full" // Keep input-bordered for styling
                 required
               />
-              <span>E-Mail</span> {/* Label text */}
+              <span>E-Mail</span> 
             </label>
-            {/* Floating Label for Name */}
-            <label className="floating-label w-full">
-              <input
-                type="text"
-                id="name"
-                value={newUser.name}
-                onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                placeholder="Name" // Placeholder is important for floating label
-                className="input input-bordered w-full" // Keep input-bordered for styling
-                required
-              />
-              <span>Name</span> {/* Label text */}
-              </div>
+            <label className="floating-label w-full">              
+              <span>Name</span>               
               <input
                 type="text"
                 id="name"
