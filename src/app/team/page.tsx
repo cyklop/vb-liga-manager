@@ -542,31 +542,424 @@ export default function TeamPage() {
       </>
     );
   }
-  
-  {console.log("Teams state in render:", teams)}
 
   return (
     <>
       <Navigation />
-      {/* Log the teams state during render */}
-      
+      {/* Log the teams state during render - Removed: {console.log("Teams state in render:", teams)} */}
+
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">Meine Mannschaften</h1>
          
         {/* Team-Auswahl Dropdown, wenn Teams vorhanden sind */}
         {teams.length > 0 && (
           <div className="mb-6">
-            <label htmlFor="team-select" className="select w-lg">
-            <span className="label">Mannschaft auswählen:</span>
+            {/* Verwende form-control für Layout */}
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                {/* Standard label-text */}
+                <span className="label-text">Mannschaft auswählen:</span>
+              </div>
               <select
-              id="team-select"
-              value={selectedTeamId || ''}
-              onChange={(e) => setSelectedTeamId(Number(e.target.value))}
-              className="select"
-            >
-              {teams.map(team => (
-                <option key={team.id} value={team.id}>
-                  {team.name}
+                id="team-select"
+                value={selectedTeamId || ''}
+                onChange={(e) => setSelectedTeamId(Number(e.target.value))}
+                // select mit Klassen
+                className="select select-bordered w-full"
+              >
+                {teams.map(team => (
+                  <option key={team.id} value={team.id}>
+                    {team.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        )}
+
+        {/* Finde das ausgewählte Team */}
+        {(() => {
+          const selectedTeam = teams.find(team => team.id === selectedTeamId);
+          // Wenn kein Team ausgewählt ist oder die ID ungültig ist, zeige nichts oder eine Nachricht an
+          if (!selectedTeam) {
+            // Optional: Zeige eine Nachricht an, wenn Teams vorhanden sind, aber keines ausgewählt ist
+            if (teams.length > 0) {
+               return <div className="text-center text-gray-500 mt-8">Bitte wählen Sie eine Mannschaft aus.</div>;
+            }
+            return null; // Oder zeige das erste Team standardmäßig an, falls gewünscht
+          }
+          // Zeige die Details des ausgewählten Teams an
+          return (
+            <div key={selectedTeam.id} className="mb-12">
+              <h2 className="text-xl font-semibold mb-4">{selectedTeam.name}</h2>
+
+            {/* Mannschaftsdetails */}
+            <div className="shadow overflow-hidden sm:rounded-lg mb-8">
+              <div className="px-4 py-5 sm:px-6 flex justify-between items-center bg-base-200">
+                <h3 className="text-lg leading-6 font-medium light:text-gray-900">Mannschaftsdetails</h3>
+                {/* Use selectedTeam here */}
+                {!editingTeam && selectedTeam && (
+                  <button
+                    onClick={() => handleEditTeam(selectedTeam)}
+                    className="p-1 text-primary hover:text-indigo-900 hover:bg-primary-100 rounded-sm dark:text-foreground dark:hover:bg-muted"
+                    title="Team bearbeiten"
+                  >
+                    <PencilSquareIcon className='h-5 w-5 cursor-pointer'> </PencilSquareIcon>
+
+                  </button>
+                )}
+              </div>
+
+              {/* Use selectedTeam here */}
+              {editingTeam?.id === selectedTeam.id ? (
+                <div className="border-t border-gray-200">
+                  <form onSubmit={handleTeamSubmit} className="p-4 space-y-4">
+                    <div>
+                      <label className="floating-label">
+                        <span>Ort</span>
+                        <input
+                        type="text"
+                        name="location"
+                        value={teamFormData.location}
+                        onChange={handleTeamInputChange}
+                        placeholder="Ort der Mannschaft" // Placeholder hinzufügen
+                        className="input input-bordered w-full" // daisyUI Klassen
+                      />
+                      </label>
+                    </div>
+
+                    <div>
+                      <label className="floating-label">
+                        <span>Hallenadresse</span>
+                        <input
+                        type="text"
+                        name="hallAddress"
+                        value={teamFormData.hallAddress}
+                        onChange={handleTeamInputChange}
+                        placeholder="Adresse der Halle" // Placeholder hinzufügen
+                        className="input input-bordered w-full" // daisyUI Klassen
+                      />
+                      </label>
+
+                    </div>
+
+                    <div>
+                      <label className="floating-label">
+                      <span>Trainingszeiten</span>
+                      <textarea
+                        name="trainingTimes"
+                        value={teamFormData.trainingTimes}
+                        onChange={handleTeamInputChange}
+                        rows={3}
+                        placeholder="Zeiten und Tage des Trainings" // Placeholder hinzufügen
+                        className="textarea textarea-bordered w-full" // daisyUI Klassen
+                      />
+                      </label>
+
+                    </div>
+
+                    <div className="flex justify-end space-x-3">
+                      <button
+                        type="button"
+                        onClick={handleCancelTeamEdit}
+                        className="btn" // Vereinfachte Klassen
+                      >
+                        Abbrechen
+                      </button>
+                      <button
+                        type="submit"
+                        // Klassen hier sind ok (btn btn-primary), ggf. px/py entfernen, da btn Größe definiert
+                        className="btn btn-primary"
+                      >
+                        Speichern
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              ) : (
+                <div className="border-t border-gray-200">
+                  <dl>
+                    <div className="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                      <dt className="text-sm font-medium">Name</dt>
+                      <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2">{selectedTeam.name}</dd>
+                    </div>
+                    <div className="bg-base-200 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                      <dt className="text-sm font-medium">Ort</dt>
+                      <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2">{selectedTeam.location}</dd>
+                    </div>
+                    <div className="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                      <dt className="text-sm font-medium">Hallenadresse</dt>
+                      <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2">{selectedTeam.hallAddress}</dd>
+                    </div>
+                    <div className="bg-base-200 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                      <dt className="text-sm font-medium">Trainingszeiten</dt>
+                      <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2">{selectedTeam.trainingTimes}</dd>
+                    </div>
+                  </dl>
+                </div>
+              )}
+            </div>
+
+            <h3 className="text-lg font-semibold mb-4">Heimspiele verwalten</h3>
+
+            {isLoading ? (
+              <div className="flex justify-center items-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2"></div>
+              </div>
+            ) : homeFixtures[selectedTeam.id] && homeFixtures[selectedTeam.id].length > 0 ? (
+              <div className="shadow overflow-hidden sm:rounded-md mb-8">
+                <ul className="divide-y divide-gray-200">
+                  {homeFixtures[selectedTeam.id].map((fixture) => (
+                <li key={fixture.id} className="px-4 py-4 sm:px-6">
+                  {editingFixture?.id === fixture.id ? (
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="font-medium">{fixture.homeTeam.name}</span>
+                          <span className="mx-2">vs</span>
+                          <span className="font-medium">{fixture.awayTeam.name}</span>
+                          {fixture.matchday && (
+                            <span className="ml-2 text-sm text-gray-500">
+                              (Spieltag {fixture.matchday})
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Date and Time Inputs */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="floating-label">
+                            <span>Datum</span>
+                            <input
+                              type="date"
+                              name="fixtureDate"
+                              value={formData.fixtureDate}
+                              onChange={handleInputChange}
+                              placeholder=" " // Wichtig: Placeholder für type="date"
+                              className="input input-bordered w-full" // daisyUI Klassen
+                            />
+                          </label>
+                        </div>
+                        <div>
+                        <label className="floating-label">
+                          <input
+                            type="time"
+                            name="fixtureTime"
+                            value={formData.fixtureTime}
+                            onChange={handleInputChange}
+                            placeholder=" " // Wichtig: Placeholder für type="time"
+                            className="input input-bordered w-full" // daisyUI Klassen
+                          />
+                          </label>
+                        </div>
+                      </div>
+
+                      {/* Conditional Score Inputs */}
+                      <fieldset className="border border-gray-200 p-3 rounded-md">
+                        <legend className="text-sm font-medium px-1">Ergebnis</legend>
+                        <div className="mt-2 space-y-3">
+                          {/* Case 1: MATCH_SCORE */}
+                          {editingFixture.league?.scoreEntryType === ScoreEntryType.MATCH_SCORE && formData.scoreData && (
+                            <div className="space-y-3"> {/* Wrap in div for spacing */}
+                              {/* Set Scores */}
+                              <div className="flex space-x-4">
+                                <div className="flex-1">
+                                  <label htmlFor="homeScore" className="floating-label">
+                                    <span>Sätze Heim</span>
+                                    <input
+                                      type="number"
+                                      id="homeScore"
+                                      name="homeScore" // Use 'homeScore'
+                                      min="0" max={editingFixture.league.setsToWin}
+                                      value={formData.scoreData.homeScore ?? ''}
+                                      onChange={(e) => handleInputChange(e)}
+                                      placeholder={`0-${editingFixture.league.setsToWin}`} // Aussagekräftiger Placeholder
+                                      className="input input-bordered w-full" // daisyUI Klassen
+                                    />
+                                  </label>
+                                </div>
+                                <div className="flex-1">
+                                  <label htmlFor="awayScore" className="floating-label">
+                                    <span>Sätze Gast</span>
+                                  <input
+                                    type="number"
+                                    id="awayScore"
+                                    name="awayScore" // Use 'awayScore'
+                                    min="0" max={editingFixture.league.setsToWin}
+                                    value={formData.scoreData.awayScore ?? ''}
+                                    onChange={(e) => handleInputChange(e)}
+                                    placeholder={`0-${editingFixture.league.setsToWin}`}
+                                    className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 rounded-md"
+                                  />
+                                  </label>
+
+                                </div>
+                              </div>
+                              {/* Total Points (Balls) */}
+                              <div className="flex space-x-4">
+                                <div className="flex-1">
+                                  <label htmlFor="homePoints" className="floating-label">
+                                    <span>Bälle Heim</span>
+                                    <input
+                                      type="number"
+                                      id="homePoints"
+                                      name="homePoints"
+                                      min="0"
+                                      value={formData.scoreData.homePoints ?? ''}
+                                      onChange={(e) => handleInputChange(e)}
+                                      placeholder="Gesamtbälle"
+                                      className="input input-bordered w-full" // daisyUI Klassen
+                                    />
+                                  </label>
+                                </div>
+                                <div className="flex-1">
+                                  <label htmlFor="awayPoints" className="floating-label">
+                                    <span>Bälle Gast</span>
+                                  <input
+                                    type="number"
+                                    id="awayPoints"
+                                    name="awayPoints"
+                                    min="0"
+                                    value={formData.scoreData.awayPoints ?? ''}
+                                    onChange={(e) => handleInputChange(e)}
+                                    placeholder="Gesamtbälle"
+                                    className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 rounded-md"
+                                  />
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {/* Case 2: SET_SCORES */}
+                          {editingFixture.league?.scoreEntryType === ScoreEntryType.SET_SCORES && formData.scoreData?.setScores && (
+                            <div className="space-y-2">
+                              {formData.scoreData.setScores.map((set: any, index: number) => (
+                                <div key={index} className="flex items-center space-x-2">
+                                  <label className="text-right input">
+                                    <span >Satz {index + 1}:</span>
+                                    <input
+                                    type="number"
+                                    name="home" // Use 'home'
+                                    min="0"
+                                    value={set.home ?? ''}
+                                    onChange={(e) => handleInputChange(e, index)}
+                                    placeholder="Heim"
+                                    className="flex-1 block w-full px-2 py-1 text-base text-right border-gray-300 rounded-md"
+                                    />
+                                  </label>
+                                  <span>:</span>
+                                  <label className="text-right input">
+
+                                    <input
+                                      type="number"
+                                      name="away" // Use 'away'
+                                      min="0"
+                                      value={set.away ?? ''}
+                                      onChange={(e) => handleInputChange(e, index)}
+                                      placeholder="Gast"
+                                      className="flex-1 block w-full px-2 py-1 text-base border-gray-300 rounded-md"
+                                    /></label>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </fieldset>
+
+                      {/* Action Buttons */}
+                      <div className="flex justify-end space-x-3 pt-2">
+                        <button
+                          type="button"
+                          onClick={handleCancelEdit}
+                          className="px-4 py-2 btn"
+                        >
+                          Abbrechen
+                        </button>
+                        <button
+                          type="submit"
+                          className="px-4 py-2 btn btn-primary"
+                        >
+                          Speichern
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="flex items-center">
+                          <span className="font-medium">{fixture.homeTeam.name}</span>
+                          <span className="mx-2">vs</span>
+                          <span className="font-medium">{fixture.awayTeam.name}</span>
+                          {fixture.matchday && (
+                            <span className="ml-2 text-sm text-gray-500">
+                              (Spieltag {fixture.matchday})
+                            </span>
+                          )}
+                        </div>
+                        <div className="mt-1 text-sm text-gray-500">
+                          {formatDate(fixture.fixtureDate)}
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        {/* Conditional Score Display */}
+                        {fixture.homeScore !== null && fixture.awayScore !== null ? (
+                          <div className="text-sm font-semibold mr-4">
+                            {/* Assume fixture.league exists or default to match score */}
+                            {(() => {
+                              const displayType = fixture.league?.scoreEntryType ?? ScoreEntryType.MATCH_SCORE;
+                              if (displayType === ScoreEntryType.SET_SCORES) {
+                                // Display set scores
+                                return [1, 2, 3, 4, 5]
+                                  .map(setNum => ({
+                                    home: fixture[`homeSet${setNum}` as keyof Fixture],
+                                    away: fixture[`awaySet${setNum}` as keyof Fixture],
+                                  }))
+                                  .filter(set => set.home !== null && set.away !== null)
+                                  .map(set => `${set.home}:${set.away}`)
+                                  .join(', ');
+                              } else {
+                                // Display match score
+                                return `${fixture.homeScore} : ${fixture.awayScore}`;
+                              }
+                            })()}
+                            {/* Display Match Points */}
+                            {(fixture.homeMatchPoints !== null && fixture.awayMatchPoints !== null) && (
+                              <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                                (P: {fixture.homeMatchPoints}:{fixture.awayMatchPoints})
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="text-sm text-gray-500 dark:text-gray-400 mr-4">Ergebnis ausstehend</div>
+                        )}
+
+                        <button
+                          onClick={() => handleEditFixture(fixture)}
+                          className="p-1 text-primary hover:text-indigo-900 hover:bg-primary-100 rounded-sm dark:text-foreground dark:hover:bg-muted"
+                          title="Spielpaarung bearbeiten"
+                        >
+                          <PencilSquareIcon className='h-5 w-5 cursor-pointer'> </PencilSquareIcon>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+            ) : (
+              <div className="bg-white shadow overflow-hidden sm:rounded-md p-6 text-center text-gray-500 mb-8">
+                Keine Heimspiele für {selectedTeam.name} gefunden.
+              </div>
+            )}
+            </div>
+          );
+        })()}
+      </div>
+    </>
+  );
+}
                 </option>
               ))}
             </select>
