@@ -195,14 +195,14 @@ export default function UsersPage() {
                           setIsEditing(true)
                           setIsModalOpen(true)
                         }}
-                        className="btn btn-soft btn-sm btn-square"
+                        className="p-1 btn btn-sm btn-soft btn-secondary" // Reverted to btn-soft
                         title="Benutzer bearbeiten"
                       >
                         <PencilIcon className="h-5 w-5" />
                       </button>
                       <button
                         onClick={() => handleDeleteUser(user)}
-                        className="btn btn-soft btn-sm btn-square btn-error"
+                        className="p-1 btn btn-sm btn-soft btn-error" // Reverted to btn-soft
                         title="Benutzer löschen"
                       >
                         <TrashIcon className="h-5 w-5" />

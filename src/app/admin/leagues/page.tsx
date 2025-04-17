@@ -723,7 +723,7 @@ export default function LeaguesPage() {
                          });
                          setIsModalOpen(true);
                        }}
-                       className="btn btn-ghost btn-sm btn-square" // Use btn-ghost
+                       className="p-1 btn btn-sm btn-soft btn-secondary" // Reverted to btn-soft
                        title="Liga bearbeiten"
                      >
                        <PencilIcon className="h-5 w-5" />
@@ -731,7 +731,7 @@ export default function LeaguesPage() {
                      <button
                        // onClick anpassen, um den Dialog zu öffnen
                        onClick={() => handleDeleteLeague(league)}
-                       className="btn btn-ghost btn-sm btn-square text-error" // Use btn-ghost with text-error
+                       className="p-1 btn btn-sm btn-soft btn-error" // Reverted to btn-soft
                        title="Liga löschen"
                      >
                        <TrashIcon className="h-5 w-5" />
@@ -757,14 +757,14 @@ export default function LeaguesPage() {
                          });
                          setIsModalOpen(true);
                        }}
-                       className={`btn btn-ghost btn-sm btn-square ${league.isActive ? 'text-warning' : 'text-success'}`} // Use btn-ghost with text color
+                       className={`p-1 btn btn-sm btn-soft ${league.isActive ? 'btn-warning' : 'btn-success'}`} // Reverted to btn-soft
                        title={league.isActive ? "Liga abschließen" : "Liga wieder aktivieren"}
                      >
                        {league.isActive ? <LockClosedIcon className="h-5 w-5" /> : <LockOpenIcon className="h-5 w-5" />}
                      </button>
                      <button
                        onClick={() => handleGenerateFixtures(league.id)}
-                       className={`btn btn-ghost btn-sm btn-square ${league.isActive ? 'text-success' : 'text-base-content/30'}`} // Use btn-ghost, adjust disabled color
+                       className={`p-1 btn btn-sm btn-soft ${league.isActive ? 'btn-success' : 'btn-disabled'}`} // Reverted to btn-soft
                        title={league.isActive ? "Spielplan generieren" : "Liga ist abgeschlossen"}
                        disabled={!league.isActive}
                      >
@@ -774,7 +774,7 @@ export default function LeaguesPage() {
                  {/* Removed closing curly brace for isAdmin check */}
                  <button
                    onClick={() => handleShowFixtures(league.id)}
-                   className="btn btn-ghost btn-sm btn-square text-accent" // Use btn-ghost with text-accent
+                   className="p-1 btn btn-sm btn-soft btn-accent" // Reverted to btn-soft
                    title={selectedLeagueId === league.id ? "Spielplan verbergen" : "Spielplan anzeigen"}
                  >
                    <ArrowsUpDownIcon className="h-5 w-5" />
@@ -1353,17 +1353,17 @@ function SortableFixtureItem({ fixture, league, onEditClick, isLeagueActive }: S
             : '- : -'})
         </span>
       </div>
-     {/* Action Buttons Container */}
-     <div className="flex items-center space-x-1 ml-2">
-       <button
-         onClick={() => onEditClick(fixture)} // Keep original onClick
-         className={`btn btn-ghost btn-sm btn-square ${isLeagueActive ? '' : 'text-base-content/30'}`} // Use btn-ghost, adjust disabled color
-         title={isLeagueActive ? "Spielpaarung bearbeiten" : "Liga ist inaktiv"}
-         disabled={!isLeagueActive}
-       >
-         <PencilIcon className="h-4 w-4" />
-       </button>
-       {/* Removed Up/Down buttons as Drag&Drop is used */}
+    {/* Action Buttons Container */}
+    <div className="flex items-center space-x-1 ml-2">
+      <button
+        onClick={() => onEditClick(fixture)} // Keep original onClick
+        className={`p-1 btn btn-sm btn-soft ${isLeagueActive ? 'btn-secondary' : 'btn-disabled'}`} // Reverted to btn-soft
+        title={isLeagueActive ? "Spielpaarung bearbeiten" : "Liga ist inaktiv"}
+        disabled={!isLeagueActive}
+      >
+        <PencilIcon className="h-4 w-4" />
+      </button>
+      {/* Removed Up/Down buttons as Drag&Drop is used */}
      </div>
    </li>
   );

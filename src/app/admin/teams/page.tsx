@@ -228,7 +228,7 @@ export default function TeamsPage() {
                      setIsModalOpen(false) // Close modal first if already open from another edit
                      setTimeout(() => setIsModalOpen(true), 0) // Then open with new data
                    }}
-                   className="btn btn-ghost btn-sm btn-square" // Use btn-ghost
+                   className="p-1 btn btn-sm btn-soft btn-secondary" // Reverted to btn-soft
                    title="Mannschaft bearbeiten"
                  >
                    <PencilIcon className="h-5 w-5" />
@@ -236,7 +236,7 @@ export default function TeamsPage() {
                  {/* Delete Button - Always shown */}
                  <button
                    onClick={() => requestDeleteTeam(team)}
-                     className="btn btn-ghost btn-sm btn-square text-error" // Use btn-ghost with text-error
+                     className="p-1 btn btn-sm btn-soft btn-error" // Reverted to btn-soft
                      title="Mannschaft löschen"
                    >
                      <TrashIcon className="h-5 w-5" />
