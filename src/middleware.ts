@@ -6,6 +6,12 @@ export async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
   const { pathname } = req.nextUrl
 
+  // --- DEBUGGING START ---
+  // Logge den Token-Inhalt, um die Admin-Flags zu überprüfen
+  console.log('[Middleware] Token:', token);
+  // --- DEBUGGING END ---
+
+
   // Schütze alle Routen unter /admin
   if (pathname.startsWith('/admin')) {
     // Wenn kein Token vorhanden ist ODER der Benutzer kein Admin/SuperAdmin ist
