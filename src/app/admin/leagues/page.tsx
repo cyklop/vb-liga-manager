@@ -721,14 +721,20 @@ export default function LeaguesPage() {
                        >
                          <PencilIcon className="h-5 w-5" />
                      </button>
+                   </div>
+                   {/* Tooltip Wrapper */}
+                   <div className="tooltip" data-tip="Liga löschen">
                      <button
                        // onClick anpassen, um den Dialog zu öffnen
                        onClick={() => handleDeleteLeague(league)}
                        className="p-1 btn btn-sm btn-soft btn-error" // Reverted to btn-soft
-                       title="Liga löschen"
+                       // title removed
                      >
                        <TrashIcon className="h-5 w-5" />
                      </button>
+                   </div>
+                   {/* Tooltip Wrapper */}
+                   <div className="tooltip" data-tip={league.isActive ? "Liga abschließen" : "Liga wieder aktivieren"}>
                      <button
                        onClick={() => {
                          setEditingLeague(league);
@@ -751,24 +757,30 @@ export default function LeaguesPage() {
                          setIsModalOpen(true);
                        }}
                        className={`p-1 btn btn-sm btn-soft ${league.isActive ? 'btn-warning' : 'btn-success'}`} // Reverted to btn-soft
-                       title={league.isActive ? "Liga abschließen" : "Liga wieder aktivieren"}
+                       // title removed
                      >
                        {league.isActive ? <LockClosedIcon className="h-5 w-5" /> : <LockOpenIcon className="h-5 w-5" />}
                      </button>
+                   </div>
+                   {/* Tooltip Wrapper */}
+                   <div className="tooltip" data-tip={league.isActive ? "Spielplan generieren" : "Liga ist abgeschlossen"}>
                      <button
                        onClick={() => handleGenerateFixtures(league.id)}
                        className={`p-1 btn btn-sm btn-soft ${league.isActive ? 'btn-success' : 'btn-disabled'}`} // Reverted to btn-soft
-                       title={league.isActive ? "Spielplan generieren" : "Liga ist abgeschlossen"}
+                       // title removed
                        disabled={!league.isActive}
                      >
                        <CalendarDaysIcon className="h-5 w-5" />
                      </button>
-                 <button
-                   onClick={() => handleShowFixtures(league.id)}
-                   className="p-1 btn btn-sm btn-soft btn-accent" // Reverted to btn-soft
-                   title={selectedLeagueId === league.id ? "Spielplan verbergen" : "Spielplan anzeigen"}
-                 >
-                   <ArrowsUpDownIcon className="h-5 w-5" />
+                   </div>
+                   {/* Tooltip Wrapper */}
+                   <div className="tooltip" data-tip={selectedLeagueId === league.id ? "Spielplan verbergen" : "Spielplan anzeigen"}>
+                     <button
+                       onClick={() => handleShowFixtures(league.id)}
+                       className="p-1 btn btn-sm btn-soft btn-accent" // Reverted to btn-soft
+                       // title removed
+                     >
+                       <ArrowsUpDownIcon className="h-5 w-5" />
                  </button>
                </div>
              </div>
