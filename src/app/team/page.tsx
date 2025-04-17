@@ -549,7 +549,6 @@ export default function TeamPage() {
   return (
     <>
       <Navigation />
-      {/* Log the teams state during render - Removed: {console.log("Teams state in render:", teams)} */}
 
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">Meine Mannschaften</h1>
