@@ -782,18 +782,17 @@ export default function TeamPage() {
                                 <div className="flex-1">
                                   <label htmlFor="awayScore" className="floating-label">
                                     <span>Sätze Gast</span>
-                                  <input
-                                    type="number"
-                                    id="awayScore"
-                                    name="awayScore" // Use 'awayScore'
-                                    min="0" max={editingFixture.league.setsToWin}
-                                    value={formData.scoreData.awayScore ?? ''}
-                                    onChange={(e) => handleInputChange(e)}
-                                    placeholder={`0-${editingFixture.league.setsToWin}`}
-                                    className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 rounded-md"
-                                  />
+                                    <input
+                                      type="number"
+                                      id="awayScore"
+                                      name="awayScore" // Use 'awayScore'
+                                      min="0" max={editingFixture.league.setsToWin}
+                                      value={formData.scoreData.awayScore ?? ''}
+                                      onChange={(e) => handleInputChange(e)}
+                                      placeholder={`0-${editingFixture.league.setsToWin}`} // Aussagekräftiger Placeholder
+                                      className="input input-bordered w-full" // daisyUI Klassen
+                                    />
                                   </label>
-
                                 </div>
                               </div>
                               {/* Total Points (Balls) */}
@@ -816,16 +815,16 @@ export default function TeamPage() {
                                 <div className="flex-1">
                                   <label htmlFor="awayPoints" className="floating-label">
                                     <span>Bälle Gast</span>
-                                  <input
-                                    type="number"
-                                    id="awayPoints"
-                                    name="awayPoints"
-                                    min="0"
-                                    value={formData.scoreData.awayPoints ?? ''}
-                                    onChange={(e) => handleInputChange(e)}
-                                    placeholder="Gesamtbälle"
-                                    className="mt-1 block w-full px-3 py-1.5 text-base border-gray-300 rounded-md"
-                                  />
+                                    <input
+                                      type="number"
+                                      id="awayPoints"
+                                      name="awayPoints"
+                                      min="0"
+                                      value={formData.scoreData.awayPoints ?? ''}
+                                      onChange={(e) => handleInputChange(e)}
+                                      placeholder="Gesamtbälle"
+                                      className="input input-bordered w-full" // daisyUI Klassen
+                                    />
                                   </label>
                                 </div>
                               </div>
@@ -835,31 +834,40 @@ export default function TeamPage() {
                           {editingFixture.league?.scoreEntryType === ScoreEntryType.SET_SCORES && formData.scoreData?.setScores && (
                             <div className="space-y-2">
                               {formData.scoreData.setScores.map((set: any, index: number) => (
-                                <div key={index} className="flex items-center space-x-2">
-                                  <label className="text-right input">
-                                    <span >Satz {index + 1}:</span>
+                                // items-end für bessere Ausrichtung mit floating label
+                                <div key={index} className="flex items-end space-x-2">
+                                  {/* Label außerhalb */}
+                                  <span className="pb-2">Satz {index + 1}:</span>
+                                  <label className="floating-label flex-1">
+                                    {/* Label Text */}
+                                    <span>Heim</span>
                                     <input
-                                    type="number"
-                                    name="home" // Use 'home'
-                                    min="0"
-                                    value={set.home ?? ''}
-                                    onChange={(e) => handleInputChange(e, index)}
-                                    placeholder="Heim"
-                                    className="flex-1 block w-full px-2 py-1 text-base text-right border-gray-300 rounded-md"
+                                      type="number"
+                                      name="home" // Use 'home'
+                                      min="0"
+                                      value={set.home ?? ''}
+                                      onChange={(e) => handleInputChange(e, index)}
+                                      placeholder="Punkte" // Placeholder
+                                      // daisyUI Klassen, text-right beibehalten
+                                      className="input input-bordered w-full text-right"
                                     />
                                   </label>
-                                  <span>:</span>
-                                  <label className="text-right input">
-
+                                  {/* Doppelpunkt auf gleicher Höhe */}
+                                  <span className="pb-2">:</span>
+                                  <label className="floating-label flex-1">
+                                    {/* Label Text */}
+                                    <span>Gast</span>
                                     <input
                                       type="number"
                                       name="away" // Use 'away'
                                       min="0"
                                       value={set.away ?? ''}
                                       onChange={(e) => handleInputChange(e, index)}
-                                      placeholder="Gast"
-                                      className="flex-1 block w-full px-2 py-1 text-base border-gray-300 rounded-md"
-                                    /></label>
+                                      placeholder="Punkte" // Placeholder
+                                      // daisyUI Klassen
+                                      className="input input-bordered w-full"
+                                    />
+                                  </label>
                                 </div>
                               ))}
                             </div>
