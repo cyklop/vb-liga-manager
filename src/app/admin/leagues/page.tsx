@@ -1216,6 +1216,7 @@ export default function LeaguesPage() {
            {/* Submit Button */}
            <div className="modal-action mt-6">
               <button type="button" className="btn btn-ghost" onClick={() => { setIsFixtureModalOpen(false); setEditingFixture(null); setScoreInputData(null); setEditingLeagueContext(null); }}>Abbrechen</button>
+              <button
                 type="submit"
                 className="btn btn-primary"
               >
