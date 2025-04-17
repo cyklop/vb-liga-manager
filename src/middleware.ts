@@ -3,24 +3,9 @@ import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
 export async function middleware(req: NextRequest) {
-  // --- DEBUGGING START ---
-  // --- DEBUGGING START ---
-  // Logge den Cookie-Header und den Secret
-  const cookieHeader = req.headers.get('cookie');
-  const secretFromEnv = process.env.NEXTAUTH_SECRET;
-  console.log('[Middleware] Received Cookie Header:', cookieHeader);
-  console.log('[Middleware] NEXTAUTH_SECRET available:', !!secretFromEnv);
-  // Logge den tatsächlichen Secret-Wert (Vorsicht bei Produktionslogs!)
-  console.log('[Middleware] Actual NEXTAUTH_SECRET value:', secretFromEnv);
-  // --- DEBUGGING END ---
-
-  const token = await getToken({ req, secret: secretFromEnv }) // Verwende die Variable
+  const secretFromEnv = process.env.NEXTAUTH_SECRET; // Secret holen
+  const token = await getToken({ req, secret: secretFromEnv })
   const { pathname } = req.nextUrl
-
-  // --- DEBUGGING START ---
-  // Logge den entschlüsselten Token (oder null)
-  console.log('[Middleware] Decoded Token:', token);
-  // --- DEBUGGING END ---
 
   // Definiere geschützte Routen
   const protectedRoutes = ['/admin', '/dashboard']; // Füge /dashboard hinzu
