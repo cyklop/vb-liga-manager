@@ -175,7 +175,7 @@ export default function Navbar() {
                   Admin
                   {/* DaisyUI Menu automatically adds arrow to summary inside details */}
                 </summary>
-                <ul className="p-2 bg-base-100 rounded-t-none z-[1] text-base-content shadow"> {/* Style the submenu */}
+                <ul className="p-2 bg-base-100 rounded-t-none z-[1] text-base-content shadow -m-2"> {/* Style the submenu */}
                   <li> {/* Add link to main admin page */}
                     <Link href="/admin" className={isAdminActive('/admin') ? 'active' : ''}>
                       Übersicht
