@@ -1286,14 +1286,17 @@ function SortableFixtureItem({ fixture, league, onEditClick, isLeagueActive }: S
       className="flex justify-between items-center text-sm p-2 border rounded-sm shadow-sm bg-base-100 hover:bg-base-200"
     >
       {/* Drag Handle */}
-       <button 
-          {...attributes} 
-          {...listeners} 
-          className="cursor-grab p-1 mr-2"
-          title="Verschieben"
-        >
-          <GripVerticalIcon className="h-5 w-5" />
-       </button>
+      {/* Tooltip Wrapper for Drag Handle */}
+      <div className="tooltip" data-tip="Verschieben">
+        <button 
+            {...attributes} 
+            {...listeners} 
+            className="cursor-grab p-1 mr-2"
+            // title removed
+          >
+            <GripVerticalIcon className="h-5 w-5" />
+        </button>
+      </div>
 
       {/* Fixture Details */}
       <div className="grow flex items-center">
@@ -1329,17 +1332,20 @@ function SortableFixtureItem({ fixture, league, onEditClick, isLeagueActive }: S
             : '- : -'})
         </span>
       </div>
-    {/* Action Buttons Container */}
-    <div className="flex items-center space-x-1 ml-2">
-      <button
-        onClick={() => onEditClick(fixture)} // Keep original onClick
-        className={`p-1 btn btn-sm btn-soft ${isLeagueActive ? 'btn-secondary' : 'btn-disabled'}`} // Reverted to btn-soft
-        title={isLeagueActive ? "Spielpaarung bearbeiten" : "Liga ist inaktiv"}
-        disabled={!isLeagueActive}
-      >
-        <PencilIcon className="h-4 w-4" />
-      </button>
-      {/* Removed Up/Down buttons as Drag&Drop is used */}
+   {/* Action Buttons Container */}
+   <div className="flex items-center space-x-1 ml-2">
+     {/* Tooltip Wrapper */}
+     <div className="tooltip" data-tip={isLeagueActive ? "Spielpaarung bearbeiten" : "Liga ist inaktiv"}>
+       <button
+         onClick={() => onEditClick(fixture)} // Keep original onClick
+         className={`p-1 btn btn-sm btn-soft ${isLeagueActive ? 'btn-secondary' : 'btn-disabled'}`} // Reverted to btn-soft
+         // title removed
+         disabled={!isLeagueActive}
+       >
+         <PencilIcon className="h-4 w-4" />
+       </button>
+     </div>
+     {/* Removed Up/Down buttons as Drag&Drop is used */}
      </div>
    </li>
   );

@@ -229,15 +229,17 @@ export default function TeamsPage() {
                      setTimeout(() => setIsModalOpen(true), 0) // Then open with new data
                    }}
                    className="p-1 btn btn-sm btn-soft btn-secondary" // Reverted to btn-soft
-                   title="Mannschaft bearbeiten"
+                   // title removed
                  >
                    <PencilIcon className="h-5 w-5" />
                  </button>
-                 {/* Delete Button - Always shown */}
+               </div>
+               {/* Tooltip Wrapper */}
+               <div className="tooltip" data-tip="Mannschaft löschen">
                  <button
                    onClick={() => requestDeleteTeam(team)}
                      className="p-1 btn btn-sm btn-soft btn-error" // Reverted to btn-soft
-                     title="Mannschaft löschen"
+                     // title removed
                    >
                      <TrashIcon className="h-5 w-5" />
                    </button>

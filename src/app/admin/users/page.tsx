@@ -196,14 +196,16 @@ export default function UsersPage() {
                           setIsModalOpen(true)
                         }}
                         className="p-1 btn btn-sm btn-soft btn-secondary" // Reverted to btn-soft
-                        title="Benutzer bearbeiten"
+                        // title removed
                       >
                         <PencilIcon className="h-5 w-5" />
                       </button>
+                    </div>
+                    <div className="tooltip" data-tip="Benutzer löschen">
                       <button
                         onClick={() => handleDeleteUser(user)}
                         className="p-1 btn btn-sm btn-soft btn-error" // Reverted to btn-soft
-                        title="Benutzer löschen"
+                        // title removed
                       >
                         <TrashIcon className="h-5 w-5" />
                       </button>
