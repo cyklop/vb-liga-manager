@@ -216,23 +216,31 @@ export default function UsersPage() {
         </div>
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={isEditing ? "Benutzer bearbeiten" : "Neuen Benutzer hinzufügen"}>
           <form onSubmit={isEditing ? handleEditUser : handleAddUser} className="space-y-4">
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text">E-Mail</span>
-              </div>
+            {/* Floating Label for Email */}
+            <label className="floating-label w-full">
               <input
                 type="email"
                 id="email"
                 value={newUser.email}
                 onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                placeholder="E-Mail"
-                className="input input-bordered w-full"
+                placeholder="E-Mail" // Placeholder is important for floating label
+                className="input input-bordered w-full" // Keep input-bordered for styling
                 required
               />
+              <span>E-Mail</span> {/* Label text */}
             </label>
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text">Name</span>
+            {/* Floating Label for Name */}
+            <label className="floating-label w-full">
+              <input
+                type="text"
+                id="name"
+                value={newUser.name}
+                onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                placeholder="Name" // Placeholder is important for floating label
+                className="input input-bordered w-full" // Keep input-bordered for styling
+                required
+              />
+              <span>Name</span> {/* Label text */}
               </div>
               <input
                 type="text"
