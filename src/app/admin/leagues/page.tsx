@@ -833,7 +833,7 @@ export default function LeaguesPage() {
                type="text"
                value={newLeague.name}
                onChange={(e) => setNewLeague({...newLeague, name: e.target.value, slug: !newLeague.slug || editingLeague?.slug === createSlug(editingLeague?.name || '') ? createSlug(e.target.value) : newLeague.slug })}
-               placeholder=" " // Placeholder needed
+               placeholder="Liganame" // Placeholder needed
                required
                className="input input-bordered w-full"
              />
@@ -848,14 +848,14 @@ export default function LeaguesPage() {
                  type="text"
                  value={newLeague.slug}
                  onChange={(e) => setNewLeague({...newLeague, slug: createSlug(e.target.value)})}
-                 placeholder={newLeague.name ? createSlug(newLeague.name) : "liga-name"}
+                 placeholder={newLeague.name ? createSlug(newLeague.name) : "liga-url-name"}
                  className="input input-bordered join-item w-full"
                />
-             </div>
-             <div className="label">
-                <span className="label-text-alt">Nur Kleinbuchstaben, Zahlen, Bindestriche.</span>
-             </div>
+             </div>             
            </label>
+           <div className="label">
+            <span className="label-text-alt">Nur Kleinbuchstaben, Zahlen, Bindestriche.</span>
+           </div>
 
            <label className="floating-label w-full">
              <input
