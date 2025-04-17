@@ -168,16 +168,26 @@ export default function Navbar() {
           {(currentUser?.isAdmin || currentUser?.isSuperAdmin) && (
             <li className="mx-1"> {/* Add horizontal margin */}
               {/* Dropdown container now wraps both trigger and menu */}
-              <div className="dropdown dropdown-hover dropdown-bottom"> 
-                 <label tabIndex={0} role="button" className={classNames(
-                    pathname.startsWith('/admin') ? 'active' : '',
+              <div className="dropdown dropdown-hover dropdown-bottom">
+                {/* Wrap the label (trigger) in a Link */}
+                <Link href="/admin" className={classNames(
+                    pathname.startsWith('/admin') ? 'active' : '', // Apply active style to the link
                     'inline-flex items-center' // Keep flex for icon alignment
-                  )}>
-                    Admin
-                    <svg className="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                 </label>
+                  )}
+                  // Add tabIndex and role here if needed for accessibility, or rely on the label inside
+                  tabIndex={0} 
+                  role="button" 
+                  // Prevent default link navigation if needed, but usually not necessary for hover dropdowns
+                  // onClick={(e) => e.preventDefault()} // Optional: Prevent click navigation if only hover is desired
+                 >
+                   {/* Label remains for dropdown functionality */}
+                   <label tabIndex={-1} className="cursor-pointer inline-flex items-center"> {/* Make label itself not focusable, use parent link */}
+                      Admin
+                      <svg className="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                   </label>
+                 </Link>
                  {/* Dropdown content (ul) is now INSIDE the dropdown div */}
-                 <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 text-base-content mt-1"> {/* Added mt-1 for slight spacing */}
+                 <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 text-base-content"> {/* Removed mt-1 */}
                    {adminNavigation.map((item) => (
                      <li key={item.name}>
                        <Link href={item.href} className={isActive(item.href) ? 'active' : ''}>
