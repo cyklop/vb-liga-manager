@@ -184,11 +184,11 @@ export default function UsersPage() {
                     </p>
                   )}
                 </div>
-                <div className="flex items-center">
-                  <span className={`badge badge-dash  ${user.isAdmin ? 'badge-primary' : 'badge-secondary'}`}>
+                <div className="flex items-center space-x-2"> {/* Add space between items */}
+                  <span className={`badge ${user.isAdmin ? 'badge-primary' : 'badge-secondary'}`}> {/* Removed badge-dash */}
                     {user.isAdmin ? 'Admin' : 'Benutzer'}
                   </span>
-                  
+
                   <button
                     onClick={() => {
                       // Konvertiere das teams-Array in ein teamIds-Array für das Formular
@@ -199,14 +199,14 @@ export default function UsersPage() {
                       setIsEditing(true)
                       setIsModalOpen(true)
                     }}
-                    className="p-1 btn btn-sm btn-secondary btn-soft ml-2"
+                    className="btn btn-ghost btn-sm btn-square" // Use btn-ghost, btn-sm, btn-square for compact icon button
                     title="Benutzer bearbeiten"
                   >
                     <PencilIcon className="h-5 w-5" />
                   </button>
                   <button
                     onClick={() => handleDeleteUser(user)}
-                    className="p-1 btn btn-sm btn-error btn-soft  ml-2"
+                    className="btn btn-ghost btn-sm btn-square text-error" // Use btn-ghost, btn-sm, btn-square with text-error
                     title="Benutzer löschen"
                   >
                     <TrashIcon className="h-5 w-5" />
@@ -216,10 +216,11 @@ export default function UsersPage() {
             </li>
           ))}
         </ul>
-      </div>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={isEditing ? "Benutzer bearbeiten" : "Neuen Benutzer hinzufügen"}>
-        <form onSubmit={isEditing ? handleEditUser : handleAddUser} className="space-y-4">
-         {/* Use DaisyUI form-control and label structure */}
+      </div> {/* Closing tag for card-body */}
+    </div> {/* Closing tag for card */}
+    <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={isEditing ? "Benutzer bearbeiten" : "Neuen Benutzer hinzufügen"}>
+      <form onSubmit={isEditing ? handleEditUser : handleAddUser} className="space-y-4">
+        {/* Use DaisyUI form-control and label structure */}
          <label className="form-control w-full">
            <div className="label">
              <span className="label-text">E-Mail</span>
@@ -300,17 +301,18 @@ export default function UsersPage() {
                </div>
              ))}
            </div>
-          </div>
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="isAdmin"
-              checked={newUser.isAdmin}
-              onChange={(e) => setNewUser({ ...newUser, isAdmin: e.target.checked })}
-              className="checkbox checkbox-sm checkbox-primary"
-            />
-            <label htmlFor="isAdmin" className="ml-2 block">
-              Admin
+          </div> {/* Close Teams form-control */}
+          {/* Use DaisyUI form-control and label structure for Admin checkbox */}
+          <div className="form-control">
+            <label className="label cursor-pointer justify-start space-x-3">
+              <input
+                type="checkbox"
+                id="isAdmin"
+                checked={newUser.isAdmin}
+                onChange={(e) => setNewUser({ ...newUser, isAdmin: e.target.checked })}
+                className="checkbox checkbox-sm checkbox-primary"
+              />
+              <span className="label-text">Admin</span> {/* Use label-text */}
             </label>
           </div>
           {/* Modal Actions */}
