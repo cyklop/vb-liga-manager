@@ -196,105 +196,110 @@ export default function TeamsPage() {
             }}
             className="btn btn-primary"
           >
-            Neue Mannschaft hinzufügen
-          </button>
-        {/* Removed closing curly brace for isAdmin check */}
-        <ul className="shadow overflow-hidden sm:rounded-md mt-2">
-          {teams.map((team) => (
-            <li key={team.id} className="border-b border-gray-200 dark:border-border last:border-b-0">
-              <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
-                <div>
-                  <p className="text-sm font-medium truncate">{team.name}</p>
-                  <p className="text-sm text-base-content/50">{team.location}</p>
-                  <p className="text-sm text-base-content/50">{team.hallAddress}</p>
-                  {team.trainingTimes && <p className="text-sm text-base-content/50">Trainingszeiten: {team.trainingTimes}</p>}
-                  {team.teamLeader && <p className="text-sm text-base-content/50">Spielleiter: {team.teamLeader.name}</p>}
-                </div>
-                <div>
-                  <button
-                    onClick={() => {
-                      setEditingTeam(team)
-                      // Populate formData from the selected team for editing
-                      setFormData({
-                        id: team.id,
-                        name: team.name || '',
-                        location: team.location || '',
-                        hallAddress: team.hallAddress || '',
-                        trainingTimes: team.trainingTimes || '',
-                        teamLeaderId: team.teamLeader?.id?.toString() || '' // Set teamLeaderId as string
-                      })
-                      setIsModalOpen(false) // Close modal first if already open from another edit
-                      setTimeout(() => setIsModalOpen(true), 0) // Then open with new data
-                    }}
-                    className="p-1 btn btn-sm btn-soft btn-secondary mr-2"
-                    title="Mannschaft bearbeiten"
-                  >
-                    <PencilIcon className="h-5 w-5" />
-                  </button>
-                  {/* Delete Button - Always shown */}
-                  <button
-                    // onClick anpassen, um den Dialog zu öffnen
-                    onClick={() => requestDeleteTeam(team)}
-                      className="p-1 btn btn-sm btn-soft btn-error"
-                      title="Mannschaft löschen"
-                    >
-                      <TrashIcon className="h-5 w-5" />
-                    </button>
-                  {/* Removed closing curly brace for isAdmin check */}
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setFormData({}); setEditingTeam(null); }} title={editingTeam ? "Mannschaft bearbeiten" : "Neue Mannschaft hinzufügen"}>
-        <form onSubmit={editingTeam ? handleEditTeam : handleAddTeam}>
-          {/* Bind inputs to formData state */}
-          <label htmlFor="team" className='floating-label'>
-            <span>Mannschaftsname</span>
-            <input
-              type="text"
-              value={formData.name || ''}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
-              placeholder="Mannschaftsname"
-              className="w-full px-3 py-2 placeholder-gray-300 input mb-2"
-              required // Add required attribute if name is mandatory
-            />
-          </label> 
-          
-          <label htmlFor="team" className='floating-label'>
-            <span>Ort</span>
-            <input
-              type="text"
-              value={formData.location || ''}
-              onChange={(e) => setFormData({...formData, location: e.target.value})}
-              placeholder="Ort"
-              className="w-full px-3 py-2 input mb-2"
-            />
-          </label> 
-          
-          <label htmlFor="adress" className='floating-label'>
-            <span>Adresse der Halle</span>
-            <input
-              type="text"
-              value={formData.hallAddress || ''}
-              onChange={(e) => setFormData({...formData, hallAddress: e.target.value})}
-              placeholder="Adresse der Halle"
-              className="w-full px-3 py-2 input mb-2"
-            />
-          </label> 
-          
-          <label htmlFor="time" className='floating-label'>
-            <span>Trainingszeiten</span>
-            <input
-              type="text"
-              value={formData.trainingTimes || ''}
-              onChange={(e) => setFormData({...formData, trainingTimes: e.target.value})}
-              placeholder="Trainingszeiten"
-              className="w-full px-3 py-2 input mb-2"
-            />
-          </label>          
-          
+           Neue Mannschaft hinzufügen
+         </button>
+       {/* Use DaisyUI card styling for the list container */}
+       <div className="card bg-base-100 shadow-xl mt-4">
+         <div className="card-body p-0"> {/* Remove padding if list items have padding */}
+           <ul className="divide-y divide-base-300"> {/* Use DaisyUI divider */}
+         {teams.map((team) => (
+           <li key={team.id} className="hover:bg-base-200 transition-colors duration-150"> {/* Add hover effect */}
+             <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
+               <div>
+                 <p className="text-md font-medium truncate">{team.name}</p> {/* Slightly larger text */}
+                 <p className="text-sm text-base-content/70">{team.location}</p> {/* Adjusted text color */}
+                 <p className="text-sm text-base-content/70">{team.hallAddress}</p> {/* Adjusted text color */}
+                 {team.trainingTimes && <p className="text-xs text-base-content/70 mt-1">Trainingszeiten: {team.trainingTimes}</p>} {/* Smaller text */}
+                 {team.teamLeader && <p className="text-xs text-base-content/70 mt-1">Spielleiter: {team.teamLeader.name}</p>} {/* Smaller text */}
+               </div>
+               <div className="flex items-center space-x-2"> {/* Add space between buttons */}
+                 <button
+                   onClick={() => {
+                     setEditingTeam(team)
+                     // Populate formData from the selected team for editing
+                     setFormData({
+                       id: team.id,
+                       name: team.name || '',
+                       location: team.location || '',
+                       hallAddress: team.hallAddress || '',
+                       trainingTimes: team.trainingTimes || '',
+                       teamLeaderId: team.teamLeader?.id?.toString() || '' // Set teamLeaderId as string
+                     })
+                     setIsModalOpen(false) // Close modal first if already open from another edit
+                     setTimeout(() => setIsModalOpen(true), 0) // Then open with new data
+                   }}
+                   className="btn btn-ghost btn-sm btn-square" // Use btn-ghost
+                   title="Mannschaft bearbeiten"
+                 >
+                   <PencilIcon className="h-5 w-5" />
+                 </button>
+                 {/* Delete Button - Always shown */}
+                 <button
+                   onClick={() => requestDeleteTeam(team)}
+                     className="btn btn-ghost btn-sm btn-square text-error" // Use btn-ghost with text-error
+                     title="Mannschaft löschen"
+                   >
+                     <TrashIcon className="h-5 w-5" />
+                   </button>
+               </div>
+             </div>
+           </li>
+         ))}
+       </ul>
+         </div> {/* Close card-body */}
+       </div> {/* Close card */}
+     </div>
+     <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setFormData({}); setEditingTeam(null); }} title={editingTeam ? "Mannschaft bearbeiten" : "Neue Mannschaft hinzufügen"}>
+       {/* Added space-y-4 for spacing between form elements */}
+       <form onSubmit={editingTeam ? handleEditTeam : handleAddTeam} className="space-y-4">
+         {/* Floating Label for Name */}
+         <label className="floating-label w-full">
+           <input
+             type="text"
+             value={formData.name || ''}
+             onChange={(e) => setFormData({...formData, name: e.target.value})}
+             placeholder="Mannschaftsname" // Placeholder needed
+             className="input input-bordered w-full"
+             required
+           />
+           <span>Mannschaftsname</span>
+         </label>
+
+         {/* Floating Label for Location */}
+         <label className="floating-label w-full">
+           <input
+             type="text"
+             value={formData.location || ''}
+             onChange={(e) => setFormData({...formData, location: e.target.value})}
+             placeholder="Ort" // Placeholder needed
+             className="input input-bordered w-full"
+           />
+           <span>Ort</span>
+         </label>
+
+         {/* Floating Label for Hall Address */}
+         <label className="floating-label w-full">
+           <input
+             type="text"
+             value={formData.hallAddress || ''}
+             onChange={(e) => setFormData({...formData, hallAddress: e.target.value})}
+             placeholder="Adresse der Halle" // Placeholder needed
+             className="input input-bordered w-full"
+           />
+           <span>Adresse der Halle</span>
+         </label>
+
+         {/* Floating Label for Training Times */}
+         <label className="floating-label w-full">
+           <input
+             type="text"
+             value={formData.trainingTimes || ''}
+             onChange={(e) => setFormData({...formData, trainingTimes: e.target.value})}
+             placeholder="Trainingszeiten" // Placeholder needed
+             className="input input-bordered w-full"
+           />
+           <span>Trainingszeiten</span>
+         </label>
           {/* Team Leader Select - Using DaisyUI form-control structure */}
           <label className="form-control w-full">
             <div className="label">

@@ -670,600 +670,590 @@ export default function LeaguesPage() {
           >
             Neue Liga hinzufügen
           </button>
-        {/* Removed closing curly brace for isAdmin check */}
+       {/* Removed closing curly brace for isAdmin check */}
 
-        {/* Leagues List */}
-        <ul className="shadow overflow-hidden sm:rounded-md mt-2">
-          {leagues.map((league) => (
-            <li key={league.id} className="border-b border-gray-200 dark:border-border last:border-b-0">
-              {/* League Header */}
-              <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
-                <div>
-                  <div className="flex items-center">
-                    <p className="text-md font-medium truncate">{league.name}</p>
-                    <span className={`ml-2 badge-xs badge ${league.isActive ? 'badge-success' : 'badge-warning'}`}>
-                      {league.isActive ? 'Aktiv' : 'Abgeschlossen'}
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-foreground">
-                    {league.teams.length} / {league.numberOfTeams} Teams: {league.teams.map(team => team.name).join(', ') || 'Keine Teams zugewiesen'}
-                  </p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500">
-                    Erstellt am: {new Date(league.createdAt).toLocaleDateString('de-DE')}
-                  </p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500">
-                    Öffentlicher Link: <a href={`/public/league/${league.slug}`} target="_blank" className="link link-primary">/public/league/{league.slug}</a>
-                  </p>
-                </div>
-                {/* Action Buttons - Always shown for admins */}
-                <div className="flex space-x-1">
-                  {/* Removed isAdmin check wrapper */}
-                  <>
-                    <button
-                      onClick={() => {
-                        setEditingLeague(league);
-                          setNewLeague({
-                            name: league.name,
-                            slug: league.slug,
-                            numberOfTeams: league.numberOfTeams,
-                            hasReturnMatches: league.hasReturnMatches,
-                            teamIds: league.teams.map(team => team.id),
-                            isActive: league.isActive,
-                            // Load existing point rules when editing
-                            pointsWin30: league.pointsWin30,
-                            pointsWin31: league.pointsWin31,
-                            pointsWin32: league.pointsWin32,
-                            pointsLoss32: league.pointsLoss32,
-                            // Load existing score config when editing
-                            scoreEntryType: league.scoreEntryType,
-                            setsToWin: league.setsToWin,
-                          });
-                          setIsModalOpen(true);
-                        }}
-                        className="p-1 btn btn-sm btn-soft btn-secondary"
-                        title="Liga bearbeiten"
-                      >
-                        <PencilIcon className="h-5 w-5" />
-                      </button>
+       {/* Leagues List */}
+       {/* Use DaisyUI card styling for the list container */}
+       <div className="card bg-base-100 shadow-xl mt-4">
+         <div className="card-body p-0"> {/* Remove padding if list items have padding */}
+           <ul className="divide-y divide-base-300"> {/* Use DaisyUI divider */}
+         {leagues.map((league) => (
+           <li key={league.id} className="hover:bg-base-200 transition-colors duration-150"> {/* Add hover effect */}
+             {/* League Header */}
+             <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
+               <div>
+                 <div className="flex items-center">
+                   <p className="text-md font-medium truncate">{league.name}</p>
+                   <span className={`ml-2 badge badge-xs ${league.isActive ? 'badge-success' : 'badge-warning'}`}> {/* Added badge class */}
+                     {league.isActive ? 'Aktiv' : 'Abgeschlossen'}
+                   </span>
+                 </div>
+                 <p className="text-xs text-base-content/70 mt-1"> {/* Adjusted text color */}
+                   {league.teams.length} / {league.numberOfTeams} Teams: {league.teams.map(team => team.name).join(', ') || 'Keine Teams zugewiesen'}
+                 </p>
+                 <p className="text-xs text-base-content/50 mt-1"> {/* Adjusted text color */}
+                   Erstellt am: {new Date(league.createdAt).toLocaleDateString('de-DE')}
+                 </p>
+                 <p className="text-xs text-base-content/50 mt-1"> {/* Adjusted text color */}
+                   Öffentlicher Link: <a href={`/public/league/${league.slug}`} target="_blank" className="link link-primary">/public/league/{league.slug}</a>
+                 </p>
+               </div>
+               {/* Action Buttons - Always shown for admins */}
+               <div className="flex items-center space-x-1"> {/* Use space-x-1 for tighter spacing */}
+                 {/* Removed isAdmin check wrapper */}
+                 <>
+                   <button
+                     onClick={() => {
+                       setEditingLeague(league);
+                         setNewLeague({
+                           name: league.name,
+                           slug: league.slug,
+                           numberOfTeams: league.numberOfTeams,
+                           hasReturnMatches: league.hasReturnMatches,
+                           teamIds: league.teams.map(team => team.id),
+                           isActive: league.isActive,
+                           // Load existing point rules when editing
+                           pointsWin30: league.pointsWin30,
+                           pointsWin31: league.pointsWin31,
+                           pointsWin32: league.pointsWin32,
+                           pointsLoss32: league.pointsLoss32,
+                           // Load existing score config when editing
+                           scoreEntryType: league.scoreEntryType,
+                           setsToWin: league.setsToWin,
+                         });
+                         setIsModalOpen(true);
+                       }}
+                       className="btn btn-ghost btn-sm btn-square" // Use btn-ghost
+                       title="Liga bearbeiten"
+                     >
+                       <PencilIcon className="h-5 w-5" />
+                     </button>
+                     <button
+                       // onClick anpassen, um den Dialog zu öffnen
+                       onClick={() => handleDeleteLeague(league)}
+                       className="btn btn-ghost btn-sm btn-square text-error" // Use btn-ghost with text-error
+                       title="Liga löschen"
+                     >
+                       <TrashIcon className="h-5 w-5" />
+                     </button>
+                     <button
+                       onClick={() => {
+                         setEditingLeague(league);
+                         setNewLeague({
+                           ...newLeague,
+                           name: league.name,
+                           slug: league.slug,
+                           numberOfTeams: league.numberOfTeams,
+                           hasReturnMatches: league.hasReturnMatches,
+                           teamIds: league.teams.map(team => team.id),
+                           isActive: !league.isActive, // Umkehren des aktuellen Status
+                           pointsWin30: league.pointsWin30,
+                           pointsWin31: league.pointsWin31,
+                           pointsWin32: league.pointsWin32,
+                           pointsLoss32: league.pointsLoss32,
+                           // Load existing score config when editing (for toggle active)
+                           scoreEntryType: league.scoreEntryType,
+                           setsToWin: league.setsToWin,
+                         });
+                         setIsModalOpen(true);
+                       }}
+                       className={`btn btn-ghost btn-sm btn-square ${league.isActive ? 'text-warning' : 'text-success'}`} // Use btn-ghost with text color
+                       title={league.isActive ? "Liga abschließen" : "Liga wieder aktivieren"}
+                     >
+                       {league.isActive ? <LockClosedIcon className="h-5 w-5" /> : <LockOpenIcon className="h-5 w-5" />}
+                     </button>
+                     <button
+                       onClick={() => handleGenerateFixtures(league.id)}
+                       className={`btn btn-ghost btn-sm btn-square ${league.isActive ? 'text-success' : 'text-base-content/30'}`} // Use btn-ghost, adjust disabled color
+                       title={league.isActive ? "Spielplan generieren" : "Liga ist abgeschlossen"}
+                       disabled={!league.isActive}
+                     >
+                       <CalendarDaysIcon className="h-5 w-5" />
+                     </button>
+                   </>
+                 {/* Removed closing curly brace for isAdmin check */}
+                 <button
+                   onClick={() => handleShowFixtures(league.id)}
+                   className="btn btn-ghost btn-sm btn-square text-accent" // Use btn-ghost with text-accent
+                   title={selectedLeagueId === league.id ? "Spielplan verbergen" : "Spielplan anzeigen"}
+                 >
+                   <ArrowsUpDownIcon className="h-5 w-5" />
+                 </button>
+               </div>
+             </div>
+
+             {/* Fixtures Section (Conditional) */}
+             {selectedLeagueId === league.id && (
+               <div className="px-4 py-4 sm:px-6 border-t border-gray-200 dark:border-border bg-base-content/10">
+                 <div className="flex justify-between items-center mb-3">
+                   <h3 className="text-lg font-semibold text-base-content/70">Spielplan</h3>
+                   {/* Save Order Button - Always shown if order changed */}
+                   {isOrderChanged && (
                       <button
-                        // onClick anpassen, um den Dialog zu öffnen
-                        onClick={() => handleDeleteLeague(league)}
-                        className="p-1 btn btn-sm btn-soft btn-error"
-                        title="Liga löschen"
+                        onClick={handleSaveFixtureOrder}
+                        className="btn btn-sm btn-success" // DaisyUI success button, small size
                       >
-                        <TrashIcon className="h-5 w-5" />
+                        <CheckIcon className="h-4 w-4 mr-1" />
+                        Reihenfolge speichern
                       </button>
-                      <button
-                        onClick={() => {
-                          setEditingLeague(league);
-                          setNewLeague({
-                            ...newLeague,
-                            name: league.name,
-                            slug: league.slug,
-                            numberOfTeams: league.numberOfTeams,
-                            hasReturnMatches: league.hasReturnMatches,
-                            teamIds: league.teams.map(team => team.id),
-                            isActive: !league.isActive, // Umkehren des aktuellen Status
-                            pointsWin30: league.pointsWin30,
-                            pointsWin31: league.pointsWin31,
-                            pointsWin32: league.pointsWin32,
-                            pointsLoss32: league.pointsLoss32,
-                            // Load existing score config when editing (for toggle active)
-                            scoreEntryType: league.scoreEntryType,
-                            setsToWin: league.setsToWin,
-                          });
-                          setIsModalOpen(true);
-                        }}
-                        className={`p-1 btn btn-sm btn-soft  ${league.isActive ? 'btn-warning' : 'btn-success'} `}
-                        title={league.isActive ? "Liga abschließen" : "Liga wieder aktivieren"}
-                      >
-                        {league.isActive ? <LockClosedIcon className="h-5 w-5" /> : <LockOpenIcon className="h-5 w-5" />}
-                      </button>
-                      <button
-                        onClick={() => handleGenerateFixtures(league.id)}
-                        className={`p-1 btn btn-sm btn-soft ${league.isActive ? 'btn-success' : 'btn-disabled'} `}
-                        title={league.isActive ? "Spielplan generieren" : "Liga ist abgeschlossen"}
-                        disabled={!league.isActive}
-                      >
-                        <CalendarDaysIcon className="h-5 w-5" />
-                      </button>
-                    </>
-                  {/* Removed closing curly brace for isAdmin check */}
-                  <button
-                    onClick={() => handleShowFixtures(league.id)}
-                    className="p-1 btn btn-sm btn-soft btn-accent"
-                    title={selectedLeagueId === league.id ? "Spielplan verbergen" : "Spielplan anzeigen"}
-                  >
-                    <ArrowsUpDownIcon className="h-5 w-5" />
-                  </button>
-                </div>
-              </div>
+                   )}
+                 </div>
+                 {selectedLeagueFixtures.length > 0 ? (
+                   // --- dnd-kit Contexts ---
+                   <DndContext
+                     sensors={sensors}
+                     collisionDetection={closestCenter}
+                     onDragEnd={handleDragEnd}
+                   >
+                     <SortableContext
+                       items={selectedLeagueFixtures.map(f => f.id)} // Use fixture IDs for SortableContext
+                       strategy={verticalListSortingStrategy}
+                     >
+                       {/* --- Sortable List --- */}
+                       <ul className="space-y-2">
+                         {selectedLeagueFixtures.map((fixture) => (
+                           // Use SortableItem component defined below
+                           <SortableFixtureItem
+                             key={fixture.id}
+                             fixture={fixture}
+                             league={league} // Pass league context
+                             onEditClick={(fixture) => handleEditFixtureClick(fixture, league)}
+                             isLeagueActive={league.isActive}
+                           />
+                         ))}
+                       </ul>
+                     </SortableContext>
+                   </DndContext>
+                 ) : (
+                   <p className="text-sm text-gray-500 italic">Kein Spielplan für diese Liga vorhanden oder generiert.</p>
+                 )}
+               </div>
+             )}
+           </li>
+         ))}
+       </ul>
+         </div> {/* Close card-body */}
+       </div> {/* Close card */}
+     </div>
 
-              {/* Fixtures Section (Conditional) */}
-              {selectedLeagueId === league.id && (
-                <div className="px-4 py-4 sm:px-6 border-t border-gray-200 dark:border-border bg-base-content/10">
-                  <div className="flex justify-between items-center mb-3">
-                    <h3 className="text-lg font-semibold text-base-content/70">Spielplan</h3>
-                    {/* Save Order Button - Always shown if order changed */}
-                    {isOrderChanged && (
-                       <button
-                         onClick={handleSaveFixtureOrder}
-                         className="btn btn-sm btn-success" // DaisyUI success button, small size
-                       >
-                         <CheckIcon className="h-4 w-4 mr-1" />
-                         Reihenfolge speichern
-                       </button>
-                    )}
-                  </div>
-                  {selectedLeagueFixtures.length > 0 ? (
-                    // --- dnd-kit Contexts ---
-                    <DndContext
-                      sensors={sensors}
-                      collisionDetection={closestCenter}
-                      onDragEnd={handleDragEnd}
-                    >
-                      <SortableContext
-                        items={selectedLeagueFixtures.map(f => f.id)} // Use fixture IDs for SortableContext
-                        strategy={verticalListSortingStrategy}
-                      >
-                        {/* --- Sortable List --- */}
-                        <ul className="space-y-2">
-                          {selectedLeagueFixtures.map((fixture) => (
-                            // Use SortableItem component defined below
-                            <SortableFixtureItem
-                              key={fixture.id}
-                              fixture={fixture}
-                              league={league} // Pass league context
-                              onEditClick={(fixture) => handleEditFixtureClick(fixture, league)}
-                              isLeagueActive={league.isActive}
-                            />
-                          ))}
-                        </ul>
-                      </SortableContext>
-                    </DndContext>
-                  ) : (
-                    <p className="text-sm text-gray-500 italic">Kein Spielplan für diese Liga vorhanden oder generiert.</p>
-                  )}
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
- 
-      {/* Add/Edit League Modal - Increase width using max-w- class */}
-      {/* Modal component now handles internal scrolling */}
-      <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingLeague(null); }} title={editingLeague ? "Liga bearbeiten" : "Neue Liga hinzufügen"} >
-          {/* Removed the wrapping div with max-h and overflow-y */}
-          {/* Add padding directly to the form */}
-          <form onSubmit={editingLeague ? handleEditLeague : handleAddLeague} className="space-y-4 p-1"> {/* Reduced padding */}
-            {/* League Name - DaisyUI Floating Label */}
-            <label className="floating-label">
-              <input
-                id="leagueName"
-                type="text"
-                value={newLeague.name}
-                onChange={(e) => setNewLeague({...newLeague, name: e.target.value, slug: !newLeague.slug || editingLeague?.slug === createSlug(editingLeague?.name || '') ? createSlug(e.target.value) : newLeague.slug })} // Auto-generate slug only if it was empty or auto-generated before
-                placeholder=" " // Placeholder needed for floating label animation
-                required
-                className="input input-bordered w-full" // Use w-full
-              />
-              <span>Liganame</span>
-            </label>
+     {/* Add/Edit League Modal */}
+     <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingLeague(null); }} title={editingLeague ? "Liga bearbeiten" : "Neue Liga hinzufügen"} >
+         {/* Add padding and spacing directly to the form */}
+         <form onSubmit={editingLeague ? handleEditLeague : handleAddLeague} className="space-y-4 p-1">
+           {/* League Name - Floating Label */}
+           <label className="floating-label w-full">
+             <input
+               id="leagueName"
+               type="text"
+               value={newLeague.name}
+               onChange={(e) => setNewLeague({...newLeague, name: e.target.value, slug: !newLeague.slug || editingLeague?.slug === createSlug(editingLeague?.name || '') ? createSlug(e.target.value) : newLeague.slug })}
+               placeholder=" " // Placeholder needed
+               required
+               className="input input-bordered w-full"
+             />
+             <span>Liganame</span>
+           </label>
 
-            {/* League Slug - DaisyUI Input Group (Keep as is, not compatible with floating label) */}
-            <label className="form-control">              
-              <div className="join w-full"> {/* Use join for input group */}
-                <span className="btn join-item rounded-l-full pointer-events-none">/public/league/</span> {/* Use btn for styling */}
-                <input
-                  id="leagueSlug"
-                  type="text"
-                  value={newLeague.slug}
-                  onChange={(e) => setNewLeague({...newLeague, slug: createSlug(e.target.value)})} // Ensure slug is always formatted
-                  placeholder={newLeague.name ? createSlug(newLeague.name) : "liga-name"}
-                  className="input input-bordered join-item" // Use w-full within join
-                />
-              </div>              
-            </label>
-            <div className="label">
-                 <span className="label-text-alt">Nur Kleinbuchstaben, Zahlen, Bindestriche.</span>
-            </div>
+           {/* League Slug - Input Group */}
+           <label className="form-control w-full">
+             <div className="join w-full">
+               <span className="btn join-item rounded-l-full pointer-events-none">/public/league/</span>
+               <input
+                 id="leagueSlug"
+                 type="text"
+                 value={newLeague.slug}
+                 onChange={(e) => setNewLeague({...newLeague, slug: createSlug(e.target.value)})}
+                 placeholder={newLeague.name ? createSlug(newLeague.name) : "liga-name"}
+                 className="input input-bordered join-item w-full"
+               />
+             </div>
+             <div className="label">
+                <span className="label-text-alt">Nur Kleinbuchstaben, Zahlen, Bindestriche.</span>
+             </div>
+           </label>
 
-            {/* Number of Teams - DaisyUI Floating Label */}
-            <label className="floating-label">
-              <input
-                id="numberOfTeams"
-                type="number"
-                min="2" // A league needs at least 2 teams
-                value={newLeague.numberOfTeams}
-                onChange={(e) => setNewLeague({...newLeague, numberOfTeams: parseInt(e.target.value) || 0})}
-                required
-                placeholder=" " // Placeholder needed
-                className="input input-bordered w-full"
-              />
-              <span>Anzahl Teams</span>
-            </label>
+           {/* Number of Teams - Floating Label */}
+           <label className="floating-label w-full">
+             <input
+               id="numberOfTeams"
+               type="number"
+               min="2"
+               value={newLeague.numberOfTeams}
+               onChange={(e) => setNewLeague({...newLeague, numberOfTeams: parseInt(e.target.value) || 0})}
+               required
+               placeholder=" " // Placeholder needed
+               className="input input-bordered w-full"
+             />
+             <span>Anzahl Teams</span>
+           </label>
 
-            {/* Return Matches & Active Status Checkboxes - DaisyUI form-control (Keep as is) */}
-            <div className="flex gap-4">
-              <div className="form-control">
-                <label className="label cursor-pointer gap-2">
-                  <span className="label-text">Hin-/Rückrunde</span>
-                  <input
-                    id="hasReturnMatches"
-                    type="checkbox"
-                    checked={newLeague.hasReturnMatches}
-                    onChange={(e) => setNewLeague({...newLeague, hasReturnMatches: e.target.checked})}
-                    className="checkbox checkbox-primary"
-                  />
-                </label>
-              </div>
-              <div className="form-control">
-                <label className="label cursor-pointer gap-2">
-                  <span className="label-text">Liga aktiv</span>
-                  <input
-                    id="isActive"
-                    type="checkbox"
-                    checked={newLeague.isActive}
-                    onChange={(e) => setNewLeague({...newLeague, isActive: e.target.checked})}
-                    className="checkbox checkbox-primary"
-                  />
-                </label>
-              </div>
-            </div>
-            {/* THIS closing div was extra and caused the syntax error. Removed it. */}
- 
-          {/* Score Entry Configuration Section - DaisyUI */}
-          <fieldset className="border border-base-300 p-3 rounded-md">
-            <legend className="text-sm font-medium px-1">Ergebniseingabe</legend>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-1"> {/* Responsive grid */}
-              {/* Score Entry Type - DaisyUI Select */}
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="label-text">Art der Eingabe</span>
-                </div>
-                <select
-                  id="scoreEntryType"
-                  name="scoreEntryType"
-                  value={newLeague.scoreEntryType}
-                  onChange={(e) => setNewLeague({ ...newLeague, scoreEntryType: e.target.value as ScoreEntryType })}
-                  className="select select-bordered w-full"
-                >
-                  <option value={ScoreEntryType.MATCH_SCORE}>Nur Gesamtsätze (z.B. 3:1)</option>
-                  <option value={ScoreEntryType.SET_SCORES}>Einzelne Satzergebnisse (z.B. 25:20, ...)</option>
-                </select>
-              </label>
-              {/* Sets to Win - DaisyUI Select */}
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="label-text">Gewinnsätze</span>
-                </div>
-                <select
-                  id="setsToWin"
-                  name="setsToWin"
-                  value={newLeague.setsToWin}
-                  onChange={(e) => setNewLeague({ ...newLeague, setsToWin: parseInt(e.target.value) || 3 })}
-                  className="select select-bordered w-full"
-                >
-                  <option value={2}>2 (Best-of-3)</option>
-                  <option value={3}>3 (Best-of-5)</option>
-                  {/* Add more options if needed */}
-                </select>
-              </label>
-              </div>
-            </fieldset>
- 
-          {/* Point Rules Section - DaisyUI */}
-            <fieldset className="border border-base-300 p-3 rounded-md">
-              <legend className="text-sm font-medium px-1">Punktregeln</legend>
-              <div className="grid grid-cols-2 gap-4 mt-1"> {/* Use gap-4 */}
-                  {/* Point Inputs with DaisyUI Floating Label */}
-                <label className="floating-label">
-                  <input
-                      id="pointsWin30"
-                      type="number"
-                      min="0"
-                      value={newLeague.pointsWin30}
-                      onChange={(e) => setNewLeague({...newLeague, pointsWin30: parseInt(e.target.value) || 0})}
-                      placeholder=" "
-                      className="input input-bordered w-full text-sm"
-                  />
-                  <span className="text-xs">Punkte 3:0 / 2:0</span>
-                </label>
-                <label className="floating-label">
-                  <input
-                      id="pointsWin31"
-                      type="number"
-                      min="0"
-                      value={newLeague.pointsWin31}
-                      onChange={(e) => setNewLeague({...newLeague, pointsWin31: parseInt(e.target.value) || 0})}
-                      placeholder=" "
-                      className="input input-bordered w-full text-sm"
-                  />
-                    <span className="text-xs">Punkte 3:1 / 2:1</span>
-                </label>
-                <label className="floating-label">
-                  <input
-                      id="pointsWin32"
-                      type="number"
-                      min="0"
-                      value={newLeague.pointsWin32}
-                      onChange={(e) => setNewLeague({...newLeague, pointsWin32: parseInt(e.target.value) || 0})}
-                      placeholder=" "
-                      className="input input-bordered w-full text-sm"
-                  />
-                  <span className="text-xs">Punkte 3:2 (Sieger)</span>
-                </label>
-                <label className="floating-label">
-                  <input
-                      id="pointsLoss32"
-                      type="number"
-                      min="0"
-                      value={newLeague.pointsLoss32}
-                      onChange={(e) => setNewLeague({...newLeague, pointsLoss32: parseInt(e.target.value) || 0})}
-                      placeholder=" "
-                      className="input input-bordered w-full text-sm"
-                  />
-                  <span className="text-xs">Punkte 2:3 (Verlierer)</span>
-                </label>                  
-              </div>
-          </fieldset>
- 
-          {/* Assign Teams - DaisyUI */}
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text">Teams zuordnen (max. {newLeague.numberOfTeams || 'N/A'})</span>
-            </label>
-            <div className="mt-1 max-h-40 overflow-y-auto border border-base-300 rounded-md p-2 space-y-1 bg-base-100"> {/* Added bg-base-100 */}
-              {teams.length > 0 ? teams.map(team => (
-                <div key={team.id} className="form-control"> {/* Wrap each checkbox in form-control */}
-                  <label className="label cursor-pointer justify-start gap-2">
-                    <input
-                      type="checkbox"
-                      id={`team-${team.id}`}
-                      checked={newLeague.teamIds.includes(team.id)}
-                      // Disable adding more teams if the max number is reached and this team is not already selected
-                      disabled={!newLeague.teamIds.includes(team.id) && newLeague.teamIds.length >= newLeague.numberOfTeams}
-                      onChange={(e) => {
-                        const isChecked = e.target.checked;
-                        const currentTeamIds = newLeague.teamIds;
-                        const maxTeams = newLeague.numberOfTeams;
+           {/* Return Matches & Active Status Checkboxes */}
+           <div className="flex gap-4">
+             <div className="form-control">
+               <label className="label cursor-pointer gap-2">
+                 <span className="label-text">Hin-/Rückrunde</span>
+                 <input
+                   id="hasReturnMatches"
+                   type="checkbox"
+                   checked={newLeague.hasReturnMatches}
+                   onChange={(e) => setNewLeague({...newLeague, hasReturnMatches: e.target.checked})}
+                   className="checkbox checkbox-primary"
+                 />
+               </label>
+             </div>
+             <div className="form-control">
+               <label className="label cursor-pointer gap-2">
+                 <span className="label-text">Liga aktiv</span>
+                 <input
+                   id="isActive"
+                   type="checkbox"
+                   checked={newLeague.isActive}
+                   onChange={(e) => setNewLeague({...newLeague, isActive: e.target.checked})}
+                   className="checkbox checkbox-primary"
+                 />
+               </label>
+             </div>
+           </div>
 
-                        if (isChecked) {
-                          if (currentTeamIds.length < maxTeams) {
-                            setNewLeague({ ...newLeague, teamIds: [...currentTeamIds, team.id] });
-                          } else {
-                            // Prevent checking if max is reached (though disabled should handle this)
-                            e.target.checked = false;
-                            toast.warn(`Es können maximal ${maxTeams} Teams zugewiesen werden.`);
-                          }
-                        } else {
-                          setNewLeague({ ...newLeague, teamIds: currentTeamIds.filter(id => id !== team.id) });
-                        }
-                      }}
-                      className="checkbox checkbox-sm checkbox-primary disabled:opacity-50" // Use checkbox-sm
-                    />
-                    <span className="label-text text-sm">{team.name}</span> {/* Use text-sm */}
-                  </label>
-                </div>
-              )) : <p className="text-sm text-base-content/70 p-2">Keine Teams verfügbar.</p>} {/* Adjusted text color */}
-            </div>
-            <div className="label">
-              <span className="label-text-alt">{newLeague.teamIds.length} von {newLeague.numberOfTeams || 0} Teams ausgewählt</span>
-            </div>
-          </div>
-          {/* Submit Button - DaisyUI */}
-          <div className="modal-action mt-6"> {/* Use modal-action for button placement */}
-            <button type="button" className="btn btn-ghost" onClick={() => { setIsModalOpen(false); setEditingLeague(null); }}>Abbrechen</button>
-            <button
-              type="submit"
-              className="btn btn-primary" // DaisyUI button classes
-            >
-              {editingLeague ? "Liga aktualisieren" : "Liga hinzufügen"}
-            </button>
-          </div>
-        </form>
-      </Modal>
-
-      {/* Edit Fixture Modal */}
-      <Modal isOpen={isFixtureModalOpen} onClose={() => { setIsFixtureModalOpen(false); setEditingFixture(null); setScoreInputData(null); setEditingLeagueContext(null); }} title="Spielpaarung bearbeiten">
-        {editingFixture && editingLeagueContext && scoreInputData && (
-          <form onSubmit={handleUpdateFixture} className="space-y-4 p-1"> {/* Reduced padding */}
-            {/* Team Selection (Enabled) with Swap Button - DaisyUI */}
-            <div className="grid grid-cols-[1fr_auto_1fr] gap-x-2 items-end"> {/* Align items to end for button */}
-              {/* Home Team Select */}
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="label-text">Heimteam</span>
-                </div>
-                <select
-                  id="homeTeamId"
-                  name="homeTeamId"
-                  value={editingFixture.homeTeamId || ''}
-                  onChange={handleFixtureInputChange}
-                  required
-                  className="select select-bordered w-full"
-                >
-                  <option value="" disabled>Wählen...</option>
-                  {editingLeagueContext?.teams.map(team => (
-                    <option key={team.id} value={team.id}>{team.name}</option>
-                  ))}
-                </select>
-              </label>
-              {/* Swap Teams Button */}
-              <button
-                type="button"
-                onClick={handleSwapTeams}
-                className="btn btn-square btn-ghost" // Use btn-square for icon button
-                title="Teams tauschen"
-              >
-                <ArrowsRightLeftIcon className="h-5 w-5" />
-              </button>
-              {/* Away Team Select */}
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="label-text">Auswärtsteam</span>
-                </div>
-                <select
-                  id="awayTeamId"
-                  name="awayTeamId"
-                  value={editingFixture.awayTeamId || ''}
-                  onChange={handleFixtureInputChange}
-                  required
-                  className="select select-bordered w-full"
-                >
-                  <option value="" disabled>Wählen...</option>
-                  {editingLeagueContext?.teams.map(team => (
-                    <option key={team.id} value={team.id}>{team.name}</option>
-                  ))}
-                </select>
-              </label>
-            </div>
-
-            {/* Fixture Date - DaisyUI Floating Label */}
-            <label className="floating-label">
-              <input
-                type="date"
-                id="fixtureDate"
-                name="fixtureDate"
-                value={editingFixture.fixtureDate || ''}
-                onChange={handleFixtureInputChange}
-                placeholder=" " // Placeholder needed
-                className="input input-bordered w-full"
-              />
-              <span>Datum</span>
-            </label>
-
-            {/* Fixture Time - DaisyUI Floating Label */}
-            <label className="floating-label">
-              <input
-                type="time"
-                id="fixtureTime"
-                name="fixtureTime"
-                value={editingFixture.fixtureTime || ''}
-                onChange={handleFixtureInputChange}
-                placeholder=" " // Placeholder needed
-                className="input input-bordered w-full"
-              />
-              <span>Uhrzeit</span>
-            </label>
-            {/* Removed extra closing div from previous attempt */}
-
-            {/* --- Score Input Section (Conditional) - DaisyUI (Keep form-control for complex inputs) --- */}
-            <fieldset className="border border-base-300 p-3 rounded-md">
-              <legend className="text-sm font-medium px-1">Ergebnis</legend>
-              <div className="mt-2 space-y-3">
-
-                {/* Case 1: MATCH_SCORE */}
-                {editingLeagueContext.scoreEntryType === ScoreEntryType.MATCH_SCORE && (
-                  <div className="space-y-3">
-                    {/* Set Scores - Floating Labels */}
-                    <div className="flex gap-4">
-                      <label className="floating-label w-full">
-                        <input
-                          type="number"
-                          id="homeScore"
-                          name="homeScore"
-                          min="0" max={editingLeagueContext.setsToWin}
-                          value={scoreInputData.homeScore ?? ''}
-                          onChange={(e) => handleScoreInputChange(e)}
-                          placeholder=" "
-                          className="input input-bordered w-full text-sm"
-                        />
-                         <span className="text-xs">Sätze Heim</span>
-                      </label>
-                      <label className="floating-label w-full">
-                        <input
-                          type="number"
-                          id="awayScore"
-                          name="awayScore"
-                          min="0" max={editingLeagueContext.setsToWin}
-                          value={scoreInputData.awayScore ?? ''}
-                          onChange={(e) => handleScoreInputChange(e)}
-                          placeholder=" "
-                          className="input input-bordered w-full text-sm"
-                        />
-                        <span className="text-xs">Sätze Gast</span>
-                      </label>
-                    </div>
-                    {/* Total Points (Balls) - Floating Labels */}
-                    <div className="flex gap-4">
-                      <label className="floating-label w-full">
-                        <input
-                          type="number"
-                          id="homePoints"
-                          name="homePoints"
-                          min="0"
-                          value={scoreInputData.homePoints ?? ''}
-                          onChange={(e) => handleScoreInputChange(e)}
-                          placeholder=" "
-                          className="input input-bordered w-full text-sm"
-                        />
-                        <span className="text-xs">Bälle Heim (Optional)</span>
-                      </label>
-                      <label className="floating-label w-full">
-                        <input
-                          type="number"
-                          id="awayPoints"
-                          name="awayPoints"
-                          min="0"
-                          value={scoreInputData.awayPoints ?? ''}
-                          onChange={(e) => handleScoreInputChange(e)}
-                          placeholder=" "
-                          className="input input-bordered w-full text-sm"
-                        />
-                        <span className="text-xs">Bälle Gast (Optional)</span>
-                      </label>
-                      </div>
-                    </div>
-                  
-                )}
-
-                {/* Case 2: SET_SCORES - Keep explicit labels due to complexity */}
-                {editingLeagueContext.scoreEntryType === ScoreEntryType.SET_SCORES && (
-                  <div className="space-y-2">
-                    {scoreInputData.setScores.map((set: any, index: number) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <label className="w-16 text-sm font-medium text-right shrink-0">Satz {index + 1}:</label>
-                        <input
-                          type="number"
-                          name="home"
-                          min="0"
-                          value={set.home ?? ''}
-                          onChange={(e) => handleScoreInputChange(e, index)}
-                          placeholder="Heim"
-                          className="input input-bordered input-sm w-full"
-                        />
-                        <span className="text-base-content/50">:</span>
-                        <input
-                          type="number"
-                          name="away"
-                          min="0"
-                          value={set.away ?? ''}
-                          onChange={(e) => handleScoreInputChange(e, index)}
-                          placeholder="Gast"
-                          className="input input-bordered input-sm w-full"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </fieldset>
-
-            {/* Submit Button - DaisyUI */}
-            <div className="modal-action mt-6"> {/* Use modal-action */}
-               <button type="button" className="btn btn-ghost" onClick={() => { setIsFixtureModalOpen(false); setEditingFixture(null); setScoreInputData(null); setEditingLeagueContext(null); }}>Abbrechen</button>
-               <button
-                 type="submit"
-                 className="btn btn-primary"
+         {/* Score Entry Configuration Section */}
+         <fieldset className="border border-base-300 p-3 rounded-md">
+           <legend className="text-sm font-medium px-1">Ergebniseingabe & Zählweise</legend>
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-1">
+             {/* Score Entry Type - Select */}
+             <label className="form-control w-full">
+               <div className="label">
+                 <span className="label-text">Art der Eingabe</span>
+               </div>
+               <select
+                 id="scoreEntryType"
+                 name="scoreEntryType"
+                 value={newLeague.scoreEntryType}
+                 onChange={(e) => setNewLeague({ ...newLeague, scoreEntryType: e.target.value as ScoreEntryType })}
+                 className="select select-bordered w-full"
                >
-                 Speichern
-               </button>
-            </div>
-          </form>
-        )}
-      </Modal>
+                 <option value={ScoreEntryType.MATCH_SCORE}>Nur Gesamtsätze (z.B. 3:1)</option>
+                 <option value={ScoreEntryType.SET_SCORES}>Einzelne Satzergebnisse (z.B. 25:20, ...)</option>
+               </select>
+             </label>
+             {/* Sets to Win - Select */}
+             <label className="form-control w-full">
+               <div className="label">
+                 <span className="label-text">Gewinnsätze</span>
+               </div>
+               <select
+                 id="setsToWin"
+                 name="setsToWin"
+                 value={newLeague.setsToWin}
+                 onChange={(e) => setNewLeague({ ...newLeague, setsToWin: parseInt(e.target.value) || 3 })}
+                 className="select select-bordered w-full"
+               >
+                 <option value={2}>2 (Best-of-3)</option>
+                 <option value={3}>3 (Best-of-5)</option>
+               </select>
+             </label>
+             </div>
+           </fieldset>
+
+         {/* Point Rules Section */}
+           <fieldset className="border border-base-300 p-3 rounded-md">
+             <legend className="text-sm font-medium px-1">Punktregeln (Tabelle)</legend>
+             <div className="grid grid-cols-2 gap-4 mt-1">
+               {/* Point Inputs - Floating Labels */}
+               <label className="floating-label w-full">
+                 <input
+                     id="pointsWin30"
+                     type="number"
+                     min="0"
+                     value={newLeague.pointsWin30}
+                     onChange={(e) => setNewLeague({...newLeague, pointsWin30: parseInt(e.target.value) || 0})}
+                     placeholder=" "
+                     className="input input-bordered w-full text-sm"
+                 />
+                 <span className="text-xs">Punkte 3:0 / 2:0</span>
+               </label>
+               <label className="floating-label w-full">
+                 <input
+                     id="pointsWin31"
+                     type="number"
+                     min="0"
+                     value={newLeague.pointsWin31}
+                     onChange={(e) => setNewLeague({...newLeague, pointsWin31: parseInt(e.target.value) || 0})}
+                     placeholder=" "
+                     className="input input-bordered w-full text-sm"
+                 />
+                   <span className="text-xs">Punkte 3:1 / 2:1</span>
+               </label>
+               <label className="floating-label w-full">
+                 <input
+                     id="pointsWin32"
+                     type="number"
+                     min="0"
+                     value={newLeague.pointsWin32}
+                     onChange={(e) => setNewLeague({...newLeague, pointsWin32: parseInt(e.target.value) || 0})}
+                     placeholder=" "
+                     className="input input-bordered w-full text-sm"
+                 />
+                 <span className="text-xs">Punkte 3:2 (Sieger)</span>
+               </label>
+               <label className="floating-label w-full">
+                 <input
+                     id="pointsLoss32"
+                     type="number"
+                     min="0"
+                     value={newLeague.pointsLoss32}
+                     onChange={(e) => setNewLeague({...newLeague, pointsLoss32: parseInt(e.target.value) || 0})}
+                     placeholder=" "
+                     className="input input-bordered w-full text-sm"
+                 />
+                 <span className="text-xs">Punkte 2:3 (Verlierer)</span>
+               </label>
+             </div>
+           </fieldset>
+
+         {/* Assign Teams */}
+         <div className="form-control">
+           <label className="label">
+             <span className="label-text">Teams zuordnen (max. {newLeague.numberOfTeams || 'N/A'})</span>
+           </label>
+           <div className="mt-1 max-h-40 overflow-y-auto border border-base-300 rounded-md p-2 space-y-1 bg-base-100">
+             {teams.length > 0 ? teams.map(team => (
+               <div key={team.id} className="form-control">
+                 <label className="label cursor-pointer justify-start gap-2">
+                   <input
+                     type="checkbox"
+                     id={`team-${team.id}`}
+                     checked={newLeague.teamIds.includes(team.id)}
+                     disabled={!newLeague.teamIds.includes(team.id) && newLeague.teamIds.length >= newLeague.numberOfTeams}
+                     onChange={(e) => {
+                       const isChecked = e.target.checked;
+                       const currentTeamIds = newLeague.teamIds;
+                       const maxTeams = newLeague.numberOfTeams;
+
+                       if (isChecked) {
+                         if (currentTeamIds.length < maxTeams) {
+                           setNewLeague({ ...newLeague, teamIds: [...currentTeamIds, team.id] });
+                         } else {
+                           e.target.checked = false;
+                           toast.warn(`Es können maximal ${maxTeams} Teams zugewiesen werden.`);
+                         }
+                       } else {
+                         setNewLeague({ ...newLeague, teamIds: currentTeamIds.filter(id => id !== team.id) });
+                       }
+                     }}
+                     className="checkbox checkbox-sm checkbox-primary disabled:opacity-50"
+                   />
+                   <span className="label-text text-sm">{team.name}</span>
+                 </label>
+               </div>
+             )) : <p className="text-sm text-base-content/70 p-2">Keine Teams verfügbar.</p>}
+           </div>
+           <div className="label">
+             <span className="label-text-alt">{newLeague.teamIds.length} von {newLeague.numberOfTeams || 0} Teams ausgewählt</span>
+           </div>
+         </div>
+         {/* Submit Button */}
+         <div className="modal-action mt-6">
+           <button type="button" className="btn btn-ghost" onClick={() => { setIsModalOpen(false); setEditingLeague(null); }}>Abbrechen</button>
+           <button
+             type="submit"
+             className="btn btn-primary"
+           >
+             {editingLeague ? "Liga aktualisieren" : "Liga hinzufügen"}
+           </button>
+         </div>
+       </form>
+     </Modal>
+
+     {/* Edit Fixture Modal */}
+     <Modal isOpen={isFixtureModalOpen} onClose={() => { setIsFixtureModalOpen(false); setEditingFixture(null); setScoreInputData(null); setEditingLeagueContext(null); }} title="Spielpaarung bearbeiten">
+       {editingFixture && editingLeagueContext && scoreInputData && (
+         <form onSubmit={handleUpdateFixture} className="space-y-4 p-1">
+           {/* Team Selection with Swap Button */}
+           <div className="grid grid-cols-[1fr_auto_1fr] gap-x-2 items-end">
+             {/* Home Team Select */}
+             <label className="form-control w-full">
+               <div className="label">
+                 <span className="label-text">Heimteam</span>
+               </div>
+               <select
+                 id="homeTeamId"
+                 name="homeTeamId"
+                 value={editingFixture.homeTeamId || ''}
+                 onChange={handleFixtureInputChange}
+                 required
+                 className="select select-bordered w-full"
+               >
+                 <option value="" disabled>Wählen...</option>
+                 {editingLeagueContext?.teams.map(team => (
+                   <option key={team.id} value={team.id}>{team.name}</option>
+                 ))}
+               </select>
+             </label>
+             {/* Swap Teams Button */}
+             <button
+               type="button"
+               onClick={handleSwapTeams}
+               className="btn btn-square btn-ghost"
+               title="Teams tauschen"
+             >
+               <ArrowsRightLeftIcon className="h-5 w-5" />
+             </button>
+             {/* Away Team Select */}
+             <label className="form-control w-full">
+               <div className="label">
+                 <span className="label-text">Auswärtsteam</span>
+               </div>
+               <select
+                 id="awayTeamId"
+                 name="awayTeamId"
+                 value={editingFixture.awayTeamId || ''}
+                 onChange={handleFixtureInputChange}
+                 required
+                 className="select select-bordered w-full"
+               >
+                 <option value="" disabled>Wählen...</option>
+                 {editingLeagueContext?.teams.map(team => (
+                   <option key={team.id} value={team.id}>{team.name}</option>
+                 ))}
+               </select>
+             </label>
+           </div>
+
+           {/* Fixture Date - Floating Label */}
+           <label className="floating-label w-full">
+             <input
+               type="date"
+               id="fixtureDate"
+               name="fixtureDate"
+               value={editingFixture.fixtureDate || ''}
+               onChange={handleFixtureInputChange}
+               placeholder=" " // Placeholder needed
+               className="input input-bordered w-full"
+             />
+             <span>Datum</span>
+           </label>
+
+           {/* Fixture Time - Floating Label */}
+           <label className="floating-label w-full">
+             <input
+               type="time"
+               id="fixtureTime"
+               name="fixtureTime"
+               value={editingFixture.fixtureTime || ''}
+               onChange={handleFixtureInputChange}
+               placeholder=" " // Placeholder needed
+               className="input input-bordered w-full"
+             />
+             <span>Uhrzeit</span>
+           </label>
+
+           {/* Score Input Section */}
+           <fieldset className="border border-base-300 p-3 rounded-md">
+             <legend className="text-sm font-medium px-1">Ergebnis</legend>
+             <div className="mt-2 space-y-3">
+
+               {/* Case 1: MATCH_SCORE */}
+               {editingLeagueContext.scoreEntryType === ScoreEntryType.MATCH_SCORE && (
+                 <div className="space-y-3">
+                   {/* Set Scores - Floating Labels */}
+                   <div className="flex gap-4">
+                     <label className="floating-label w-full">
+                       <input
+                         type="number"
+                         id="homeScore"
+                         name="homeScore"
+                         min="0" max={editingLeagueContext.setsToWin}
+                         value={scoreInputData.homeScore ?? ''}
+                         onChange={(e) => handleScoreInputChange(e)}
+                         placeholder=" "
+                         className="input input-bordered w-full text-sm"
+                       />
+                        <span className="text-xs">Sätze Heim</span>
+                     </label>
+                     <label className="floating-label w-full">
+                       <input
+                         type="number"
+                         id="awayScore"
+                         name="awayScore"
+                         min="0" max={editingLeagueContext.setsToWin}
+                         value={scoreInputData.awayScore ?? ''}
+                         onChange={(e) => handleScoreInputChange(e)}
+                         placeholder=" "
+                         className="input input-bordered w-full text-sm"
+                       />
+                       <span className="text-xs">Sätze Gast</span>
+                     </label>
+                   </div>
+                   {/* Total Points (Balls) - Floating Labels */}
+                   <div className="flex gap-4">
+                     <label className="floating-label w-full">
+                       <input
+                         type="number"
+                         id="homePoints"
+                         name="homePoints"
+                         min="0"
+                         value={scoreInputData.homePoints ?? ''}
+                         onChange={(e) => handleScoreInputChange(e)}
+                         placeholder=" "
+                         className="input input-bordered w-full text-sm"
+                       />
+                       <span className="text-xs">Bälle Heim (Optional)</span>
+                     </label>
+                     <label className="floating-label w-full">
+                       <input
+                         type="number"
+                         id="awayPoints"
+                         name="awayPoints"
+                         min="0"
+                         value={scoreInputData.awayPoints ?? ''}
+                         onChange={(e) => handleScoreInputChange(e)}
+                         placeholder=" "
+                         className="input input-bordered w-full text-sm"
+                       />
+                       <span className="text-xs">Bälle Gast (Optional)</span>
+                     </label>
+                     </div>
+                   </div>
+               )}
+
+               {/* Case 2: SET_SCORES */}
+               {editingLeagueContext.scoreEntryType === ScoreEntryType.SET_SCORES && (
+                 <div className="space-y-2">
+                   {scoreInputData.setScores.map((set: any, index: number) => (
+                     <div key={index} className="flex items-center gap-2">
+                       <label className="w-16 text-sm font-medium text-right shrink-0">Satz {index + 1}:</label>
+                       <input
+                         type="number"
+                         name="home"
+                         min="0"
+                         value={set.home ?? ''}
+                         onChange={(e) => handleScoreInputChange(e, index)}
+                         placeholder="Heim"
+                         className="input input-bordered input-sm w-full" // Use input-sm
+                       />
+                       <span className="text-base-content/50">:</span>
+                       <input
+                         type="number"
+                         name="away"
+                         min="0"
+                         value={set.away ?? ''}
+                         onChange={(e) => handleScoreInputChange(e, index)}
+                         placeholder="Gast"
+                         className="input input-bordered input-sm w-full" // Use input-sm
+                       />
+                     </div>
+                   ))}
+                 </div>
+               )}
+             </div>
+           </fieldset>
+
+           {/* Submit Button */}
+           <div className="modal-action mt-6">
+              <button type="button" className="btn btn-ghost" onClick={() => { setIsFixtureModalOpen(false); setEditingFixture(null); setScoreInputData(null); setEditingLeagueContext(null); }}>Abbrechen</button>
+              <button
+                type="submit"
+                className="btn btn-primary"
 
       {/* Bestätigungsdialog für Spielplan-Generierung */}
       {showGenerateConfirmation && leagueToGenerate && (
