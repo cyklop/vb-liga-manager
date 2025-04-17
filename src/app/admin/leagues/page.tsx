@@ -1353,18 +1353,18 @@ function SortableFixtureItem({ fixture, league, onEditClick, isLeagueActive }: S
             : '- : -'})
         </span>
       </div>
-      {/* Action Buttons Container */}
-      <div className="flex items-center space-x-1 ml-2">
-        <button
-          onClick={() => onEditClick(fixture)}
-          className={`p-1 btn btn-sm btn-soft ${isLeagueActive ? 'btn-secondary' : 'btn-disabled'}`}
-          title={isLeagueActive ? "Spielpaarung bearbeiten" : "Liga ist inaktiv"}
-          disabled={!isLeagueActive}
-        >
-          <PencilIcon className="h-4 w-4" />
-        </button>
-        {/* Removed Up/Down buttons as Drag&Drop is used */}
-      </div>
-    </li>
+     {/* Action Buttons Container */}
+     <div className="flex items-center space-x-1 ml-2">
+       <button
+         onClick={() => onEditClick(fixture)} // Keep original onClick
+         className={`btn btn-ghost btn-sm btn-square ${isLeagueActive ? '' : 'text-base-content/30'}`} // Use btn-ghost, adjust disabled color
+         title={isLeagueActive ? "Spielpaarung bearbeiten" : "Liga ist inaktiv"}
+         disabled={!isLeagueActive}
+       >
+         <PencilIcon className="h-4 w-4" />
+       </button>
+       {/* Removed Up/Down buttons as Drag&Drop is used */}
+     </div>
+   </li>
   );
 }
