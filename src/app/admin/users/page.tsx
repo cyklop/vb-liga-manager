@@ -216,107 +216,100 @@ export default function UsersPage() {
         </div>
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={isEditing ? "Benutzer bearbeiten" : "Neuen Benutzer hinzufügen"}>
           <form onSubmit={isEditing ? handleEditUser : handleAddUser} className="space-y-4">
-         <label className="form-control w-full">
-           <div className="label">
-             <span className="label-text">E-Mail</span>
-           </div>
-           <input
-             type="email"
-             id="email" // Add id for label association
-             value={newUser.email}
-             onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-             placeholder="E-Mail"
-             className="input input-bordered w-full" // Use standard DaisyUI input classes
-             required
-           />
-         </label>
-         {/* Use DaisyUI form-control and label structure */}
-         <label className="form-control w-full">
-           <div className="label">
-             <span className="label-text">Name</span>
-           </div>
-           <input
-             type="text"
-             id="name" // Add id for label association
-             value={newUser.name}
-             onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-             placeholder="Name"
-             className="input input-bordered w-full" // Use standard DaisyUI input classes
-             required
-           />
-         </label>
-         {/* Passwortfeld entfernt */}
-         {/* Use DaisyUI form-control and label structure for Teams section */}
-         <div className="form-control w-full">
-           <label className="label">
-             <span className="label-text">Teams</span>
-           </label>
-           <div className="max-h-40 overflow-y-auto border border-base-300 rounded-box p-2 bg-base-100"> {/* Use DaisyUI border/rounding and background */}
-             {teams.map((team) => (
-               // Wrap each checkbox/label in form-control for alignment and use label for better click handling
-               <div key={team.id} className="form-control">
-                 <label className="label cursor-pointer justify-start space-x-3">
-                   <input
-                     type="checkbox"
-                     id={`team-${team.id}`} // Keep id
-                     checked={newUser.teamIds?.includes(team.id) || false}
-                     onChange={(e) => {
-                       if (e.target.checked) {
-                         setNewUser({
-                           ...newUser,
-                           teamIds: [...newUser.teamIds, team.id]
-                         });
-                       } else {
-                         setNewUser({
-                           ...newUser,
-                           teamIds: newUser.teamIds.filter(id => id !== team.id)
-                         });
-                       }
-                     }}
-                     className="checkbox checkbox-primary checkbox-sm" // Use checkbox-sm
-                   />
-                   <span className="label-text">{team.name}</span> {/* Use label-text */}
-                 </label> {/* Close the wrapping label */}
-               </div>
-             ))}
-           </div>
-          </div> {/* Close Teams form-control */}
-          {/* Use DaisyUI form-control and label structure for Admin checkbox */}
-          <div className="form-control">
-            <label className="label cursor-pointer justify-start space-x-3">
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">E-Mail</span>
+              </div>
               <input
-                type="checkbox"
-                id="isAdmin"
-                checked={newUser.isAdmin}
-                onChange={(e) => setNewUser({ ...newUser, isAdmin: e.target.checked })}
-                className="checkbox checkbox-sm checkbox-primary"
+                type="email"
+                id="email"
+                value={newUser.email}
+                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                placeholder="E-Mail"
+                className="input input-bordered w-full"
+                required
               />
-              <span className="label-text">Admin</span> {/* Use label-text */}
             </label>
-          </div>
-          {/* Modal Actions */}
-          <div className="modal-action mt-6">
-            <button
-              type="button"
-              className="btn btn-ghost"
-              onClick={() => {
-                setIsModalOpen(false);
-                // Reset state when cancelling
-                setNewUser({ id: 0, email: '', name: '', isAdmin: false, teamIds: [] });
-                setIsEditing(false);
-              }}
-            >
-              Abbrechen
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary" // Removed w-full
-            >
-              {isEditing ? "Aktualisieren" : "Hinzufügen"}
-            </button>
-          </div>
-        </form>
-      </Modal>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Name</span>
+              </div>
+              <input
+                type="text"
+                id="name"
+                value={newUser.name}
+                onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                placeholder="Name"
+                className="input input-bordered w-full"
+                required
+              />
+            </label>
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Teams</span>
+              </label>
+              <div className="max-h-40 overflow-y-auto border border-base-300 rounded-box p-2 bg-base-100">
+                {teams.map((team) => (
+                  <div key={team.id} className="form-control">
+                    <label className="label cursor-pointer justify-start space-x-3">
+                      <input
+                        type="checkbox"
+                        id={`team-${team.id}`}
+                        checked={newUser.teamIds?.includes(team.id) || false}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setNewUser({
+                              ...newUser,
+                              teamIds: [...newUser.teamIds, team.id]
+                            });
+                          } else {
+                            setNewUser({
+                              ...newUser,
+                              teamIds: newUser.teamIds.filter(id => id !== team.id)
+                            });
+                          }
+                        }}
+                        className="checkbox checkbox-primary checkbox-sm"
+                      />
+                      <span className="label-text">{team.name}</span>
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="form-control">
+              <label className="label cursor-pointer justify-start space-x-3">
+                <input
+                  type="checkbox"
+                  id="isAdmin"
+                  checked={newUser.isAdmin}
+                  onChange={(e) => setNewUser({ ...newUser, isAdmin: e.target.checked })}
+                  className="checkbox checkbox-sm checkbox-primary"
+                />
+                <span className="label-text">Admin</span>
+              </label>
+            </div>
+            <div className="modal-action mt-6">
+              <button
+                type="button"
+                className="btn btn-ghost"
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setNewUser({ id: 0, email: '', name: '', isAdmin: false, teamIds: [] });
+                  setIsEditing(false);
+                }}
+              >
+                Abbrechen
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary"
+              >
+                {isEditing ? "Aktualisieren" : "Hinzufügen"}
+              </button>
+            </div>
+          </form>
+        </Modal>
       {showDeleteConfirmation && (
         <DeleteConfirmation
           onConfirm={confirmDelete}
