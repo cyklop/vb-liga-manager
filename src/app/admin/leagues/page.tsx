@@ -638,13 +638,11 @@ export default function LeaguesPage() {
   return (
     <>
       <Navigation />
-      <div className="container mx-auto px-4 py-8">
-        {/* Title is always "Ligen verwalten" now */}
+      <div className="container mx-auto px-4 py-8">        
         <h1 className="text-2xl font-bold mb-4">
           Ligen verwalten
         </h1>
         
-        {/* Add League Button - Always shown for admins */}
         <button
           onClick={() => {
             setEditingLeague(null);
@@ -670,38 +668,31 @@ export default function LeaguesPage() {
           >
             Neue Liga hinzufügen
           </button>
-       {/* Removed closing curly brace for isAdmin check */}
-
-       {/* Leagues List */}
-       {/* Use DaisyUI card styling for the list container */}
+       
        <div className="card bg-base-100 shadow-xl mt-4">
-         <div className="card-body p-0"> {/* Remove padding if list items have padding */}
-           <ul className="divide-y divide-base-300"> {/* Use DaisyUI divider */}
+         <div className="card-body p-0"> 
+           <ul className="divide-y divide-base-300">
          {leagues.map((league) => (
-           <li key={league.id} className="hover:bg-base-200 transition-colors duration-150"> {/* Add hover effect */}
-             {/* League Header */}
+           <li key={league.id} className="hover:bg-base-200 transition-colors duration-150"> 
              <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
                <div>
                  <div className="flex items-center">
                    <p className="text-md font-medium truncate">{league.name}</p>
-                   <span className={`ml-2 badge badge-xs ${league.isActive ? 'badge-success' : 'badge-warning'}`}> {/* Added badge class */}
+                   <span className={`ml-2 badge badge-xs ${league.isActive ? 'badge-success' : 'badge-warning'}`}> 
                      {league.isActive ? 'Aktiv' : 'Abgeschlossen'}
                    </span>
                  </div>
-                 <p className="text-xs text-base-content/70 mt-1"> {/* Adjusted text color */}
+                 <p className="text-xs text-base-content/70 mt-1"> 
                    {league.teams.length} / {league.numberOfTeams} Teams: {league.teams.map(team => team.name).join(', ') || 'Keine Teams zugewiesen'}
                  </p>
-                 <p className="text-xs text-base-content/50 mt-1"> {/* Adjusted text color */}
+                 <p className="text-xs text-base-content/50 mt-1"> 
                    Erstellt am: {new Date(league.createdAt).toLocaleDateString('de-DE')}
                  </p>
-                 <p className="text-xs text-base-content/50 mt-1"> {/* Adjusted text color */}
+                 <p className="text-xs text-base-content/50 mt-1">
                    Öffentlicher Link: <a href={`/public/league/${league.slug}`} target="_blank" className="link link-primary">/public/league/{league.slug}</a>
                  </p>
                </div>
-               {/* Action Buttons - Always shown for admins */}
-               <div className="flex items-center space-x-1"> {/* Use space-x-1 for tighter spacing */}
-                 {/* Removed isAdmin check wrapper */}
-                 <>
+               <div className="flex items-center space-x-1"> 
                    <button
                      onClick={() => {
                        setEditingLeague(league);
@@ -770,8 +761,6 @@ export default function LeaguesPage() {
                      >
                        <CalendarDaysIcon className="h-5 w-5" />
                      </button>
-                   </>
-                 {/* Removed closing curly brace for isAdmin check */}
                  <button
                    onClick={() => handleShowFixtures(league.id)}
                    className="p-1 btn btn-sm btn-soft btn-accent" // Reverted to btn-soft
@@ -786,8 +775,7 @@ export default function LeaguesPage() {
              {selectedLeagueId === league.id && (
                <div className="px-4 py-4 sm:px-6 border-t border-gray-200 dark:border-border bg-base-content/10">
                  <div className="flex justify-between items-center mb-3">
-                   <h3 className="text-lg font-semibold text-base-content/70">Spielplan</h3>
-                   {/* Save Order Button - Always shown if order changed */}
+                   <h3 className="text-lg font-semibold text-base-content/70">Spielplan</h3>                   
                    {isOrderChanged && (
                       <button
                         onClick={handleSaveFixtureOrder}
@@ -832,15 +820,13 @@ export default function LeaguesPage() {
            </li>
          ))}
        </ul>
-         </div> {/* Close card-body */}
-       </div> {/* Close card */}
+         </div> 
+       </div> 
      </div>
 
-     {/* Add/Edit League Modal */}
+     
      <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingLeague(null); }} title={editingLeague ? "Liga bearbeiten" : "Neue Liga hinzufügen"} >
-         {/* Add padding and spacing directly to the form */}
          <form onSubmit={editingLeague ? handleEditLeague : handleAddLeague} className="space-y-4 p-1">
-           {/* League Name - Floating Label */}
            <label className="floating-label w-full">
              <input
                id="leagueName"
@@ -854,7 +840,6 @@ export default function LeaguesPage() {
              <span>Liganame</span>
            </label>
 
-           {/* League Slug - Input Group */}
            <label className="form-control w-full">
              <div className="join w-full">
                <span className="btn join-item rounded-l-full pointer-events-none">/public/league/</span>
@@ -872,7 +857,6 @@ export default function LeaguesPage() {
              </div>
            </label>
 
-           {/* Number of Teams - Floating Label */}
            <label className="floating-label w-full">
              <input
                id="numberOfTeams"
@@ -887,7 +871,6 @@ export default function LeaguesPage() {
              <span>Anzahl Teams</span>
            </label>
 
-           {/* Return Matches & Active Status Checkboxes */}
            <div className="flex gap-4">
              <div className="form-control">
                <label className="label cursor-pointer gap-2">
@@ -915,11 +898,10 @@ export default function LeaguesPage() {
              </div>
            </div>
 
-         {/* Score Entry Configuration Section */}
+         
          <fieldset className="border border-base-300 p-3 rounded-md">
            <legend className="text-sm font-medium px-1">Ergebniseingabe & Zählweise</legend>
            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-1">
-             {/* Score Entry Type - Select */}
              <label className="form-control w-full">
                <div className="label">
                  <span className="label-text">Art der Eingabe</span>
@@ -935,7 +917,6 @@ export default function LeaguesPage() {
                  <option value={ScoreEntryType.SET_SCORES}>Einzelne Satzergebnisse (z.B. 25:20, ...)</option>
                </select>
              </label>
-             {/* Sets to Win - Select */}
              <label className="form-control w-full">
                <div className="label">
                  <span className="label-text">Gewinnsätze</span>
@@ -953,12 +934,10 @@ export default function LeaguesPage() {
              </label>
              </div>
            </fieldset>
-
-         {/* Point Rules Section */}
+        
            <fieldset className="border border-base-300 p-3 rounded-md">
              <legend className="text-sm font-medium px-1">Punktregeln (Tabelle)</legend>
              <div className="grid grid-cols-2 gap-4 mt-1">
-               {/* Point Inputs - Floating Labels */}
                <label className="floating-label w-full">
                  <input
                      id="pointsWin30"
@@ -1010,7 +989,6 @@ export default function LeaguesPage() {
              </div>
            </fieldset>
 
-         {/* Assign Teams */}
          <div className="form-control">
            <label className="label">
              <span className="label-text">Teams zuordnen (max. {newLeague.numberOfTeams || 'N/A'})</span>
@@ -1051,7 +1029,6 @@ export default function LeaguesPage() {
              <span className="label-text-alt">{newLeague.teamIds.length} von {newLeague.numberOfTeams || 0} Teams ausgewählt</span>
            </div>
          </div>
-         {/* Submit Button */}
          <div className="modal-action mt-6">
            <button type="button" className="btn btn-ghost" onClick={() => { setIsModalOpen(false); setEditingLeague(null); }}>Abbrechen</button>
            <button
@@ -1063,14 +1040,11 @@ export default function LeaguesPage() {
          </div>
        </form>
      </Modal>
-
-     {/* Edit Fixture Modal */}
+    
      <Modal isOpen={isFixtureModalOpen} onClose={() => { setIsFixtureModalOpen(false); setEditingFixture(null); setScoreInputData(null); setEditingLeagueContext(null); }} title="Spielpaarung bearbeiten">
        {editingFixture && editingLeagueContext && scoreInputData && (
          <form onSubmit={handleUpdateFixture} className="space-y-4 p-1">
-           {/* Team Selection with Swap Button */}
            <div className="grid grid-cols-[1fr_auto_1fr] gap-x-2 items-end">
-             {/* Home Team Select */}
              <label className="form-control w-full">
                <div className="label">
                  <span className="label-text">Heimteam</span>
@@ -1089,7 +1063,6 @@ export default function LeaguesPage() {
                  ))}
                </select>
              </label>
-             {/* Swap Teams Button */}
              <button
                type="button"
                onClick={handleSwapTeams}
@@ -1098,7 +1071,6 @@ export default function LeaguesPage() {
              >
                <ArrowsRightLeftIcon className="h-5 w-5" />
              </button>
-             {/* Away Team Select */}
              <label className="form-control w-full">
                <div className="label">
                  <span className="label-text">Auswärtsteam</span>
@@ -1119,7 +1091,6 @@ export default function LeaguesPage() {
              </label>
            </div>
 
-           {/* Fixture Date - Floating Label */}
            <label className="floating-label w-full">
              <input
                type="date"
@@ -1133,7 +1104,6 @@ export default function LeaguesPage() {
              <span>Datum</span>
            </label>
 
-           {/* Fixture Time - Floating Label */}
            <label className="floating-label w-full">
              <input
                type="time"
@@ -1147,15 +1117,12 @@ export default function LeaguesPage() {
              <span>Uhrzeit</span>
            </label>
 
-           {/* Score Input Section */}
            <fieldset className="border border-base-300 p-3 rounded-md">
              <legend className="text-sm font-medium px-1">Ergebnis</legend>
              <div className="mt-2 space-y-3">
-
-               {/* Case 1: MATCH_SCORE */}
+               
                {editingLeagueContext.scoreEntryType === ScoreEntryType.MATCH_SCORE && (
                  <div className="space-y-3">
-                   {/* Set Scores - Floating Labels */}
                    <div className="flex gap-4">
                      <label className="floating-label w-full">
                        <input
@@ -1184,7 +1151,6 @@ export default function LeaguesPage() {
                        <span className="text-xs">Sätze Gast</span>
                      </label>
                    </div>
-                   {/* Total Points (Balls) - Floating Labels */}
                    <div className="flex gap-4">
                      <label className="floating-label w-full">
                        <input
@@ -1215,8 +1181,7 @@ export default function LeaguesPage() {
                      </div>
                    </div>
                )}
-
-               {/* Case 2: SET_SCORES */}
+              
                {editingLeagueContext.scoreEntryType === ScoreEntryType.SET_SCORES && (
                  <div className="space-y-2">
                    {scoreInputData.setScores.map((set: any, index: number) => (
@@ -1254,26 +1219,25 @@ export default function LeaguesPage() {
               <button
                 type="submit"
                 className="btn btn-primary"
+      
+            {showGenerateConfirmation && leagueToGenerate && (
+              <DeleteConfirmation
+                onConfirm={confirmGenerateFixtures}
+                onCancel={cancelGenerateFixtures}
+                message={`Möchten Sie den Spielplan für Liga "${leagueToGenerate.name}" wirklich generieren? Bestehende Spielpläne für diese Liga werden überschrieben.`}
+                confirmButtonText="Generieren"
+              />
+            )}
 
-      {/* Bestätigungsdialog für Spielplan-Generierung */}
-      {showGenerateConfirmation && leagueToGenerate && (
-        <DeleteConfirmation
-          onConfirm={confirmGenerateFixtures}
-          onCancel={cancelGenerateFixtures}
-          message={`Möchten Sie den Spielplan für Liga "${leagueToGenerate.name}" wirklich generieren? Bestehende Spielpläne für diese Liga werden überschrieben.`}
-          confirmButtonText="Generieren"
-        />
-      )}
-
-      {/* Bestätigungsdialog für Liga löschen */}
-      {showDeleteLeagueConfirmation && leagueToDelete && (
-        <DeleteConfirmation
-          onConfirm={confirmDeleteLeague}
-          onCancel={cancelDeleteLeague}
-          message={`Möchten Sie die Liga "${leagueToDelete.name}" wirklich löschen? Alle zugehörigen Spielpläne werden ebenfalls unwiderruflich gelöscht.`}
-          // confirmButtonText bleibt Standard "Löschen"
-        />
-      )}
+            
+            {showDeleteLeagueConfirmation && leagueToDelete && (
+              <DeleteConfirmation
+                onConfirm={confirmDeleteLeague}
+                onCancel={cancelDeleteLeague}
+                message={`Möchten Sie die Liga "${leagueToDelete.name}" wirklich löschen? Alle zugehörigen Spielpläne werden ebenfalls unwiderruflich gelöscht.`}
+                // confirmButtonText bleibt Standard "Löschen"
+              />
+            )}                 
     </>
   );
 }
