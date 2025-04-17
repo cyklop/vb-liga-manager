@@ -3,8 +3,21 @@ import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
 export async function middleware(req: NextRequest) {
+  // --- DEBUGGING START ---
+  // Logge den Cookie-Header und den Secret
+  const cookieHeader = req.headers.get('cookie');
+  console.log('[Middleware] Received Cookie Header:', cookieHeader);
+  console.log('[Middleware] NEXTAUTH_SECRET available:', !!process.env.NEXTAUTH_SECRET); // Logge, ob Secret vorhanden ist
+  // --- DEBUGGING END ---
+
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
   const { pathname } = req.nextUrl
+
+  // --- DEBUGGING START ---
+  // Logge den entschlüsselten Token (oder null)
+  console.log('[Middleware] Decoded Token:', token);
+  // --- DEBUGGING END ---
+
 
   // Schütze alle Routen unter /admin
   if (pathname.startsWith('/admin')) {
