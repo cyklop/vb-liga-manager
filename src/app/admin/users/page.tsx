@@ -168,59 +168,54 @@ export default function UsersPage() {
         >
           Neuen Benutzer hinzufügen
         </button>
-        {/* Use DaisyUI card styling for the list container */}
-        <div className="card bg-base-100 shadow-xl mt-4"> 
-          <div className="card-body p-0"> {/* Remove padding from card-body if list items have padding */}
-            <ul className="divide-y divide-base-300"> {/* Use DaisyUI divider */}
+        <div className="card bg-base-100 shadow-xl mt-4">
+          <div className="card-body p-0">
+            <ul className="divide-y divide-base-300">
               {users.map((user) => (
-                <li key={user.id} className="hover:bg-base-200 transition-colors duration-150"> {/* Add hover effect */}
+                <li key={user.id} className="hover:bg-base-200 transition-colors duration-150">
                   <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
                     <div>
-                      <p className="text-md font-medium truncate">{user.name}</p> {/* Slightly larger text */}
-                  <p className="text-sm">{user.email}</p>
-                  {user.teams && user.teams.length > 0 && (
-                    <p className="text-sm">
-                      Teams: {user.teams.map(team => team.name).join(', ')}
-                    </p>
-                  )}
-                </div>
-                <div className="flex items-center space-x-2"> {/* Add space between items */}
-                  <span className={`badge ${user.isAdmin ? 'badge-primary' : 'badge-secondary'}`}> {/* Removed badge-dash */}
-                    {user.isAdmin ? 'Admin' : 'Benutzer'}
-                  </span>
-
-                  <button
-                    onClick={() => {
-                      // Konvertiere das teams-Array in ein teamIds-Array für das Formular
-                      const teamIds = user.teams ? user.teams.map(team => team.id) : [];
-                      // Setze State ohne Passwort (Passwort ist im User-Objekt nicht vorhanden)
-                      const { ...userData } = user; // 'password' Destrukturierung entfernt
-                      setNewUser({ ...userData, teamIds })
-                      setIsEditing(true)
-                      setIsModalOpen(true)
-                    }}
-                    className="btn btn-ghost btn-sm btn-square" // Use btn-ghost, btn-sm, btn-square for compact icon button
-                    title="Benutzer bearbeiten"
-                  >
-                    <PencilIcon className="h-5 w-5" />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteUser(user)}
-                    className="btn btn-ghost btn-sm btn-square text-error" // Use btn-ghost, btn-sm, btn-square with text-error
-                    title="Benutzer löschen"
-                  >
-                    <TrashIcon className="h-5 w-5" />
-                  </button>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div> {/* Closing tag for card-body */}
-    </div> {/* Closing tag for card */}
-    <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={isEditing ? "Benutzer bearbeiten" : "Neuen Benutzer hinzufügen"}>
-      <form onSubmit={isEditing ? handleEditUser : handleAddUser} className="space-y-4">
-        {/* Use DaisyUI form-control and label structure */}
+                      <p className="text-md font-medium truncate">{user.name}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
+                      {user.teams && user.teams.length > 0 && (
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          Teams: {user.teams.map(team => team.name).join(', ')}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className={`badge ${user.isAdmin ? 'badge-primary' : 'badge-secondary'}`}>
+                        {user.isAdmin ? 'Admin' : 'Benutzer'}
+                      </span>
+                      <button
+                        onClick={() => {
+                          const teamIds = user.teams ? user.teams.map(team => team.id) : [];
+                          const { ...userData } = user;
+                          setNewUser({ ...userData, teamIds })
+                          setIsEditing(true)
+                          setIsModalOpen(true)
+                        }}
+                        className="btn btn-ghost btn-sm btn-square"
+                        title="Benutzer bearbeiten"
+                      >
+                        <PencilIcon className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteUser(user)}
+                        className="btn btn-ghost btn-sm btn-square text-error"
+                        title="Benutzer löschen"
+                      >
+                        <TrashIcon className="h-5 w-5" />
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={isEditing ? "Benutzer bearbeiten" : "Neuen Benutzer hinzufügen"}>
+          <form onSubmit={isEditing ? handleEditUser : handleAddUser} className="space-y-4">
          <label className="form-control w-full">
            <div className="label">
              <span className="label-text">E-Mail</span>
