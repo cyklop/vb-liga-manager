@@ -149,16 +149,16 @@ export default function Navbar() {
 
       {/* Desktop Menu Center */}
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
+        <ul className="menu menu-horizontal px-1"> {/* Keep px-1 for overall padding */}
           {navigation.map((item) => (
-            <li key={item.name}>
+            <li key={item.name} className="mx-1"> {/* Add horizontal margin to list items */}
               <Link href={item.href} className={isActive(item.href) ? 'active' : ''}>
                 {item.name}
               </Link>
             </li>
           ))}
           {currentUser?.team && (
-            <li>
+            <li className="mx-1"> {/* Add horizontal margin */}
               <Link href="/team" className={isActive('/team') ? 'active' : ''}>
                 Meine Mannschaft
               </Link>
@@ -166,9 +166,9 @@ export default function Navbar() {
           )}
           {/* Admin Dropdown Desktop */}
           {(currentUser?.isAdmin || currentUser?.isSuperAdmin) && (
-            <li>
-              <div className="dropdown dropdown-hover dropdown-bottom"> {/* Use dropdown for admin */}
-                 {/* Use label or div as trigger */}
+            <li className="mx-1"> {/* Add horizontal margin */}
+              {/* Dropdown container now wraps both trigger and menu */}
+              <div className="dropdown dropdown-hover dropdown-bottom"> 
                  <label tabIndex={0} role="button" className={classNames(
                     pathname.startsWith('/admin') ? 'active' : '',
                     'inline-flex items-center' // Keep flex for icon alignment
@@ -176,7 +176,8 @@ export default function Navbar() {
                     Admin
                     <svg className="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
                  </label>
-                 <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 text-base-content">
+                 {/* Dropdown content (ul) is now INSIDE the dropdown div */}
+                 <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 text-base-content mt-1"> {/* Added mt-1 for slight spacing */}
                    {adminNavigation.map((item) => (
                      <li key={item.name}>
                        <Link href={item.href} className={isActive(item.href) ? 'active' : ''}>
@@ -185,7 +186,7 @@ export default function Navbar() {
                      </li>
                    ))}
                  </ul>
-              </div>
+              </div> {/* End dropdown div */}
             </li>
           )}
         </ul>
