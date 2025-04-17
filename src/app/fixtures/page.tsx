@@ -207,13 +207,18 @@ export default function FixturesPage() {
         
         <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
           <div className="mb-4 md:mb-0">
-            <label htmlFor="leagueSelect" className="select w-lg">
-              <span className="label">Liga auswählen:</span>
-                <select
+            {/* Verwende form-control für Layout */}
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                {/* Standard label-text */}
+                <span className="label-text">Liga auswählen:</span>
+              </div>
+              <select
                 id="leagueSelect"
                 value={activeLeagueId || ''}
                 onChange={handleLeagueChange}
-                className="select"
+                // select mit Klassen
+                className="select select-bordered w-full"
               >
                 <option value="" disabled>Liga auswählen</option>
                 {leagues.map(league => (
@@ -221,9 +226,8 @@ export default function FixturesPage() {
                 ))}
               </select>
             </label>
-            
           </div>
-          
+
           <div className="flex items-center">
             <input
               type="checkbox"
