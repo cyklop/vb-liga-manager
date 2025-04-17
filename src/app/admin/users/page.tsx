@@ -219,36 +219,48 @@ export default function UsersPage() {
       </div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={isEditing ? "Benutzer bearbeiten" : "Neuen Benutzer hinzufügen"}>
         <form onSubmit={isEditing ? handleEditUser : handleAddUser} className="space-y-4">
-          <label htmlFor="email" className='floating-label'>
-            <span>E-Mail</span>
-            <input
-              type="email"
-              value={newUser.email}
-              onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-              placeholder="E-Mail"
-              className="w-full mt-2 px-3 py-2 input"
-              required
-            />
-          </label> 
-          
-          <label htmlFor="name" className='floating-label'>
-            <span>Name</span>
-            <input
-              type="text"
-              value={newUser.name}
-              onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-              placeholder="Name"
-              className="w-full px-3 py-2 input" // Dark mode styles hinzugefügt
-              required
-            />
-          </label> 
-          {/* Passwortfeld entfernt */}
-          <div className="w-full">
-            <label className="block text-sm font-medium mb-1">Teams</label> {/* Dark mode styles hinzugefügt */}
-            <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-md p-2 dark:border-border"> {/* Dark mode styles hinzugefügt */}
-              {teams.map((team) => (
-                <div key={team.id} className="flex items-center mb-2">
-                  <input
+         {/* Use DaisyUI form-control and label structure */}
+         <label className="form-control w-full">
+           <div className="label">
+             <span className="label-text">E-Mail</span>
+           </div>
+           <input
+             type="email"
+             id="email" // Add id for label association
+             value={newUser.email}
+             onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+             placeholder="E-Mail"
+             className="input input-bordered w-full" // Use standard DaisyUI input classes
+             required
+           />
+         </label>
+         {/* Use DaisyUI form-control and label structure */}
+         <label className="form-control w-full">
+           <div className="label">
+             <span className="label-text">Name</span>
+           </div>
+           <input
+             type="text"
+             id="name" // Add id for label association
+             value={newUser.name}
+             onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+             placeholder="Name"
+             className="input input-bordered w-full" // Use standard DaisyUI input classes
+             required
+           />
+         </label>
+         {/* Passwortfeld entfernt */}
+         {/* Use DaisyUI form-control and label structure for Teams section */}
+         <div className="form-control w-full">
+           <label className="label">
+             <span className="label-text">Teams</span>
+           </label>
+           <div className="max-h-40 overflow-y-auto border border-base-300 rounded-box p-2 bg-base-100"> {/* Use DaisyUI border/rounding and background */}
+             {teams.map((team) => (
+               // Wrap each checkbox/label in form-control for alignment and use label for better click handling
+               <div key={team.id} className="form-control">
+                 <label className="label cursor-pointer justify-start space-x-3">
+                   <input
                     type="checkbox"
                     id={`team-${team.id}`}
                     checked={newUser.teamIds?.includes(team.id) || false}
@@ -265,14 +277,29 @@ export default function UsersPage() {
                         });
                       }
                     }}
-                    className="h-4 w-4 checkbox checkbox-primary checkbox-xs"
-                  />
-                  <label htmlFor={`team-${team.id}`} className="ml-2 block text-sm">
-                    {team.name}
-                  </label>
-                </div>
-              ))}
-            </div>
+                     type="checkbox"
+                     id={`team-${team.id}`} // Keep id
+                     checked={newUser.teamIds?.includes(team.id) || false}
+                     onChange={(e) => {
+                       if (e.target.checked) {
+                         setNewUser({
+                           ...newUser,
+                           teamIds: [...newUser.teamIds, team.id]
+                         });
+                       } else {
+                         setNewUser({
+                           ...newUser,
+                           teamIds: newUser.teamIds.filter(id => id !== team.id)
+                         });
+                       }
+                     }}
+                     className="checkbox checkbox-primary checkbox-sm" // Use checkbox-sm
+                   />
+                   <span className="label-text">{team.name}</span> {/* Use label-text */}
+                 </label> {/* Close the wrapping label */}
+               </div>
+             ))}
+           </div>
           </div>
           <div className="flex items-center">
             <input
