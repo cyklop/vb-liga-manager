@@ -262,22 +262,6 @@ export default function UsersPage() {
                <div key={team.id} className="form-control">
                  <label className="label cursor-pointer justify-start space-x-3">
                    <input
-                    type="checkbox"
-                    id={`team-${team.id}`}
-                    checked={newUser.teamIds?.includes(team.id) || false}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setNewUser({ 
-                          ...newUser, 
-                          teamIds: [...newUser.teamIds, team.id] 
-                        });
-                      } else {
-                        setNewUser({ 
-                          ...newUser, 
-                          teamIds: newUser.teamIds.filter(id => id !== team.id) 
-                        });
-                      }
-                    }}
                      type="checkbox"
                      id={`team-${team.id}`} // Keep id
                      checked={newUser.teamIds?.includes(team.id) || false}
