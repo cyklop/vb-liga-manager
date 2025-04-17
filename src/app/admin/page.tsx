@@ -31,13 +31,15 @@ export default function AdminPage() {
     if (response.ok) {
       const user = await response.json()
       setCurrentUser(user)
-      if (!user.isSuperAdmin) {
+      // Leite nur um, wenn weder Admin noch SuperAdmin
+      if (!user.isAdmin && !user.isSuperAdmin) {
         router.push('/dashboard')
       }
     }
   }
 
-  if (!currentUser?.isSuperAdmin) {
+  // Verhindert das Rendern, wenn weder Admin noch SuperAdmin
+  if (!currentUser?.isAdmin && !currentUser?.isSuperAdmin) {
     return null // oder eine Lade-Animation
   }
 
