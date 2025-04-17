@@ -6,14 +6,26 @@ export async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
   const { pathname } = req.nextUrl
 
-  // Schütze alle Routen unter /admin
-  if (pathname.startsWith('/admin')) {
-    // Wenn kein Token vorhanden ist ODER der Benutzer kein Admin/SuperAdmin ist
-    if (!token || (!token.isAdmin && !token.isSuperAdmin)) {
-      // Leite zur Login-Seite um, behalte aber die ursprüngliche URL für die Weiterleitung nach dem Login bei
-      const loginUrl = new URL('/login', req.url)
-      loginUrl.searchParams.set('callbackUrl', req.url) // Optional: callbackUrl für Weiterleitung nach Login
-      return NextResponse.redirect(loginUrl)
+  // Definiere geschützte Routen
+  const protectedRoutes = ['/admin', '/dashboard']; // Füge /dashboard hinzu
+
+  // Prüfe, ob der aktuelle Pfad mit einer der geschützten Routen beginnt
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+
+  if (isProtectedRoute) {
+    // Prüfung für /admin Routen (Admin-Rechte erforderlich)
+    if (pathname.startsWith('/admin')) {
+      if (!token || (!token.isAdmin && !token.isSuperAdmin)) {
+        const loginUrl = new URL('/login', req.url);
+        loginUrl.searchParams.set('callbackUrl', req.url);
+        return NextResponse.redirect(loginUrl);
+      }
+    }
+    // Prüfung für andere geschützte Routen (nur Login erforderlich)
+    else if (!token) { // z.B. /dashboard
+      const loginUrl = new URL('/login', req.url);
+      loginUrl.searchParams.set('callbackUrl', req.url);
+      return NextResponse.redirect(loginUrl);
     }
   }
 
@@ -21,7 +33,7 @@ export async function middleware(req: NextRequest) {
   return NextResponse.next()
 }
 
-// Konfiguration: Wende die Middleware auf alle Routen unter /admin an
+// Konfiguration: Wende die Middleware auf alle Routen unter /admin und /dashboard an
 export const config = {
-  matcher: '/admin/:path*',
+  matcher: ['/admin/:path*', '/dashboard/:path*'], // Füge /dashboard hinzu
 }
