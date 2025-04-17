@@ -151,14 +151,14 @@ export default function Navbar() {
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1"> {/* Keep px-1 for overall padding */}
           {navigation.map((item) => (
-            <li key={item.name} className="mx-1"> {/* Add horizontal margin to list items */}
+            <li key={item.name} className="mx-4"> {/* Add horizontal margin to list items */}
               <Link href={item.href} className={isActive(item.href) ? 'active' : ''}>
                 {item.name}
               </Link>
             </li>
           ))}
           {currentUser?.team && (
-            <li className="mx-1"> {/* Add horizontal margin */}
+            <li className="mx-4"> {/* Add horizontal margin */}
               <Link href="/team" className={isActive('/team') ? 'active' : ''}>
                 Meine Mannschaft
               </Link>
@@ -166,16 +166,16 @@ export default function Navbar() {
           )}
           {/* Admin Collapsible Submenu Desktop */}
           {(currentUser?.isAdmin || currentUser?.isSuperAdmin) && (
-            <li className="mx-1"> {/* Add horizontal margin */}
+            <li className="mx-4"> {/* Add horizontal margin */}
               <details> {/* Use details for collapsible menu */}
                 <summary className={classNames(
                     pathname.startsWith('/admin') ? 'active' : '', // Apply active style to the summary if in admin section
-                    '' // Add any other necessary classes for summary styling if needed
+                    'group-hover:block' // Add any other necessary classes for summary styling if needed
                   )}>
                   Admin
                   {/* DaisyUI Menu automatically adds arrow to summary inside details */}
                 </summary>
-                <ul className="p-2 bg-base-100 rounded-t-none z-[1] text-base-content shadow -m-2"> {/* Style the submenu */}
+                <ul className="p-2 bg-base-100 group rounded-t-none z-[1] text-base-content shadow -mt-1!"> {/* Style the submenu */}
                   <li> {/* Add link to main admin page */}
                     <Link href="/admin" className={isAdminActive('/admin') ? 'active' : ''}>
                       Übersicht
@@ -200,11 +200,11 @@ export default function Navbar() {
         {currentUser ? (
           <>
             {/* Account Button */}
-            <Link href="/account" className="btn btn-ghost btn-circle" title="Konto"> {/* Added title attribute */}
+            <Link href="/account" className="btn btn-ghost btn-square" title="Konto"> {/* Added title attribute */}
               <Cog6ToothIcon className="h-5 w-5" />
             </Link>
             {/* Logout Button */}
-            <button onClick={handleLogout} className="btn btn-ghost btn-circle ml-1" title="Logout"> {/* Added title attribute */}
+            <button onClick={handleLogout} className="btn btn-ghost btn-square ml-1" title="Logout"> {/* Added title attribute */}
               <ArrowRightStartOnRectangleIcon className="h-5 w-5" />
             </button>
           </>
