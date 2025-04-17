@@ -5,10 +5,10 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
-  // maxWidth prop is removed as DaisyUI modals handle width via modal-box modifiers if needed
+  className?: string; // Add className prop
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, className }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -50,7 +50,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
   // We render the dialog structure but control its visibility via useEffect and showModal/close
   return (
     <dialog ref={modalRef} className="modal">
-      <div className="modal-box">
+      {/* Apply the passed className to modal-box */}
+      <div className={`modal-box ${className || ''}`}> 
         {/* Header with Title and Close Button */}
         <div className="flex justify-between items-center pb-3">
           <h3 className="font-bold text-lg">{title}</h3>
