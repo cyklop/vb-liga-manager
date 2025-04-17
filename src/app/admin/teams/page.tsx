@@ -213,25 +213,27 @@ export default function TeamsPage() {
                  {team.teamLeader && <p className="text-xs text-base-content/70 mt-1">Spielleiter: {team.teamLeader.name}</p>} {/* Smaller text */}
                </div>
                <div className="flex items-center space-x-2"> {/* Add space between buttons */}
-                 <button
-                   onClick={() => {
-                     setEditingTeam(team)
-                     // Populate formData from the selected team for editing
-                     setFormData({
-                       id: team.id,
-                       name: team.name || '',
-                       location: team.location || '',
-                       hallAddress: team.hallAddress || '',
-                       trainingTimes: team.trainingTimes || '',
-                       teamLeaderId: team.teamLeader?.id?.toString() || '' // Set teamLeaderId as string
-                     })
-                     setIsModalOpen(false) // Close modal first if already open from another edit
-                     setTimeout(() => setIsModalOpen(true), 0) // Then open with new data
-                   }}
-                   className="p-1 btn btn-sm btn-soft btn-secondary" // Reverted to btn-soft
-                   // title removed
-                 >
-                   <PencilIcon className="h-5 w-5" />
+                 {/* Tooltip Wrapper */}
+                 <div className="tooltip" data-tip="Mannschaft bearbeiten">
+                   <button
+                     onClick={() => {
+                       setEditingTeam(team)
+                       // Populate formData from the selected team for editing
+                       setFormData({
+                         id: team.id,
+                         name: team.name || '',
+                         location: team.location || '',
+                         hallAddress: team.hallAddress || '',
+                         trainingTimes: team.trainingTimes || '',
+                         teamLeaderId: team.teamLeader?.id?.toString() || '' // Set teamLeaderId as string
+                       })
+                       setIsModalOpen(false) // Close modal first if already open from another edit
+                       setTimeout(() => setIsModalOpen(true), 0) // Then open with new data
+                     }}
+                     className="p-1 btn btn-sm btn-soft btn-secondary" // Reverted to btn-soft
+                     // title removed
+                   >
+                     <PencilIcon className="h-5 w-5" />
                  </button>
                </div>
                {/* Tooltip Wrapper */}

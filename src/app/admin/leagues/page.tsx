@@ -693,31 +693,33 @@ export default function LeaguesPage() {
                  </p>
                </div>
                <div className="flex items-center space-x-1"> 
-                   <button
-                     onClick={() => {
-                       setEditingLeague(league);
-                         setNewLeague({
-                           name: league.name,
-                           slug: league.slug,
-                           numberOfTeams: league.numberOfTeams,
-                           hasReturnMatches: league.hasReturnMatches,
-                           teamIds: league.teams.map(team => team.id),
-                           isActive: league.isActive,
-                           // Load existing point rules when editing
-                           pointsWin30: league.pointsWin30,
-                           pointsWin31: league.pointsWin31,
-                           pointsWin32: league.pointsWin32,
-                           pointsLoss32: league.pointsLoss32,
-                           // Load existing score config when editing
-                           scoreEntryType: league.scoreEntryType,
-                           setsToWin: league.setsToWin,
-                         });
-                         setIsModalOpen(true);
-                       }}
-                       className="p-1 btn btn-sm btn-soft btn-secondary" // Reverted to btn-soft
-                       title="Liga bearbeiten"
-                     >
-                       <PencilIcon className="h-5 w-5" />
+                   {/* Tooltip Wrapper */}
+                   <div className="tooltip" data-tip="Liga bearbeiten">
+                     <button
+                       onClick={() => {
+                         setEditingLeague(league);
+                           setNewLeague({
+                             name: league.name,
+                             slug: league.slug,
+                             numberOfTeams: league.numberOfTeams,
+                             hasReturnMatches: league.hasReturnMatches,
+                             teamIds: league.teams.map(team => team.id),
+                             isActive: league.isActive,
+                             // Load existing point rules when editing
+                             pointsWin30: league.pointsWin30,
+                             pointsWin31: league.pointsWin31,
+                             pointsWin32: league.pointsWin32,
+                             pointsLoss32: league.pointsLoss32,
+                             // Load existing score config when editing
+                             scoreEntryType: league.scoreEntryType,
+                             setsToWin: league.setsToWin,
+                           });
+                           setIsModalOpen(true);
+                         }}
+                         className="p-1 btn btn-sm btn-soft btn-secondary" // Reverted to btn-soft
+                         // title removed
+                       >
+                         <PencilIcon className="h-5 w-5" />
                      </button>
                      <button
                        // onClick anpassen, um den Dialog zu öffnen

@@ -187,6 +187,8 @@ export default function UsersPage() {
                       <span className={`badge ${user.isAdmin ? 'badge-primary' : 'badge-secondary'}`}>
                         {user.isAdmin ? 'Admin' : 'Benutzer'}
                       </span>
+                    {/* Tooltip Wrapper */}
+                    <div className="tooltip" data-tip="Benutzer bearbeiten">
                       <button
                         onClick={() => {
                           const teamIds = user.teams ? user.teams.map(team => team.id) : [];
