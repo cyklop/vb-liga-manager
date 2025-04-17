@@ -35,7 +35,14 @@ export async function middleware(req: NextRequest) {
   return NextResponse.next()
 }
 
-// Konfiguration: Wende die Middleware auf alle Routen unter /admin und /dashboard an
+// Konfiguration: Wende die Middleware auf alle geschützten Routen an
 export const config = {
-  matcher: ['/admin/:path*', '/dashboard/:path*'], // Füge /dashboard hinzu
+  matcher: [
+    '/admin/:path*', 
+    '/dashboard/:path*', 
+    '/table/:path*',      // Hinzugefügt
+    '/fixtures/:path*',   // Hinzugefügt
+    '/team/:path*',       // Hinzugefügt
+    '/account/:path*'     // Hinzugefügt
+  ], 
 }
