@@ -8,7 +8,8 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
   // Definiere geschützte Routen
-  const protectedRoutes = ['/admin', '/dashboard']; // Füge /dashboard hinzu
+  // Füge /table, /fixtures, /team, /account hinzu
+  const protectedRoutes = ['/admin', '/dashboard', '/table', '/fixtures', '/team', '/account']; 
 
   // Prüfe, ob der aktuelle Pfad mit einer der geschützten Routen beginnt
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
