@@ -70,7 +70,7 @@ export default function Dashboard() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="flex flex-col items-center justify-center p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                  className="flex flex-col items-center justify-center p-6 bg-base-100 rounded-box shadow-md hover:shadow-lg transition-shadow duration-300"
                 >
                   <item.icon className="h-12 w-12 mb-4" aria-hidden="true" />
                   <span className="font-medium">{item.name}</span>
@@ -86,7 +86,7 @@ export default function Dashboard() {
                     <Link
                       key={item.name}
                       href={item.href}
-                      className="flex flex-col items-center justify-center p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                      className="flex flex-col items-center justify-center p-6 bg-base-100 rounded-box shadow-md hover:shadow-lg transition-shadow duration-300"
                     >
                       <item.icon className="h-12 w-12 mb-4" aria-hidden="true" />
                       <span className="font-medium">{item.name}</span>
