@@ -1216,28 +1216,34 @@ export default function LeaguesPage() {
            {/* Submit Button */}
            <div className="modal-action mt-6">
               <button type="button" className="btn btn-ghost" onClick={() => { setIsFixtureModalOpen(false); setEditingFixture(null); setScoreInputData(null); setEditingLeagueContext(null); }}>Abbrechen</button>
-              <button
                 type="submit"
                 className="btn btn-primary"
+              >
+                Speichern
+              </button>
+            </div>
+          </form>
+        )}
+      </Modal>
       
-            {showGenerateConfirmation && leagueToGenerate && (
-              <DeleteConfirmation
-                onConfirm={confirmGenerateFixtures}
-                onCancel={cancelGenerateFixtures}
-                message={`Möchten Sie den Spielplan für Liga "${leagueToGenerate.name}" wirklich generieren? Bestehende Spielpläne für diese Liga werden überschrieben.`}
-                confirmButtonText="Generieren"
-              />
-            )}
+      {/* Confirmation Dialogs moved outside the Modals */}
+      {showGenerateConfirmation && leagueToGenerate && (
+        <DeleteConfirmation
+          onConfirm={confirmGenerateFixtures}
+          onCancel={cancelGenerateFixtures}
+          message={`Möchten Sie den Spielplan für Liga "${leagueToGenerate.name}" wirklich generieren? Bestehende Spielpläne für diese Liga werden überschrieben.`}
+          confirmButtonText="Generieren"
+        />
+      )}
 
-            
-            {showDeleteLeagueConfirmation && leagueToDelete && (
-              <DeleteConfirmation
-                onConfirm={confirmDeleteLeague}
-                onCancel={cancelDeleteLeague}
-                message={`Möchten Sie die Liga "${leagueToDelete.name}" wirklich löschen? Alle zugehörigen Spielpläne werden ebenfalls unwiderruflich gelöscht.`}
-                // confirmButtonText bleibt Standard "Löschen"
-              />
-            )}                 
+      {showDeleteLeagueConfirmation && leagueToDelete && (
+        <DeleteConfirmation
+          onConfirm={confirmDeleteLeague}
+          onCancel={cancelDeleteLeague}
+          message={`Möchten Sie die Liga "${leagueToDelete.name}" wirklich löschen? Alle zugehörigen Spielpläne werden ebenfalls unwiderruflich gelöscht.`}
+          // confirmButtonText bleibt Standard "Löschen"
+        />
+      )}                 
     </>
   );
 }
