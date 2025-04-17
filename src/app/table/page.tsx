@@ -202,16 +202,18 @@ export default function TablePage() {
       <Navigation />
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">Tabelle</h1>
-        
-        <div className="mb-6">
-          <label htmlFor="leagueSelect" className="select w-lg">
-            <span className="label">Liga auswählen:</span>
-          
+
+        <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+          {/* Liga-Auswahl */}
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">Liga auswählen:</span>
+            </div>
             <select
               id="leagueSelect"
               value={activeLeagueId || ''}
               onChange={handleLeagueChange}
-              className="select"
+              className="select select-bordered w-full"
             >
               <option value="" disabled>Liga auswählen</option>
               {leagues.map(league => (
@@ -219,11 +221,12 @@ export default function TablePage() {
               ))}
             </select>
           </label>
-        </div>
 
-        <div className="mb-6 flex items-center">
-          <label htmlFor="matchdaySelect" className="select">
-            <span className="label">Spieltag:</span>
+          {/* Spieltag-Auswahl */}
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">Spieltag:</span>
+            </div>
             <select
               id="matchdaySelect"
               value={selectedMatchday || ''}
@@ -348,7 +351,7 @@ export default function TablePage() {
                 <li>Anzahl der Siege</li>
               </ol>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </>
