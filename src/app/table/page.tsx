@@ -231,7 +231,7 @@ export default function TablePage() {
               id="matchdaySelect"
               value={selectedMatchday || ''}
               onChange={handleMatchdayChange}
-              className="block w-40 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              className="select select-bordered w-full" // DaisyUI Klassen
             >
               <option value="">Alle Spieltage</option>
               {matchdays.map(matchday => (
@@ -239,12 +239,12 @@ export default function TablePage() {
               ))}
             </select>
           </label>
-          
         </div>
-        
+
         {isLoading ? (
           <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            {/* Verwende DaisyUI loading Komponente */}
+            <span className="loading loading-spinner loading-lg"></span>
           </div>
         ) : tableData.length > 0 ? (
           <div className="overflow-x-auto">
@@ -322,24 +322,21 @@ export default function TablePage() {
             </table>
           </div>
         ) : (
-          <div className="shadow overflow-hidden sm:rounded-md p-6 text-center ">
-            {activeLeagueId ? 'Keine Tabellendaten verfügbar.' : 'Bitte wählen Sie eine Liga aus.'}
+          // Verwende DaisyUI alert für leeren Zustand
+          <div role="alert" className="alert alert-info mt-6">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span>{activeLeagueId ? 'Keine Tabellendaten für diese Auswahl verfügbar.' : 'Bitte wählen Sie eine Liga aus.'}</span>
           </div>
         )}
 
-        {/* Sortierreihenfolge als aufklappbarer Infoblock */}
-        <div className="mt-8">
-          <button 
-            onClick={() => setShowSortInfo(!showSortInfo)}
-            className="flex items-center justify-between px-4 py-2 text-sm font-medium text-left rounded-lg focus:outline-hidden focus-visible:ring-3 focus-visible:ring-opacity-50 dark:bg-auto"
-          >
-            <span>Informationen zur Sortierreihenfolge</span>
-            <ChevronDownIcon className={`w-5 h-5 ml-1 transform ${showSortInfo ? 'rotate-180' : ''}`} ></ChevronDownIcon>
-
-          </button>
-          
-          {showSortInfo && (
-            <div className="mt-2 p-4 text-sm rounded-md border w-sm">
+        {/* Sortierreihenfolge als DaisyUI collapse */}
+        <div className="collapse collapse-arrow border border-base-300 bg-base-200 mt-8">
+          <input type="checkbox" checked={showSortInfo} onChange={() => setShowSortInfo(!showSortInfo)} />
+          <div className="collapse-title text-md font-medium">
+            Informationen zur Sortierreihenfolge
+          </div>
+          <div className="collapse-content">
+            <div className="p-4 text-sm">
               <p className="font-medium mb-2">Die Tabelle wird nach folgenden Kriterien sortiert:</p>
               <ol className="list-decimal list-inside space-y-1">
                 <li>Punkte</li>
