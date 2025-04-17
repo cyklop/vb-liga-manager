@@ -168,12 +168,15 @@ export default function UsersPage() {
         >
           Neuen Benutzer hinzufügen
         </button>
-        <ul className="shadow overflow-hidden sm:rounded-md mt-2">
-          {users.map((user) => (
-            <li key={user.id} className="border-b border-gray-200 dark:border-border last:border-b-0">
-              <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
-                <div>
-                  <p className="text-sm font-medium truncate">{user.name}</p>
+        {/* Use DaisyUI card styling for the list container */}
+        <div className="card bg-base-100 shadow-xl mt-4"> 
+          <div className="card-body p-0"> {/* Remove padding from card-body if list items have padding */}
+            <ul className="divide-y divide-base-300"> {/* Use DaisyUI divider */}
+              {users.map((user) => (
+                <li key={user.id} className="hover:bg-base-200 transition-colors duration-150"> {/* Add hover effect */}
+                  <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
+                    <div>
+                      <p className="text-md font-medium truncate">{user.name}</p> {/* Slightly larger text */}
                   <p className="text-sm">{user.email}</p>
                   {user.teams && user.teams.length > 0 && (
                     <p className="text-sm">
