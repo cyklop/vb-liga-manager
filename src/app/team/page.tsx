@@ -736,7 +736,7 @@ export default function TeamPage() {
                               name="fixtureDate"
                               value={formData.fixtureDate}
                               onChange={handleInputChange}
-                              placeholder=" " // Wichtig: Placeholder für type="date"
+                              placeholder="Datum" // Wichtig: Placeholder für type="date"
                               className="input input-bordered w-full" // daisyUI Klassen
                             />
                           </label>
@@ -748,7 +748,7 @@ export default function TeamPage() {
                             name="fixtureTime"
                             value={formData.fixtureTime}
                             onChange={handleInputChange}
-                            placeholder=" " // Wichtig: Placeholder für type="time"
+                            placeholder="Uhrzeit" // Wichtig: Placeholder für type="time"
                             className="input input-bordered w-full" // daisyUI Klassen
                           />
                           </label>
@@ -847,7 +847,7 @@ export default function TeamPage() {
                                       min="0"
                                       value={set.home ?? ''}
                                       onChange={(e) => handleInputChange(e, index)}
-                                      placeholder="Punkte" // Placeholder
+                                      placeholder="Punkte Heim" // Placeholder
                                       // daisyUI Klassen, text-right beibehalten
                                       className="input input-bordered w-full text-right"
                                     />
@@ -863,7 +863,7 @@ export default function TeamPage() {
                                       min="0"
                                       value={set.away ?? ''}
                                       onChange={(e) => handleInputChange(e, index)}
-                                      placeholder="Punkte" // Placeholder
+                                      placeholder="Punkte Gast" // Placeholder
                                       // daisyUI Klassen
                                       className="input input-bordered w-full"
                                     />
