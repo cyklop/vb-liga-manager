@@ -5,33 +5,27 @@ import { useRouter } from 'next/navigation' // Import useRouter
 import Navigation from '@/components/Navbar'
 import Modal from '@/components/Modal'
 import DeleteConfirmation from '@/components/DeleteConfirmation' // Import hinzufügen
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { toast } from 'react-toastify';
+// Importiere zentrale Typen (UserProfile, Team wird später definiert)
+import type { UserProfile } from '@/types/models';
 
-interface User {
-  id: number
-  name: string
-  isAdmin?: boolean
-  isSuperAdmin?: boolean
-  team?: {
-    id: number
-    name: string
-  }
-}
-
+// Lokale User/Team Interfaces entfernt (Team wird später zentralisiert)
+// Temporäre Team-Definition für Kompilierung, wird später ersetzt
 interface Team {
-  id: number
-  name: string
-  location: string
-  hallAddress: string
-  trainingTimes: string
-  teamLeader?: User
+  id: number;
+  name: string;
+  location: string;
+  hallAddress: string;
+  trainingTimes: string;
+  teamLeader?: UserProfile | null; // Verwende UserProfile
 }
+
 
 export default function TeamsPage() {
   const router = useRouter() // Initialize router
-  const [teams, setTeams] = useState<Team[]>([])
-  const [users, setUsers] = useState<User[]>([])
+  const [teams, setTeams] = useState<Team[]>([]) // Team wird später zentralisiert
+  const [users, setUsers] = useState<UserProfile[]>([]) // Verwende UserProfile
   const [isModalOpen, setIsModalOpen] = useState(false)
   // Use a separate state for form data, including teamLeaderId
   interface TeamFormData {

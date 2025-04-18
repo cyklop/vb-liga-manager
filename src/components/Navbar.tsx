@@ -2,21 +2,13 @@
 
 import { useEffect, useState } from 'react' // Fragment, Disclosure, Menu, Transition removed
 import { Bars3Icon, ArrowRightStartOnRectangleIcon, Cog6ToothIcon } from '@heroicons/react/24/outline' // Adjusted icons, removed XMarkIcon
-import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
+// Importiere den zentralen User-Typ
+import type { UserProfile } from '@/types/models';
 
-interface User {
-  id: number
-  email: string
-  name: string
-  isAdmin: boolean
-  isSuperAdmin: boolean
-  team?: { // Add optional team property
-    id: number;
-    name: string;
-  } | null;
-}
+// Lokales User Interface entfernt
 
 const navigation = [
   { name: 'Tabelle', href: '/table' },
@@ -40,12 +32,13 @@ function classNames(...classes: string[]) {
 }
 
 export default function Navbar() {
-  const pathname = usePathname()
-  const router = useRouter()
-  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const pathname = usePathname();
+  const router = useRouter();
+  // Verwende den importierten Typ
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
 
   useEffect(() => {
-    fetchCurrentUser()
+    fetchCurrentUser();
   }, [])
 
   const fetchCurrentUser = async () => {

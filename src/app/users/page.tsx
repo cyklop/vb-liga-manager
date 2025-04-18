@@ -2,36 +2,26 @@
 
 import { useState, useEffect } from 'react'
 import Navigation from '@/components/Navbar'
-import Modal from '@/components/Modal'
-import DeleteConfirmation from '@/components/DeleteConfirmation'
+import Modal from '@/components/Modal';
+import DeleteConfirmation from '@/components/DeleteConfirmation';
+// Importiere zentrale Typen
+import type { AdminUserListItem, TeamBasicInfo } from '@/types/models';
 
-interface User {
-  id: number
-  email: string
-  name: string
-  isAdmin: boolean
-  isSuperAdmin: boolean
-  team?: {
-    id: number
-    name: string
-  }
-}
-
-interface Team {
-  id: number
-  name: string
-}
+// Lokale User/Team Interfaces entfernt
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([])
-  const [teams, setTeams] = useState<Team[]>([])
+  // Verwende importierte Typen
+  const [users, setUsers] = useState<AdminUserListItem[]>([]);
+  const [teams, setTeams] = useState<TeamBasicInfo[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [newUser, setNewUser] = useState({ email: '', name: '', password: '', isAdmin: false, teamId: '' })
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
-  const [userToDelete, setUserToDelete] = useState<User | null>(null)
+  // Typ für newUser anpassen
+  const [newUser, setNewUser] = useState({ email: '', name: '', password: '', isAdmin: false, teamId: '' });
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  // Verwende importierten Typ
+  const [userToDelete, setUserToDelete] = useState<AdminUserListItem | null>(null);
 
   useEffect(() => {
-    fetchUsers()
+    fetchUsers();
     fetchTeams()
   }, [])
 
@@ -67,10 +57,11 @@ export default function UsersPage() {
     }
   }
 
-  const handleDeleteUser = async (user: User) => {
-    setUserToDelete(user)
-    setShowDeleteConfirmation(true)
-  }
+  // Verwende importierten Typ
+  const handleDeleteUser = async (user: AdminUserListItem) => {
+    setUserToDelete(user);
+    setShowDeleteConfirmation(true);
+  };
 
   const confirmDelete = async () => {
     if (userToDelete) {

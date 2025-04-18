@@ -1,26 +1,19 @@
-import React, { useState } from 'react'; // Material Tailwind & Headless UI Imports entfernt
+import React, { useState } from 'react';
+// Importiere den zentralen User-Typ
+import type { UserProfile } from '@/types/models';
 
-interface User {
-  id: number;
-  email: string;
-  name: string;
-  password?: string;
-  isAdmin: boolean;
-  isSuperAdmin: boolean;
-  team?: {
-    id: number;
-    name: string;
-  };
-}
+// Lokales User Interface entfernt
 
 interface UserProfileFormProps {
-  user: User;
-  onUpdate: (updatedUser: Partial<User>) => void;
+  // Verwende den importierten Typ
+  user: UserProfile;
+  // Verwende Partial<UserProfile>
+  onUpdate: (updatedUser: Partial<UserProfile & { password?: string }>) => void; // Füge password explizit hinzu
 }
 
 const UserProfileForm: React.FC<UserProfileFormProps> = ({ user, onUpdate }) => {
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
+  const [name, setName] = useState(user.name ?? ''); // Default zu leerem String, falls name null/undefined ist
+  const [email, setEmail] = useState(user.email ?? ''); // Default zu leerem String
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -34,7 +27,8 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ user, onUpdate }) => 
       return;
     }
 
-    const updatedUser: Partial<User> = { name, email };
+    // Typ für updatedUser anpassen
+    const updatedUser: Partial<UserProfile & { password?: string }> = { name, email };
     if (password) {
       updatedUser.password = password;
     }

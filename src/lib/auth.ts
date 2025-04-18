@@ -83,18 +83,25 @@ export const authOptions: AuthOptions = {
           throw new Error("Ungültiges Passwort");
         }
 
-        // Extract the first team if available
-        const team = user.teams.length > 0 ? user.teams[0].team : null;
+        // Extrahiere alle Teams oder das erste Team, je nach Bedarf
+        const teams: TeamBasicInfo[] = user.teams.map(ut => ({
+          id: ut.team.id,
+          name: ut.team.name
+        }));
+        const team = teams.length > 0 ? teams[0] : null; // Das erste Team für Abwärtskompatibilität
+
         const rememberUser = credentials.rememberMe === 'true';
 
+        // Stelle sicher, dass die Rückgabe dem User-Typ in next-auth.d.ts entspricht
         return {
           id: Number(user.id),
           email: user.email,
           name: user.name,
           isAdmin: user.isAdmin,
           isSuperAdmin: user.isSuperAdmin,
-          team: team,
-          rememberMe: rememberUser // Hinzugefügt
+          team: team, // Das erste Team
+          teams: teams, // Alle Teams
+          rememberMe: rememberUser,
         };
       },
     }),
@@ -112,20 +119,22 @@ export const authOptions: AuthOptions = {
         token.name = user.name;
         token.isAdmin = user.isAdmin;
         token.isSuperAdmin = user.isSuperAdmin;
-        token.team = user.team;
+        token.team = user.team; // Speichere das erste Team
+        token.teams = user.teams; // Speichere alle Teams
         token.rememberMe = user.rememberMe; // Im Token speichern
       }
       return token;
     },
     async session({ session, token }) {
+      // Stelle sicher, dass die Session dem Session-Typ in next-auth.d.ts entspricht
       if (session.user) {
-        session.user.id = token.id;
-        session.user.email = token.email;
-        session.user.name = token.name;
+        session.user.id = token.id as number; // Cast zu number
+        // email, name, image sind standardmäßig Teil der Session, wenn vorhanden
         session.user.isAdmin = token.isAdmin as boolean;
         session.user.isSuperAdmin = token.isSuperAdmin as boolean;
-        session.user.team = token.team as any; // Ggf. Typ anpassen
-        session.user.rememberMe = token.rememberMe as boolean; // In Session speichern
+        session.user.team = token.team as TeamBasicInfo | null; // Cast zum richtigen Typ
+        session.user.teams = token.teams as TeamBasicInfo[] | undefined; // Cast zum richtigen Typ
+        session.user.rememberMe = token.rememberMe as boolean;
       }
       return session;
     },

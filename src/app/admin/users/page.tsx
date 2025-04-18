@@ -4,35 +4,25 @@ import { useState, useEffect } from 'react'
 import Navigation from '@/components/Navbar'
 import Modal from '@/components/Modal'
 import DeleteConfirmation from '@/components/DeleteConfirmation'
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { toast } from 'react-toastify';
+// Importiere die zentralen Typen
+import type { AdminUserListItem, TeamBasicInfo } from '@/types/models';
 
-interface User {
-  id: number
-  email: string
-  name: string
-  isAdmin: boolean
-  isSuperAdmin: boolean
-  teams?: {
-    id: number
-    name: string
-  }[]
-}
-
-interface Team {
-  id: number
-  name: string
-}
+// Lokale User/Team Interfaces entfernt
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([])
-  const [teams, setTeams] = useState<Team[]>([])
+  // Verwende die importierten Typen
+  const [users, setUsers] = useState<AdminUserListItem[]>([]);
+  const [teams, setTeams] = useState<TeamBasicInfo[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false)
   // Passwort aus dem initialen State entfernt
-  const [newUser, setNewUser] = useState({ id: 0, email: '', name: '', isAdmin: false, teamIds: [] as number[] })
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
-  const [userToDelete, setUserToDelete] = useState<User | null>(null)
-  const [isEditing, setIsEditing] = useState(false)
+  // Typ für newUser anpassen (id kann optional sein beim Erstellen)
+  const [newUser, setNewUser] = useState<{ id?: number; email: string; name: string; isAdmin: boolean; teamIds: number[] }>({ email: '', name: '', isAdmin: false, teamIds: [] });
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  // Verwende den importierten Typ
+  const [userToDelete, setUserToDelete] = useState<AdminUserListItem | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   // Removed useEffect hook that fetched current user (middleware handles auth)
   // useEffect(() => {
@@ -125,10 +115,11 @@ export default function UsersPage() {
     }
   }
 
-  const handleDeleteUser = async (user: User) => {
-    setUserToDelete(user)
-    setShowDeleteConfirmation(true)
-  }
+  // Verwende den importierten Typ
+  const handleDeleteUser = async (user: AdminUserListItem) => {
+    setUserToDelete(user);
+    setShowDeleteConfirmation(true);
+  };
 
   const confirmDelete = async () => {
     if (userToDelete) {

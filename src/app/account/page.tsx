@@ -5,27 +5,19 @@ import { useRouter } from 'next/navigation'
 import Navigation from '@/components/Navbar'
 import UserProfileForm from '@/components/UserProfileForm'
 // ThemeProvider entfernt, nur useTheme wird benötigt
-import { useTheme } from '@/components/ThemeProvider'
+import { useTheme } from '@/components/ThemeProvider';
 import { toast } from 'react-toastify';
+// Importiere den zentralen User-Typ
+import type { UserProfile } from '@/types/models';
 
-interface User {
-  id: number
-  email: string
-  name: string
-  isAdmin: boolean
-  isSuperAdmin: boolean
-  theme?: string
-  team?: {
-    id: number
-    name: string
-  }
-}
+// Lokales User Interface entfernt
 
 // Logik direkt in die Hauptkomponente verschoben
 export default function AccountPage() {
-  const [user, setUser] = useState<User | null>(null)
-  const [mounted, setMounted] = useState(false)
-  const [loading, setLoading] = useState(true)
+  // Verwende den importierten Typ
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'profile' | 'appearance'>('profile'); // State für aktiven Tab
   const router = useRouter()
   const { theme, setTheme } = useTheme() // Destrukturieren für einfacheren Zugriff
@@ -60,7 +52,8 @@ export default function AccountPage() {
     }
   }
 
-  const handleProfileUpdate = async (updatedUser: Partial<User>) => {
+  // Verwende Partial<UserProfile>
+  const handleProfileUpdate = async (updatedUser: Partial<UserProfile>) => {
     // Nur fortfahren, wenn Benutzerdaten geladen sind
     if (!user) return;
 

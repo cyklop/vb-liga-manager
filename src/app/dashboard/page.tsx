@@ -10,15 +10,12 @@ import {
   UsersIcon, 
   UserGroupIcon, 
   TrophyIcon,
-  BuildingOfficeIcon
-} from '@heroicons/react/24/outline'
+  BuildingOfficeIcon,
+} from '@heroicons/react/24/outline';
+// Importiere den zentralen User-Typ
+import type { UserProfile } from '@/types/models';
 
-interface User {
-  id: number
-  name: string
-  isAdmin: boolean
-  isSuperAdmin: boolean
-}
+// Lokales User Interface entfernt
 
 const navigation = [
   { name: 'Tabelle', href: '/table', icon: TableCellsIcon },
@@ -31,13 +28,14 @@ const adminNavigation = [
   { name: 'Mannschaften verwalten', href: '/admin/teams', icon: UserGroupIcon },
   { name: 'Benutzer verwalten', href: '/admin/users', icon: UsersIcon },
   { name: 'Ligen verwalten', href: '/admin/leagues', icon: TrophyIcon },
-]
+];
 
 export default function Dashboard() {
-  const [user, setUser] = useState<User | null>(null)
+  // Verwende den importierten Typ
+  const [user, setUser] = useState<UserProfile | null>(null);
 
   useEffect(() => {
-    fetchUser()
+    fetchUser();
   }, [])
 
   const fetchUser = async () => {

@@ -1,9 +1,12 @@
-import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import bcrypt from 'bcryptjs'
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import bcrypt from 'bcryptjs'; // Oder bcrypt
+// Importiere Typen
+import type { AdminUserListItem, TeamBasicInfo } from '@/types/models';
 
-export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }>  }) {
-  const id = parseInt((await params).id)
+
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const id = parseInt((await params).id);
 
   try {
     // Die UserTeam-Einträge werden automatisch durch onDelete: Cascade gelöscht
@@ -79,12 +82,22 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
           id: ut.team.id,
           name: ut.team.name
         }))
-      }
+      };
 
-      return NextResponse.json(formattedUser)
-    })
+      // Entferne sensible Felder für die Antwort
+      const { password: _, passwordResetToken: _prt, passwordResetExpires: _pre, passwordSetupToken: _pst, passwordSetupExpires: _pse, ...userData } = userWithTeams;
+
+      const responseUser: AdminUserListItem = {
+        ...userData,
+        teams: teamsBasicInfo,
+        team: teamsBasicInfo.length > 0 ? teamsBasicInfo[0] : null
+      };
+
+
+      return NextResponse.json(responseUser);
+    });
   } catch (error) {
-    console.error('Error updating user:', error)
+    console.error('Error updating user:', error);
     return NextResponse.json({ message: 'Fehler beim Aktualisieren des Benutzers' }, { status: 500 })
   }
 }

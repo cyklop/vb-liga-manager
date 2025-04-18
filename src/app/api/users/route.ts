@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server'
-import prisma from '@/lib/prisma' // Pfad korrigiert
-import bcrypt from 'bcryptjs'
-import crypto from 'crypto' // Import crypto für Token-Generierung
+import prisma from '@/lib/prisma'; // Pfad korrigiert
+import bcrypt from 'bcryptjs'; // Oder bcrypt
+import crypto from 'crypto'; // Import crypto für Token-Generierung
 import { sendAccountSetupEmail } from '@/lib/email'; // Importiere E-Mail-Funktion
+// Importiere Typen für Rückgabe und interne Logik
+import type { AdminUserListItem, TeamBasicInfo } from '@/types/models';
+
 
 export async function POST(request: Request) {
   // isAdmin und teamIds sind optional, password wird entfernt
@@ -86,9 +89,30 @@ export async function POST(request: Request) {
     }
     // ---- Ende: Setup-Token generieren und E-Mail senden ----
 
-    // Gib den neu erstellten Benutzer zurück (ohne sensible Daten wie Tokens)
-    const { passwordSetupToken: _pst, passwordSetupExpires: _pse, passwordResetToken: _prt, passwordResetExpires: _pre, ...userResponseData } = newUser;
-    return NextResponse.json(userResponseData, { status: 201 })
+    // Gib den neu erstellten Benutzer im AdminUserListItem-Format zurück
+    // Lade die Team-Infos erneut, falls sie nicht im newUser enthalten sind
+    const userWithTeams = await prisma.user.findUnique({
+      where: { id: newUser.id },
+      include: { teams: { select: { team: { select: { id: true, name: true } } } } }
+    });
+
+    if (!userWithTeams) {
+        // Sollte nicht passieren, aber sicher ist sicher
+        return NextResponse.json({ message: 'Fehler beim Abrufen des erstellten Benutzers' }, { status: 500 });
+    }
+
+    const teamsBasicInfo: TeamBasicInfo[] = userWithTeams.teams.map(ut => ut.team);
+
+    // Entferne sensible Felder für die Antwort
+    const { password, passwordResetToken, passwordResetExpires, passwordSetupToken, passwordSetupExpires, ...userResponseData } = userWithTeams;
+
+    const responseUser: AdminUserListItem = {
+        ...userResponseData,
+        teams: teamsBasicInfo,
+        team: teamsBasicInfo.length > 0 ? teamsBasicInfo[0] : null
+    };
+
+    return NextResponse.json(responseUser, { status: 201 });
 
   } catch (error) {
     // Allgemeiner Fehler beim Erstellen des Benutzers (z.B. DB nicht erreichbar)
@@ -116,20 +140,26 @@ export async function GET() {
           },
         },
       },
-    })
-    
-    // Transformiere die Daten, um das Format zu vereinfachen
-    const formattedUsers = users.map(user => ({
-      ...user,
-      teams: user.teams.map(ut => ({
+    });
+
+    // Transformiere die Daten in das AdminUserListItem-Format
+    const formattedUsers: AdminUserListItem[] = users.map(user => {
+      const teamsBasicInfo: TeamBasicInfo[] = user.teams.map(ut => ({
         id: ut.team.id,
         name: ut.team.name
-      }))
-    }))
-    
-    return NextResponse.json(formattedUsers)
+      }));
+      // Entferne sensible Felder
+      const { password, passwordResetToken, passwordResetExpires, passwordSetupToken, passwordSetupExpires, ...userData } = user;
+      return {
+        ...userData,
+        teams: teamsBasicInfo,
+        team: teamsBasicInfo.length > 0 ? teamsBasicInfo[0] : null
+      };
+    });
+
+    return NextResponse.json(formattedUsers);
   } catch (error) {
-    console.error('Error fetching users:', error)
+    console.error('Error fetching users:', error);
     return NextResponse.json({ message: 'Fehler beim Abrufen der Benutzer' }, { status: 500 })
   }
 }
