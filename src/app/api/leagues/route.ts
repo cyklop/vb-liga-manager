@@ -44,20 +44,11 @@ export async function GET(request: Request) {
           //     }
           //   }
           // }
-        },
-        orderBy: {
-          createdAt: 'desc'
-              },
-              awayTeam: {
-                select: { id: true, name: true }
-              }
-            }
-          }
-        },
+        }, // <-- Korrigierte Klammer für include
         orderBy: {
           createdAt: 'desc'
         }
-      })
+      }); // <-- Korrigierte Klammer für findMany
     } else {
       // Alle Ligen abrufen
       leagues = await prisma.league.findMany({
@@ -79,20 +70,11 @@ export async function GET(request: Request) {
           //     }
           //   }
           // }
-        },
-        orderBy: {
-          createdAt: 'desc'
-              },
-              awayTeam: {
-                select: { id: true, name: true }
-              }
-            }
-          }
-        },
+        }, // <-- Korrigierte Klammer für include
         orderBy: {
           createdAt: 'desc'
         }
-      });
+      }); // <-- Korrigierte Klammer für findMany
     }
 
     // Konvertiere Prisma-Ligen in LeagueOverview
