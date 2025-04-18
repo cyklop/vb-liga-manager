@@ -432,10 +432,10 @@ export async function generateFixturesForLeague(leagueId: number): Promise<{ mes
     // 3. Neue Fixtures generieren
     const generatedFixturesData = generateRoundRobinFixtures(league.teams, league.hasReturnMatches);
 
-    // 4. Fixtures mit Reihenfolge und leagueId für DB vorbereiten
+    // 4. Fixtures mit Reihenfolge und Verknüpfung zur Liga für DB vorbereiten
     const fixturesToCreate = generatedFixturesData.map((fixtureData, index) => ({
         ...fixtureData,
-        leagueId: leagueId,
+        league: { connect: { id: leagueId } }, // Korrekt: Relation über 'league' verbinden
         order: index + 1,
     }));
 
