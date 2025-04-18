@@ -111,6 +111,7 @@ export default function LeaguesPage() {
         const response = await fetch(`/api/leagues/${selectLeagueId}`); // Rufe die Detail-Route auf
         if (response.ok) {
           const leagueDetails: LeagueDetails = await response.json();
+          console.log(`DEBUG (fetchLeagues for ${selectLeagueId}): Received leagueDetails`, JSON.stringify(leagueDetails, null, 2)); // DEBUG LOG
           // Aktualisiere die spezifische Liga in der Hauptliste (falls sie existiert)
           setLeagues(prevLeagues =>
             prevLeagues.map(l => l.id === selectLeagueId ? { ...l, ...leagueDetails } : l) // Update mit neuen Details
