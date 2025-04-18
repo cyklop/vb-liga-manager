@@ -3,10 +3,70 @@ import { prisma } from '@/lib/prisma';
 import { ScoreEntryType } from '@prisma/client'; // Import the enum
 import { createSlug, isValidSlug } from '@/lib/slugify';
 // Importiere zentrale Typen für die Rückgabe
-import type { LeagueDetails, Team, Fixture } from '@/types/models';
+import type { LeagueDetails, Team, Fixture, TeamBasicInfo } from '@/types/models'; // Füge TeamBasicInfo hinzu
+
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const id = parseInt((await params).id);
+  if (isNaN(id)) {
+    return NextResponse.json({ message: 'Ungültige Liga-ID' }, { status: 400 });
+  }
+
+  try {
+    const league = await prisma.league.findUnique({
+      where: { id },
+      include: {
+        teams: { // Lade volle Team-Daten für Mapping
+          include: {
+            teamLeader: { select: { id: true, name: true } } // Beispiel: Lade Teamleiter-Basisinfos
+          }
+        },
+        fixtures: { // Lade Fixtures mit Basis-Team-Infos
+          include: {
+            homeTeam: { select: { id: true, name: true } },
+            awayTeam: { select: { id: true, name: true } }
+          },
+          orderBy: { order: 'asc' } // Sortiere Fixtures nach Reihenfolge
+        }
+      }
+    });
+
+    if (!league) {
+      return NextResponse.json({ message: 'Liga nicht gefunden' }, { status: 404 });
+    }
+
+    // Konvertiere die Liga in LeagueDetails
+    const responseLeague: LeagueDetails = {
+      ...league,
+      teams: league.teams.map(team => ({ // Map zu vollem Team-Typ
+        id: team.id,
+        name: team.name,
+        location: team.location,
+        hallAddress: team.hallAddress,
+        trainingTimes: team.trainingTimes,
+        teamLeader: team.teamLeader ? { // Map zu UserProfile
+          id: team.teamLeader.id,
+          name: team.teamLeader.name,
+        } : null,
+      })),
+      fixtures: league.fixtures.map(fixture => ({ // Map zu zentralem Fixture-Typ
+        ...fixture,
+        // Stelle sicher, dass homeTeam/awayTeam das TeamBasicInfo-Format haben
+        homeTeam: fixture.homeTeam as TeamBasicInfo,
+        awayTeam: fixture.awayTeam as TeamBasicInfo,
+      })) as Fixture[], // Cast zum zentralen Fixture-Typ
+    };
+
+    return NextResponse.json(responseLeague);
+
+  } catch (error) {
+    console.error(`Error fetching league details for ID ${id}:`, error);
+    return NextResponse.json({ message: 'Fehler beim Abrufen der Liga-Details' }, { status: 500 });
+  }
+}
+
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const id = parseInt((await params).id)
+  const id = parseInt((await params).id);
 
   try {
     await prisma.league.delete({

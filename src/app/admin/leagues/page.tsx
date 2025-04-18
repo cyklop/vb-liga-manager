@@ -105,21 +105,48 @@ export default function LeaguesPage() {
 
   // --- Data Fetching Functions ---
   const fetchLeagues = async (selectLeagueId: number | null = null) => {
+    // Wenn eine ID übergeben wird, lade nur die Details dieser Liga
+    if (selectLeagueId !== null) {
+      try {
+        const response = await fetch(`/api/leagues/${selectLeagueId}`); // Rufe die Detail-Route auf
+        if (response.ok) {
+          const leagueDetails: LeagueDetails = await response.json();
+          // Aktualisiere die spezifische Liga in der Hauptliste (falls sie existiert)
+          setLeagues(prevLeagues =>
+            prevLeagues.map(l => l.id === selectLeagueId ? { ...l, ...leagueDetails } : l) // Update mit neuen Details
+          );
+          // Setze die Fixtures für die ausgewählte Liga
+          const sortedFixtures = leagueDetails.fixtures ? [...leagueDetails.fixtures].sort((a, b) => a.order - b.order) : [];
+          setSelectedLeagueFixtures(sortedFixtures);
+          setSelectedLeagueId(selectLeagueId); // Stelle sicher, dass die ID gesetzt ist
+          setIsOrderChanged(false); // Setze Order-Status zurück
+        } else {
+          console.error(`Fehler beim Abrufen der Liga-Details für ID ${selectLeagueId}:`, response.statusText);
+          toast.error('Fehler beim Laden der aktualisierten Liga-Details.');
+        }
+      } catch (error) {
+        console.error(`Fehler beim Abrufen der Liga-Details für ID ${selectLeagueId}`, error);
+        toast.error('Netzwerkfehler beim Laden der aktualisierten Liga-Details.');
+      }
+      return; // Beende die Funktion hier, da wir nur Details geladen haben
+    }
+
+    // Wenn keine ID übergeben wird, lade die Liste aller Ligen (Übersicht)
     try {
-      const response = await fetch('/api/leagues')
+      const response = await fetch('/api/leagues'); // Rufe die Listen-Route auf
       if (response.ok) {
-        const data: League[] = await response.json()
+        const data: LeagueOverview[] = await response.json(); // Erwarte LeagueOverview
         // Sortiere die Ligen nach ID, neueste (höchste ID) zuerst
         const sortedData = [...data].sort((a, b) => b.id - a.id);
-        setLeagues(sortedData)
-        if (selectLeagueId) {
-          const selected = sortedData.find(l => l.id === selectLeagueId)
-          // Ensure fixtures are sorted by order when setting state
-          const sortedFixtures = selected?.fixtures ? [...selected.fixtures].sort((a, b) => a.order - b.order) : [];
-          setSelectedLeagueFixtures(sortedFixtures)
-        }
+        setLeagues(sortedData);
+        // Optional: Wenn eine Liga ausgewählt war, deren Fixtures erneut setzen (obwohl sie in Overview fehlen)
+        // Dies ist vielleicht nicht nötig, wenn die Detailansicht separat geladen wird.
+        // if (selectedLeagueId) {
+        //   const selected = sortedData.find(l => l.id === selectedLeagueId);
+        //   setSelectedLeagueFixtures(selected?.fixtures || []); // Fixtures sind hier nur IDs
+        // }
       } else {
-        console.error('Fehler beim Abrufen der Ligen:', response.statusText)
+        console.error('Fehler beim Abrufen der Ligen:', response.statusText);
       }
     } catch (error) {
       console.error('Fehler beim Abrufen der Ligen', error)
