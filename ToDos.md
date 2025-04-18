@@ -25,11 +25,11 @@ Phase 1: Strukturverbesserung (Typen & Services)
        • [ ] Service-Datei erstellen, Prisma importieren.
        • [ ] DB-Logik für User aus API-Routen (/api/users/..., /api/users/me, ggf. Auth) extrahieren und als Funktionen implementieren (z.B.
          getUserById, updateUser, createUser, findUserByEmail, getCurrentUserProfile).
-       • [ ] Entsprechende API-Routen refaktorisieren, um userService-Funktionen zu nutzen.
-    • [ ] teamService.ts:
-       • [ ] Service-Datei erstellen.
-       • [ ] DB-Logik für Teams aus API-Routen (/api/teams/...) extrahieren (z.B. getAllTeams, getTeamById, createTeam, updateTeam, deleteTeam).
-       • [ ] Entsprechende API-Routen refaktorisieren.
+       • [x] Entsprechende API-Routen refaktorisieren, um userService-Funktionen zu nutzen.
+    • [x] teamService.ts:
+       • [x] Service-Datei erstellen.
+       • [x] DB-Logik für Teams aus API-Routen (/api/teams/...) extrahieren (z.B. getAllTeams, getTeamById, createTeam, updateTeam, deleteTeam).
+       • [x] Entsprechende API-Routen refaktorisieren.
     • [ ] leagueService.ts:
        • [ ] Service-Datei erstellen.
        • [ ] DB-Logik für Ligen aus API-Routen (/api/leagues/...) extrahieren (z.B. getAllLeaguesOverview, getLeagueDetails, createLeague,
@@ -41,7 +41,7 @@ Phase 1: Strukturverbesserung (Typen & Services)
          extrahieren (z.B. getFixturesByLeague, updateFixture, reorderFixtures, generateRoundRobinFixturesAndSave).
        • [ ] Entsprechende API-Routen refaktorisieren.
     • [ ] Review: Sind die API-Routen jetzt primär für Request/Response, Auth und Aufruf der Service-Funktionen zuständig? Ist die DB-Logik in
-      den Services gekapselt?
+      den Services gekapselt? (User & Team erledigt)
 
 Phase 2: Tests hinzufügen
 
