@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import bcrypt from 'bcryptjs'; // Oder bcrypt, je nach Installation
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
-// Importiere den zentralen Typ für die Rückgabe
-import type { UserProfile, TeamBasicInfo } from '@/types/models';
+// Importiere Service-Funktionen und Typen
+import { getUserProfileById, updateUserProfile, type UpdateUserProfileData } from '@/services/userService';
+import type { UserProfile } from '@/types/models';
 
 
 export async function GET(request: Request) {
@@ -22,47 +21,17 @@ export async function GET(request: Request) {
   }
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        teams: {
-          include: {
-            team: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-          },
-        },
-      },
-    })
+    // Rufe Service-Funktion auf
+    const userProfile = await getUserProfileById(userId);
 
-    if (!user) {
-      return NextResponse.json({ message: 'Benutzer nicht gefunden' }, { status: 404 })
+    if (!userProfile) {
+      return NextResponse.json({ message: 'Benutzer nicht gefunden' }, { status: 404 });
     }
 
-    // Transformiere die Teams-Daten in das TeamBasicInfo Format
-    const teamsBasicInfo: TeamBasicInfo[] = user.teams.map(ut => ({
-      id: ut.team.id,
-      name: ut.team.name
-    }));
-
-    // Erstelle das UserProfile-Objekt
-    // Entferne sensible Felder manuell oder stelle sicher, dass sie nicht selektiert wurden
-    const { password, passwordResetToken, passwordResetExpires, passwordSetupToken, passwordSetupExpires, ...userData } = user;
-
-    const userProfile: UserProfile = {
-      ...userData,
-      teams: teamsBasicInfo,
-      // Füge das 'team'-Feld hinzu, falls benötigt
-      team: teamsBasicInfo.length > 0 ? teamsBasicInfo[0] : null
-    };
-
-
     return NextResponse.json(userProfile);
+
   } catch (error) {
-    console.error('Fehler beim Abrufen des Benutzerprofils:', error);
+    console.error('Fehler beim Abrufen des Benutzerprofils (API):', error);
     return NextResponse.json({ message: 'Ein Fehler ist aufgetreten' }, { status: 500 })
   }
   // No finally block needed for singleton
@@ -82,71 +51,24 @@ export async function PUT(request: Request) {
     return NextResponse.json({ message: 'Ungültige Benutzer-ID in der Session' }, { status: 400 });
   }
 
-  const { name, email, password, theme } = await request.json()
+  const { name, email, password, theme } = await request.json();
+
+  // Bereite Daten für den Service vor
+  const updateData: UpdateUserProfileData = { name, email, password, theme };
 
   try {
-    const updateData: any = { name, email }
+    // Rufe Service-Funktion auf
+    const updatedUserProfile = await updateUserProfile(userId, updateData);
 
-    if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10)
-      updateData.password = hashedPassword
-    }
-    
-    if (theme) {
-      updateData.theme = theme
+    if (!updatedUserProfile) {
+      // Sollte nicht passieren, wenn die ID aus der Session kommt, aber sicher ist sicher
+      return NextResponse.json({ message: 'Benutzer nicht gefunden' }, { status: 404 });
     }
 
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: updateData,
-      include: {
-        teams: {
-          include: {
-            team: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-          },
-        },
-      },
-    })
+    return NextResponse.json(updatedUserProfile);
 
-    // Transformiere die Teams-Daten in ein einfacheres Format
-    const formattedUser = {
-      ...updatedUser,
-      teams: updatedUser.teams.map(ut => ({
-        id: ut.team.id,
-        name: ut.team.name
-      })),
-      // Für Abwärtskompatibilität: Verwende das erste Team als Hauptteam
-      team: updatedUser.teams.length > 0 ? {
-        id: updatedUser.teams[0].team.id,
-        name: updatedUser.teams[0].team.name
-      } : null
-    }
-
-    // Transformiere die Teams-Daten in das TeamBasicInfo Format
-    const teamsBasicInfo: TeamBasicInfo[] = updatedUser.teams.map(ut => ({
-      id: ut.team.id,
-      name: ut.team.name
-    }));
-
-    // Erstelle das UserProfile-Objekt für die Rückgabe
-    // Entferne sensible Felder
-    const { password: updatedPassword, passwordResetToken: updatedPrT, passwordResetExpires: updatedPrE, passwordSetupToken: updatedPsT, passwordSetupExpires: updatedPsE, ...userData } = updatedUser;
-
-    const userProfile: UserProfile = {
-      ...userData,
-      teams: teamsBasicInfo,
-      // Füge das 'team'-Feld hinzu, falls benötigt
-      team: teamsBasicInfo.length > 0 ? teamsBasicInfo[0] : null
-    };
-
-    return NextResponse.json(userProfile);
   } catch (error) {
-    console.error('Fehler beim Aktualisieren des Benutzerprofils:', error);
+    console.error('Fehler beim Aktualisieren des Benutzerprofils (API):', error);
     return NextResponse.json({ message: 'Ein Fehler ist aufgetreten' }, { status: 500 });
   }
   // No finally block needed for singleton
