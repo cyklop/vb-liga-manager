@@ -1,78 +1,70 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma'; // Import the singleton instance
-// Importiere zentrale Typen für die Rückgabe
-import type { Team, UserProfile } from '@/types/models';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
+// Importiere Service-Funktionen und Typen
+import { getAllTeams, createTeam, type CreateTeamData } from '@/services/teamService';
+import type { Team } from '@/types/models';
 
 export async function GET() {
+  // Optional: Berechtigungsprüfung (wer darf alle Teams sehen?)
+  // const session = await getServerSession(authOptions);
+  // if (!session) {
+  //   return NextResponse.json({ message: 'Nicht authentifiziert' }, { status: 401 });
+  // }
+
   try {
-    const teams = await prisma.team.findMany({
-      include: {
-        teamLeader: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-    });
+    // Rufe Service-Funktion auf
+    const teams = await getAllTeams();
+    return NextResponse.json(teams);
 
-    // Konvertiere Prisma-Teams in den zentralen Team-Typ
-    const responseTeams: Team[] = teams.map(team => ({
-      ...team,
-      teamLeader: team.teamLeader ? {
-        // Map teamLeader zu UserProfile (ohne sensible Daten)
-        id: team.teamLeader.id,
-        name: team.teamLeader.name,
-        // Füge hier weitere benötigte UserProfile-Felder hinzu, falls vorhanden
-        // email: team.teamLeader.email, // Beispiel
-        // isAdmin: team.teamLeader.isAdmin, // Beispiel
-        // isSuperAdmin: team.teamLeader.isSuperAdmin, // Beispiel
-      } : null
-    }));
-
-    return NextResponse.json(responseTeams);
   } catch (error) {
-    console.error('Error fetching teams:', error);
+    console.error('Fehler beim Abrufen der Teams (API):', error);
     return NextResponse.json({ message: 'Fehler beim Abrufen der Teams' }, { status: 500 })
   }
   // No finally block needed for singleton
 }
 
 export async function POST(request: Request) {
-  const { name, location, hallAddress, trainingTimes, teamLeaderId } = await request.json()
+  // --- Berechtigungsprüfung (Beispiel: Nur Admins) ---
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.isAdmin) {
+    return NextResponse.json({ message: 'Nicht autorisiert' }, { status: 403 });
+  }
+  // --- Ende Berechtigungsprüfung ---
+
+  const { name, location, hallAddress, trainingTimes, teamLeaderId } = await request.json();
+
+  // --- Validierung (Beispiel) ---
+  if (!name) {
+    return NextResponse.json({ message: 'Teamname ist erforderlich.' }, { status: 400 });
+  }
+  let parsedTeamLeaderId: number | null | undefined = undefined;
+  if (teamLeaderId !== undefined && teamLeaderId !== null && teamLeaderId !== '') {
+      parsedTeamLeaderId = parseInt(teamLeaderId);
+      if (isNaN(parsedTeamLeaderId)) {
+          return NextResponse.json({ message: 'Ungültige Teamleiter-ID.' }, { status: 400 });
+      }
+  } else if (teamLeaderId === null || teamLeaderId === '') {
+      parsedTeamLeaderId = null; // Explizit null setzen, wenn gewünscht
+  }
+  // --- Ende Validierung ---
+
+  const createData: CreateTeamData = {
+    name,
+    location,
+    hallAddress,
+    trainingTimes,
+    teamLeaderId: parsedTeamLeaderId,
+  };
 
   try {
-    const team = await prisma.team.create({
-      data: {
-        name,
-        location,
-        hallAddress,
-        trainingTimes,
-        teamLeaderId: teamLeaderId ? parseInt(teamLeaderId) : undefined,
-      },
-      include: {
-        teamLeader: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-    });
+    // Rufe Service-Funktion auf
+    const newTeam = await createTeam(createData);
+    return NextResponse.json(newTeam, { status: 201 });
 
-    // Konvertiere das erstellte Prisma-Team in den zentralen Team-Typ
-    const responseTeam: Team = {
-      ...team,
-      teamLeader: team.teamLeader ? {
-        id: team.teamLeader.id,
-        name: team.teamLeader.name,
-        // Füge hier weitere benötigte UserProfile-Felder hinzu
-      } : null
-    };
-
-    return NextResponse.json(responseTeam, { status: 201 });
   } catch (error) {
-    console.error('Error creating team:', error);
+    console.error('Fehler beim Erstellen des Teams (API):', error);
+    // Handle spezifische Fehler vom Service (falls vorhanden)
     return NextResponse.json({ message: 'Fehler beim Erstellen des Teams' }, { status: 400 })
   }
   // No finally block needed for singleton

@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+// Importiere Service-Funktion
+import { getTeamDetails } from '@/services/teamService';
 
-export async function GET(request: Request, { params }: { params: Promise<{ id: string }>  }) {
-  const teamId = parseInt((await params).id);
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const teamIdParam = (await params).id;
+  const teamId = parseInt(teamIdParam);
   
   if (isNaN(teamId)) {
     return NextResponse.json({ message: 'Ungültige Team-ID' }, { status: 400 });
@@ -17,20 +19,16 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   }
 
   try {
-    // Team-Details abrufen
-    const team = await prisma.team.findUnique({
-      where: { id: teamId },
-      select: {
-        id: true,
-        name: true,
-        location: true,
-        hallAddress: true,
-        trainingTimes: true
-      }
-    });
+    // Rufe Service-Funktion auf
+    const teamDetails = await getTeamDetails(teamId);
 
-    if (!team) {
+    if (!teamDetails) {
       return NextResponse.json({ message: 'Team nicht gefunden' }, { status: 404 });
+    }
+
+    return NextResponse.json(teamDetails);
+  } catch (error) {
+    console.error('Error fetching team details (API):', error);
     }
 
     return NextResponse.json(team);
