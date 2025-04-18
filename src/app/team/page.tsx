@@ -6,25 +6,11 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { ScoreEntryType } from '@prisma/client'; // Import the enum
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
+// Importiere zentrale Typen (Team/Fixture werden später definiert)
+import type { UserProfile } from '@/types/models';
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  isAdmin: boolean;
-  isSuperAdmin: boolean;
-  team?: {
-    id: number;
-    name: string;
-  };
-  teams?: {
-    team: {
-      id: number;
-      name: string;
-    }
-  }[];
-}
-
+// Lokale User/Team/Fixture Interfaces entfernt (Team/Fixture werden später zentralisiert)
+// Temporäre Definitionen für Kompilierung, werden später ersetzt
 interface Team {
   id: number;
   name: string;
@@ -32,7 +18,6 @@ interface Team {
   hallAddress: string;
   trainingTimes: string;
 }
-
 interface Fixture {
   id: number;
   leagueId: number;
