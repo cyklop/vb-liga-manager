@@ -34,12 +34,19 @@ export async function GET() {
           id: team.id,
           name: team.name,
           // Füge hier ggf. weitere Felder aus dem zentralen Team-Typ hinzu
+          location: team.location, // Beispiel
+          hallAddress: team.hallAddress, // Beispiel
+          trainingTimes: team.trainingTimes, // Beispiel
         })),
-        fixtures: league.fixtures.map(fixture => ({ // Map zu zentralem Fixture-Typ
-          ...fixture,
-          homeTeam: { id: fixture.homeTeamId, name: 'N/A' }, // Temporär
-          awayTeam: { id: fixture.awayTeamId, name: 'N/A' }, // Temporär
-        })) as Fixture[], // Cast zum zentralen Fixture-Typ
+        fixtures: league.fixtures.map(fixture => { // Map zu zentralem Fixture-Typ
+          const homeTeam = league.teams.find(t => t.id === fixture.homeTeamId);
+          const awayTeam = league.teams.find(t => t.id === fixture.awayTeamId);
+          return {
+            ...fixture,
+            homeTeam: { id: fixture.homeTeamId, name: homeTeam?.name || 'N/A' }, // Hole Namen
+            awayTeam: { id: fixture.awayTeamId, name: awayTeam?.name || 'N/A' }, // Hole Namen
+          };
+        }) as Fixture[], // Cast zum zentralen Fixture-Typ
       };
     }
 
