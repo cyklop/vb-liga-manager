@@ -48,12 +48,46 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
           name: team.teamLeader.name,
         } : null,
       })),
-      fixtures: league.fixtures.map(fixture => ({ // Map zu zentralem Fixture-Typ
-        ...fixture,
-        // Stelle sicher, dass homeTeam/awayTeam das TeamBasicInfo-Format haben
-        homeTeam: fixture.homeTeam as TeamBasicInfo,
-        awayTeam: fixture.awayTeam as TeamBasicInfo,
-      })) as Fixture[], // Cast zum zentralen Fixture-Typ
+      // Explizites Mapping zu unserem zentralen Fixture-Typ
+      fixtures: league.fixtures.map(dbFixture => {
+        // Stelle sicher, dass die Team-Objekte vorhanden sind
+        const homeTeamInfo: TeamBasicInfo = dbFixture.homeTeam
+          ? { id: dbFixture.homeTeam.id, name: dbFixture.homeTeam.name }
+          : { id: dbFixture.homeTeamId, name: 'N/A' }; // Fallback
+        const awayTeamInfo: TeamBasicInfo = dbFixture.awayTeam
+          ? { id: dbFixture.awayTeam.id, name: dbFixture.awayTeam.name }
+          : { id: dbFixture.awayTeamId, name: 'N/A' }; // Fallback
+
+        return {
+          id: dbFixture.id,
+          leagueId: dbFixture.leagueId,
+          round: dbFixture.round,
+          matchday: dbFixture.matchday,
+          homeTeamId: dbFixture.homeTeamId,
+          homeTeam: homeTeamInfo, // Verwende das gemappte Objekt
+          awayTeamId: dbFixture.awayTeamId,
+          awayTeam: awayTeamInfo, // Verwende das gemappte Objekt
+          fixtureDate: dbFixture.fixtureDate?.toISOString() || null, // Konvertiere Datum zu String oder null
+          fixtureTime: dbFixture.fixtureTime,
+          homeScore: dbFixture.homeScore, // Sollte null sein für neue Fixtures
+          awayScore: dbFixture.awayScore, // Sollte null sein
+          homeSet1: dbFixture.homeSet1,
+          awaySet1: dbFixture.awaySet1,
+          homeSet2: dbFixture.homeSet2,
+          awaySet2: dbFixture.awaySet2,
+          homeSet3: dbFixture.homeSet3,
+          awaySet3: dbFixture.awaySet3,
+          homeSet4: dbFixture.homeSet4,
+          awaySet4: dbFixture.awaySet4,
+          homeSet5: dbFixture.homeSet5,
+          awaySet5: dbFixture.awaySet5,
+          homeMatchPoints: dbFixture.homeMatchPoints, // Sollte null sein
+          awayMatchPoints: dbFixture.awayMatchPoints, // Sollte null sein
+          homePoints: dbFixture.homePoints, // Ball points, sollte null sein
+          awayPoints: dbFixture.awayPoints, // Ball points, sollte null sein
+          order: dbFixture.order,
+        };
+      }), // Kein 'as Fixture[]' Cast mehr nötig, da wir den Typ explizit erstellen
     };
 
     return NextResponse.json(responseLeague);
