@@ -1,7 +1,9 @@
-import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { ScoreEntryType } from '@prisma/client' // Import the enum
-import { createSlug, isValidSlug } from '@/lib/slugify'
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { ScoreEntryType } from '@prisma/client'; // Import the enum
+import { createSlug, isValidSlug } from '@/lib/slugify';
+// Importiere zentrale Typen für die Rückgabe
+import type { LeagueDetails, Team, Fixture } from '@/types/models';
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const id = parseInt((await params).id)
@@ -143,13 +145,29 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         })
       },
       include: {
-        teams: true
+        teams: true, // Behalte Teams für die Konvertierung
+        fixtures: true // Behalte Fixtures für die Konvertierung
       }
-    })
-    
-    return NextResponse.json(updatedLeague)
+    });
+
+    // Konvertiere die aktualisierte Liga in LeagueDetails
+    const responseLeague: LeagueDetails = {
+      ...updatedLeague,
+      teams: updatedLeague.teams.map(team => ({ // Map zu vollem Team-Typ
+        id: team.id,
+        name: team.name,
+        // Füge hier ggf. weitere Felder aus dem zentralen Team-Typ hinzu
+      })),
+      fixtures: updatedLeague.fixtures.map(fixture => ({ // Map zu zentralem Fixture-Typ
+        ...fixture,
+        homeTeam: { id: fixture.homeTeamId, name: 'N/A' }, // Temporär
+        awayTeam: { id: fixture.awayTeamId, name: 'N/A' }, // Temporär
+      })) as Fixture[], // Cast zum zentralen Fixture-Typ
+    };
+
+    return NextResponse.json(responseLeague);
   } catch (error) {
-    console.error('Error updating league:', error)
+    console.error('Error updating league:', error);
     return NextResponse.json({ message: 'Fehler beim Aktualisieren der Liga' }, { status: 500 })
   }
   // No finally block needed for singleton

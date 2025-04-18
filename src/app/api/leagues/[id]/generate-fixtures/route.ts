@@ -1,5 +1,8 @@
-import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+// Importiere zentrale Typen (nur für Referenz, intern werden Prisma-Typen verwendet)
+import type { Fixture as CentralFixture } from '@/types/models';
+
 
 // Helper function to extract the first HH:MM or approximate HH:00 time from a string
 function extractTimeFromString(text: string | null | undefined): string | null {
@@ -388,26 +391,13 @@ function generateRoundRobinFixtures(teams: TeamWithTrainingTime[], hasReturnMatc
 }
 
 
-// Define Fixture type locally for the helper function (or import if shared)
-interface Fixture {
-  id: number;
-  leagueId: number;
-  round?: number | null;
-  matchday?: number | null;
-  homeTeamId: number;
-  homeTeam: { id: number; name: string }; // Assuming Team type structure
-  awayTeamId: number;
-  awayTeam: { id: number; name: string }; // Assuming Team type structure
-  fixtureDate?: string | null;
-  homeScore?: number | null;
-  awayScore?: number | null;
-  fixtureTime?: string | null; // Add fixtureTime
-  order: number;
-}
+// Lokale Fixture-Definition entfernt, da sie nicht mehr direkt benötigt wird
+// Die generateRoundRobinFixtures Funktion gibt jetzt Objekte zurück,
+// die direkt für prisma.fixture.create verwendet werden können.
 
 
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth' // Corrected import path
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth'; // Corrected import path
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   // Destructure id directly from params

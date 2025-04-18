@@ -9,14 +9,21 @@ import { Checkbox, Typography } from "@material-tailwind/react"
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { ScoreEntryType } from '@prisma/client';
 // Importiere zentrale Typen
-import type { TeamBasicInfo as Team, Fixture as FixtureType, League as LeagueType } from '@/types/models'; // Verwende TeamBasicInfo als Team
+import type { TeamBasicInfo as Team, Fixture, LeagueDetails, TableEntry } from '@/types/models'; // Verwende LeagueDetails
 
-// Lokale Team/Fixture/League Interfaces entfernt (werden später zentralisiert oder durch Import ersetzt)
-// Temporäre Definitionen für Kompilierung, bis Fixture/League zentralisiert sind
-interface Fixture { // Behalte temporär, bis Fixture zentralisiert ist
-  id: number
-  leagueId: number
-  round?: number | null
+// Lokale Fixture/League/TableEntry Interfaces entfernt
+// Fixture wird jetzt importiert
+// League wird jetzt importiert (als LeagueDetails)
+// TableEntry wird jetzt importiert
+
+
+export default function PublicLeaguePage() {
+  const { slug } = useParams();
+  // Verwende zentrale Typen
+  const [league, setLeague] = useState<LeagueDetails | null>(null); // Verwende LeagueDetails
+  const [tableData, setTableData] = useState<TableEntry[]>([]); // Verwende zentralen TableEntry Placeholder
+  // Entferne activeTab State
+  // const [activeTab, setActiveTab] = useState("table")
   matchday?: number | null
   homeTeamId: number
   homeTeam: Team
@@ -34,25 +41,6 @@ interface Fixture { // Behalte temporär, bis Fixture zentralisiert ist
   homeSet5?: number | null; awaySet5?: number | null; // For Bo5
   // Add final score in sets
   homeScore?: number | null;
-  awayScore?: number | null;
-}
-interface League { // Behalte temporär, bis League zentralisiert ist
-  id: number;
-  name: string;
-  slug: string;
-  teams: Team[]; // Verwende importiertes Team (TeamBasicInfo)
-  fixtures: Fixture[]; // Verwende temporäres Fixture
-  pointsWin30: number;
-  pointsWin31: number;
-  pointsWin32: number;
-  pointsLoss32: number;
-  scoreEntryType: ScoreEntryType;
-  setsToWin: number;
-}
-interface TableEntry { // Behalte temporär, bis TableEntry zentralisiert ist
-  teamId: number
-  teamName: string
-  played: number
   won: number
   lost: number
   points: number
@@ -61,19 +49,6 @@ interface TableEntry { // Behalte temporär, bis TableEntry zentralisiert ist
   setsDiff: number
   pointsWon: number // Ball points won
   pointsLost: number // Ball points lost
-  pointsDiff: number // Ball points difference
-}
-
-export default function PublicLeaguePage() {
-  const { slug } = useParams();
-  // Verwende temporäre League/TableEntry Typen
-  const [league, setLeague] = useState<League | null>(null);
-  const [tableData, setTableData] = useState<TableEntry[]>([]);
-  // Entferne activeTab State
-  // const [activeTab, setActiveTab] = useState("table")
-  const [showOnlyOpenFixtures, setShowOnlyOpenFixtures] = useState(false); // State für Checkbox
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
   useEffect(() => {
     const fetchLeagueData = async () => {

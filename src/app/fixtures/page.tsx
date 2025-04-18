@@ -4,13 +4,20 @@ import { useState, useEffect } from 'react';
 import Navigation from '@/components/Navbar';
 import { ScoreEntryType } from '@prisma/client'; // Import the enum
 // Importiere zentrale Typen
-import type { TeamBasicInfo as Team, Fixture as FixtureType, League as LeagueType } from '@/types/models'; // Verwende TeamBasicInfo als Team für diese Seite
+// Importiere zentrale Typen
+import type { TeamBasicInfo as Team, Fixture, LeagueOverview } from '@/types/models'; // Verwende LeagueOverview
 
-// Lokale Team/Fixture/League Interfaces entfernt (werden später zentralisiert oder durch Import ersetzt)
-// Temporäre Definitionen für Kompilierung, bis Fixture/League zentralisiert sind
-interface Fixture { // Behalte temporär, bis Fixture zentralisiert ist
-  id: number;
-  leagueId: number;
+// Lokale Fixture/League Interfaces entfernt
+// Fixture wird jetzt importiert
+// League wird jetzt importiert (als LeagueOverview)
+
+
+export default function FixturesPage() {
+  // Verwende zentrale Typen
+  const [fixtures, setFixtures] = useState<Fixture[]>([]); // Verwende zentralen Fixture Placeholder
+  const [leagues, setLeagues] = useState<LeagueOverview[]>([]); // Verwende LeagueOverview
+  const [activeLeagueId, setActiveLeagueId] = useState<number | null>(null);
+  const [showOnlyUpcoming, setShowOnlyUpcoming] = useState(false);
   round?: number | null;
   matchday?: number | null;
   homeTeamId: number;
@@ -35,28 +42,6 @@ interface Fixture { // Behalte temporär, bis Fixture zentralisiert ist
   homeMatchPoints?: number | null;
   awayMatchPoints?: number | null;
 
-  order: number;
-  league?: { // Behalte temporär, bis Fixture zentralisiert ist
-    scoreEntryType: ScoreEntryType;
-    setsToWin: number;
-  };
-}
-interface League { // Behalte temporär, bis League zentralisiert ist
-  id: number;
-  name: string;
-  teams: Team[]; // Verwende importiertes Team (TeamBasicInfo)
-  scoreEntryType?: ScoreEntryType;
-  setsToWin?: number;
-}
-
-
-export default function FixturesPage() {
-  // Verwende temporäre Fixture/League Typen, bis sie zentralisiert sind
-  const [fixtures, setFixtures] = useState<Fixture[]>([]);
-  const [leagues, setLeagues] = useState<League[]>([]); // Verwendet temporäres League Interface
-  const [activeLeagueId, setActiveLeagueId] = useState<number | null>(null);
-  const [showOnlyUpcoming, setShowOnlyUpcoming] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Fetch leagues and active league

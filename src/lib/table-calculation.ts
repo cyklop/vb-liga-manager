@@ -1,8 +1,10 @@
-import { Prisma, League, Fixture, Team, ScoreEntryType } from '@prisma/client';
+import { Prisma, ScoreEntryType } from '@prisma/client';
+// Importiere zentrale Typen
+import type { Fixture as CentralFixture, LeagueDetails, TeamBasicInfo, TableEntry } from '@/types/models';
 
 // Interface für die benötigten Fixture-Daten für die Berechnung
-// Enthält nur die Felder, die tatsächlich für die Logik gebraucht werden.
-export interface CalculationFixture extends Pick<Fixture,
+// Verwende den zentralen Fixture-Typ (oder einen spezifischeren Pick davon)
+export type CalculationFixture = Pick<CentralFixture,
   'id' | 'homeTeamId' | 'awayTeamId' | 'homeScore' | 'awayScore' |
   'homeSet1' | 'awaySet1' | 'homeSet2' | 'awaySet2' | 'homeSet3' | 'awaySet3' |
   'homeSet4' | 'awaySet4' | 'homeSet5' | 'awaySet5' |
@@ -10,17 +12,18 @@ export interface CalculationFixture extends Pick<Fixture,
 > {}
 
 // Interface für die benötigten Liga-Daten für die Berechnung
-export interface CalculationLeague extends Pick<League,
-  'id' | 'scoreEntryType' | 'pointsWin30' | 'pointsWin31' | 'pointsWin32' | 'pointsLoss32'
-> {
-  teams: Pick<Team, 'id' | 'name'>[]; // Nur Team-IDs und Namen benötigt
-}
+// Verwende einen Pick aus LeagueDetails oder LeagueOverview
+export type CalculationLeague = Pick<LeagueDetails, // Oder LeagueOverview, je nachdem, was passt
+  'id' | 'scoreEntryType' | 'pointsWin30' | 'pointsWin31' | 'pointsWin32' | 'pointsLoss32' | 'teams' // Stelle sicher, dass 'teams' enthalten ist
+>;
 
-// Interface für den finalen Tabelleneintrag (Struktur für die API-Antwort)
-export interface TableEntry {
-    teamId: number;
-    teamName: string;
-    played: number;
+// Das TableEntry Interface wird jetzt aus models.ts importiert
+// Lokale Definition entfernt
+
+
+/**
+ * Berechnet die Ligatabelle basierend auf den Liga-Einstellungen und den Spielergebnissen.
+ * @param league - Die Liga-Daten (inkl. Teams, Punktregeln, ScoreEntryType).
     won: number;
     lost: number;
     points: number; // League points
@@ -33,12 +36,6 @@ export interface TableEntry {
     pointsDiff: number; // Ball points difference
     pointsQuotient: number; // Ball points quotient
     directComparisonWins: number; // Simplified direct comparison tracking
-    directComparisonLosses: number; // Simplified direct comparison tracking
-}
-
-/**
- * Berechnet die Ligatabelle basierend auf den Liga-Einstellungen und den Spielergebnissen.
- * @param league - Die Liga-Daten (inkl. Teams, Punktregeln, ScoreEntryType).
  * @param fixtures - Eine Liste der abgeschlossenen Spiele für die Liga.
  * @returns Ein sortiertes Array von Tabelleneinträgen.
  */
@@ -46,6 +43,7 @@ export function calculateTable(league: CalculationLeague, fixtures: CalculationF
     const tableEntries: Record<number, TableEntry> = {};
 
     // 1. Tabelle initialisieren
+    // Stelle sicher, dass league.teams den richtigen Typ hat (TeamBasicInfo oder Team)
     league.teams.forEach(team => {
       tableEntries[team.id] = {
         teamId: team.id,

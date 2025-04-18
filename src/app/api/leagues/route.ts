@@ -1,9 +1,11 @@
-import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma'; // Import the singleton instance
-import { ScoreEntryType } from '@prisma/client' // Import the enum
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth' // Corrected import path
-import { createSlug, isValidSlug } from '@/lib/slugify'
+import { ScoreEntryType } from '@prisma/client'; // Import the enum
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth'; // Corrected import path
+import { createSlug, isValidSlug } from '@/lib/slugify';
+// Importiere zentrale Typen für die Rückgabe
+import type { LeagueOverview, LeagueDetails, TeamBasicInfo, Fixture } from '@/types/models';
 
 export async function GET(request: Request) {
   // URL-Parameter auslesen
@@ -70,12 +72,20 @@ export async function GET(request: Request) {
         orderBy: {
           createdAt: 'desc'
         }
-      })
+      });
     }
 
-    return NextResponse.json(leagues)
+    // Konvertiere Prisma-Ligen in LeagueOverview
+    const responseLeagues: LeagueOverview[] = leagues.map(league => ({
+      ...league,
+      teams: league.teams.map(team => ({ id: team.id, name: team.name })), // Map zu TeamBasicInfo
+      // Optional: Nur Fixture-IDs für die Übersicht
+      fixtures: league.fixtures?.map(f => ({ id: f.id })) as Pick<Fixture, 'id'>[] | undefined,
+    }));
+
+    return NextResponse.json(responseLeagues);
   } catch (error) {
-    console.error('Error fetching leagues:', error)
+    console.error('Error fetching leagues:', error);
     return NextResponse.json({ message: 'Ein Fehler ist aufgetreten' }, { status: 500 })
   }
 }
@@ -183,12 +193,29 @@ export async function POST(request: Request) {
         })
       },
       include: {
-        teams: true
+        teams: true, // Behalte Teams für die Konvertierung
+        fixtures: true // Behalte Fixtures für die Konvertierung
       }
-    })
-    return NextResponse.json(league, { status: 201 })
+    });
+
+    // Konvertiere die erstellte Liga in LeagueDetails
+    const responseLeague: LeagueDetails = {
+      ...league,
+      teams: league.teams.map(team => ({ // Map zu vollem Team-Typ (oder TeamBasicInfo, falls ausreichend)
+        id: team.id,
+        name: team.name,
+        // Füge hier ggf. weitere Felder aus dem zentralen Team-Typ hinzu
+      })),
+      fixtures: league.fixtures.map(fixture => ({ // Map zu zentralem Fixture-Typ
+        ...fixture,
+        homeTeam: { id: fixture.homeTeamId, name: 'N/A' }, // Temporär, bis Fixture-Typ vollständig ist
+        awayTeam: { id: fixture.awayTeamId, name: 'N/A' }, // Temporär
+      })) as Fixture[], // Cast zum zentralen Fixture-Typ
+    };
+
+    return NextResponse.json(responseLeague, { status: 201 });
   } catch (error) {
-    console.error('Error creating league:', error)
+    console.error('Error creating league:', error);
     return NextResponse.json({ message: 'Fehler beim Erstellen der Liga' }, { status: 400 })
   }
 }

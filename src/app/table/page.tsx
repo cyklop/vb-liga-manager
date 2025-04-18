@@ -5,23 +5,23 @@ import Navigation from '@/components/Navbar';
 import { ArrowDownIcon } from '@heroicons/react/20/solid';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 // Importiere zentrale Typen
-import type { TeamBasicInfo as Team, League as LeagueType, TableEntry as TableEntryType } from '@/types/models'; // Verwende TeamBasicInfo als Team
+import type { TeamBasicInfo as Team, LeagueOverview, TableEntry } from '@/types/models'; // Verwende LeagueOverview
 
-// Lokale Team/League/TableEntry Interfaces entfernt (werden später zentralisiert oder durch Import ersetzt)
-// Temporäre Definitionen für Kompilierung, bis League/TableEntry zentralisiert sind
-interface League { // Behalte temporär, bis League zentralisiert ist
-  id: number;
-  name: string;
-  teams: Team[];
+// Lokale League/TableEntry Interfaces entfernt
+// League wird jetzt importiert (als LeagueOverview)
+// TableEntry wird jetzt importiert
+
+
+export default function TablePage() {
+  // Verwende zentrale Typen
+  const [leagues, setLeagues] = useState<LeagueOverview[]>([]); // Verwende LeagueOverview
+  const [activeLeagueId, setActiveLeagueId] = useState<number | null>(null);
+  const [tableData, setTableData] = useState<TableEntry[]>([]); // Verwende zentralen TableEntry Placeholder
+  const [isLoading, setIsLoading] = useState(true);
+  const [matchdays, setMatchdays] = useState<number[]>([]);
   pointsWin30: number;
   pointsWin31: number;
   pointsWin32: number;
-  pointsLoss32: number;
-}
-interface TableEntry { // Behalte temporär, bis TableEntry zentralisiert ist
-  teamId: number;
-  teamName: string;
-  played: number;
   won: number;
   lost: number;
   points: number;
@@ -32,18 +32,6 @@ interface TableEntry { // Behalte temporär, bis TableEntry zentralisiert ist
   pointsWon: number;
   pointsLost: number;
   pointsDiff: number;
-  pointsQuotient: number;
-}
-
-export default function TablePage() {
-  // Verwende temporäre League/TableEntry Typen
-  const [leagues, setLeagues] = useState<League[]>([]);
-  const [activeLeagueId, setActiveLeagueId] = useState<number | null>(null);
-  const [tableData, setTableData] = useState<TableEntry[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [matchdays, setMatchdays] = useState<number[]>([]);
-  const [selectedMatchday, setSelectedMatchday] = useState<number | null>(null);
-  const [showSortInfo, setShowSortInfo] = useState(false);
 
   useEffect(() => {
     // Fetch leagues and active league

@@ -28,87 +28,25 @@ import { CSS } from '@dnd-kit/utilities';
 import { toast } from 'react-toastify';
 import DeleteConfirmation from '@/components/DeleteConfirmation'; // Import hinzufügen
 import { ScoreEntryType } from '@prisma/client'; // Import the enum
+// Importiere zentrale Typen
+import type {
+  TeamBasicInfo,
+  UserProfile, // User wird hier nicht direkt verwendet, aber zur Sicherheit importieren
+  Fixture,
+  LeagueOverview,
+  LeagueDetails // Wird für editingLeague benötigt
+} from '@/types/models';
 
+// Lokale Interfaces entfernt
 
-// Define interfaces
-interface Team {
-  id: number
-  name: string
-}
-
-interface User {
-  id: number
-  name: string
-  email: string
-  isAdmin: boolean
-  isSuperAdmin: boolean
-  team?: {
-    id: number
-    name: string
-  }
-}
-
-interface Fixture {
-  id: number
-  leagueId: number
-  round?: number | null
-  matchday?: number | null
-  homeTeamId: number
-  homeTeam: Team
-  awayTeamId: number
-  awayTeam: Team
-  fixtureDate?: string | null
-  fixtureTime?: string | null // Add fixtureTime
-
-  // Final Score (Sets Won) - Always populated when result is known
-  homeScore?: number | null
-  awayScore?: number | null
-
-  // Individual Set Scores (only used if league.scoreEntryType == SET_SCORES)
-  homeSet1?: number | null; awaySet1?: number | null;
-  homeSet2?: number | null; awaySet2?: number | null;
-  homeSet3?: number | null; awaySet3?: number | null;
-  homeSet4?: number | null; awaySet4?: number | null; // For Bo5
-  homeSet5?: number | null; awaySet5?: number | null; // For Bo5
-
-  // Calculated match points based on league rules
-  homeMatchPoints?: number | null // Points for the league table
-  awayMatchPoints?: number | null // Points for the league table
-
-  // Optional total points (balls)
-  homePoints?: number | null;
-  awayPoints?: number | null;
-
-  order: number
-}
-
-interface League {
-  id: number
-  name: string
-  slug: string
-  numberOfTeams: number
-  hasReturnMatches: boolean
-  teams: Team[]
-  fixtures?: Fixture[]
-  isActive: boolean
-  createdAt: string
-  // Add point rules
-  pointsWin30: number
-  pointsWin31: number
-  pointsWin32: number
-  pointsLoss32: number
-  // Add score entry config fields to interface
-  scoreEntryType: ScoreEntryType
-  setsToWin: number
-}
 
 // Define the component
 export default function LeaguesPage() {
-  // State variables
-  const [leagues, setLeagues] = useState<League[]>([])
-  const [selectedLeagueFixtures, setSelectedLeagueFixtures] = useState<Fixture[]>([])
-  const [selectedLeagueId, setSelectedLeagueId] = useState<number | null>(null)
-  const [teams, setTeams] = useState<Team[]>([])
+  // State variables mit zentralen Typen
+  const [leagues, setLeagues] = useState<LeagueOverview[]>([]); // Verwende LeagueOverview für die Liste
+  const [selectedLeagueFixtures, setSelectedLeagueFixtures] = useState<Fixture[]>([]); // Verwende zentralen Fixture Placeholder
+  const [selectedLeagueId, setSelectedLeagueId] = useState<number | null>(null);
+  const [teams, setTeams] = useState<TeamBasicInfo[]>([]); // Verwende TeamBasicInfo für die Auswahl
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [newLeague, setNewLeague] = useState({
     name: '',
@@ -125,20 +63,24 @@ export default function LeaguesPage() {
     // Add new fields to state with defaults
     scoreEntryType: 'MATCH_SCORE' as ScoreEntryType, // Use string literal for default
     setsToWin: 3,
-  })
-  const [editingLeague, setEditingLeague] = useState<League | null>(null)
-  const [editingFixture, setEditingFixture] = useState<Partial<Fixture> | null>(null)
+  });
+  // Verwende LeagueDetails für das Bearbeiten, da alle Felder benötigt werden
+  const [editingLeague, setEditingLeague] = useState<LeagueDetails | null>(null);
+  const [editingFixture, setEditingFixture] = useState<Partial<Fixture> | null>(null); // Fixture Placeholder
   // State to hold the score input data for the modal
   const [scoreInputData, setScoreInputData] = useState<any>(null); // Will hold { homeScore, awayScore } or { setScores: [...] }
-  const [editingLeagueContext, setEditingLeagueContext] = useState<League | null>(null); // Store the league context for the fixture modal
-  const [isFixtureModalOpen, setIsFixtureModalOpen] = useState(false)
-  const [isOrderChanged, setIsOrderChanged] = useState(false)
+  // Verwende LeagueOverview oder LeagueDetails je nach Bedarf für den Kontext
+  const [editingLeagueContext, setEditingLeagueContext] = useState<LeagueOverview | LeagueDetails | null>(null);
+  const [isFixtureModalOpen, setIsFixtureModalOpen] = useState(false);
+  const [isOrderChanged, setIsOrderChanged] = useState(false);
   // State für Spielplan-Generierungsbestätigung
   const [showGenerateConfirmation, setShowGenerateConfirmation] = useState(false);
-  const [leagueToGenerate, setLeagueToGenerate] = useState<League | null>(null);
+  // Verwende LeagueOverview für Dialoge
+  const [leagueToGenerate, setLeagueToGenerate] = useState<LeagueOverview | null>(null);
   // State für Liga-Löschbestätigung
   const [showDeleteLeagueConfirmation, setShowDeleteLeagueConfirmation] = useState(false);
-  const [leagueToDelete, setLeagueToDelete] = useState<League | null>(null);
+  // Verwende LeagueOverview für Dialoge
+  const [leagueToDelete, setLeagueToDelete] = useState<LeagueOverview | null>(null);
 
   // --- Drag & Drop Sensors ---
   const sensors = useSensors(
@@ -266,7 +208,8 @@ export default function LeaguesPage() {
   };
 
   // --- Fixture Editing ---
-  const handleEditFixtureClick = (fixture: Fixture, league: League) => {
+  // Verwende LeagueOverview oder LeagueDetails als Kontext
+  const handleEditFixtureClick = (fixture: Fixture, league: LeagueOverview | LeagueDetails) => {
    // Prüfe, ob die Liga aktiv ist
    if (!league.isActive) {
      toast.warn('Spielpaarungen können nur für aktive Ligen bearbeitet werden. Abgeschlossene Ligen müssen zuerst wieder aktiviert werden.');
@@ -591,8 +534,8 @@ export default function LeaguesPage() {
     }
   };
 
-  // Funktion, um den Löschdialog für Ligen zu öffnen
-  const handleDeleteLeague = (league: League) => {
+  // Funktion, um den Löschdialog für Ligen zu öffnen (verwende LeagueOverview)
+  const handleDeleteLeague = (league: LeagueOverview) => {
     setLeagueToDelete(league);
     setShowDeleteLeagueConfirmation(true);
   };
@@ -1270,8 +1213,8 @@ export default function LeaguesPage() {
 
 // --- Sortable Fixture Item Component ---
 interface SortableFixtureItemProps {
-  fixture: Fixture;
-  league: League; // Add league context
+  fixture: Fixture; // Verwende zentralen Fixture Placeholder
+  league: LeagueOverview | LeagueDetails; // Erlaube beide Typen für den Kontext
   onEditClick: (fixture: Fixture) => void;
   isLeagueActive: boolean;
 }
