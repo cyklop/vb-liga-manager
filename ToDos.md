@@ -34,14 +34,14 @@ Phase 1: Strukturverbesserung (Typen & Services)
        • [ ] Service-Datei erstellen.
        • [ ] DB-Logik für Ligen aus API-Routen (/api/leagues/...) extrahieren (z.B. getAllLeaguesOverview, getLeagueDetails, createLeague,
          updateLeague, deleteLeague, setActiveLeague, getLeagueBySlug).
-       • [ ] Entsprechende API-Routen refaktorisieren.
-    • [ ] fixtureService.ts:
-       • [ ] Service-Datei erstellen.
-       • [ ] DB-Logik für Fixtures aus API-Routen (/api/fixtures/..., /api/leagues/[id]/fixtures/..., /api/leagues/[id]/generate-fixtures)
+       • [x] Entsprechende API-Routen refaktorisieren.
+    • [x] fixtureService.ts:
+       • [x] Service-Datei erstellen.
+       • [x] DB-Logik für Fixtures aus API-Routen (/api/fixtures/..., /api/leagues/[id]/fixtures/..., /api/leagues/[id]/generate-fixtures)
          extrahieren (z.B. getFixturesByLeague, updateFixture, reorderFixtures, generateRoundRobinFixturesAndSave).
-       • [ ] Entsprechende API-Routen refaktorisieren.
-    • [ ] Review: Sind die API-Routen jetzt primär für Request/Response, Auth und Aufruf der Service-Funktionen zuständig? Ist die DB-Logik in
-      den Services gekapselt? (User & Team erledigt)
+       • [x] Entsprechende API-Routen refaktorisieren.
+    • [x] Review: Sind die API-Routen jetzt primär für Request/Response, Auth und Aufruf der Service-Funktionen zuständig? Ist die DB-Logik in
+      den Services gekapselt? (User, Team, League & Fixture erledigt)
 
 Phase 2: Tests hinzufügen
 
