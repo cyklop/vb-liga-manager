@@ -74,8 +74,9 @@ interface SetScoresData {
 }
 
 export default function TeamPage() {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [teams, setTeams] = useState<Team[]>([]);
+  // Verwende den importierten Typ
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+  const [teams, setTeams] = useState<Team[]>([]); // Team wird später zentralisiert
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
   const [homeFixtures, setHomeFixtures] = useState<{[teamId: number]: Fixture[]}>({}); 
   const [isLoading, setIsLoading] = useState(true);

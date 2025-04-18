@@ -13,7 +13,7 @@ export default function UsersPage() {
   // Verwende importierte Typen
   const [users, setUsers] = useState<AdminUserListItem[]>([]);
   const [teams, setTeams] = useState<TeamBasicInfo[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // Typ für newUser anpassen
   const [newUser, setNewUser] = useState({ email: '', name: '', password: '', isAdmin: false, teamId: '' });
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);

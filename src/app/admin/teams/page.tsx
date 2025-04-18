@@ -26,7 +26,7 @@ export default function TeamsPage() {
   const router = useRouter() // Initialize router
   const [teams, setTeams] = useState<Team[]>([]) // Team wird später zentralisiert
   const [users, setUsers] = useState<UserProfile[]>([]) // Verwende UserProfile
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // Use a separate state for form data, including teamLeaderId
   interface TeamFormData {
     id?: number;

@@ -19,8 +19,9 @@ interface User {
 }
 
 export default function AdminPage() {
-  const [currentUser, setCurrentUser] = useState<User | null>(null)
-  const router = useRouter()
+  // Verwende den importierten Typ
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     fetchCurrentUser()

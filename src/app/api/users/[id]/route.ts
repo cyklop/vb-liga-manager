@@ -84,11 +84,19 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         }))
       };
 
+      // Daten für die Antwort vorbereiten
+      const teamsBasicInfo: TeamBasicInfo[] = userWithTeams?.teams.map(ut => ({
+        id: ut.team.id,
+        name: ut.team.name
+      })) || []; // Handle null case for userWithTeams
+
       // Entferne sensible Felder für die Antwort
-      const { password: _, passwordResetToken: _prt, passwordResetExpires: _pre, passwordSetupToken: _pst, passwordSetupExpires: _pse, ...userData } = userWithTeams;
+      const { password: _, passwordResetToken: _prt, passwordResetExpires: _pre, passwordSetupToken: _pst, passwordSetupExpires: _pse, ...userData } = userWithTeams || {}; // Handle null case
 
       const responseUser: AdminUserListItem = {
-        ...userData,
+        ...(userData as Omit<typeof userData, 'teams'>), // Cast to exclude 'teams' from Prisma type if necessary
+        isAdmin: userData.isAdmin ?? false, // Ensure boolean
+        isSuperAdmin: userData.isSuperAdmin ?? false, // Ensure boolean
         teams: teamsBasicInfo,
         team: teamsBasicInfo.length > 0 ? teamsBasicInfo[0] : null
       };

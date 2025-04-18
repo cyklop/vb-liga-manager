@@ -15,7 +15,7 @@ export default function UsersPage() {
   // Verwende die importierten Typen
   const [users, setUsers] = useState<AdminUserListItem[]>([]);
   const [teams, setTeams] = useState<TeamBasicInfo[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // Passwort aus dem initialen State entfernt
   // Typ für newUser anpassen (id kann optional sein beim Erstellen)
   const [newUser, setNewUser] = useState<{ id?: number; email: string; name: string; isAdmin: boolean; teamIds: number[] }>({ email: '', name: '', isAdmin: false, teamIds: [] });
