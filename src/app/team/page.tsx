@@ -145,8 +145,7 @@ export default function TeamPage() {
               processedTeamIds.add(teamId);
             }
           }
-          }
-        }
+        } // <-- Correct closing brace for 'if (!processedTeamIds.has(teamId))'
 
         // 2. Verarbeite alle Teams aus dem `teams`-Array
         if (currentUser.teams && currentUser.teams.length > 0) {
