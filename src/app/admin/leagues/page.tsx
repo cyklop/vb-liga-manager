@@ -118,6 +118,7 @@ export default function LeaguesPage() {
           );
           // Setze die Fixtures für die ausgewählte Liga
           const sortedFixtures = leagueDetails.fixtures ? [...leagueDetails.fixtures].sort((a, b) => a.order - b.order) : [];
+          console.log(`DEBUG (fetchLeagues for ${selectLeagueId}): Setting selectedLeagueFixtures`, JSON.stringify(sortedFixtures, null, 2)); // DEBUG LOG
           setSelectedLeagueFixtures(sortedFixtures);
           setSelectedLeagueId(selectLeagueId); // Stelle sicher, dass die ID gesetzt ist
           setIsOrderChanged(false); // Setze Order-Status zurück
@@ -760,7 +761,9 @@ export default function LeaguesPage() {
              {selectedLeagueId === league.id && (
                <div className="px-4 py-4 sm:px-6 border-t border-gray-200 dark:border-border bg-base-content/10">
                  <div className="flex justify-between items-center mb-3">
-                   <h3 className="text-lg font-semibold text-base-content/70">Spielplan</h3>                   
+                   <h3 className="text-lg font-semibold text-base-content/70">Spielplan</h3>
+                   {/* DEBUG LOG before rendering list */}
+                   {console.log(`DEBUG (Render): selectedLeagueFixtures for league ${selectedLeagueId}`, JSON.stringify(selectedLeagueFixtures, null, 2))}                   
                    {isOrderChanged && (
                       <button
                         onClick={handleSaveFixtureOrder}
