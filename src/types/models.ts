@@ -82,7 +82,7 @@ export type LeagueOverview = Pick<PrismaLeague,
   'pointsWin30' | 'pointsWin31' | 'pointsWin32' | 'pointsLoss32' | 'scoreEntryType' | 'setsToWin'
 > & {
   teams: TeamBasicInfo[]; // Nur Basis-Infos der Teams
-  fixtures?: Pick<Fixture, 'id'>[]; // Nur IDs der Fixtures für die Übersicht (optional)
+  // fixtures?: Pick<Fixture, 'id'>[]; // Entfernt, da Fixtures über Detail-Route geladen werden
 };
 
 /**

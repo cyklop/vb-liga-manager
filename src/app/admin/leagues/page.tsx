@@ -220,19 +220,47 @@ export default function LeaguesPage() {
  // --- Fixture Display ---
   const handleShowFixtures = (leagueId: number) => {
     if (selectedLeagueId === leagueId) {
-      setSelectedLeagueId(null)
-      setSelectedLeagueFixtures([])
-      setIsOrderChanged(false)
+      setSelectedLeagueId(null);
+      setSelectedLeagueFixtures([]);
+      setIsOrderChanged(false);
     } else {
-      const league = leagues.find(l => l.id === leagueId)
-      // Ensure fixtures are sorted by order when displaying
-      const sortedFixtures = league?.fixtures ? [...league.fixtures].sort((a, b) => a.order - b.order) : [];
-      setSelectedLeagueFixtures(sortedFixtures);
-      setSelectedLeagueId(leagueId)
-      setIsOrderChanged(false)
-      if (!league?.fixtures) {
-        console.warn(`Fixtures for league ${leagueId} not found in fetched data.`);
+      // Immer die Details laden, wenn eine Liga ausgewählt wird
+      fetchLeagueDetailsAndSetFixtures(leagueId);
+      // Die folgenden Zeilen sind nicht mehr nötig, da fetchLeagueDetailsAndSetFixtures den State setzt
+      // const league = leagues.find(l => l.id === leagueId)
+      // const sortedFixtures = league?.fixtures ? [...league.fixtures].sort((a, b) => a.order - b.order) : [];
+      // setSelectedLeagueFixtures(sortedFixtures);
+      // setSelectedLeagueId(leagueId)
+      // setIsOrderChanged(false)
+      // if (!league?.fixtures) {
+      //   console.warn(`Fixtures for league ${leagueId} not found in fetched data.`);
+      // }
+    }
+  };
+
+  // Funktion zum expliziten Laden der Liga-Details und Setzen der Fixtures
+  const fetchLeagueDetailsAndSetFixtures = async (leagueId: number) => {
+    try {
+      const response = await fetch(`/api/leagues/${leagueId}`);
+      if (response.ok) {
+        const leagueDetails: LeagueDetails = await response.json();
+        console.log(`DEBUG (fetchLeagueDetailsAndSetFixtures for ${leagueId}): Received leagueDetails`, JSON.stringify(leagueDetails, null, 2)); // DEBUG LOG
+        const sortedFixtures = leagueDetails.fixtures ? [...leagueDetails.fixtures].sort((a, b) => a.order - b.order) : [];
+        console.log(`DEBUG (fetchLeagueDetailsAndSetFixtures for ${leagueId}): Setting selectedLeagueFixtures`, JSON.stringify(sortedFixtures, null, 2)); // DEBUG LOG
+        setSelectedLeagueFixtures(sortedFixtures);
+        setSelectedLeagueId(leagueId);
+        setIsOrderChanged(false);
+      } else {
+        console.error(`Fehler beim Abrufen der Liga-Details für ID ${leagueId}:`, response.statusText);
+        toast.error('Fehler beim Laden der Liga-Details.');
+        setSelectedLeagueId(leagueId); // Setze ID trotzdem, aber zeige leere Fixtures
+        setSelectedLeagueFixtures([]);
       }
+    } catch (error) {
+      console.error(`Fehler beim Abrufen der Liga-Details für ID ${leagueId}`, error);
+      toast.error('Netzwerkfehler beim Laden der Liga-Details.');
+      setSelectedLeagueId(leagueId); // Setze ID trotzdem
+      setSelectedLeagueFixtures([]);
     }
   };
 

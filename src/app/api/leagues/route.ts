@@ -32,11 +32,21 @@ export async function GET(request: Request) {
               id: true,
               name: true
             }
-          },
-          fixtures: {
-            include: {
-              homeTeam: {
-                select: { id: true, name: true }
+          }
+          // Entferne fixtures include, da sie nicht mehr für Overview benötigt werden
+          // fixtures: {
+          //   include: {
+          //     homeTeam: {
+          //       select: { id: true, name: true }
+          //     },
+          //     awayTeam: {
+          //       select: { id: true, name: true }
+          //     }
+          //   }
+          // }
+        },
+        orderBy: {
+          createdAt: 'desc'
               },
               awayTeam: {
                 select: { id: true, name: true }
@@ -57,11 +67,21 @@ export async function GET(request: Request) {
               id: true,
               name: true
             }
-          },
-          fixtures: {
-            include: {
-              homeTeam: {
-                select: { id: true, name: true }
+          }
+          // Entferne fixtures include
+          // fixtures: {
+          //   include: {
+          //     homeTeam: {
+          //       select: { id: true, name: true }
+          //     },
+          //     awayTeam: {
+          //       select: { id: true, name: true }
+          //     }
+          //   }
+          // }
+        },
+        orderBy: {
+          createdAt: 'desc'
               },
               awayTeam: {
                 select: { id: true, name: true }
@@ -79,8 +99,8 @@ export async function GET(request: Request) {
     const responseLeagues: LeagueOverview[] = leagues.map(league => ({
       ...league,
       teams: league.teams.map(team => ({ id: team.id, name: team.name })), // Map zu TeamBasicInfo
-      // Optional: Nur Fixture-IDs für die Übersicht
-      fixtures: league.fixtures?.map(f => ({ id: f.id })) as Pick<Fixture, 'id'>[] | undefined,
+      // Entferne fixtures Mapping
+      // fixtures: league.fixtures?.map(f => ({ id: f.id })) as Pick<Fixture, 'id'>[] | undefined,
     }));
 
     return NextResponse.json(responseLeagues);
