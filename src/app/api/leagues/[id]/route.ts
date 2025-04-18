@@ -1,122 +1,82 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { ScoreEntryType } from '@prisma/client'; // Import the enum
-import { createSlug, isValidSlug } from '@/lib/slugify';
-// Importiere zentrale Typen für die Rückgabe
-import type { LeagueDetails, Team, Fixture, TeamBasicInfo } from '@/types/models'; // Füge TeamBasicInfo hinzu
+import { createSlug, isValidSlug } from '@/lib/slugify'; // Wird im Service verwendet
+import { getServerSession } from 'next-auth/next'; // Import für Auth-Check
+import { authOptions } from '@/lib/auth'; // Import für Auth-Check
+// Importiere Service-Funktionen und Typen
+import { getLeagueDetailsById, deleteLeague, updateLeague, type UpdateLeagueData } from '@/services/leagueService';
+import type { LeagueDetails } from '@/types/models';
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const id = parseInt((await params).id);
+  const idParam = (await params).id;
+  const id = parseInt(idParam);
   if (isNaN(id)) {
     return NextResponse.json({ message: 'Ungültige Liga-ID' }, { status: 400 });
   }
 
   try {
-    const league = await prisma.league.findUnique({
-      where: { id },
-      include: {
-        teams: { // Lade volle Team-Daten für Mapping
-          include: {
-            teamLeader: { select: { id: true, name: true } } // Beispiel: Lade Teamleiter-Basisinfos
-          }
-        },
-        fixtures: { // Lade Fixtures mit Basis-Team-Infos
-          include: {
-            homeTeam: { select: { id: true, name: true } },
-            awayTeam: { select: { id: true, name: true } }
-          },
-          orderBy: { order: 'asc' } // Sortiere Fixtures nach Reihenfolge
-        }
-      }
-    });
+    // Rufe Service-Funktion auf
+    const leagueDetails = await getLeagueDetailsById(id);
 
-    if (!league) {
+    if (!leagueDetails) {
       return NextResponse.json({ message: 'Liga nicht gefunden' }, { status: 404 });
     }
 
-    // Konvertiere die Liga in LeagueDetails
-    const responseLeague: LeagueDetails = {
-      ...league,
-      teams: league.teams.map(team => ({ // Map zu vollem Team-Typ
-        id: team.id,
-        name: team.name,
-        location: team.location,
-        hallAddress: team.hallAddress,
-        trainingTimes: team.trainingTimes,
-        teamLeader: team.teamLeader ? { // Map zu UserProfile
-          id: team.teamLeader.id,
-          name: team.teamLeader.name,
-        } : null,
-      })),
-      // Explizites Mapping zu unserem zentralen Fixture-Typ
-      fixtures: league.fixtures.map(dbFixture => {
-        // Stelle sicher, dass die Team-Objekte vorhanden sind
-        const homeTeamInfo: TeamBasicInfo = dbFixture.homeTeam
-          ? { id: dbFixture.homeTeam.id, name: dbFixture.homeTeam.name }
-          : { id: dbFixture.homeTeamId, name: 'N/A' }; // Fallback
-        const awayTeamInfo: TeamBasicInfo = dbFixture.awayTeam
-          ? { id: dbFixture.awayTeam.id, name: dbFixture.awayTeam.name }
-          : { id: dbFixture.awayTeamId, name: 'N/A' }; // Fallback
-
-        return {
-          id: dbFixture.id,
-          leagueId: dbFixture.leagueId,
-          round: dbFixture.round,
-          matchday: dbFixture.matchday,
-          homeTeamId: dbFixture.homeTeamId,
-          homeTeam: homeTeamInfo, // Verwende das gemappte Objekt
-          awayTeamId: dbFixture.awayTeamId,
-          awayTeam: awayTeamInfo, // Verwende das gemappte Objekt
-          fixtureDate: dbFixture.fixtureDate?.toISOString() || null, // Konvertiere Datum zu String oder null
-          fixtureTime: dbFixture.fixtureTime,
-          homeScore: dbFixture.homeScore, // Sollte null sein für neue Fixtures
-          awayScore: dbFixture.awayScore, // Sollte null sein
-          homeSet1: dbFixture.homeSet1,
-          awaySet1: dbFixture.awaySet1,
-          homeSet2: dbFixture.homeSet2,
-          awaySet2: dbFixture.awaySet2,
-          homeSet3: dbFixture.homeSet3,
-          awaySet3: dbFixture.awaySet3,
-          homeSet4: dbFixture.homeSet4,
-          awaySet4: dbFixture.awaySet4,
-          homeSet5: dbFixture.homeSet5,
-          awaySet5: dbFixture.awaySet5,
-          homeMatchPoints: dbFixture.homeMatchPoints, // Sollte null sein
-          awayMatchPoints: dbFixture.awayMatchPoints, // Sollte null sein
-          homePoints: dbFixture.homePoints, // Ball points, sollte null sein
-          awayPoints: dbFixture.awayPoints, // Ball points, sollte null sein
-          order: dbFixture.order,
-        };
-      }), // Kein 'as Fixture[]' Cast mehr nötig, da wir den Typ explizit erstellen
-    };
-
-    return NextResponse.json(responseLeague);
+    return NextResponse.json(leagueDetails);
 
   } catch (error) {
-    console.error(`Error fetching league details for ID ${id}:`, error);
+    console.error(`Fehler beim Abrufen der Liga-Details für ID ${id} (API):`, error);
     return NextResponse.json({ message: 'Fehler beim Abrufen der Liga-Details' }, { status: 500 });
   }
 }
 
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const id = parseInt((await params).id);
+  // --- Berechtigungsprüfung (Beispiel: Nur Admins) ---
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.isAdmin) {
+      return NextResponse.json({ message: 'Nicht autorisiert' }, { status: 403 });
+  }
+  // --- Ende Berechtigungsprüfung ---
+
+  const idParam = (await params).id;
+  const id = parseInt(idParam);
+  if (isNaN(id)) {
+    return NextResponse.json({ message: 'Ungültige Liga-ID' }, { status: 400 });
+  }
 
   try {
-    await prisma.league.delete({
-      where: { id },
-    })
-    return NextResponse.json({ message: 'Liga erfolgreich gelöscht' })
+    // Rufe Service-Funktion auf
+    await deleteLeague(id);
+    return NextResponse.json({ message: 'Liga erfolgreich gelöscht' });
+
   } catch (error) {
-    console.error('Error deleting league:', error)
+    console.error('Fehler beim Löschen der Liga (API):', error);
+    // Handle spezifische Fehler vom Service
+    if (error instanceof Error && error.message.includes('Spielpläne existieren')) {
+        return NextResponse.json({ message: error.message }, { status: 409 }); // Conflict
+    }
     return NextResponse.json({ message: 'Fehler beim Löschen der Liga' }, { status: 500 })
   } 
   // No finally block needed for singleton
 }
 
-export async function PUT(request: Request, { params }: { params: Promise<{ id: string }>  }) {
-  const id = parseInt((await params).id)
-  const { 
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  // --- Berechtigungsprüfung (Beispiel: Nur Admins) ---
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.isAdmin) {
+      return NextResponse.json({ message: 'Nicht autorisiert' }, { status: 403 });
+  }
+  // --- Ende Berechtigungsprüfung ---
+
+  const idParam = (await params).id;
+  const id = parseInt(idParam);
+  if (isNaN(id)) {
+    return NextResponse.json({ message: 'Ungültige Liga-ID' }, { status: 400 });
+  }
+
+  const {
     name, 
     slug: providedSlug,
     numberOfTeams, 
@@ -130,145 +90,52 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     pointsLoss32,
     // Add score entry config fields
     scoreEntryType,
-    setsToWin
-  } = await request.json()
+    setsToWin,
+  } = await request.json();
+
+  // --- Validierung ---
+  if (numberOfTeams !== undefined && teamIds && teamIds.length > numberOfTeams) {
+    return NextResponse.json({ message: `Es können maximal ${numberOfTeams} Teams zugewiesen werden.` }, { status: 400 });
+  }
+  if (scoreEntryType !== undefined && !Object.values(ScoreEntryType).includes(scoreEntryType)) {
+    return NextResponse.json({ message: 'Ungültiger Wert für scoreEntryType.' }, { status: 400 });
+  }
+  if (setsToWin !== undefined && (typeof setsToWin !== 'number' || setsToWin <= 0 || !Number.isInteger(setsToWin))) {
+    return NextResponse.json({ message: 'setsToWin muss eine positive ganze Zahl sein.' }, { status: 400 });
+  }
+  // --- Ende Validierung ---
+
+  const updateData: UpdateLeagueData = {
+    name,
+    slug: providedSlug, // Service kümmert sich um Validierung/Generierung
+    numberOfTeams,
+    hasReturnMatches,
+    teamIds: teamIds?.map(Number), // Stelle sicher, dass IDs Zahlen sind
+    isActive,
+    pointsWin30: pointsWin30 !== undefined ? Number(pointsWin30) : undefined,
+    pointsWin31: pointsWin31 !== undefined ? Number(pointsWin31) : undefined,
+    pointsWin32: pointsWin32 !== undefined ? Number(pointsWin32) : undefined,
+    pointsLoss32: pointsLoss32 !== undefined ? Number(pointsLoss32) : undefined,
+    scoreEntryType,
+    setsToWin: setsToWin !== undefined ? Number(setsToWin) : undefined,
+  };
 
   try {
-    // Überprüfen, ob die Anzahl der ausgewählten Teams die maximale Anzahl überschreitet
-    if (teamIds && teamIds.length > numberOfTeams) {
-      return NextResponse.json(
-        { message: `Es können maximal ${numberOfTeams} Teams zugewiesen werden` }, 
-        { status: 400 }
-      )
+    // Rufe Service-Funktion auf
+    const updatedLeague = await updateLeague(id, updateData);
+
+    if (!updatedLeague) {
+      return NextResponse.json({ message: 'Liga nicht gefunden' }, { status: 404 });
     }
 
-    // Validate scoreEntryType if provided
-    if (scoreEntryType !== undefined && !Object.values(ScoreEntryType).includes(scoreEntryType)) {
-      return NextResponse.json(
-        { message: 'Ungültiger Wert für scoreEntryType' },
-        { status: 400 }
-      )
-    }
+    return NextResponse.json(updatedLeague);
 
-    // Validate setsToWin if provided (basic check)
-    if (setsToWin !== undefined && (typeof setsToWin !== 'number' || setsToWin <= 0 || !Number.isInteger(setsToWin))) {
-      return NextResponse.json(
-        { message: 'setsToWin muss eine positive ganze Zahl sein' },
-        { status: 400 }
-      )
-    }
-
-    // Aktuelle Liga abrufen
-    const currentLeague = await prisma.league.findUnique({
-      where: { id }
-    })
-    
-    if (!currentLeague) {
-      return NextResponse.json({ message: 'Liga nicht gefunden' }, { status: 404 })
-    }
-    
-    // Slug-Handling
-    let finalSlug = currentLeague.slug
-    
-    // Wenn ein neuer Slug bereitgestellt wurde oder der Name geändert wurde
-    if (providedSlug || (name !== currentLeague.name)) {
-      finalSlug = providedSlug ? providedSlug.trim() : createSlug(name)
-      
-      // Slug-Validierung
-      if (!isValidSlug(finalSlug)) {
-        return NextResponse.json(
-          { message: 'Der URL-Slug darf nur Kleinbuchstaben, Zahlen und Bindestriche enthalten' },
-          { status: 400 }
-        )
-      }
-      
-      // Prüfen, ob der Slug bereits existiert (außer für die aktuelle Liga)
-      const existingLeague = await prisma.league.findFirst({
-        where: { 
-          slug: finalSlug,
-          id: { not: id }
-        }
-      })
-      
-      // Falls der Slug bereits existiert, eine Nummer anhängen
-      let counter = 1
-      while (existingLeague) {
-        finalSlug = `${providedSlug ? providedSlug : createSlug(name)}-${counter}`
-        counter++
-        const checkLeague = await prisma.league.findFirst({
-          where: { 
-            slug: finalSlug,
-            id: { not: id }
-          }
-        })
-        if (!checkLeague) break
-      }
-    }
-
-    // Zuerst alle bestehenden Team-Verbindungen entfernen
-    await prisma.league.update({
-      where: { id },
-      data: {
-        teams: {
-          set: [] // Alle Team-Verbindungen entfernen
-        }
-      }
-    })
-
-    // Liga aktualisieren und neue Team-Verbindungen erstellen
-    const updatedLeague = await prisma.league.update({
-      where: { id },
-      data: {
-        name,
-        slug: finalSlug,
-        numberOfTeams,
-        hasReturnMatches,
-        isActive: isActive !== undefined ? isActive : undefined,
-        // Update point rules - ensure they are numbers or use defaults/existing
-        pointsWin30: pointsWin30 !== undefined ? Number(pointsWin30) : undefined,
-        pointsWin31: pointsWin31 !== undefined ? Number(pointsWin31) : undefined,
-        pointsWin32: pointsWin32 !== undefined ? Number(pointsWin32) : undefined,
-        pointsLoss32: pointsLoss32 !== undefined ? Number(pointsLoss32) : undefined,
-        // Update score entry config only if provided
-        scoreEntryType: scoreEntryType !== undefined ? scoreEntryType : undefined,
-        setsToWin: setsToWin !== undefined ? Number(setsToWin) : undefined,
-        ...(teamIds && teamIds.length > 0 && {
-          teams: {
-            connect: teamIds.map((teamId: number) => ({ id: Number(teamId) })) // Ensure team IDs are numbers
-          }
-        })
-      },
-      include: {
-        teams: true, // Behalte Teams für die Konvertierung
-        fixtures: true // Behalte Fixtures für die Konvertierung
-      }
-    });
-
-    // Konvertiere die aktualisierte Liga in LeagueDetails
-    const responseLeague: LeagueDetails = {
-      ...updatedLeague,
-      teams: updatedLeague.teams.map(team => ({ // Map zu vollem Team-Typ
-        id: team.id,
-        name: team.name,
-        // Füge hier ggf. weitere Felder aus dem zentralen Team-Typ hinzu
-        location: team.location, // Beispiel
-        hallAddress: team.hallAddress, // Beispiel
-        trainingTimes: team.trainingTimes, // Beispiel
-      })),
-      fixtures: updatedLeague.fixtures.map(fixture => { // Map zu zentralem Fixture-Typ
-        const homeTeam = updatedLeague.teams.find(t => t.id === fixture.homeTeamId);
-        const awayTeam = updatedLeague.teams.find(t => t.id === fixture.awayTeamId);
-        return {
-          ...fixture,
-          homeTeam: { id: fixture.homeTeamId, name: homeTeam?.name || 'N/A' }, // Hole Namen
-          awayTeam: { id: fixture.awayTeamId, name: awayTeam?.name || 'N/A' }, // Hole Namen
-        };
-      }) as Fixture[], // Cast zum zentralen Fixture-Typ
-    };
-
-    return NextResponse.json(responseLeague);
   } catch (error) {
-    console.error('Error updating league:', error);
+    console.error('Fehler beim Aktualisieren der Liga (API):', error);
+    // Handle spezifische Fehler vom Service
+    if (error instanceof Error && error.message.includes('Slug')) {
+        return NextResponse.json({ message: error.message }, { status: 400 });
+    }
     return NextResponse.json({ message: 'Fehler beim Aktualisieren der Liga' }, { status: 500 })
   }
   // No finally block needed for singleton
