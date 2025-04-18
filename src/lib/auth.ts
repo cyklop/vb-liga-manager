@@ -1,33 +1,13 @@
-import { AuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcrypt";
-import { prisma } from "@/lib/prisma";
+import { AuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import bcrypt from 'bcrypt';
+import { prisma } from '@/lib/prisma';
+// Importiere den Typ für die authorize-Rückgabe und JWT/Session
+import type { TeamBasicInfo } from '@/types/models'; // Passe Pfad an
 
-// Debug-Variable entfernt
+// Die declare module Blöcke werden jetzt von src/types/next-auth.d.ts gehandhabt
+// Entferne die lokalen declare module Blöcke hier
 
-declare module "next-auth" {
-  interface User {
-    id: number;
-    email: string;
-    name: string; 
-    isAdmin?: boolean;
-    isSuperAdmin?: boolean;
-    team?: { id: number; name: string } | null;
-    rememberMe?: boolean;
-  }
-
-  interface Session {
-    user: {
-      id: number;
-      email?: string | null;
-      name?: string | null;
-      isAdmin?: boolean;
-      isSuperAdmin?: boolean;
-      team?: { id: number; name: string } | null;
-      rememberMe?: boolean;
-    }
-  }
-}
 
 export const authOptions: AuthOptions = {
   
