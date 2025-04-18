@@ -15,9 +15,10 @@ const navigation = [
   { name: 'Spielplan', href: '/fixtures' },
 ]
 
+// Reihenfolge: Benutzer, Mannschaften, Ligen
 const adminNavigation = [
-  { name: 'Mannschaften', href: '/admin/teams' },
   { name: 'Benutzer', href: '/admin/users' },
+  { name: 'Mannschaften', href: '/admin/teams' },
   { name: 'Ligen', href: '/admin/leagues' },
 ]
 
