@@ -29,11 +29,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     return NextResponse.json(teamDetails);
   } catch (error) {
     console.error('Error fetching team details (API):', error);
-    }
-
-    return NextResponse.json(team);
-  } catch (error) {
-    console.error('Error fetching team details:', error);
-    return NextResponse.json({ message: 'Serverfehler' }, { status: 500 });
+    // Korrigierter Catch-Block: Nur die Fehlermeldung zurückgeben
+    return NextResponse.json({ message: 'Serverfehler beim Abrufen der Team-Details' }, { status: 500 });
   }
 }
