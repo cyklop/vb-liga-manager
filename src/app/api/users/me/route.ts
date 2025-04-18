@@ -127,10 +127,27 @@ export async function PUT(request: Request) {
       } : null
     }
 
-    return NextResponse.json(formattedUser)
+    // Transformiere die Teams-Daten in das TeamBasicInfo Format
+    const teamsBasicInfo: TeamBasicInfo[] = updatedUser.teams.map(ut => ({
+      id: ut.team.id,
+      name: ut.team.name
+    }));
+
+    // Erstelle das UserProfile-Objekt für die Rückgabe
+    // Entferne sensible Felder
+    const { password: updatedPassword, passwordResetToken: updatedPrT, passwordResetExpires: updatedPrE, passwordSetupToken: updatedPsT, passwordSetupExpires: updatedPsE, ...userData } = updatedUser;
+
+    const userProfile: UserProfile = {
+      ...userData,
+      teams: teamsBasicInfo,
+      // Füge das 'team'-Feld hinzu, falls benötigt
+      team: teamsBasicInfo.length > 0 ? teamsBasicInfo[0] : null
+    };
+
+    return NextResponse.json(userProfile);
   } catch (error) {
-    console.error('Fehler beim Aktualisieren des Benutzerprofils:', error)
-    return NextResponse.json({ message: 'Ein Fehler ist aufgetreten' }, { status: 500 })
+    console.error('Fehler beim Aktualisieren des Benutzerprofils:', error);
+    return NextResponse.json({ message: 'Ein Fehler ist aufgetreten' }, { status: 500 });
   }
   // No finally block needed for singleton
 }
