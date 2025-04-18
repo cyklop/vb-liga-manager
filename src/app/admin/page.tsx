@@ -57,6 +57,16 @@ export default function AdminPage() {
           <h2 className="text-xl font-bold mb-6">Verwaltung</h2>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {/* 1. Benutzer */}
+            <Link
+              href="/admin/users"
+              className="flex flex-col items-center justify-center p-6 bg-base-100 rounded-box shadow-md hover:shadow-lg transition-shadow duration-300"
+            >
+              <UsersIcon className="h-12 w-12 mb-4" aria-hidden="true" />
+              <span className="font-medium">Benutzer verwalten</span>
+            </Link>
+
+            {/* 2. Mannschaften */}
             <Link
               href="/admin/teams"
               className="flex flex-col items-center justify-center p-6 bg-base-100 rounded-box shadow-md hover:shadow-lg transition-shadow duration-300"
@@ -65,14 +75,7 @@ export default function AdminPage() {
               <span className="font-medium">Mannschaften verwalten</span>
             </Link>
             
-            <Link
-              href="/admin/users"
-              className="flex flex-col items-center justify-center p-6 bg-base-100 rounded-box shadow-md hover:shadow-lg transition-shadow duration-300"
-            >
-              <UsersIcon className="h-12 w-12 mb-4" aria-hidden="true" />
-              <span className="font-medium">Benutzer verwalten</span>
-            </Link>
-            
+            {/* 3. Ligen */}
             <Link
               href="/admin/leagues"
               className="flex flex-col items-center justify-center p-6 bg-base-100 rounded-box shadow-md hover:shadow-lg transition-shadow duration-300"
