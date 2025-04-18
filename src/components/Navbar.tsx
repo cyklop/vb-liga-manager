@@ -204,8 +204,9 @@ export default function Navbar() {
               <Cog6ToothIcon className="h-5 w-5" />
             </Link>
             {/* Logout Button */}
-            <button onClick={handleLogout} className="btn btn-ghost btn-square ml-1" title="Logout"> {/* Added title attribute */}
+            <button onClick={handleLogout} className="btn btn-ghost ml-1" title="Logout"> {/* Added title attribute */}
               <ArrowRightStartOnRectangleIcon className="h-5 w-5" />
+              Logout
             </button>
           </>
         ) : (
