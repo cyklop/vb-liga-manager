@@ -9,7 +9,7 @@ export type CalculationFixture = Pick<CentralFixture,
   'homeSet1' | 'awaySet1' | 'homeSet2' | 'awaySet2' | 'homeSet3' | 'awaySet3' |
   'homeSet4' | 'awaySet4' | 'homeSet5' | 'awaySet5' |
   'homePoints' | 'awayPoints' | 'homeMatchPoints' | 'awayMatchPoints' // home/awayPoints = Ball Points, home/awayMatchPoints = League Points
-> {}
+>; // Removed the empty {}
 
 // Interface für die benötigten Liga-Daten für die Berechnung
 // Verwende einen Pick aus LeagueDetails oder LeagueOverview
