@@ -104,10 +104,20 @@ export async function POST(request: Request) {
     const teamsBasicInfo: TeamBasicInfo[] = userWithTeams.teams.map(ut => ut.team);
 
     // Entferne sensible Felder für die Antwort
-    const { password, passwordResetToken, passwordResetExpires, passwordSetupToken, passwordSetupExpires, ...userResponseData } = userWithTeams;
+    // Benenne die kollidierenden Variablen beim Destrukturieren um
+    const {
+      password,
+      passwordResetToken,
+      passwordResetExpires,
+      passwordSetupToken: _dbPasswordSetupToken, // Umbenannt
+      passwordSetupExpires: _dbPasswordSetupExpires, // Umbenannt
+      ...userResponseData
+    } = userWithTeams;
 
     const responseUser: AdminUserListItem = {
-        ...userResponseData,
+        ...(userResponseData as Omit<typeof userResponseData, 'teams'>), // Stelle sicher, dass der Typ passt
+        isAdmin: userResponseData.isAdmin ?? false, // Stelle sicher, dass boolean
+        isSuperAdmin: userResponseData.isSuperAdmin ?? false, // Stelle sicher, dass boolean
         teams: teamsBasicInfo,
         team: teamsBasicInfo.length > 0 ? teamsBasicInfo[0] : null
     };
