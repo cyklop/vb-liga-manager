@@ -4,13 +4,12 @@ import { useState, useEffect } from 'react';
 import Navigation from '@/components/Navbar';
 import { ArrowDownIcon } from '@heroicons/react/20/solid';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+// Importiere zentrale Typen
+import type { TeamBasicInfo as Team, League as LeagueType, TableEntry as TableEntryType } from '@/types/models'; // Verwende TeamBasicInfo als Team
 
-interface Team {
-  id: number;
-  name: string;
-}
-
-interface League {
+// Lokale Team/League/TableEntry Interfaces entfernt (werden später zentralisiert oder durch Import ersetzt)
+// Temporäre Definitionen für Kompilierung, bis League/TableEntry zentralisiert sind
+interface League { // Behalte temporär, bis League zentralisiert ist
   id: number;
   name: string;
   teams: Team[];
@@ -19,8 +18,7 @@ interface League {
   pointsWin32: number;
   pointsLoss32: number;
 }
-
-interface TableEntry {
+interface TableEntry { // Behalte temporär, bis TableEntry zentralisiert ist
   teamId: number;
   teamName: string;
   played: number;
@@ -38,6 +36,7 @@ interface TableEntry {
 }
 
 export default function TablePage() {
+  // Verwende temporäre League/TableEntry Typen
   const [leagues, setLeagues] = useState<League[]>([]);
   const [activeLeagueId, setActiveLeagueId] = useState<number | null>(null);
   const [tableData, setTableData] = useState<TableEntry[]>([]);

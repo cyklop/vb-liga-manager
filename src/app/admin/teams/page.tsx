@@ -7,25 +7,17 @@ import Modal from '@/components/Modal'
 import DeleteConfirmation from '@/components/DeleteConfirmation' // Import hinzufügen
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { toast } from 'react-toastify';
-// Importiere zentrale Typen (UserProfile, Team wird später definiert)
-import type { UserProfile } from '@/types/models';
+// Importiere zentrale Typen
+import type { UserProfile, Team } from '@/types/models'; // Füge Team hinzu
 
-// Lokale User/Team Interfaces entfernt (Team wird später zentralisiert)
-// Temporäre Team-Definition für Kompilierung, wird später ersetzt
-interface Team {
-  id: number;
-  name: string;
-  location: string;
-  hallAddress: string;
-  trainingTimes: string;
-  teamLeader?: UserProfile | null; // Verwende UserProfile
-}
+// Lokale Team-Definition entfernt
 
 
 export default function TeamsPage() {
   const router = useRouter() // Initialize router
-  const [teams, setTeams] = useState<Team[]>([]) // Team wird später zentralisiert
-  const [users, setUsers] = useState<UserProfile[]>([]) // Verwende UserProfile
+  // Verwende den zentralen Team-Typ
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [users, setUsers] = useState<UserProfile[]>([]); // UserProfile bleibt
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Use a separate state for form data, including teamLeaderId
   interface TeamFormData {
@@ -36,11 +28,13 @@ export default function TeamsPage() {
     trainingTimes?: string;
     teamLeaderId?: string; // Use string for select compatibility
   }
-  const [formData, setFormData] = useState<TeamFormData>({})
-  const [editingTeam, setEditingTeam] = useState<Team | null>(null)
+  const [formData, setFormData] = useState<TeamFormData>({});
+  // Verwende den zentralen Team-Typ
+  const [editingTeam, setEditingTeam] = useState<Team | null>(null);
   // State für Löschbestätigung hinzufügen
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
-  const [teamToDelete, setTeamToDelete] = useState<Team | null>(null)
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  // Verwende den zentralen Team-Typ
+  const [teamToDelete, setTeamToDelete] = useState<Team | null>(null);
 
   // Removed currentUser, isAdmin, userTeamId states
 
@@ -134,11 +128,11 @@ export default function TeamsPage() {
     }
   }
 
-  // Funktion, um den Löschdialog zu öffnen
+  // Funktion, um den Löschdialog zu öffnen (Typ ist bereits korrekt)
   const requestDeleteTeam = (team: Team) => {
-    setTeamToDelete(team)
-    setShowDeleteConfirmation(true)
-  }
+    setTeamToDelete(team);
+    setShowDeleteConfirmation(true);
+  };
 
   // Funktion, die die Löschung nach Bestätigung durchführt
   const confirmDeleteTeam = async () => {

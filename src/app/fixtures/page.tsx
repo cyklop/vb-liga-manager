@@ -3,13 +3,12 @@
 import { useState, useEffect } from 'react';
 import Navigation from '@/components/Navbar';
 import { ScoreEntryType } from '@prisma/client'; // Import the enum
+// Importiere zentrale Typen
+import type { TeamBasicInfo as Team, Fixture as FixtureType, League as LeagueType } from '@/types/models'; // Verwende TeamBasicInfo als Team für diese Seite
 
-interface Team {
-  id: number;
-  name: string;
-}
-
-interface Fixture {
+// Lokale Team/Fixture/League Interfaces entfernt (werden später zentralisiert oder durch Import ersetzt)
+// Temporäre Definitionen für Kompilierung, bis Fixture/League zentralisiert sind
+interface Fixture { // Behalte temporär, bis Fixture zentralisiert ist
   id: number;
   leagueId: number;
   round?: number | null;
@@ -37,22 +36,26 @@ interface Fixture {
   awayMatchPoints?: number | null;
 
   order: number;
+  league?: { // Behalte temporär, bis Fixture zentralisiert ist
+    scoreEntryType: ScoreEntryType;
+    setsToWin: number;
+  };
 }
-
-interface League {
+interface League { // Behalte temporär, bis League zentralisiert ist
   id: number;
   name: string;
-  teams: Team[];
-  // Add score entry config fields to interface (assuming API provides them)
-  scoreEntryType?: ScoreEntryType; // Make optional for now as API might not send it yet
-  setsToWin?: number; // Make optional for now
+  teams: Team[]; // Verwende importiertes Team (TeamBasicInfo)
+  scoreEntryType?: ScoreEntryType;
+  setsToWin?: number;
 }
 
+
 export default function FixturesPage() {
+  // Verwende temporäre Fixture/League Typen, bis sie zentralisiert sind
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
-  const [leagues, setLeagues] = useState<League[]>([]);
+  const [leagues, setLeagues] = useState<League[]>([]); // Verwendet temporäres League Interface
   const [activeLeagueId, setActiveLeagueId] = useState<number | null>(null);
-  const [showOnlyUpcoming, setShowOnlyUpcoming] = useState(false); // Standardmäßig alle Spiele anzeigen
+  const [showOnlyUpcoming, setShowOnlyUpcoming] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

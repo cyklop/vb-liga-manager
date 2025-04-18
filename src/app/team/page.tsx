@@ -7,18 +7,11 @@ import { toast } from 'react-toastify';
 import { ScoreEntryType } from '@prisma/client'; // Import the enum
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 // Importiere zentrale Typen (Team/Fixture werden später definiert)
-import type { UserProfile } from '@/types/models';
+import type { UserProfile, Team, Fixture as FixtureType } from '@/types/models'; // Importiere zentrales Team
 
-// Lokale User/Team/Fixture Interfaces entfernt (Team/Fixture werden später zentralisiert)
-// Temporäre Definitionen für Kompilierung, werden später ersetzt
-interface Team {
-  id: number;
-  name: string;
-  location: string;
-  hallAddress: string;
-  trainingTimes: string;
-}
-interface Fixture {
+// Lokale Team/Fixture Interfaces entfernt (Fixture wird später zentralisiert)
+// Temporäre Definition für Fixture
+interface Fixture { // Behalte temporär, bis Fixture zentralisiert ist
   id: number;
   leagueId: number;
   round?: number | null;
@@ -80,7 +73,9 @@ export default function TeamPage() {
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
   const [homeFixtures, setHomeFixtures] = useState<{[teamId: number]: Fixture[]}>({}); 
   const [isLoading, setIsLoading] = useState(true);
+  // Verwende temporären Fixture-Typ
   const [editingFixture, setEditingFixture] = useState<Fixture | null>(null);
+  // Verwende zentralen Team-Typ
   const [editingTeam, setEditingTeam] = useState<Team | null>(null);
   const [teamFormData, setTeamFormData] = useState({
     location: '',
@@ -109,6 +104,7 @@ export default function TeamPage() {
     async function loadTeamData() {
       if (currentUser) {
         // Verwende ein Set, um IDs eindeutig zu halten, und ein Objekt für die Teamdaten
+        // Stelle sicher, dass der Typ hier mit dem zentralen Team-Typ übereinstimmt
         const uniqueTeams: { [key: number]: Team } = {};
         const processedTeamIds = new Set<number>();
 
@@ -252,7 +248,7 @@ export default function TeamPage() {
     }
   };
   
-  // Funktion zum Bearbeiten eines Teams
+  // Funktion zum Bearbeiten eines Teams (Typ ist bereits korrekt)
   const handleEditTeam = (team: Team) => {
     setEditingTeam(team);
     setTeamFormData({

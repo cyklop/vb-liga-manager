@@ -1,8 +1,10 @@
-import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+// Importiere zentrale Typen für die Rückgabe
+import type { Team, UserProfile } from '@/types/models';
 
-export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }>  }) {
-  const id = parseInt((await params).id)
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const id = parseInt((await params).id);
 
   try {
     await prisma.team.delete({
@@ -38,10 +40,21 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
           },
         },
       },
-    })
-    return NextResponse.json(updatedTeam)
+    });
+
+    // Konvertiere das aktualisierte Prisma-Team in den zentralen Team-Typ
+    const responseTeam: Team = {
+      ...updatedTeam,
+      teamLeader: updatedTeam.teamLeader ? {
+        id: updatedTeam.teamLeader.id,
+        name: updatedTeam.teamLeader.name,
+        // Füge hier weitere benötigte UserProfile-Felder hinzu
+      } : null
+    };
+
+    return NextResponse.json(responseTeam);
   } catch (error) {
-    console.error('Error updating team:', error)
+    console.error('Error updating team:', error);
     return NextResponse.json({ message: 'Fehler beim Aktualisieren des Teams' }, { status: 500 })
   }
   // No finally block needed for singleton

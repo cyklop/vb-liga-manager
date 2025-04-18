@@ -6,16 +6,14 @@ import { useParams } from 'next/navigation'
 // import { Tabs, TabsHeader, TabsBody, Tab, TabPanel } from "@material-tailwind/react"
 // Behalte Checkbox und Typography, falls sie noch woanders verwendet werden (Checkbox wird noch verwendet)
 import { Checkbox, Typography } from "@material-tailwind/react"
-import { ThemeProvider } from '@/components/ThemeProvider'
-import { ScoreEntryType } from '@prisma/client'
+import { ThemeProvider } from '@/components/ThemeProvider';
+import { ScoreEntryType } from '@prisma/client';
+// Importiere zentrale Typen
+import type { TeamBasicInfo as Team, Fixture as FixtureType, League as LeagueType } from '@/types/models'; // Verwende TeamBasicInfo als Team
 
-// Typen für die Daten
-interface Team {
-  id: number
-  name: string
-}
-
-interface Fixture {
+// Lokale Team/Fixture/League Interfaces entfernt (werden später zentralisiert oder durch Import ersetzt)
+// Temporäre Definitionen für Kompilierung, bis Fixture/League zentralisiert sind
+interface Fixture { // Behalte temporär, bis Fixture zentralisiert ist
   id: number
   leagueId: number
   round?: number | null
@@ -38,23 +36,20 @@ interface Fixture {
   homeScore?: number | null;
   awayScore?: number | null;
 }
-
-interface League {
-  id: number
-  name: string
-  slug: string
-  teams: Team[]
-  fixtures: Fixture[]
-  pointsWin30: number
-  pointsWin31: number
-  pointsWin32: number
-  pointsLoss32: number
-  // Add score entry config fields to interface (API should provide these)
-  scoreEntryType: ScoreEntryType
-  setsToWin: number
+interface League { // Behalte temporär, bis League zentralisiert ist
+  id: number;
+  name: string;
+  slug: string;
+  teams: Team[]; // Verwende importiertes Team (TeamBasicInfo)
+  fixtures: Fixture[]; // Verwende temporäres Fixture
+  pointsWin30: number;
+  pointsWin31: number;
+  pointsWin32: number;
+  pointsLoss32: number;
+  scoreEntryType: ScoreEntryType;
+  setsToWin: number;
 }
-
-interface TableEntry {
+interface TableEntry { // Behalte temporär, bis TableEntry zentralisiert ist
   teamId: number
   teamName: string
   played: number
@@ -70,10 +65,11 @@ interface TableEntry {
 }
 
 export default function PublicLeaguePage() {
-  const { slug } = useParams()
-  const [league, setLeague] = useState<League | null>(null)
-  const [tableData, setTableData] = useState<TableEntry[]>([])
-  // Entferne activeTab State, wird nicht mehr benötigt
+  const { slug } = useParams();
+  // Verwende temporäre League/TableEntry Typen
+  const [league, setLeague] = useState<League | null>(null);
+  const [tableData, setTableData] = useState<TableEntry[]>([]);
+  // Entferne activeTab State
   // const [activeTab, setActiveTab] = useState("table")
   const [showOnlyOpenFixtures, setShowOnlyOpenFixtures] = useState(false); // State für Checkbox
   const [loading, setLoading] = useState(true)

@@ -34,8 +34,15 @@ export type AdminUserListItem = UserProfile & {
   isSuperAdmin: boolean;
 };
 
+/**
+ * Repräsentiert ein Team mit optionalen Teamleiter-Informationen.
+ */
+export type Team = Omit<PrismaTeam, 'teamLeaderId'> & { // Entferne teamLeaderId, da wir das Objekt einbetten
+  teamLeader?: UserProfile | null; // Optionaler Teamleiter als UserProfile
+};
+
+
 // --- Platzhalter für zukünftige Typen ---
-// export type Team = PrismaTeam & { ... };
 // export type LeagueOverview = { ... };
 // export type LeagueDetails = { ... };
 // export type Fixture = { ... };
