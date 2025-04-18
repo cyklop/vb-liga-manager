@@ -185,8 +185,7 @@ export default function TeamPage() {
             }
           }
         }
-       
-        }
+        // Extra brace removed
 
         // Konvertiere das Objekt der eindeutigen Teams zurück in ein Array
         const finalUserTeams = Object.values(uniqueTeams);
