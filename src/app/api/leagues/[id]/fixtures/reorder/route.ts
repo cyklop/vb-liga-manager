@@ -1,10 +1,12 @@
-import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '@/lib/auth'
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
+// Importiere Service-Funktion
+import { reorderFixtures } from '@/services/fixtureService';
 
-export async function PUT(request: Request, { params }: { params: Promise<{ id: string }>  }) {
-  const leagueId = parseInt((await params).id)
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const leagueIdParam = (await params).id;
+  const leagueId = parseInt(leagueIdParam);
   if (isNaN(leagueId)) {
     return NextResponse.json({ message: 'Ungültige Liga-ID' }, { status: 400 })
   }

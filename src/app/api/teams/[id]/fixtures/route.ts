@@ -1,13 +1,15 @@
-import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '@/lib/auth'
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
+// Importiere Service-Funktion
+import { getFixturesByTeamId } from '@/services/fixtureService';
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ id: string }>  }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const teamId = parseInt((await params).id)
+  const teamIdParam = (await params).id;
+  const teamId = parseInt(teamIdParam);
   if (isNaN(teamId)) {
     return NextResponse.json({ message: 'Ungültige Team-ID' }, { status: 400 })
   }
@@ -25,63 +27,30 @@ export async function GET(
   }
 
   // URL-Parameter auslesen
-  const { searchParams } = new URL(request.url)
-  const homeOnly = searchParams.get('homeOnly') === 'true'
+  const { searchParams } = new URL(request.url);
+  const homeOnly = searchParams.get('homeOnly') === 'true';
 
   try {
-    // Prüfen, ob der Benutzer Admin ist oder zum Team gehört
-    const user = await prisma.user.findUnique({
-      where: { id: sessionUserId }, // Verwende die geparste ID
+    // --- Berechtigungsprüfung (bleibt in der Route) ---
+    const user = await prisma.user.findUnique({ // Prisma hier OK für Auth-Check
+      where: { id: sessionUserId },
       include: { teams: true }
-    })
-
+    });
     if (!user) {
-      return NextResponse.json({ message: 'Benutzer nicht gefunden' }, { status: 404 })
+      return NextResponse.json({ message: 'Benutzer nicht gefunden' }, { status: 404 });
     }
-
-    // Nur Admins oder Mitglieder des Teams dürfen die Daten sehen
     const userTeams = user.teams.map(ut => ut.teamId);
     if (!user.isAdmin && !user.isSuperAdmin && !userTeams.includes(teamId)) {
-      return NextResponse.json({ message: 'Keine Berechtigung' }, { status: 403 })
+      return NextResponse.json({ message: 'Keine Berechtigung' }, { status: 403 });
     }
+    // --- Ende Berechtigungsprüfung ---
 
-    // Fixtures abfragen
-    const whereClause = homeOnly
-      ? { homeTeamId: teamId }
-      : { OR: [{ homeTeamId: teamId }, { awayTeamId: teamId }] }
+    // Rufe Service-Funktion auf
+    const fixtures = await getFixturesByTeamId(teamId, homeOnly);
+    return NextResponse.json(fixtures);
 
-    const fixtures = await prisma.fixture.findMany({
-      where: whereClause,
-      include: {
-        homeTeam: {
-          select: {
-            id: true,
-            name: true
-          }
-        },
-        awayTeam: {
-          select: {
-            id: true,
-            name: true
-          }
-        },
-        league: { // Include league details needed for score display
-          select: {
-            scoreEntryType: true,
-            setsToWin: true,
-          }
-        }
-      },
-      orderBy: [
-        { matchday: 'asc' },
-        { fixtureDate: 'asc' },
-        { order: 'asc' }
-      ]
-    })
-
-    return NextResponse.json(fixtures)
   } catch (error) {
-    console.error('Error fetching fixtures:', error)
+    console.error('Fehler beim Abrufen der Spielpaarungen für Team (API):', error);
     return NextResponse.json({ message: 'Ein Fehler ist aufgetreten' }, { status: 500 })
   }
 }
