@@ -108,19 +108,16 @@ export default function TeamPage() {
   useEffect(() => {
     async function loadTeamData() {
       if (currentUser) {
-        const userTeams: Team[] = [];
-        const processedTeamIds: number[] = [];
-      
-        // Verarbeite alle Teams aus dem teams-Array
-        if (currentUser.teams && currentUser.teams.length > 0) {
-          for (const team of currentUser.teams) {
-            // Zusätzliche Prüfung, ob team.team und team.team.id existieren
-            if (!team.team || typeof team.team.id !== 'number' || processedTeamIds.includes(team.team.id)) {
-              continue; 
-            }
-            
+        // Verwende ein Set, um IDs eindeutig zu halten, und ein Objekt für die Teamdaten
+        const uniqueTeams: { [key: number]: Team } = {};
+        const processedTeamIds = new Set<number>();
+
+        // 1. Verarbeite das primäre `team`-Feld (falls vorhanden)
+        if (currentUser.team && typeof currentUser.team.id === 'number') {
+          const teamId = currentUser.team.id;
+          if (!processedTeamIds.has(teamId)) {
             try {
-              const response = await fetch(`/api/teams/${team.team.id}/details`);
+              const response = await fetch(`/api/teams/${teamId}/details`);
               if (response.ok) {
                 const teamDetails: Team = await response.json();
                 uniqueTeams[teamId] = teamDetails;
