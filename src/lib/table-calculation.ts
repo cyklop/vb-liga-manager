@@ -24,18 +24,6 @@ export type CalculationLeague = Pick<LeagueDetails, // Oder LeagueOverview, je n
 /**
  * Berechnet die Ligatabelle basierend auf den Liga-Einstellungen und den Spielergebnissen.
  * @param league - Die Liga-Daten (inkl. Teams, Punktregeln, ScoreEntryType).
-    won: number;
-    lost: number;
-    points: number; // League points
-    setsWon: number;
-    setsLost: number;
-    setsDiff: number;
-    setsQuotient: number;
-    pointsWon: number; // Ball points won
-    pointsLost: number; // Ball points lost
-    pointsDiff: number; // Ball points difference
-    pointsQuotient: number; // Ball points quotient
-    directComparisonWins: number; // Simplified direct comparison tracking
  * @param fixtures - Eine Liste der abgeschlossenen Spiele für die Liga.
  * @returns Ein sortiertes Array von Tabelleneinträgen.
  */

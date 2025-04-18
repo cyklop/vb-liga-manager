@@ -19,19 +19,9 @@ export default function TablePage() {
   const [tableData, setTableData] = useState<TableEntry[]>([]); // Verwende zentralen TableEntry Placeholder
   const [isLoading, setIsLoading] = useState(true);
   const [matchdays, setMatchdays] = useState<number[]>([]);
-  pointsWin30: number;
-  pointsWin31: number;
-  pointsWin32: number;
-  won: number;
-  lost: number;
-  points: number;
-  setsWon: number;
-  setsLost: number;
-  setsDiff: number;
-  setsQuotient: number;
-  pointsWon: number;
-  pointsLost: number;
-  pointsDiff: number;
+  const [selectedMatchday, setSelectedMatchday] = useState<number | null>(null);
+  const [showSortInfo, setShowSortInfo] = useState(false);
+
 
   useEffect(() => {
     // Fetch leagues and active league

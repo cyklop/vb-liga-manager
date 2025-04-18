@@ -18,29 +18,7 @@ export default function FixturesPage() {
   const [leagues, setLeagues] = useState<LeagueOverview[]>([]); // Verwende LeagueOverview
   const [activeLeagueId, setActiveLeagueId] = useState<number | null>(null);
   const [showOnlyUpcoming, setShowOnlyUpcoming] = useState(false);
-  round?: number | null;
-  matchday?: number | null;
-  homeTeamId: number;
-  homeTeam: Team;
-  awayTeamId: number;
-  awayTeam: Team;
-  fixtureDate?: string | null;
-  fixtureTime?: string | null; // Add fixtureTime
-
-  // Final Score (Sets Won) - Always populated when result is known
-  homeScore?: number | null;
-  awayScore?: number | null;
-
-  // Individual Set Scores (only used if league.scoreEntryType == SET_SCORES)
-  homeSet1?: number | null; awaySet1?: number | null;
-  homeSet2?: number | null; awaySet2?: number | null;
-  homeSet3?: number | null; awaySet3?: number | null;
-  homeSet4?: number | null; awaySet4?: number | null; // For Bo5
-  homeSet5?: number | null; awaySet5?: number | null; // For Bo5
-
-  // Calculated match points based on league rules
-  homeMatchPoints?: number | null;
-  awayMatchPoints?: number | null;
+  const [isLoading, setIsLoading] = useState(true); // isLoading war vorher nicht deklariert
 
 
   useEffect(() => {

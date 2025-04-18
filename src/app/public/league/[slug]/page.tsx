@@ -24,31 +24,10 @@ export default function PublicLeaguePage() {
   const [tableData, setTableData] = useState<TableEntry[]>([]); // Verwende zentralen TableEntry Placeholder
   // Entferne activeTab State
   // const [activeTab, setActiveTab] = useState("table")
-  matchday?: number | null
-  homeTeamId: number
-  homeTeam: Team
-  awayTeamId: number
-  awayTeam: Team
-  fixtureDate?: string | null
-  homeMatchPoints?: number | null
-  awayMatchPoints?: number | null
-  fixtureTime?: string | null // Add fixtureTime
-  // Add individual set scores
-  homeSet1?: number | null; awaySet1?: number | null;
-  homeSet2?: number | null; awaySet2?: number | null;
-  homeSet3?: number | null; awaySet3?: number | null;
-  homeSet4?: number | null; awaySet4?: number | null; // For Bo5
-  homeSet5?: number | null; awaySet5?: number | null; // For Bo5
-  // Add final score in sets
-  homeScore?: number | null;
-  won: number
-  lost: number
-  points: number
-  setsWon: number
-  setsLost: number
-  setsDiff: number
-  pointsWon: number // Ball points won
-  pointsLost: number // Ball points lost
+  const [showOnlyOpenFixtures, setShowOnlyOpenFixtures] = useState(false); // State für Checkbox
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
 
   useEffect(() => {
     const fetchLeagueData = async () => {
